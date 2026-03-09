@@ -1,12 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:mastodon_client/mastodon_client.dart';
 
 void main() {
-  test('adds one to input values', () {
-    final calculator = Calculator();
-    expect(calculator.addOne(2), 3);
-    expect(calculator.addOne(-7), -6);
-    expect(calculator.addOne(0), 1);
+  test('MastodonClient can be instantiated', () {
+    final client = MastodonClient(
+      baseUrl: 'https://mastodon.social',
+      accessToken: 'test_token',
+    );
+    expect(client, isNotNull);
+  });
+
+  test('MastodonClient can be instantiated without access token', () {
+    final client = MastodonClient(baseUrl: 'https://mastodon.social');
+    expect(client, isNotNull);
   });
 }
