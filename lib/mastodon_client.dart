@@ -6,5 +6,6 @@ export 'src/exception/mastodon_exception.dart';
 export 'src/models/mastodon_account.dart';
 export 'src/models/mastodon_custom_emoji.dart';
 export 'src/models/mastodon_media_attachment.dart';
+export 'src/models/mastodon_notification.dart';
 export 'src/models/mastodon_poll.dart';
 export 'src/models/mastodon_status.dart';
