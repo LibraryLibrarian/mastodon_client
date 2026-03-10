@@ -1,4 +1,5 @@
 import '../api/instance_api.dart';
+import '../api/statuses_api.dart';
 import '../api/timelines_api.dart';
 import 'mastodon_http_client.dart';
 
@@ -15,8 +16,9 @@ import 'mastodon_http_client.dart';
 /// final info = await client.instance.fetch();
 /// ```
 class MastodonClient {
-  /// [baseUrl] にはスキームを含むホスト URL（例: `https://mastodon.social`）を指定する。
-  /// [accessToken] は認証が不要なエンドポイントのみ利用する場合は省略可能。
+  /// [baseUrl] にはスキームを含むホスト URL（例: `https://mastodon.social`）を指定する
+  ///
+  /// [accessToken] は認証が不要なエンドポイントのみ利用する場合は省略可能
   MastodonClient({
     required String baseUrl,
     String? accessToken,
@@ -32,4 +34,7 @@ class MastodonClient {
 
   /// タイムライン取得に関するAPI
   TimelinesApi get timelines => TimelinesApi(_http);
+
+  /// 投稿（Status）に関するAPI
+  StatusesApi get statuses => StatusesApi(_http);
 }
