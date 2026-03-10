@@ -1,4 +1,5 @@
 import '../api/instance_api.dart';
+import '../api/media_api.dart';
 import '../api/statuses_api.dart';
 import '../api/timelines_api.dart';
 import 'mastodon_http_client.dart';
@@ -37,4 +38,7 @@ class MastodonClient {
 
   /// 投稿（Status）に関するAPI
   StatusesApi get statuses => StatusesApi(_http);
+
+  /// メディアアップロードに関するAPI
+  MediaApi get media => MediaApi(_http);
 }

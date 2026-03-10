@@ -112,3 +112,19 @@ class MastodonAuthStateMismatchException extends MastodonAuthException {
 class MastodonAuthTokenException extends MastodonAuthException {
   const MastodonAuthTokenException(super.message);
 }
+
+// ---------------------------------------------------------------------------
+// メディア処理エラー
+// ---------------------------------------------------------------------------
+
+/// メディアの非同期処理がタイムアウト
+///
+/// サーバーがHTTP202を返した後、[MastodonMediaProcessingTimeoutException.mediaId]
+/// のメディアがポーリング制限内に完了しなかった場合にthrowを実施
+class MastodonMediaProcessingTimeoutException extends MastodonException {
+  MastodonMediaProcessingTimeoutException({required this.mediaId})
+    : super('メディア処理がタイムアウトしました (id: $mediaId)');
+
+  /// 処理待ちだったメディアのID
+  final String mediaId;
+}
