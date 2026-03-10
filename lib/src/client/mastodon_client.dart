@@ -1,3 +1,4 @@
+import '../api/instance_api.dart';
 import 'mastodon_http_client.dart';
 
 /// Mastodon API クライアントのメインエントリーポイント
@@ -9,6 +10,8 @@ import 'mastodon_http_client.dart';
 ///   baseUrl: 'https://mastodon.social',
 ///   accessToken: 'your_token',
 /// );
+///
+/// final info = await client.instance.fetch();
 /// ```
 class MastodonClient {
   /// [baseUrl] にはスキームを含むホスト URL（例: `https://mastodon.social`）を指定する。
@@ -16,15 +19,13 @@ class MastodonClient {
   MastodonClient({
     required String baseUrl,
     String? accessToken,
-  }) : http = MastodonHttpClient(
+  }) : _http = MastodonHttpClient(
          baseUrl: baseUrl,
          accessToken: accessToken,
        );
 
-  /// パッケージ内部の API モジュールが共有する HTTP クライアント。
-  /// 直接利用せず、各 API プロパティ経由でアクセスすること。
-  final MastodonHttpClient http;
+  final MastodonHttpClient _http;
 
-  // API サブモジュールはここに順次追加される。
-  // 例: TimelinesApi get timelines => TimelinesApi(http);
+  /// インスタンス情報に関するAPI
+  InstanceApi get instance => InstanceApi(_http);
 }
