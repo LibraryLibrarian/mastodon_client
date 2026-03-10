@@ -1,4 +1,5 @@
 import '../api/instance_api.dart';
+import '../api/timelines_api.dart';
 import 'mastodon_http_client.dart';
 
 /// Mastodon API クライアントのメインエントリーポイント
@@ -28,4 +29,7 @@ class MastodonClient {
 
   /// インスタンス情報に関するAPI
   InstanceApi get instance => InstanceApi(_http);
+
+  /// タイムライン取得に関するAPI
+  TimelinesApi get timelines => TimelinesApi(_http);
 }
