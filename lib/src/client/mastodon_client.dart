@@ -1,6 +1,7 @@
 import '../api/accounts_api.dart';
 import '../api/instance_api.dart';
 import '../api/media_api.dart';
+import '../api/notifications_api.dart';
 import '../api/polls_api.dart';
 import '../api/statuses_api.dart';
 import '../api/timelines_api.dart';
@@ -49,4 +50,7 @@ class MastodonClient {
 
   /// 投票に関するAPI
   PollsApi get polls => PollsApi(_http);
+
+  /// 通知に関するAPI
+  NotificationsApi get notifications => NotificationsApi(_http);
 }
