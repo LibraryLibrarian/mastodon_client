@@ -5,6 +5,7 @@ import '../internal/dio_error_handler.dart';
 import '../models/mastodon_account.dart';
 import '../models/mastodon_status.dart';
 import '../models/mastodon_status_context.dart';
+import '../models/mastodon_status_create_request.dart';
 
 /// 投稿（Status）に関するAPI
 class StatusesApi {
@@ -187,6 +188,25 @@ class StatusesApi {
           .whereType<Map<String, dynamic>>()
           .map(MastodonAccount.fromJson)
           .toList();
+    } on DioException catch (e) {
+      throw convertDioException(e);
+    }
+  }
+
+  /// 新しい投稿を作成
+  ///
+  /// `POST /api/v1/statuses`
+  ///
+  /// - [request]: 投稿内容を表す [MastodonStatusCreateRequest]
+  ///
+  /// 失敗時は `MastodonException` のサブクラスをthrow
+  Future<MastodonStatus> create(MastodonStatusCreateRequest request) async {
+    try {
+      final response = await _http.dio.post<Map<String, dynamic>>(
+        '/api/v1/statuses',
+        data: request.toJson(),
+      );
+      return MastodonStatus.fromJson(response.data!);
     } on DioException catch (e) {
       throw convertDioException(e);
     }

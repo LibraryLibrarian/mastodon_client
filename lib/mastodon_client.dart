@@ -12,3 +12,4 @@ export 'src/models/mastodon_notification.dart';
 export 'src/models/mastodon_poll.dart';
 export 'src/models/mastodon_status.dart';
 export 'src/models/mastodon_status_context.dart';
+export 'src/models/mastodon_status_create_request.dart';
