@@ -1,3 +1,4 @@
+import '../api/accounts_api.dart';
 import '../api/instance_api.dart';
 import '../api/media_api.dart';
 import '../api/polls_api.dart';
@@ -30,6 +31,9 @@ class MastodonClient {
        );
 
   final MastodonHttpClient _http;
+
+  /// アカウント情報に関するAPI
+  AccountsApi get accounts => AccountsApi(_http);
 
   /// インスタンス情報に関するAPI
   InstanceApi get instance => InstanceApi(_http);
