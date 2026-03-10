@@ -114,6 +114,18 @@ class MastodonAuthTokenException extends MastodonAuthException {
 }
 
 // ---------------------------------------------------------------------------
+// 投票エラー
+// ---------------------------------------------------------------------------
+
+/// 投票済みエラー（HTTP 422 — already voted）
+///
+/// 認証済みユーザーがすでに同じ投票に回答済みの場合にthrowされる。
+class MastodonAlreadyVotedException extends MastodonValidationException {
+  const MastodonAlreadyVotedException()
+    : super(message: 'Already voted', serverMessage: 'already voted');
+}
+
+// ---------------------------------------------------------------------------
 // メディア処理エラー
 // ---------------------------------------------------------------------------
 

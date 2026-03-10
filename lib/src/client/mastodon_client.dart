@@ -1,5 +1,6 @@
 import '../api/instance_api.dart';
 import '../api/media_api.dart';
+import '../api/polls_api.dart';
 import '../api/statuses_api.dart';
 import '../api/timelines_api.dart';
 import 'mastodon_http_client.dart';
@@ -41,4 +42,7 @@ class MastodonClient {
 
   /// メディアアップロードに関するAPI
   MediaApi get media => MediaApi(_http);
+
+  /// 投票に関するAPI
+  PollsApi get polls => PollsApi(_http);
 }
