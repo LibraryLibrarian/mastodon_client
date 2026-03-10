@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../client/mastodon_http_client.dart';
 import '../internal/dio_error_handler.dart';
+import '../models/mastodon_account.dart';
 import '../models/mastodon_status.dart';
 import '../models/mastodon_status_context.dart';
 
@@ -142,6 +143,50 @@ class StatusesApi {
         data: <String, dynamic>{},
       );
       return MastodonStatus.fromJson(response.data!);
+    } on DioException catch (e) {
+      throw convertDioException(e);
+    }
+  }
+
+  /// 指定した投稿をブーストしたアカウントの一覧を取得
+  ///
+  /// `GET /api/v1/statuses/{id}/reblogged_by`
+  ///
+  /// - [id]: 対象投稿のID
+  ///
+  /// 失敗時は `MastodonException` のサブクラスをthrow
+  Future<List<MastodonAccount>> fetchRebloggedBy(String id) async {
+    try {
+      final response = await _http.dio.get<List<dynamic>>(
+        '/api/v1/statuses/$id/reblogged_by',
+      );
+      final list = response.data ?? const [];
+      return list
+          .whereType<Map<String, dynamic>>()
+          .map(MastodonAccount.fromJson)
+          .toList();
+    } on DioException catch (e) {
+      throw convertDioException(e);
+    }
+  }
+
+  /// 指定した投稿をお気に入りしたアカウントの一覧を取得
+  ///
+  /// `GET /api/v1/statuses/{id}/favourited_by`
+  ///
+  /// - [id]: 対象投稿のID
+  ///
+  /// 失敗時は `MastodonException` のサブクラスをthrow
+  Future<List<MastodonAccount>> fetchFavouritedBy(String id) async {
+    try {
+      final response = await _http.dio.get<List<dynamic>>(
+        '/api/v1/statuses/$id/favourited_by',
+      );
+      final list = response.data ?? const [];
+      return list
+          .whereType<Map<String, dynamic>>()
+          .map(MastodonAccount.fromJson)
+          .toList();
     } on DioException catch (e) {
       throw convertDioException(e);
     }
