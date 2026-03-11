@@ -1,5 +1,35 @@
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+/// Mastodon API client library
+library;
+
+export 'src/client/mastodon_client.dart';
+export 'src/exception/mastodon_exception.dart';
+export 'src/models/mastodon_account.dart';
+export 'src/models/mastodon_account_create_request.dart';
+export 'src/models/mastodon_account_page.dart';
+export 'src/models/mastodon_credential_account_update_request.dart';
+export 'src/models/mastodon_custom_emoji.dart';
+export 'src/models/mastodon_domain_block.dart';
+export 'src/models/mastodon_extended_description.dart';
+export 'src/models/mastodon_familiar_followers.dart';
+export 'src/models/mastodon_featured_tag.dart';
+export 'src/models/mastodon_instance.dart';
+export 'src/models/mastodon_list.dart';
+export 'src/models/mastodon_media_attachment.dart';
+export 'src/models/mastodon_notification.dart';
+export 'src/models/mastodon_notification_policy.dart';
+export 'src/models/mastodon_notification_request.dart';
+export 'src/models/mastodon_poll.dart';
+export 'src/models/mastodon_preview_card.dart';
+export 'src/models/mastodon_privacy_policy.dart';
+export 'src/models/mastodon_relationship.dart';
+export 'src/models/mastodon_status.dart';
+export 'src/models/mastodon_status_context.dart';
+export 'src/models/mastodon_status_create_request.dart';
+export 'src/models/mastodon_status_edit.dart';
+export 'src/models/mastodon_status_edit_request.dart';
+export 'src/models/mastodon_status_source.dart';
+export 'src/models/mastodon_terms_of_service.dart';
+export 'src/models/mastodon_token.dart';
+export 'src/models/mastodon_translation.dart';
+export 'src/models/mastodon_unread_notification_count.dart';
+export 'src/models/mastodon_weekly_activity.dart';
