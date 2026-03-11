@@ -101,6 +101,84 @@ class MediaApi {
     }
   }
 
+  /// メディア添付ファイルの属性を更新して[MastodonMediaAttachment]を返す
+  ///
+  /// `PUT /api/v1/media/:id`
+  ///
+  /// - [id]: 更新対象のメディアID
+  /// - [thumbnail]: カスタムサムネイル画像のバイト列
+  /// - [thumbnailFilename]: サムネイルのファイル名（[thumbnail] 指定時は必須）
+  /// - [description]: 代替テキスト（スクリーンリーダー用）
+  /// - [focus]: フォーカルポイント（`"x,y"` 形式、各値は -1.0〜1.0）
+  ///
+  /// 失敗時は `MastodonException` のサブクラスをthrow
+  Future<MastodonMediaAttachment> update(
+    String id, {
+    Uint8List? thumbnail,
+    String? thumbnailFilename,
+    String? description,
+    String? focus,
+  }) async {
+    try {
+      final Object body;
+      if (thumbnail != null) {
+        body = FormData.fromMap(<String, dynamic>{
+          'thumbnail': MultipartFile.fromBytes(
+            thumbnail,
+            filename: thumbnailFilename ?? 'thumbnail',
+          ),
+          'description': ?description,
+          'focus': ?focus,
+        });
+      } else {
+        body = <String, dynamic>{
+          'description': ?description,
+          'focus': ?focus,
+        };
+      }
+
+      final response = await _http.dio.put<Map<String, dynamic>>(
+        '/api/v1/media/$id',
+        data: body,
+      );
+
+      final data = response.data;
+      if (data == null) {
+        throw const MastodonApiException(
+          statusCode: 0,
+          message: 'メディアAPIからのレスポンスが空です',
+        );
+      }
+
+      return MastodonMediaAttachment.fromJson(data);
+    } on MastodonException {
+      rethrow;
+    } on DioException catch (e) {
+      throw convertDioException(e);
+    }
+  }
+
+  /// メディア添付ファイルを削除
+  ///
+  /// `DELETE /api/v1/media/:id`
+  ///
+  /// まだステータスに紐づけられていないメディアのみ削除可能
+  ///
+  /// - [id]: 削除対象のメディアID
+  ///
+  /// 失敗時は `MastodonException` のサブクラスをthrow
+  Future<void> delete(String id) async {
+    try {
+      await _http.dio.delete<void>(
+        '/api/v1/media/$id',
+      );
+    } on MastodonException {
+      rethrow;
+    } on DioException catch (e) {
+      throw convertDioException(e);
+    }
+  }
+
   /// `url`フィールドが非nullになるまでポーリングし、完了後の[MastodonMediaAttachment]を返す
   Future<MastodonMediaAttachment> _pollUntilReady(String mediaId) async {
     for (var i = 0; i < _maxPollAttempts; i++) {
