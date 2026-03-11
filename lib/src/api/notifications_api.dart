@@ -17,17 +17,17 @@ class NotificationsApi {
   ///
   /// `GET /api/v1/notifications`
   ///
-  /// - [limit]: 取得件数（最大 30、デフォルト 20）
+  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
   /// - [sinceId]: このID以降の通知を取得する（新しい方向）
   /// - [maxId]: このID以前の通知を取得する（古い方向）
   Future<List<MastodonNotification>> fetch({
-    int limit = 20,
+    int? limit,
     String? sinceId,
     String? maxId,
   }) async {
     try {
       final query = <String, dynamic>{
-        'limit': limit,
+        'limit': ?limit,
         if (sinceId != null && sinceId.isNotEmpty) 'since_id': sinceId,
         if (maxId != null && maxId.isNotEmpty) 'max_id': maxId,
       };
@@ -88,7 +88,7 @@ class NotificationsApi {
   ///
   /// `GET /api/v1/notifications/unread_count`
   ///
-  /// - [limit]: カウントの上限（最大 1000、デフォルト 100）
+  /// - [limit]: カウントの上限。省略時はサーバーのデフォルト値が適用される
   /// - [types]: 集計対象の通知タイプ一覧
   /// - [excludeTypes]: 集計から除外する通知タイプ一覧
   /// - [accountId]: 特定のアカウントからの通知のみを集計
@@ -162,7 +162,7 @@ class NotificationsApi {
   /// - [maxId]: この ID 以前のリクエストを取得する（古い方向）
   /// - [sinceId]: この ID 以降のリクエストを取得する（新しい方向）
   /// - [minId]: この ID 直後のリクエストを取得する（新しい方向、即時）
-  /// - [limit]: 取得件数（最大 80、デフォルト 40）
+  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
   Future<List<MastodonNotificationRequest>> fetchRequests({
     String? maxId,
     String? sinceId,
@@ -246,7 +246,7 @@ class NotificationsApi {
     try {
       await _http.dio.post<dynamic>(
         '/api/v1/notifications/requests/accept',
-        data: {'id': ids},
+        data: {'id[]': ids},
       );
     } on DioException catch (e) {
       throw convertDioException(e);
@@ -262,7 +262,7 @@ class NotificationsApi {
     try {
       await _http.dio.post<dynamic>(
         '/api/v1/notifications/requests/dismiss',
-        data: {'id': ids},
+        data: {'id[]': ids},
       );
     } on DioException catch (e) {
       throw convertDioException(e);

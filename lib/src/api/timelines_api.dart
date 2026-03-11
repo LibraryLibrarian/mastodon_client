@@ -14,12 +14,12 @@ class TimelinesApi {
   ///
   /// `GET /api/v1/timelines/home`
   ///
-  /// - [limit]: 取得件数（最大 40）
+  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
   /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
   /// - [maxId]: このID以前の投稿を取得する（古い方向）
   /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
   Future<List<MastodonStatus>> fetchHome({
-    int limit = 20,
+    int? limit,
     String? sinceId,
     String? maxId,
     String? minId,
@@ -35,12 +35,12 @@ class TimelinesApi {
   ///
   /// `GET /api/v1/timelines/public?local=true`
   ///
-  /// - [limit]: 取得件数（最大 40）
+  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
   /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
   /// - [maxId]: このID以前の投稿を取得する（古い方向）
   /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
   Future<List<MastodonStatus>> fetchLocal({
-    int limit = 20,
+    int? limit,
     String? sinceId,
     String? maxId,
     String? minId,
@@ -57,12 +57,12 @@ class TimelinesApi {
   ///
   /// `GET /api/v1/timelines/public`
   ///
-  /// - [limit]: 取得件数（最大 40）
+  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
   /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
   /// - [maxId]: このID以前の投稿を取得する（古い方向）
   /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
   Future<List<MastodonStatus>> fetchFederated({
-    int limit = 20,
+    int? limit,
     String? sinceId,
     String? maxId,
     String? minId,
@@ -79,7 +79,7 @@ class TimelinesApi {
   /// `GET /api/v1/timelines/tag/:hashtag`
   ///
   /// - [hashtag]: 検索するハッシュタグ（`#` を除いた文字列）
-  /// - [limit]: 取得件数（最大 40）
+  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
   /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
   /// - [maxId]: このID以前の投稿を取得する（古い方向）
   /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
@@ -91,7 +91,7 @@ class TimelinesApi {
   /// - [none]: これらのハッシュタグをいずれかでも含む投稿を除外する
   Future<List<MastodonStatus>> fetchHashtag(
     String hashtag, {
-    int limit = 20,
+    int? limit,
     String? sinceId,
     String? maxId,
     String? minId,
@@ -122,13 +122,13 @@ class TimelinesApi {
   /// `GET /api/v1/timelines/list/:list_id`
   ///
   /// - [listId]: 対象リストのID
-  /// - [limit]: 取得件数（最大 40）
+  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
   /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
   /// - [maxId]: このID以前の投稿を取得する（古い方向）
   /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
   Future<List<MastodonStatus>> fetchList(
     String listId, {
-    int limit = 20,
+    int? limit,
     String? sinceId,
     String? maxId,
     String? minId,
@@ -145,13 +145,13 @@ class TimelinesApi {
   /// `GET /api/v1/timelines/link`
   ///
   /// - [url]: タイムラインを取得する対象のURL（必須）
-  /// - [limit]: 取得件数（最大 40）
+  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
   /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
   /// - [maxId]: このID以前の投稿を取得する（古い方向）
   /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
   Future<List<MastodonStatus>> fetchLink(
     String url, {
-    int limit = 20,
+    int? limit,
     String? sinceId,
     String? maxId,
     String? minId,
@@ -166,7 +166,7 @@ class TimelinesApi {
 
   Future<List<MastodonStatus>> _fetchTimeline(
     String path, {
-    required int limit,
+    int? limit,
     String? sinceId,
     String? maxId,
     String? minId,
@@ -174,7 +174,7 @@ class TimelinesApi {
   }) async {
     try {
       final query = <String, dynamic>{
-        'limit': limit,
+        'limit': ?limit,
         if (sinceId != null && sinceId.isNotEmpty) 'since_id': sinceId,
         if (maxId != null && maxId.isNotEmpty) 'max_id': maxId,
         if (minId != null && minId.isNotEmpty) 'min_id': minId,

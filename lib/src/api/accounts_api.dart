@@ -87,15 +87,15 @@ class AccountsApi {
   /// `GET /api/v1/accounts/search?q={query}&resolve={resolve}&limit={limit}`
   ///
   /// - [query]: 検索クエリ文字列
-  /// - [limit]: 最大取得件数（デフォルト: 5）
+  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
   /// - [resolve]: リモートアカウントを WebFinger で解決するかどうか
-  ///   （デフォルト: `true`）
+  ///   （デフォルト: `false`）
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<List<MastodonAccount>> search(
     String query, {
-    int limit = 5,
-    bool resolve = true,
+    int? limit,
+    bool resolve = false,
   }) async {
     try {
       final response = await _http.dio.get<List<dynamic>>(
@@ -103,7 +103,7 @@ class AccountsApi {
         queryParameters: <String, dynamic>{
           'q': query,
           'resolve': resolve,
-          'limit': limit,
+          'limit': ?limit,
         },
       );
       return (response.data ?? const <dynamic>[])
@@ -120,14 +120,14 @@ class AccountsApi {
   /// `GET /api/v1/accounts/{accountId}/followers`
   ///
   /// - [accountId]: 対象アカウントの ID
-  /// - [limit]: 最大取得件数（デフォルト: 40）
+  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
   /// - [maxId]: ページネーション用カーソル。直前のレスポンスの `nextMaxId` を渡す
   ///
   /// 非公開アカウント（HTTP 403）の場合は空の [MastodonAccountPage] を返す。
   /// それ以外の失敗時は [MastodonException] のサブクラスを throw する。
   Future<MastodonAccountPage> fetchFollowers(
     String accountId, {
-    int limit = 40,
+    int? limit,
     String? maxId,
   }) => _fetchAccountPage(
     '/api/v1/accounts/$accountId/followers',
@@ -140,14 +140,14 @@ class AccountsApi {
   /// `GET /api/v1/accounts/{accountId}/following`
   ///
   /// - [accountId]: 対象アカウントの ID
-  /// - [limit]: 最大取得件数（デフォルト: 40）
+  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
   /// - [maxId]: ページネーション用カーソル。直前のレスポンスの `nextMaxId` を渡す
   ///
   /// 非公開アカウント（HTTP 403）の場合は空の [MastodonAccountPage] を返す。
   /// それ以外の失敗時は [MastodonException] のサブクラスを throw する。
   Future<MastodonAccountPage> fetchFollowing(
     String accountId, {
-    int limit = 40,
+    int? limit,
     String? maxId,
   }) => _fetchAccountPage(
     '/api/v1/accounts/$accountId/following',
@@ -160,7 +160,7 @@ class AccountsApi {
   /// `GET /api/v1/accounts/{accountId}/statuses`
   ///
   /// - [accountId]: 対象アカウントの ID
-  /// - [limit]: 最大取得件数（デフォルト: 30）
+  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
   /// - [maxId]: ページネーション用カーソル。前回取得した末尾の投稿 ID を渡す
   /// - [excludeReplies]: `true` のとき返信投稿を除外する（デフォルト: `false`）
   /// - [excludeReblogs]: `true` のときブースト投稿を除外する（デフォルト: `false`）
@@ -168,7 +168,7 @@ class AccountsApi {
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<List<MastodonStatus>> fetchStatuses(
     String accountId, {
-    int limit = 30,
+    int? limit,
     String? maxId,
     bool excludeReplies = false,
     bool excludeReblogs = false,
@@ -177,7 +177,7 @@ class AccountsApi {
       final response = await _http.dio.get<List<dynamic>>(
         '/api/v1/accounts/$accountId/statuses',
         queryParameters: <String, dynamic>{
-          'limit': limit,
+          'limit': ?limit,
           'max_id': ?maxId,
           'exclude_replies': excludeReplies,
           'exclude_reblogs': excludeReblogs,
@@ -554,14 +554,14 @@ class AccountsApi {
 
   Future<MastodonAccountPage> _fetchAccountPage(
     String path, {
-    required int limit,
+    int? limit,
     String? maxId,
   }) async {
     try {
       final response = await _http.dio.get<List<dynamic>>(
         path,
         queryParameters: <String, dynamic>{
-          'limit': limit,
+          'limit': ?limit,
           'max_id': ?maxId,
         },
       );
