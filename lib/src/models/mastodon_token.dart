@@ -1,4 +1,9 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'mastodon_token.g.dart';
+
 /// OAuth アクセストークン
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class MastodonToken {
   /// 各フィールドを指定して [MastodonToken] を生成する
   const MastodonToken({
@@ -9,14 +14,8 @@ class MastodonToken {
   });
 
   /// JSON マップから [MastodonToken] を生成する
-  factory MastodonToken.fromJson(Map<String, dynamic> json) {
-    return MastodonToken(
-      accessToken: json['access_token'] as String,
-      tokenType: json['token_type'] as String,
-      scope: json['scope'] as String,
-      createdAt: json['created_at'] as int,
-    );
-  }
+  factory MastodonToken.fromJson(Map<String, dynamic> json) =>
+      _$MastodonTokenFromJson(json);
 
   /// 認可に使用する OAuth トークン文字列
   final String accessToken;

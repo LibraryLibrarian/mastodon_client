@@ -1,4 +1,9 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'mastodon_relationship.g.dart';
+
 /// 2つのアカウント間のリレーションシップ（フォロー・ブロック・ミュート等の関係）
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class MastodonRelationship {
   /// 各フィールドを指定して [MastodonRelationship] を生成する
   const MastodonRelationship({
@@ -20,68 +25,64 @@ class MastodonRelationship {
   });
 
   /// JSON マップから [MastodonRelationship] を生成する
-  factory MastodonRelationship.fromJson(Map<String, dynamic> json) {
-    return MastodonRelationship(
-      id: json['id'] as String,
-      following: json['following'] as bool? ?? false,
-      showingReblogs: json['showing_reblogs'] as bool? ?? true,
-      notifying: json['notifying'] as bool? ?? false,
-      languages: (json['languages'] as List<dynamic>?)?.cast<String>(),
-      followedBy: json['followed_by'] as bool? ?? false,
-      blocking: json['blocking'] as bool? ?? false,
-      blockedBy: json['blocked_by'] as bool? ?? false,
-      muting: json['muting'] as bool? ?? false,
-      mutingNotifications: json['muting_notifications'] as bool? ?? false,
-      requested: json['requested'] as bool? ?? false,
-      requestedBy: json['requested_by'] as bool? ?? false,
-      domainBlocking: json['domain_blocking'] as bool? ?? false,
-      endorsed: json['endorsed'] as bool? ?? false,
-      note: json['note'] as String? ?? '',
-    );
-  }
+  factory MastodonRelationship.fromJson(Map<String, dynamic> json) =>
+      _$MastodonRelationshipFromJson(json);
 
   /// 対象アカウントの ID
   final String id;
 
   /// このアカウントをフォローしているかどうか
+  @JsonKey(defaultValue: false)
   final bool following;
 
   /// このアカウントのブースト投稿をホームタイムラインに表示するかどうか
+  @JsonKey(defaultValue: true)
   final bool showingReblogs;
 
   /// このアカウントの通知を有効にしているかどうか
+  @JsonKey(defaultValue: false)
   final bool notifying;
 
   /// このアカウントからフォローしている言語のリスト（ISO 639-1）
   final List<String>? languages;
 
   /// このアカウントにフォローされているかどうか
+  @JsonKey(defaultValue: false)
   final bool followedBy;
 
   /// このアカウントをブロックしているかどうか
+  @JsonKey(defaultValue: false)
   final bool blocking;
 
   /// このアカウントにブロックされているかどうか
+  @JsonKey(defaultValue: false)
   final bool blockedBy;
 
   /// このアカウントをミュートしているかどうか
+  @JsonKey(defaultValue: false)
   final bool muting;
 
   /// このアカウントからの通知をミュートしているかどうか
+  @JsonKey(defaultValue: false)
   final bool mutingNotifications;
 
   /// このアカウントへのフォローリクエストが保留中かどうか
+  @JsonKey(defaultValue: false)
   final bool requested;
 
   /// このアカウントからのフォローリクエストが保留中かどうか
+  @JsonKey(defaultValue: false)
   final bool requestedBy;
 
   /// このアカウントのドメインをブロックしているかどうか
+  @JsonKey(defaultValue: false)
   final bool domainBlocking;
 
   /// このアカウントをプロフィールで紹介しているかどうか
+  @JsonKey(defaultValue: false)
   final bool endorsed;
 
   /// このアカウントに設定したプライベートメモ
+  @JsonKey(defaultValue: '')
   final String note;
 }

@@ -1,6 +1,11 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'mastodon_custom_emoji.g.dart';
+
 /// Mastodon のカスタム絵文字
 ///
 /// アカウントのプロフィールや投稿テキストに含まれる `:shortcode:` 形式の絵文字を表す
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class MastodonCustomEmoji {
   const MastodonCustomEmoji({
     required this.shortcode,
@@ -10,15 +15,8 @@ class MastodonCustomEmoji {
     this.category,
   });
 
-  factory MastodonCustomEmoji.fromJson(Map<String, dynamic> json) {
-    return MastodonCustomEmoji(
-      shortcode: json['shortcode'] as String,
-      url: json['url'] as String,
-      staticUrl: json['static_url'] as String,
-      visibleInPicker: json['visible_in_picker'] as bool? ?? true,
-      category: json['category'] as String?,
-    );
-  }
+  factory MastodonCustomEmoji.fromJson(Map<String, dynamic> json) =>
+      _$MastodonCustomEmojiFromJson(json);
 
   /// `:shortcode:` 形式のショートコード（コロンを除いた部分）
   final String shortcode;
@@ -30,6 +28,7 @@ class MastodonCustomEmoji {
   final String staticUrl;
 
   /// 絵文字ピッカーに表示するかどうか
+  @JsonKey(defaultValue: true)
   final bool visibleInPicker;
 
   /// 絵文字が属するカテゴリ名
