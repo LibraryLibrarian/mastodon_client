@@ -1,24 +1,19 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'mastodon_media_attachment.g.dart';
+
 /// メディアの種別
+@JsonEnum(fieldRename: FieldRename.snake)
 enum MastodonMediaType {
   unknown,
   image,
   gifv,
   video,
-  audio
-  ;
-
-  static MastodonMediaType fromString(String? value) {
-    return switch (value) {
-      'image' => MastodonMediaType.image,
-      'gifv' => MastodonMediaType.gifv,
-      'video' => MastodonMediaType.video,
-      'audio' => MastodonMediaType.audio,
-      _ => MastodonMediaType.unknown,
-    };
-  }
+  audio,
 }
 
 /// Mastodon のメディア添付ファイル
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class MastodonMediaAttachment {
   const MastodonMediaAttachment({
     required this.id,
@@ -30,22 +25,17 @@ class MastodonMediaAttachment {
     this.blurhash,
   });
 
-  factory MastodonMediaAttachment.fromJson(Map<String, dynamic> json) {
-    return MastodonMediaAttachment(
-      id: json['id'] as String,
-      type: MastodonMediaType.fromString(json['type'] as String?),
-      url: json['url'] as String?,
-      previewUrl: json['preview_url'] as String?,
-      remoteUrl: json['remote_url'] as String?,
-      description: json['description'] as String?,
-      blurhash: json['blurhash'] as String?,
-    );
-  }
+  factory MastodonMediaAttachment.fromJson(Map<String, dynamic> json) =>
+      _$MastodonMediaAttachmentFromJson(json);
+
+  static Object? _readType(Map<dynamic, dynamic> json, String key) =>
+      json['type'] ?? 'unknown';
 
   /// メディアの内部ID
   final String id;
 
   /// メディアの種別
+  @JsonKey(readValue: _readType, unknownEnumValue: MastodonMediaType.unknown)
   final MastodonMediaType type;
 
   /// メディアのURL 非同期処理中の場合はnullになることがある

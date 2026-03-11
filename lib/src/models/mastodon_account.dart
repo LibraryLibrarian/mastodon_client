@@ -1,9 +1,15 @@
+import 'package:json_annotation/json_annotation.dart';
+
+import 'json_converters.dart';
 import 'mastodon_custom_emoji.dart';
+
+part 'mastodon_account.g.dart';
 
 /// Mastodon アカウント（ユーザー）を表すモデル
 ///
 /// `/api/v1/accounts/:id` や `/api/v1/accounts/verify_credentials` などの
 /// レスポンスに対応する
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class MastodonAccount {
   const MastodonAccount({
     required this.id,
@@ -34,52 +40,8 @@ class MastodonAccount {
     this.headerBlurhash,
   });
 
-  factory MastodonAccount.fromJson(Map<String, dynamic> json) {
-    return MastodonAccount(
-      id: json['id'] as String,
-      username: json['username'] as String,
-      acct: json['acct'] as String,
-      displayName: json['display_name'] as String? ?? '',
-      note: json['note'] as String? ?? '',
-      url: json['url'] as String? ?? '',
-      avatarUrl: json['avatar'] as String? ?? '',
-      avatarStaticUrl: json['avatar_static'] as String? ?? '',
-      headerUrl: json['header'] as String? ?? '',
-      headerStaticUrl: json['header_static'] as String? ?? '',
-      locked: json['locked'] as bool? ?? false,
-      bot: json['bot'] as bool? ?? false,
-      discoverable: json['discoverable'] as bool?,
-      noindex: json['noindex'] as bool?,
-      followersCount: json['followers_count'] as int? ?? 0,
-      followingCount: json['following_count'] as int? ?? 0,
-      statusesCount: json['statuses_count'] as int? ?? 0,
-      createdAt: json['created_at'] != null
-          ? DateTime.tryParse(json['created_at'] as String)
-          : null,
-      lastStatusAt: json['last_status_at'] != null
-          ? DateTime.tryParse(json['last_status_at'] as String)
-          : null,
-      fields:
-          (json['fields'] as List<dynamic>?)
-              ?.map((f) => MastodonField.fromJson(f as Map<String, dynamic>))
-              .toList() ??
-          [],
-      emojis:
-          (json['emojis'] as List<dynamic>?)
-              ?.map(
-                (e) => MastodonCustomEmoji.fromJson(e as Map<String, dynamic>),
-              )
-              .toList() ??
-          [],
-      moved: json['moved'] != null
-          ? MastodonAccount.fromJson(json['moved'] as Map<String, dynamic>)
-          : null,
-      suspended: json['suspended'] as bool?,
-      limited: json['limited'] as bool?,
-      avatarBlurhash: json['avatar_blurhash'] as String?,
-      headerBlurhash: json['header_blurhash'] as String?,
-    );
-  }
+  factory MastodonAccount.fromJson(Map<String, dynamic> json) =>
+      _$MastodonAccountFromJson(json);
 
   /// アカウントの内部 ID
   final String id;
@@ -92,30 +54,39 @@ class MastodonAccount {
   final String acct;
 
   /// 表示名
+  @JsonKey(defaultValue: '')
   final String displayName;
 
   /// プロフィール文（HTML 形式）
+  @JsonKey(defaultValue: '')
   final String note;
 
   /// アカウントのプロフィールページ URL
+  @JsonKey(defaultValue: '')
   final String url;
 
   /// アバター画像の URL（アニメーション版）
+  @JsonKey(name: 'avatar', defaultValue: '')
   final String avatarUrl;
 
   /// アバター画像の URL（静止画版）
+  @JsonKey(name: 'avatar_static', defaultValue: '')
   final String avatarStaticUrl;
 
   /// ヘッダー（バナー）画像の URL（アニメーション版）
+  @JsonKey(name: 'header', defaultValue: '')
   final String headerUrl;
 
   /// ヘッダー（バナー）画像の URL（静止画版）
+  @JsonKey(name: 'header_static', defaultValue: '')
   final String headerStaticUrl;
 
   /// フォロー承認制かどうか
+  @JsonKey(defaultValue: false)
   final bool locked;
 
   /// Bot アカウントかどうか
+  @JsonKey(defaultValue: false)
   final bool bot;
 
   /// ディスカバリー機能への掲載を許可するかどうか
@@ -125,24 +96,31 @@ class MastodonAccount {
   final bool? noindex;
 
   /// フォロワー数
+  @JsonKey(defaultValue: 0)
   final int followersCount;
 
   /// フォロー数
+  @JsonKey(defaultValue: 0)
   final int followingCount;
 
   /// 投稿数
+  @JsonKey(defaultValue: 0)
   final int statusesCount;
 
   /// アカウント作成日時
+  @SafeDateTimeConverter()
   final DateTime? createdAt;
 
   /// 最後に投稿した日付
+  @SafeDateTimeConverter()
   final DateTime? lastStatusAt;
 
   /// プロフィールに設定されたカスタムフィールドのリスト
+  @JsonKey(defaultValue: <MastodonField>[])
   final List<MastodonField> fields;
 
   /// プロフィールや表示名で使われているカスタム絵文字のリスト
+  @JsonKey(defaultValue: <MastodonCustomEmoji>[])
   final List<MastodonCustomEmoji> emojis;
 
   /// アカウント移行先。移行済みの場合のみ非 null
@@ -162,6 +140,7 @@ class MastodonAccount {
 }
 
 /// Mastodon アカウントのプロフィールフィールド
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class MastodonField {
   const MastodonField({
     required this.name,
@@ -169,15 +148,8 @@ class MastodonField {
     this.verifiedAt,
   });
 
-  factory MastodonField.fromJson(Map<String, dynamic> json) {
-    return MastodonField(
-      name: json['name'] as String,
-      value: json['value'] as String,
-      verifiedAt: json['verified_at'] != null
-          ? DateTime.tryParse(json['verified_at'] as String)
-          : null,
-    );
-  }
+  factory MastodonField.fromJson(Map<String, dynamic> json) =>
+      _$MastodonFieldFromJson(json);
 
   /// フィールドのラベル名
   final String name;
@@ -186,5 +158,6 @@ class MastodonField {
   final String value;
 
   /// リンク検証が行われた日時。検証済みの場合のみ非 null
+  @SafeDateTimeConverter()
   final DateTime? verifiedAt;
 }

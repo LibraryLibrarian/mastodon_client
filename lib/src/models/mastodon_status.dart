@@ -1,27 +1,24 @@
+import 'package:json_annotation/json_annotation.dart';
+
+import 'json_converters.dart';
 import 'mastodon_account.dart';
 import 'mastodon_custom_emoji.dart';
 import 'mastodon_media_attachment.dart';
 import 'mastodon_poll.dart';
 
+part 'mastodon_status.g.dart';
+
 /// 投稿の公開範囲
+@JsonEnum(fieldRename: FieldRename.snake)
 enum MastodonVisibility {
   public,
   unlisted,
   private,
-  direct
-  ;
-
-  static MastodonVisibility fromString(String? value) {
-    return switch (value) {
-      'unlisted' => MastodonVisibility.unlisted,
-      'private' => MastodonVisibility.private,
-      'direct' => MastodonVisibility.direct,
-      _ => MastodonVisibility.public,
-    };
-  }
+  direct,
 }
 
 /// メンション（投稿内の`@username`部分）
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class MastodonMention {
   const MastodonMention({
     required this.id,
@@ -30,14 +27,8 @@ class MastodonMention {
     required this.url,
   });
 
-  factory MastodonMention.fromJson(Map<String, dynamic> json) {
-    return MastodonMention(
-      id: json['id'] as String,
-      username: json['username'] as String,
-      acct: json['acct'] as String,
-      url: json['url'] as String,
-    );
-  }
+  factory MastodonMention.fromJson(Map<String, dynamic> json) =>
+      _$MastodonMentionFromJson(json);
 
   final String id;
   final String username;
@@ -46,15 +37,12 @@ class MastodonMention {
 }
 
 /// ハッシュタグ
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class MastodonTag {
   const MastodonTag({required this.name, required this.url});
 
-  factory MastodonTag.fromJson(Map<String, dynamic> json) {
-    return MastodonTag(
-      name: json['name'] as String,
-      url: json['url'] as String,
-    );
-  }
+  factory MastodonTag.fromJson(Map<String, dynamic> json) =>
+      _$MastodonTagFromJson(json);
 
   final String name;
   final String url;
@@ -63,6 +51,7 @@ class MastodonTag {
 /// Mastodon の投稿（Status）
 ///
 /// `/api/v1/statuses/:id`や各タイムラインAPIのレスポンスに対応する
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class MastodonStatus {
   const MastodonStatus({
     required this.id,
@@ -96,65 +85,11 @@ class MastodonStatus {
     this.quote,
   });
 
-  factory MastodonStatus.fromJson(Map<String, dynamic> json) {
-    return MastodonStatus(
-      id: json['id'] as String,
-      uri: json['uri'] as String?,
-      url: json['url'] as String?,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      inReplyToId: json['in_reply_to_id'] as String?,
-      inReplyToAccountId: json['in_reply_to_account_id'] as String?,
-      sensitive: json['sensitive'] as bool? ?? false,
-      spoilerText: json['spoiler_text'] as String? ?? '',
-      visibility: MastodonVisibility.fromString(
-        json['visibility'] as String?,
-      ),
-      language: json['language'] as String?,
-      content: json['content'] as String? ?? '',
-      text: json['text'] as String?,
-      editedAt: json['edited_at'] != null
-          ? DateTime.tryParse(json['edited_at'] as String)
-          : null,
-      reblogsCount: json['reblogs_count'] as int? ?? 0,
-      favouritesCount: json['favourites_count'] as int? ?? 0,
-      repliesCount: json['replies_count'] as int? ?? 0,
-      favourited: json['favourited'] as bool?,
-      reblogged: json['reblogged'] as bool?,
-      bookmarked: json['bookmarked'] as bool?,
-      muted: json['muted'] as bool?,
-      pinned: json['pinned'] as bool?,
-      account: MastodonAccount.fromJson(
-        json['account'] as Map<String, dynamic>,
-      ),
-      mediaAttachments: (json['media_attachments'] as List<dynamic>)
-          .map(
-            (m) => MastodonMediaAttachment.fromJson(
-              m as Map<String, dynamic>,
-            ),
-          )
-          .toList(),
-      mentions: (json['mentions'] as List<dynamic>)
-          .map((m) => MastodonMention.fromJson(m as Map<String, dynamic>))
-          .toList(),
-      tags: (json['tags'] as List<dynamic>)
-          .map((t) => MastodonTag.fromJson(t as Map<String, dynamic>))
-          .toList(),
-      emojis: (json['emojis'] as List<dynamic>)
-          .map(
-            (e) => MastodonCustomEmoji.fromJson(e as Map<String, dynamic>),
-          )
-          .toList(),
-      reblog: json['reblog'] != null
-          ? MastodonStatus.fromJson(json['reblog'] as Map<String, dynamic>)
-          : null,
-      poll: json['poll'] != null
-          ? MastodonPoll.fromJson(json['poll'] as Map<String, dynamic>)
-          : null,
-      quote: json['quote'] != null
-          ? MastodonStatus.fromJson(json['quote'] as Map<String, dynamic>)
-          : null,
-    );
-  }
+  factory MastodonStatus.fromJson(Map<String, dynamic> json) =>
+      _$MastodonStatusFromJson(json);
+
+  static Object? _readVisibility(Map<dynamic, dynamic> json, String key) =>
+      json['visibility'] ?? 'public';
 
   /// 投稿の内部ID
   final String id;
@@ -175,33 +110,44 @@ class MastodonStatus {
   final String? inReplyToAccountId;
 
   /// センシティブコンテンツかどうか
+  @JsonKey(defaultValue: false)
   final bool sensitive;
 
   /// コンテンツ警告（CW）テキスト なければ空文字
+  @JsonKey(defaultValue: '')
   final String spoilerText;
 
   /// 公開範囲
+  @JsonKey(
+    readValue: _readVisibility,
+    unknownEnumValue: MastodonVisibility.public,
+  )
   final MastodonVisibility visibility;
 
   /// 言語コード（BCP47形式）
   final String? language;
 
   /// 投稿本文（HTML形式）
+  @JsonKey(defaultValue: '')
   final String content;
 
   /// 投稿本文のプレーンテキスト 編集履歴取得時など一部APIでのみ含まれる
   final String? text;
 
   /// 最終編集日時 編集されていない場合はnull
+  @SafeDateTimeConverter()
   final DateTime? editedAt;
 
   /// ブースト数
+  @JsonKey(defaultValue: 0)
   final int reblogsCount;
 
   /// お気に入り数
+  @JsonKey(defaultValue: 0)
   final int favouritesCount;
 
   /// 返信数
+  @JsonKey(defaultValue: 0)
   final int repliesCount;
 
   /// 自分がお気に入り済みかどうか

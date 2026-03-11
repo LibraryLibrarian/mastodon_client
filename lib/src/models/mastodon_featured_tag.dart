@@ -1,4 +1,11 @@
+import 'package:json_annotation/json_annotation.dart';
+
+import 'json_converters.dart';
+
+part 'mastodon_featured_tag.g.dart';
+
 /// アカウントのプロフィールで紹介されているハッシュタグ
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class MastodonFeaturedTag {
   /// 各フィールドを指定して [MastodonFeaturedTag] を生成する
   const MastodonFeaturedTag({
@@ -10,21 +17,8 @@ class MastodonFeaturedTag {
   });
 
   /// JSON マップから [MastodonFeaturedTag] を生成する
-  factory MastodonFeaturedTag.fromJson(Map<String, dynamic> json) {
-    return MastodonFeaturedTag(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      url: json['url'] as String? ?? '',
-      statusesCount:
-          int.tryParse(
-            json['statuses_count']?.toString() ?? '',
-          ) ??
-          0,
-      lastStatusAt: json['last_status_at'] != null
-          ? DateTime.tryParse(json['last_status_at'] as String)
-          : null,
-    );
-  }
+  factory MastodonFeaturedTag.fromJson(Map<String, dynamic> json) =>
+      _$MastodonFeaturedTagFromJson(json);
 
   /// 紹介タグの内部 ID
   final String id;
@@ -33,11 +27,14 @@ class MastodonFeaturedTag {
   final String name;
 
   /// このハッシュタグを含む投稿一覧への URL
+  @JsonKey(defaultValue: '')
   final String url;
 
   /// このハッシュタグを含む投稿の件数
+  @JsonKey(fromJson: parseIntFromString)
   final int statusesCount;
 
   /// このハッシュタグを含む最新投稿の日付
+  @SafeDateTimeConverter()
   final DateTime? lastStatusAt;
 }
