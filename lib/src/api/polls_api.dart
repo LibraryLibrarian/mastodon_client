@@ -11,6 +11,20 @@ class PollsApi {
 
   final MastodonHttpClient _http;
 
+  /// 指定されたIDのアンケートを取得
+  ///
+  /// `GET /api/v1/polls/{id}`
+  Future<MastodonPoll> fetch(String id) async {
+    try {
+      final response = await _http.dio.get<Map<String, dynamic>>(
+        '/api/v1/polls/$id',
+      );
+      return MastodonPoll.fromJson(response.data!);
+    } on DioException catch (e) {
+      throw convertDioException(e);
+    }
+  }
+
   /// アンケートに投票
   ///
   /// `choices` には0始まりの選択肢インデックスを指定
