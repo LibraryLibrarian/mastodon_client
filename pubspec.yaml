@@ -1,7 +1,7 @@
 name: mastodon_client
 version: 0.0.1
 environment:
-  sdk: ^3.10.7
+  sdk: ^3.8.0
 description: A pure Dart Mastodon API client library.
 dependencies:
   crypto: ^3.0.7
