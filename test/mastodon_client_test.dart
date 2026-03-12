@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:mastodon_client/mastodon_client.dart';
+import 'package:test/test.dart';
 
 void main() {
   test('MastodonClient can be instantiated', () {
