@@ -3,6 +3,8 @@ library;
 
 export 'src/client/mastodon_client.dart';
 export 'src/exception/mastodon_exception.dart';
+export 'src/logging/function_logger.dart';
+export 'src/logging/logger.dart';
 export 'src/models/mastodon_account.dart';
 export 'src/models/mastodon_account_create_request.dart';
 export 'src/models/mastodon_account_page.dart';

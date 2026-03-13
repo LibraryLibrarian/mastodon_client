@@ -5,6 +5,7 @@ import '../api/notifications_api.dart';
 import '../api/polls_api.dart';
 import '../api/statuses_api.dart';
 import '../api/timelines_api.dart';
+import '../logging/logger.dart';
 import 'mastodon_http_client.dart';
 
 /// Mastodon API クライアントのメインエントリーポイント
@@ -23,12 +24,20 @@ class MastodonClient {
   /// [baseUrl] にはスキームを含むホスト URL（例: `https://mastodon.social`）を指定する
   ///
   /// [accessToken] は認証が不要なエンドポイントのみ利用する場合は省略可能
+  ///
+  /// [enableLog] を `false` にするとHTTPログ出力を無効化する
+  ///
+  /// [logger] にカスタムロガーを渡すことでログ出力先を差し替え可能
   MastodonClient({
     required String baseUrl,
     String? accessToken,
+    bool enableLog = true,
+    Logger? logger,
   }) : _http = MastodonHttpClient(
          baseUrl: baseUrl,
          accessToken: accessToken,
+         enableLog: enableLog,
+         logger: logger,
        );
 
   final MastodonHttpClient _http;
