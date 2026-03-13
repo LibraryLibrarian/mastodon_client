@@ -1,7 +1,4 @@
-import 'package:dio/dio.dart';
-
 import '../client/mastodon_http_client.dart';
-import '../internal/dio_error_handler.dart';
 import '../models/mastodon_domain_block.dart';
 import '../models/mastodon_extended_description.dart';
 import '../models/mastodon_instance.dart';
@@ -21,14 +18,8 @@ class InstanceApi {
   ///
   /// 失敗時は `MastodonException` のサブクラスをスローする
   Future<MastodonInstance> fetch() async {
-    try {
-      final response = await _http.dio.get<Map<String, dynamic>>(
-        '/api/v2/instance',
-      );
-      return MastodonInstance.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>('/api/v2/instance');
+    return MastodonInstance.fromJson(data!);
   }
 
   /// インスタンスが認識しているピアドメインの一覧を取得
@@ -37,14 +28,8 @@ class InstanceApi {
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrowする
   Future<List<String>> fetchPeers() async {
-    try {
-      final response = await _http.dio.get<List<dynamic>>(
-        '/api/v1/instance/peers',
-      );
-      return (response.data ?? const <dynamic>[]).cast<String>();
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<List<dynamic>>('/api/v1/instance/peers');
+    return (data ?? const <dynamic>[]).cast<String>();
   }
 
   /// 直近3ヶ月の週間アクティビティ統計を取得
@@ -53,17 +38,11 @@ class InstanceApi {
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
   Future<List<MastodonWeeklyActivity>> fetchActivity() async {
-    try {
-      final response = await _http.dio.get<List<dynamic>>(
-        '/api/v1/instance/activity',
-      );
-      return (response.data ?? const <dynamic>[])
-          .cast<Map<String, dynamic>>()
-          .map(MastodonWeeklyActivity.fromJson)
-          .toList();
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<List<dynamic>>('/api/v1/instance/activity');
+    return (data ?? const <dynamic>[])
+        .cast<Map<String, dynamic>>()
+        .map(MastodonWeeklyActivity.fromJson)
+        .toList();
   }
 
   /// インスタンスのルール一覧を取得
@@ -72,17 +51,11 @@ class InstanceApi {
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
   Future<List<MastodonInstanceRule>> fetchRules() async {
-    try {
-      final response = await _http.dio.get<List<dynamic>>(
-        '/api/v1/instance/rules',
-      );
-      return (response.data ?? const <dynamic>[])
-          .cast<Map<String, dynamic>>()
-          .map(MastodonInstanceRule.fromJson)
-          .toList();
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<List<dynamic>>('/api/v1/instance/rules');
+    return (data ?? const <dynamic>[])
+        .cast<Map<String, dynamic>>()
+        .map(MastodonInstanceRule.fromJson)
+        .toList();
   }
 
   /// インスタンスがブロックしているドメインの一覧を取得
@@ -91,17 +64,12 @@ class InstanceApi {
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
   Future<List<MastodonDomainBlock>> fetchDomainBlocks() async {
-    try {
-      final response = await _http.dio.get<List<dynamic>>(
-        '/api/v1/instance/domain_blocks',
-      );
-      return (response.data ?? const <dynamic>[])
-          .cast<Map<String, dynamic>>()
-          .map(MastodonDomainBlock.fromJson)
-          .toList();
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data =
+        await _http.send<List<dynamic>>('/api/v1/instance/domain_blocks');
+    return (data ?? const <dynamic>[])
+        .cast<Map<String, dynamic>>()
+        .map(MastodonDomainBlock.fromJson)
+        .toList();
   }
 
   /// インスタンスの詳細な説明文を取得
@@ -110,14 +78,10 @@ class InstanceApi {
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
   Future<MastodonExtendedDescription> fetchExtendedDescription() async {
-    try {
-      final response = await _http.dio.get<Map<String, dynamic>>(
-        '/api/v1/instance/extended_description',
-      );
-      return MastodonExtendedDescription.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/instance/extended_description',
+    );
+    return MastodonExtendedDescription.fromJson(data!);
   }
 
   /// インスタンスのプライバシーポリシーを取得
@@ -126,14 +90,10 @@ class InstanceApi {
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
   Future<MastodonPrivacyPolicy> fetchPrivacyPolicy() async {
-    try {
-      final response = await _http.dio.get<Map<String, dynamic>>(
-        '/api/v1/instance/privacy_policy',
-      );
-      return MastodonPrivacyPolicy.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/instance/privacy_policy',
+    );
+    return MastodonPrivacyPolicy.fromJson(data!);
   }
 
   /// インスタンスの利用規約を取得
@@ -142,14 +102,10 @@ class InstanceApi {
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
   Future<MastodonTermsOfService> fetchTermsOfService() async {
-    try {
-      final response = await _http.dio.get<Map<String, dynamic>>(
-        '/api/v1/instance/terms_of_service',
-      );
-      return MastodonTermsOfService.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/instance/terms_of_service',
+    );
+    return MastodonTermsOfService.fromJson(data!);
   }
 
   /// 指定した発効日の利用規約を取得
@@ -160,14 +116,10 @@ class InstanceApi {
   Future<MastodonTermsOfService> fetchTermsOfServiceByDate(
     String date,
   ) async {
-    try {
-      final response = await _http.dio.get<Map<String, dynamic>>(
-        '/api/v1/instance/terms_of_service/$date',
-      );
-      return MastodonTermsOfService.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/instance/terms_of_service/$date',
+    );
+    return MastodonTermsOfService.fromJson(data!);
   }
 
   /// 翻訳エンジンが対応する言語ペアを取得
@@ -179,19 +131,14 @@ class InstanceApi {
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
   Future<Map<String, List<String>>> fetchTranslationLanguages() async {
-    try {
-      final response = await _http.dio.get<Map<String, dynamic>>(
-        '/api/v1/instance/translation_languages',
-      );
-      final data = response.data ?? const <String, dynamic>{};
-      return data.map(
-        (key, value) => MapEntry(
-          key,
-          (value as List<dynamic>).cast<String>(),
-        ),
-      );
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/instance/translation_languages',
+    );
+    return (data ?? const <String, dynamic>{}).map(
+      (key, value) => MapEntry(
+        key,
+        (value as List<dynamic>).cast<String>(),
+      ),
+    );
   }
 }

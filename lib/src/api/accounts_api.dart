@@ -1,8 +1,5 @@
-import 'package:dio/dio.dart';
-
 import '../client/mastodon_http_client.dart';
 import '../exception/mastodon_exception.dart';
-import '../internal/dio_error_handler.dart';
 import '../models/mastodon_account.dart';
 import '../models/mastodon_account_create_request.dart';
 import '../models/mastodon_account_page.dart';
@@ -27,14 +24,10 @@ class AccountsApi {
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<MastodonAccount> fetchById(String accountId) async {
-    try {
-      final response = await _http.dio.get<Map<String, dynamic>>(
-        '/api/v1/accounts/$accountId',
-      );
-      return MastodonAccount.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/accounts/$accountId',
+    );
+    return MastodonAccount.fromJson(data!);
   }
 
   /// 認証済みユーザー自身のアカウント情報を取得する
@@ -43,14 +36,10 @@ class AccountsApi {
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<MastodonAccount> verifyCredentials() async {
-    try {
-      final response = await _http.dio.get<Map<String, dynamic>>(
-        '/api/v1/accounts/verify_credentials',
-      );
-      return MastodonAccount.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/accounts/verify_credentials',
+    );
+    return MastodonAccount.fromJson(data!);
   }
 
   /// `acct` 文字列からアカウントを検索して取得する
@@ -65,20 +54,19 @@ class AccountsApi {
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<MastodonAccount> lookup(String acct) async {
     try {
-      final response = await _http.dio.get<Map<String, dynamic>>(
+      final data = await _http.send<Map<String, dynamic>>(
         '/api/v1/accounts/lookup',
         queryParameters: <String, dynamic>{'acct': acct},
       );
-      return MastodonAccount.fromJson(response.data!);
-    } on DioException catch (e) {
-      final statusCode = e.response?.statusCode;
-      if (statusCode == 404 ||
-          statusCode == 405 ||
-          statusCode == 410 ||
-          statusCode == 501) {
+      return MastodonAccount.fromJson(data!);
+    } on MastodonApiException catch (e) {
+      if (e.statusCode == 404 ||
+          e.statusCode == 405 ||
+          e.statusCode == 410 ||
+          e.statusCode == 501) {
         return _lookupViaSearch(acct);
       }
-      throw convertDioException(e);
+      rethrow;
     }
   }
 
@@ -97,22 +85,18 @@ class AccountsApi {
     int? limit,
     bool resolve = false,
   }) async {
-    try {
-      final response = await _http.dio.get<List<dynamic>>(
-        '/api/v1/accounts/search',
-        queryParameters: <String, dynamic>{
-          'q': query,
-          'resolve': resolve,
-          'limit': ?limit,
-        },
-      );
-      return (response.data ?? const <dynamic>[])
-          .cast<Map<String, dynamic>>()
-          .map(MastodonAccount.fromJson)
-          .toList();
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<List<dynamic>>(
+      '/api/v1/accounts/search',
+      queryParameters: <String, dynamic>{
+        'q': query,
+        'resolve': resolve,
+        'limit': ?limit,
+      },
+    );
+    return (data ?? const <dynamic>[])
+        .cast<Map<String, dynamic>>()
+        .map(MastodonAccount.fromJson)
+        .toList();
   }
 
   /// 指定アカウントのフォロワー一覧を取得する
@@ -173,23 +157,19 @@ class AccountsApi {
     bool excludeReplies = false,
     bool excludeReblogs = false,
   }) async {
-    try {
-      final response = await _http.dio.get<List<dynamic>>(
-        '/api/v1/accounts/$accountId/statuses',
-        queryParameters: <String, dynamic>{
-          'limit': ?limit,
-          'max_id': ?maxId,
-          'exclude_replies': excludeReplies,
-          'exclude_reblogs': excludeReblogs,
-        },
-      );
-      return (response.data ?? const <dynamic>[])
-          .cast<Map<String, dynamic>>()
-          .map(MastodonStatus.fromJson)
-          .toList();
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<List<dynamic>>(
+      '/api/v1/accounts/$accountId/statuses',
+      queryParameters: <String, dynamic>{
+        'limit': ?limit,
+        'max_id': ?maxId,
+        'exclude_replies': excludeReplies,
+        'exclude_reblogs': excludeReblogs,
+      },
+    );
+    return (data ?? const <dynamic>[])
+        .cast<Map<String, dynamic>>()
+        .map(MastodonStatus.fromJson)
+        .toList();
   }
 
   /// ログイン中ユーザーのプロフィール情報を更新する
@@ -202,15 +182,12 @@ class AccountsApi {
   Future<MastodonAccount> updateCredentials(
     MastodonCredentialAccountUpdateRequest request,
   ) async {
-    try {
-      final response = await _http.dio.patch<Map<String, dynamic>>(
-        '/api/v1/accounts/update_credentials',
-        data: request.toJson(),
-      );
-      return MastodonAccount.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/accounts/update_credentials',
+      method: 'PATCH',
+      data: request.toJson(),
+    );
+    return MastodonAccount.fromJson(data!);
   }
 
   /// 新規アカウントを登録する
@@ -222,15 +199,12 @@ class AccountsApi {
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<MastodonToken> create(MastodonAccountCreateRequest request) async {
-    try {
-      final response = await _http.dio.post<Map<String, dynamic>>(
-        '/api/v1/accounts',
-        data: request.toJson(),
-      );
-      return MastodonToken.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/accounts',
+      method: 'POST',
+      data: request.toJson(),
+    );
+    return MastodonToken.fromJson(data!);
   }
 
   /// 複数の ID を指定してアカウント情報をまとめて取得する
@@ -239,18 +213,14 @@ class AccountsApi {
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<List<MastodonAccount>> fetchMultiple(List<String> ids) async {
-    try {
-      final response = await _http.dio.get<List<dynamic>>(
-        '/api/v1/accounts',
-        queryParameters: <String, dynamic>{'id[]': ids},
-      );
-      return (response.data ?? const <dynamic>[])
-          .cast<Map<String, dynamic>>()
-          .map(MastodonAccount.fromJson)
-          .toList();
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<List<dynamic>>(
+      '/api/v1/accounts',
+      queryParameters: <String, dynamic>{'id[]': ids},
+    );
+    return (data ?? const <dynamic>[])
+        .cast<Map<String, dynamic>>()
+        .map(MastodonAccount.fromJson)
+        .toList();
   }
 
   /// 指定アカウントをフォローする
@@ -269,19 +239,16 @@ class AccountsApi {
     bool? notify,
     List<String>? languages,
   }) async {
-    try {
-      final response = await _http.dio.post<Map<String, dynamic>>(
-        '/api/v1/accounts/$id/follow',
-        data: <String, dynamic>{
-          'reblogs': ?reblogs,
-          'notify': ?notify,
-          'languages[]': ?languages,
-        },
-      );
-      return MastodonRelationship.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/accounts/$id/follow',
+      method: 'POST',
+      data: <String, dynamic>{
+        'reblogs': ?reblogs,
+        'notify': ?notify,
+        'languages[]': ?languages,
+      },
+    );
+    return MastodonRelationship.fromJson(data!);
   }
 
   /// 指定アカウントのフォローを解除する
@@ -290,14 +257,11 @@ class AccountsApi {
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<MastodonRelationship> unfollow(String id) async {
-    try {
-      final response = await _http.dio.post<Map<String, dynamic>>(
-        '/api/v1/accounts/$id/unfollow',
-      );
-      return MastodonRelationship.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/accounts/$id/unfollow',
+      method: 'POST',
+    );
+    return MastodonRelationship.fromJson(data!);
   }
 
   /// 指定アカウントを自分のフォロワーから削除する
@@ -306,14 +270,11 @@ class AccountsApi {
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<MastodonRelationship> removeFromFollowers(String id) async {
-    try {
-      final response = await _http.dio.post<Map<String, dynamic>>(
-        '/api/v1/accounts/$id/remove_from_followers',
-      );
-      return MastodonRelationship.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/accounts/$id/remove_from_followers',
+      method: 'POST',
+    );
+    return MastodonRelationship.fromJson(data!);
   }
 
   /// 指定アカウントをブロックする
@@ -322,14 +283,11 @@ class AccountsApi {
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<MastodonRelationship> block(String id) async {
-    try {
-      final response = await _http.dio.post<Map<String, dynamic>>(
-        '/api/v1/accounts/$id/block',
-      );
-      return MastodonRelationship.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/accounts/$id/block',
+      method: 'POST',
+    );
+    return MastodonRelationship.fromJson(data!);
   }
 
   /// 指定アカウントのブロックを解除する
@@ -338,14 +296,11 @@ class AccountsApi {
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<MastodonRelationship> unblock(String id) async {
-    try {
-      final response = await _http.dio.post<Map<String, dynamic>>(
-        '/api/v1/accounts/$id/unblock',
-      );
-      return MastodonRelationship.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/accounts/$id/unblock',
+      method: 'POST',
+    );
+    return MastodonRelationship.fromJson(data!);
   }
 
   /// 指定アカウントをミュートする
@@ -362,18 +317,15 @@ class AccountsApi {
     bool? notifications,
     int? duration,
   }) async {
-    try {
-      final response = await _http.dio.post<Map<String, dynamic>>(
-        '/api/v1/accounts/$id/mute',
-        data: <String, dynamic>{
-          'notifications': ?notifications,
-          'duration': ?duration,
-        },
-      );
-      return MastodonRelationship.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/accounts/$id/mute',
+      method: 'POST',
+      data: <String, dynamic>{
+        'notifications': ?notifications,
+        'duration': ?duration,
+      },
+    );
+    return MastodonRelationship.fromJson(data!);
   }
 
   /// 指定アカウントのミュートを解除する
@@ -382,14 +334,11 @@ class AccountsApi {
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<MastodonRelationship> unmute(String id) async {
-    try {
-      final response = await _http.dio.post<Map<String, dynamic>>(
-        '/api/v1/accounts/$id/unmute',
-      );
-      return MastodonRelationship.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/accounts/$id/unmute',
+      method: 'POST',
+    );
+    return MastodonRelationship.fromJson(data!);
   }
 
   /// 指定アカウントをプロフィールで紹介（ピン）する
@@ -398,14 +347,11 @@ class AccountsApi {
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<MastodonRelationship> pin(String id) async {
-    try {
-      final response = await _http.dio.post<Map<String, dynamic>>(
-        '/api/v1/accounts/$id/pin',
-      );
-      return MastodonRelationship.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/accounts/$id/pin',
+      method: 'POST',
+    );
+    return MastodonRelationship.fromJson(data!);
   }
 
   /// 指定アカウントのプロフィール紹介（ピン）を解除する
@@ -414,14 +360,11 @@ class AccountsApi {
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<MastodonRelationship> unpin(String id) async {
-    try {
-      final response = await _http.dio.post<Map<String, dynamic>>(
-        '/api/v1/accounts/$id/unpin',
-      );
-      return MastodonRelationship.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/accounts/$id/unpin',
+      method: 'POST',
+    );
+    return MastodonRelationship.fromJson(data!);
   }
 
   /// 指定アカウントにプライベートメモを設定する
@@ -436,17 +379,14 @@ class AccountsApi {
     String id, {
     String? comment,
   }) async {
-    try {
-      final response = await _http.dio.post<Map<String, dynamic>>(
-        '/api/v1/accounts/$id/note',
-        data: <String, dynamic>{
-          'comment': ?comment,
-        },
-      );
-      return MastodonRelationship.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/accounts/$id/note',
+      method: 'POST',
+      data: <String, dynamic>{
+        'comment': ?comment,
+      },
+    );
+    return MastodonRelationship.fromJson(data!);
   }
 
   /// 複数アカウントとのリレーションシップをまとめて取得する
@@ -461,21 +401,17 @@ class AccountsApi {
     List<String> ids, {
     bool? withSuspended,
   }) async {
-    try {
-      final response = await _http.dio.get<List<dynamic>>(
-        '/api/v1/accounts/relationships',
-        queryParameters: <String, dynamic>{
-          'id[]': ids,
-          'with_suspended': ?withSuspended,
-        },
-      );
-      return (response.data ?? const <dynamic>[])
-          .cast<Map<String, dynamic>>()
-          .map(MastodonRelationship.fromJson)
-          .toList();
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<List<dynamic>>(
+      '/api/v1/accounts/relationships',
+      queryParameters: <String, dynamic>{
+        'id[]': ids,
+        'with_suspended': ?withSuspended,
+      },
+    );
+    return (data ?? const <dynamic>[])
+        .cast<Map<String, dynamic>>()
+        .map(MastodonRelationship.fromJson)
+        .toList();
   }
 
   /// 指定アカウントをフォローしている共通フォロイーを取得する
@@ -486,18 +422,14 @@ class AccountsApi {
   Future<List<MastodonFamiliarFollowers>> fetchFamiliarFollowers(
     List<String> ids,
   ) async {
-    try {
-      final response = await _http.dio.get<List<dynamic>>(
-        '/api/v1/accounts/familiar_followers',
-        queryParameters: <String, dynamic>{'id[]': ids},
-      );
-      return (response.data ?? const <dynamic>[])
-          .cast<Map<String, dynamic>>()
-          .map(MastodonFamiliarFollowers.fromJson)
-          .toList();
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<List<dynamic>>(
+      '/api/v1/accounts/familiar_followers',
+      queryParameters: <String, dynamic>{'id[]': ids},
+    );
+    return (data ?? const <dynamic>[])
+        .cast<Map<String, dynamic>>()
+        .map(MastodonFamiliarFollowers.fromJson)
+        .toList();
   }
 
   /// 指定アカウントの紹介タグ一覧を取得する
@@ -506,17 +438,13 @@ class AccountsApi {
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<List<MastodonFeaturedTag>> fetchFeaturedTags(String id) async {
-    try {
-      final response = await _http.dio.get<List<dynamic>>(
-        '/api/v1/accounts/$id/featured_tags',
-      );
-      return (response.data ?? const <dynamic>[])
-          .cast<Map<String, dynamic>>()
-          .map(MastodonFeaturedTag.fromJson)
-          .toList();
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<List<dynamic>>(
+      '/api/v1/accounts/$id/featured_tags',
+    );
+    return (data ?? const <dynamic>[])
+        .cast<Map<String, dynamic>>()
+        .map(MastodonFeaturedTag.fromJson)
+        .toList();
   }
 
   /// 指定アカウントが属するリスト一覧を取得する
@@ -525,17 +453,13 @@ class AccountsApi {
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<List<MastodonList>> fetchLists(String id) async {
-    try {
-      final response = await _http.dio.get<List<dynamic>>(
-        '/api/v1/accounts/$id/lists',
-      );
-      return (response.data ?? const <dynamic>[])
-          .cast<Map<String, dynamic>>()
-          .map(MastodonList.fromJson)
-          .toList();
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<List<dynamic>>(
+      '/api/v1/accounts/$id/lists',
+    );
+    return (data ?? const <dynamic>[])
+        .cast<Map<String, dynamic>>()
+        .map(MastodonList.fromJson)
+        .toList();
   }
 
   Future<MastodonAccount> _lookupViaSearch(String acct) async {
@@ -558,7 +482,7 @@ class AccountsApi {
     String? maxId,
   }) async {
     try {
-      final response = await _http.dio.get<List<dynamic>>(
+      final response = await _http.sendRaw<List<dynamic>>(
         path,
         queryParameters: <String, dynamic>{
           'limit': ?limit,
@@ -573,11 +497,8 @@ class AccountsApi {
         response.headers.map['link']?.join(','),
       );
       return MastodonAccountPage(accounts: accounts, nextMaxId: nextMaxId);
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 403) {
-        return const MastodonAccountPage(accounts: []);
-      }
-      throw convertDioException(e);
+    } on MastodonForbiddenException {
+      return const MastodonAccountPage(accounts: []);
     }
   }
 

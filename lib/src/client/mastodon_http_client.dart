@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../internal/dio_error_handler.dart';
 import '../logging/logger.dart';
 import '../logging/package_logger.dart';
 import 'constants.dart';
@@ -37,6 +38,51 @@ class MastodonHttpClient {
 
   final Dio dio;
   final Logger logger;
+
+  /// HTTP リクエストを実行しレスポンスボディを返す
+  ///
+  /// `DioException` は自動的に `MastodonException` に変換される。
+  /// レスポンスヘッダーやステータスコードが必要な場合は [sendRaw] を使用する。
+  Future<T?> send<T>(
+    String path, {
+    String method = 'GET',
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final response = await dio.request<T>(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        options: Options(method: method),
+      );
+      return response.data;
+    } on DioException catch (e) {
+      throw convertDioException(e, path);
+    }
+  }
+
+  /// HTTP リクエストを実行し `Response` をそのまま返す
+  ///
+  /// レスポンスヘッダーやステータスコードへのアクセスが必要な場合に使用する。
+  /// `DioException` は自動的に `MastodonException` に変換される。
+  Future<Response<T>> sendRaw<T>(
+    String path, {
+    String method = 'GET',
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      return await dio.request<T>(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        options: Options(method: method),
+      );
+    } on DioException catch (e) {
+      throw convertDioException(e, path);
+    }
+  }
 }
 
 class _MastodonInterceptor extends Interceptor {

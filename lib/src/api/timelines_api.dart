@@ -1,7 +1,4 @@
-import 'package:dio/dio.dart';
-
 import '../client/mastodon_http_client.dart';
-import '../internal/dio_error_handler.dart';
 import '../models/mastodon_status.dart';
 
 /// タイムライン取得に関するAPI
@@ -172,24 +169,20 @@ class TimelinesApi {
     String? minId,
     Map<String, dynamic>? extraQuery,
   }) async {
-    try {
-      final query = <String, dynamic>{
-        'limit': ?limit,
-        if (sinceId != null && sinceId.isNotEmpty) 'since_id': sinceId,
-        if (maxId != null && maxId.isNotEmpty) 'max_id': maxId,
-        if (minId != null && minId.isNotEmpty) 'min_id': minId,
-        ...?extraQuery,
-      };
-      final response = await _http.dio.get<List<dynamic>>(
-        path,
-        queryParameters: query,
-      );
-      return (response.data ?? [])
-          .whereType<Map<String, dynamic>>()
-          .map(MastodonStatus.fromJson)
-          .toList(growable: false);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final query = <String, dynamic>{
+      'limit': ?limit,
+      if (sinceId != null && sinceId.isNotEmpty) 'since_id': sinceId,
+      if (maxId != null && maxId.isNotEmpty) 'max_id': maxId,
+      if (minId != null && minId.isNotEmpty) 'min_id': minId,
+      ...?extraQuery,
+    };
+    final data = await _http.send<List<dynamic>>(
+      path,
+      queryParameters: query,
+    );
+    return (data ?? [])
+        .whereType<Map<String, dynamic>>()
+        .map(MastodonStatus.fromJson)
+        .toList(growable: false);
   }
 }
