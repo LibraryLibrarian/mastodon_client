@@ -36,6 +36,7 @@ class MastodonAccount {
     this.moved,
     this.suspended,
     this.limited,
+    this.hideCollections,
     this.avatarBlurhash,
     this.headerBlurhash,
   });
@@ -131,6 +132,11 @@ class MastodonAccount {
 
   /// 管理者によって制限されているかどうか
   final bool? limited;
+
+  /// フォロー・フォロワー一覧を非公開にしているかどうか
+  ///
+  /// Mastodon 4.3.0 で追加
+  final bool? hideCollections;
 
   /// アバター画像の blurhash
   final String? avatarBlurhash;
