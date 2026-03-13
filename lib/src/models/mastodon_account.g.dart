@@ -48,6 +48,7 @@ MastodonAccount _$MastodonAccountFromJson(Map<String, dynamic> json) =>
           : MastodonAccount.fromJson(json['moved'] as Map<String, dynamic>),
       suspended: json['suspended'] as bool?,
       limited: json['limited'] as bool?,
+      hideCollections: json['hide_collections'] as bool?,
       avatarBlurhash: json['avatar_blurhash'] as String?,
       headerBlurhash: json['header_blurhash'] as String?,
     );
