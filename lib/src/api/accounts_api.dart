@@ -345,7 +345,10 @@ class AccountsApi {
   ///
   /// `POST /api/v1/accounts/{id}/pin`
   ///
+  /// **非推奨**: Mastodon 4.4.0 以降は [endorse] を使用すること。
+  ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
+  @Deprecated('Mastodon 4.4.0 以降は endorse() を使用してください')
   Future<MastodonRelationship> pin(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/accounts/$id/pin',
@@ -358,7 +361,10 @@ class AccountsApi {
   ///
   /// `POST /api/v1/accounts/{id}/unpin`
   ///
+  /// **非推奨**: Mastodon 4.4.0 以降は [unendorse] を使用すること。
+  ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
+  @Deprecated('Mastodon 4.4.0 以降は unendorse() を使用してください')
   Future<MastodonRelationship> unpin(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/accounts/$id/unpin',
@@ -366,6 +372,56 @@ class AccountsApi {
     );
     return MastodonRelationship.fromJson(data!);
   }
+
+  /// 指定アカウントをプロフィールでフィーチャー（紹介）する
+  ///
+  /// `POST /api/v1/accounts/{id}/endorse`
+  ///
+  /// 対象アカウントを事前にフォローしている必要がある。
+  /// フォローしていない場合は HTTP 422 エラーとなる。
+  ///
+  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  Future<MastodonRelationship> endorse(String id) async {
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/accounts/$id/endorse',
+      method: 'POST',
+    );
+    return MastodonRelationship.fromJson(data!);
+  }
+
+  /// 指定アカウントのプロフィールフィーチャー（紹介）を解除する
+  ///
+  /// `POST /api/v1/accounts/{id}/unendorse`
+  ///
+  /// 既にフィーチャーされていない場合でも成功する。
+  ///
+  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  Future<MastodonRelationship> unendorse(String id) async {
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/accounts/$id/unendorse',
+      method: 'POST',
+    );
+    return MastodonRelationship.fromJson(data!);
+  }
+
+  /// 指定アカウントがフィーチャーしているアカウント一覧を取得する
+  ///
+  /// `GET /api/v1/accounts/{id}/endorsements`
+  ///
+  /// - [id]: 対象アカウントの ID
+  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値（40）が適用される
+  /// - [maxId]: ページネーション用カーソル。直前のレスポンスの `nextMaxId` を渡す
+  ///
+  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  Future<MastodonAccountPage> fetchEndorsements(
+    String id, {
+    int? limit,
+    String? maxId,
+  }) => _fetchAccountPage(
+    '/api/v1/accounts/$id/endorsements',
+    limit: limit,
+    maxId: maxId,
+  );
 
   /// 指定アカウントにプライベートメモを設定する
   ///
