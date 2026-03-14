@@ -1,13 +1,16 @@
 import '../api/accounts_api.dart';
+import '../api/announcements_api.dart';
 import '../api/blocks_api.dart';
 import '../api/bookmarks_api.dart';
 import '../api/conversations_api.dart';
+import '../api/custom_emojis_api.dart';
 import '../api/domain_blocks_api.dart';
 import '../api/favourites_api.dart';
 import '../api/featured_tags_api.dart';
 import '../api/filters_api.dart';
 import '../api/follow_requests_api.dart';
 import '../api/followed_tags_api.dart';
+import '../api/grouped_notifications_api.dart';
 import '../api/instance_api.dart';
 import '../api/lists_api.dart';
 import '../api/markers_api.dart';
@@ -16,6 +19,8 @@ import '../api/mutes_api.dart';
 import '../api/notifications_api.dart';
 import '../api/polls_api.dart';
 import '../api/preferences_api.dart';
+import '../api/push_api.dart';
+import '../api/reports_api.dart';
 import '../api/scheduled_statuses_api.dart';
 import '../api/search_api.dart';
 import '../api/statuses_api.dart';
@@ -63,6 +68,9 @@ class MastodonClient {
   /// アカウント情報に関するAPI
   AccountsApi get accounts => AccountsApi(_http);
 
+  /// サーバーのお知らせに関するAPI
+  AnnouncementsApi get announcements => AnnouncementsApi(_http);
+
   /// ブロック中アカウントの一覧取得に関するAPI
   BlocksApi get blocks => BlocksApi(_http);
 
@@ -71,6 +79,9 @@ class MastodonClient {
 
   /// ダイレクトメッセージの会話に関するAPI
   ConversationsApi get conversations => ConversationsApi(_http);
+
+  /// カスタム絵文字に関するAPI
+  CustomEmojisApi get customEmojis => CustomEmojisApi(_http);
 
   /// ユーザーレベルのドメインブロック管理に関するAPI
   DomainBlocksApi get domainBlocks => DomainBlocksApi(_http);
@@ -89,6 +100,10 @@ class MastodonClient {
 
   /// フォロー中のハッシュタグの一覧取得に関するAPI
   FollowedTagsApi get followedTags => FollowedTagsApi(_http);
+
+  /// グループ化通知に関するAPI（v2）
+  GroupedNotificationsApi get groupedNotifications =>
+      GroupedNotificationsApi(_http);
 
   /// インスタンス情報に関するAPI
   InstanceApi get instance => InstanceApi(_http);
@@ -111,8 +126,14 @@ class MastodonClient {
   /// 投票に関するAPI
   PollsApi get polls => PollsApi(_http);
 
+  /// Web Push 通知サブスクリプションに関するAPI
+  PushApi get push => PushApi(_http);
+
   /// ユーザー設定の取得に関するAPI
   PreferencesApi get preferences => PreferencesApi(_http);
+
+  /// 通報に関するAPI
+  ReportsApi get reports => ReportsApi(_http);
 
   /// 予約投稿の管理に関するAPI
   ScheduledStatusesApi get scheduledStatuses => ScheduledStatusesApi(_http);
