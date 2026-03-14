@@ -1,15 +1,20 @@
 import '../api/accounts_api.dart';
+import '../api/blocks_api.dart';
 import '../api/bookmarks_api.dart';
 import '../api/conversations_api.dart';
+import '../api/domain_blocks_api.dart';
 import '../api/favourites_api.dart';
 import '../api/filters_api.dart';
+import '../api/follow_requests_api.dart';
 import '../api/instance_api.dart';
 import '../api/lists_api.dart';
 import '../api/media_api.dart';
+import '../api/mutes_api.dart';
 import '../api/notifications_api.dart';
 import '../api/polls_api.dart';
 import '../api/search_api.dart';
 import '../api/statuses_api.dart';
+import '../api/suggestions_api.dart';
 import '../api/timelines_api.dart';
 import '../api/trends_api.dart';
 import '../logging/logger.dart';
@@ -52,11 +57,17 @@ class MastodonClient {
   /// アカウント情報に関するAPI
   AccountsApi get accounts => AccountsApi(_http);
 
+  /// ブロック中アカウントの一覧取得に関するAPI
+  BlocksApi get blocks => BlocksApi(_http);
+
   /// ブックマークした投稿の一覧取得に関するAPI
   BookmarksApi get bookmarks => BookmarksApi(_http);
 
   /// ダイレクトメッセージの会話に関するAPI
   ConversationsApi get conversations => ConversationsApi(_http);
+
+  /// ユーザーレベルのドメインブロック管理に関するAPI
+  DomainBlocksApi get domainBlocks => DomainBlocksApi(_http);
 
   /// お気に入りした投稿の一覧取得に関するAPI
   FavouritesApi get favourites => FavouritesApi(_http);
@@ -64,29 +75,38 @@ class MastodonClient {
   /// フィルターに関するAPI（v2 + v1 非推奨メソッド）
   FiltersApi get filters => FiltersApi(_http);
 
+  /// フォローリクエストの管理に関するAPI
+  FollowRequestsApi get followRequests => FollowRequestsApi(_http);
+
   /// インスタンス情報に関するAPI
   InstanceApi get instance => InstanceApi(_http);
 
   /// リストの作成・管理に関するAPI
   ListsApi get lists => ListsApi(_http);
 
-  /// タイムライン取得に関するAPI
-  TimelinesApi get timelines => TimelinesApi(_http);
-
-  /// 投稿（Status）に関するAPI
-  StatusesApi get statuses => StatusesApi(_http);
-
   /// メディアアップロードに関するAPI
   MediaApi get media => MediaApi(_http);
 
-  /// 投票に関するAPI
-  PollsApi get polls => PollsApi(_http);
+  /// ミュート中アカウントの一覧取得に関するAPI
+  MutesApi get mutes => MutesApi(_http);
 
   /// 通知に関するAPI
   NotificationsApi get notifications => NotificationsApi(_http);
 
+  /// 投票に関するAPI
+  PollsApi get polls => PollsApi(_http);
+
   /// 検索に関するAPI
   SearchApi get search => SearchApi(_http);
+
+  /// 投稿（Status）に関するAPI
+  StatusesApi get statuses => StatusesApi(_http);
+
+  /// フォロー候補（サジェスション）に関するAPI
+  SuggestionsApi get suggestions => SuggestionsApi(_http);
+
+  /// タイムライン取得に関するAPI
+  TimelinesApi get timelines => TimelinesApi(_http);
 
   /// トレンド（タグ・投稿・リンク）に関するAPI
   TrendsApi get trends => TrendsApi(_http);
