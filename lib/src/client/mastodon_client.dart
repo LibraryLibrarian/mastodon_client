@@ -1,4 +1,5 @@
 import '../api/accounts_api.dart';
+import '../api/favourites_api.dart';
 import '../api/instance_api.dart';
 import '../api/media_api.dart';
 import '../api/notifications_api.dart';
@@ -45,6 +46,9 @@ class MastodonClient {
 
   /// アカウント情報に関するAPI
   AccountsApi get accounts => AccountsApi(_http);
+
+  /// お気に入りした投稿の一覧取得に関するAPI
+  FavouritesApi get favourites => FavouritesApi(_http);
 
   /// インスタンス情報に関するAPI
   InstanceApi get instance => InstanceApi(_http);
