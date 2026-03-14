@@ -3,6 +3,7 @@ import '../api/instance_api.dart';
 import '../api/media_api.dart';
 import '../api/notifications_api.dart';
 import '../api/polls_api.dart';
+import '../api/search_api.dart';
 import '../api/statuses_api.dart';
 import '../api/timelines_api.dart';
 import '../logging/logger.dart';
@@ -62,4 +63,7 @@ class MastodonClient {
 
   /// 通知に関するAPI
   NotificationsApi get notifications => NotificationsApi(_http);
+
+  /// 検索に関するAPI
+  SearchApi get search => SearchApi(_http);
 }

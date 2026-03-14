@@ -24,6 +24,7 @@ export 'src/models/mastodon_poll.dart';
 export 'src/models/mastodon_preview_card.dart';
 export 'src/models/mastodon_privacy_policy.dart';
 export 'src/models/mastodon_relationship.dart';
+export 'src/models/mastodon_search_result.dart';
 export 'src/models/mastodon_status.dart';
 export 'src/models/mastodon_status_context.dart';
 export 'src/models/mastodon_status_create_request.dart';
