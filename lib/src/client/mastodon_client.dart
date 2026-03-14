@@ -1,6 +1,8 @@
 import '../api/accounts_api.dart';
 import '../api/bookmarks_api.dart';
+import '../api/conversations_api.dart';
 import '../api/favourites_api.dart';
+import '../api/filters_api.dart';
 import '../api/instance_api.dart';
 import '../api/lists_api.dart';
 import '../api/media_api.dart';
@@ -9,6 +11,7 @@ import '../api/polls_api.dart';
 import '../api/search_api.dart';
 import '../api/statuses_api.dart';
 import '../api/timelines_api.dart';
+import '../api/trends_api.dart';
 import '../logging/logger.dart';
 import 'mastodon_http_client.dart';
 
@@ -52,8 +55,14 @@ class MastodonClient {
   /// ブックマークした投稿の一覧取得に関するAPI
   BookmarksApi get bookmarks => BookmarksApi(_http);
 
+  /// ダイレクトメッセージの会話に関するAPI
+  ConversationsApi get conversations => ConversationsApi(_http);
+
   /// お気に入りした投稿の一覧取得に関するAPI
   FavouritesApi get favourites => FavouritesApi(_http);
+
+  /// フィルターに関するAPI（v2 + v1 非推奨メソッド）
+  FiltersApi get filters => FiltersApi(_http);
 
   /// インスタンス情報に関するAPI
   InstanceApi get instance => InstanceApi(_http);
@@ -78,4 +87,7 @@ class MastodonClient {
 
   /// 検索に関するAPI
   SearchApi get search => SearchApi(_http);
+
+  /// トレンド（タグ・投稿・リンク）に関するAPI
+  TrendsApi get trends => TrendsApi(_http);
 }
