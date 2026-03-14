@@ -32,7 +32,8 @@ class MastodonApiException extends MastodonException {
   final Object? raw;
 
   @override
-  String toString() => '$runtimeType($statusCode): $message'
+  String toString() =>
+      '$runtimeType($statusCode): $message'
       '${endpoint != null ? ' endpoint=$endpoint' : ''}';
 }
 

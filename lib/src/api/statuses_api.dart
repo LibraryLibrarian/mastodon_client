@@ -23,8 +23,7 @@ class StatusesApi {
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
   Future<MastodonStatus> fetch(String id) async {
-    final data =
-        await _http.send<Map<String, dynamic>>('/api/v1/statuses/$id');
+    final data = await _http.send<Map<String, dynamic>>('/api/v1/statuses/$id');
     return MastodonStatus.fromJson(data!);
   }
 

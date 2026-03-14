@@ -64,8 +64,9 @@ class InstanceApi {
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
   Future<List<MastodonDomainBlock>> fetchDomainBlocks() async {
-    final data =
-        await _http.send<List<dynamic>>('/api/v1/instance/domain_blocks');
+    final data = await _http.send<List<dynamic>>(
+      '/api/v1/instance/domain_blocks',
+    );
     return (data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonDomainBlock.fromJson)
