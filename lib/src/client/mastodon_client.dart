@@ -4,17 +4,23 @@ import '../api/bookmarks_api.dart';
 import '../api/conversations_api.dart';
 import '../api/domain_blocks_api.dart';
 import '../api/favourites_api.dart';
+import '../api/featured_tags_api.dart';
 import '../api/filters_api.dart';
 import '../api/follow_requests_api.dart';
+import '../api/followed_tags_api.dart';
 import '../api/instance_api.dart';
 import '../api/lists_api.dart';
+import '../api/markers_api.dart';
 import '../api/media_api.dart';
 import '../api/mutes_api.dart';
 import '../api/notifications_api.dart';
 import '../api/polls_api.dart';
+import '../api/preferences_api.dart';
+import '../api/scheduled_statuses_api.dart';
 import '../api/search_api.dart';
 import '../api/statuses_api.dart';
 import '../api/suggestions_api.dart';
+import '../api/tags_api.dart';
 import '../api/timelines_api.dart';
 import '../api/trends_api.dart';
 import '../logging/logger.dart';
@@ -72,17 +78,26 @@ class MastodonClient {
   /// お気に入りした投稿の一覧取得に関するAPI
   FavouritesApi get favourites => FavouritesApi(_http);
 
+  /// 注目ハッシュタグの管理に関するAPI
+  FeaturedTagsApi get featuredTags => FeaturedTagsApi(_http);
+
   /// フィルターに関するAPI（v2 + v1 非推奨メソッド）
   FiltersApi get filters => FiltersApi(_http);
 
   /// フォローリクエストの管理に関するAPI
   FollowRequestsApi get followRequests => FollowRequestsApi(_http);
 
+  /// フォロー中のハッシュタグの一覧取得に関するAPI
+  FollowedTagsApi get followedTags => FollowedTagsApi(_http);
+
   /// インスタンス情報に関するAPI
   InstanceApi get instance => InstanceApi(_http);
 
   /// リストの作成・管理に関するAPI
   ListsApi get lists => ListsApi(_http);
+
+  /// タイムラインの既読位置マーカーに関するAPI
+  MarkersApi get markers => MarkersApi(_http);
 
   /// メディアアップロードに関するAPI
   MediaApi get media => MediaApi(_http);
@@ -96,6 +111,12 @@ class MastodonClient {
   /// 投票に関するAPI
   PollsApi get polls => PollsApi(_http);
 
+  /// ユーザー設定の取得に関するAPI
+  PreferencesApi get preferences => PreferencesApi(_http);
+
+  /// 予約投稿の管理に関するAPI
+  ScheduledStatusesApi get scheduledStatuses => ScheduledStatusesApi(_http);
+
   /// 検索に関するAPI
   SearchApi get search => SearchApi(_http);
 
@@ -104,6 +125,9 @@ class MastodonClient {
 
   /// フォロー候補（サジェスション）に関するAPI
   SuggestionsApi get suggestions => SuggestionsApi(_http);
+
+  /// ハッシュタグ情報の取得・フォロー操作に関するAPI
+  TagsApi get tags => TagsApi(_http);
 
   /// タイムライン取得に関するAPI
   TimelinesApi get timelines => TimelinesApi(_http);

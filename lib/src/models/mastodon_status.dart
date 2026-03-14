@@ -5,6 +5,9 @@ import 'mastodon_account.dart';
 import 'mastodon_custom_emoji.dart';
 import 'mastodon_media_attachment.dart';
 import 'mastodon_poll.dart';
+import 'mastodon_tag.dart';
+
+export 'mastodon_tag.dart';
 
 part 'mastodon_status.g.dart';
 
@@ -33,18 +36,6 @@ class MastodonMention {
   final String id;
   final String username;
   final String acct;
-  final String url;
-}
-
-/// ハッシュタグ
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
-class MastodonTag {
-  const MastodonTag({required this.name, required this.url});
-
-  factory MastodonTag.fromJson(Map<String, dynamic> json) =>
-      _$MastodonTagFromJson(json);
-
-  final String name;
   final String url;
 }
 
