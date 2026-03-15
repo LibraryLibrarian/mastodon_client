@@ -93,6 +93,29 @@ class MediaApi {
     }
   }
 
+  /// 指定されたIDのメディア添付ファイルを取得する
+  ///
+  /// `GET /api/v1/media/:id`
+  ///
+  /// 非同期アップロードの処理状況を確認する際などに使用する。
+  /// 処理中の場合は `url` フィールドが `null` となる。
+  ///
+  /// - [id]: 取得するメディアのID
+  ///
+  /// 失敗時は `MastodonException` のサブクラスをthrow
+  Future<MastodonMediaAttachment> fetchById(String id) async {
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/media/$id',
+    );
+    if (data == null) {
+      throw const MastodonApiException(
+        statusCode: 0,
+        message: 'メディアAPIからのレスポンスが空です',
+      );
+    }
+    return MastodonMediaAttachment.fromJson(data);
+  }
+
   /// メディア添付ファイルの属性を更新して[MastodonMediaAttachment]を返す
   ///
   /// `PUT /api/v1/media/:id`

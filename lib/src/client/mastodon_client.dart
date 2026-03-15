@@ -1,5 +1,6 @@
 import '../api/accounts_api.dart';
 import '../api/announcements_api.dart';
+import '../api/apps_api.dart';
 import '../api/async_refreshes_api.dart';
 import '../api/blocks_api.dart';
 import '../api/bookmarks_api.dart';
@@ -8,6 +9,7 @@ import '../api/custom_emojis_api.dart';
 import '../api/directory_api.dart';
 import '../api/domain_blocks_api.dart';
 import '../api/emails_api.dart';
+import '../api/endorsements_api.dart';
 import '../api/favourites_api.dart';
 import '../api/featured_tags_api.dart';
 import '../api/filters_api.dart';
@@ -21,6 +23,7 @@ import '../api/markers_api.dart';
 import '../api/media_api.dart';
 import '../api/mutes_api.dart';
 import '../api/notifications_api.dart';
+import '../api/oauth_api.dart';
 import '../api/oembed_api.dart';
 import '../api/polls_api.dart';
 import '../api/preferences_api.dart';
@@ -77,6 +80,9 @@ class MastodonClient {
   /// サーバーのお知らせに関するAPI
   AnnouncementsApi get announcements => AnnouncementsApi(_http);
 
+  /// OAuth アプリケーションの登録・検証に関するAPI
+  AppsApi get apps => AppsApi(_http);
+
   /// 非同期リフレッシュのステータス確認に関するAPI（実験的）
   AsyncRefreshesApi get asyncRefreshes => AsyncRefreshesApi(_http);
 
@@ -100,6 +106,9 @@ class MastodonClient {
 
   /// メール確認に関するAPI
   EmailsApi get emails => EmailsApi(_http);
+
+  /// フィーチャー中アカウント（エンドースメント）の一覧取得に関するAPI
+  EndorsementsApi get endorsements => EndorsementsApi(_http);
 
   /// お気に入りした投稿の一覧取得に関するAPI
   FavouritesApi get favourites => FavouritesApi(_http);
@@ -140,6 +149,9 @@ class MastodonClient {
 
   /// 通知に関するAPI
   NotificationsApi get notifications => NotificationsApi(_http);
+
+  /// OAuth トークン操作に関するAPI
+  OAuthApi get oauth => OAuthApi(_http);
 
   /// OEmbed 情報の取得に関するAPI
   OEmbedApi get oembed => OEmbedApi(_http);
