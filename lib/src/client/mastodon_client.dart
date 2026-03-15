@@ -39,6 +39,7 @@ import '../api/oembed_api.dart';
 import '../api/polls_api.dart';
 import '../api/preferences_api.dart';
 import '../api/profile_api.dart';
+import '../api/proofs_api.dart';
 import '../api/push_api.dart';
 import '../api/reports_api.dart';
 import '../api/scheduled_statuses_api.dart';
@@ -210,6 +211,12 @@ class MastodonClient {
 
   /// ユーザー設定の取得に関するAPI
   PreferencesApi get preferences => PreferencesApi(_http);
+
+  /// 本人確認証明に関するAPI
+  ///
+  /// **非推奨**: Mastodon 3.5.0 以降では本人確認証明機能は削除されている。
+  @Deprecated('Mastodon 3.5.0 で削除済み。古いサーバーとの互換性のためのみ使用')
+  ProofsApi get proofs => ProofsApi(_http);
 
   /// プロフィール画像の管理に関するAPI
   ProfileApi get profile => ProfileApi(_http);

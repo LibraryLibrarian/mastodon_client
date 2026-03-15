@@ -58,6 +58,7 @@ export 'src/models/mastodon_poll.dart';
 export 'src/models/mastodon_preferences.dart';
 export 'src/models/mastodon_preview_card.dart';
 export 'src/models/mastodon_privacy_policy.dart';
+export 'src/models/mastodon_proof.dart';
 export 'src/models/mastodon_push_subscription_request.dart';
 export 'src/models/mastodon_relationship.dart';
 export 'src/models/mastodon_report.dart';
