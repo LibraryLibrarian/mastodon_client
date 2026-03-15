@@ -445,6 +445,7 @@ class AccountsApi {
   /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値（40）が適用される
   /// - [maxId]: ページネーション用カーソル。直前のレスポンスの `nextMaxId` を渡す
   /// - [sinceId]: この ID より新しい結果を取得する
+  /// - [minId]: この ID 直後の結果から取得する（前方ページネーション）
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
   Future<MastodonAccountPage> fetchEndorsements(
@@ -452,11 +453,13 @@ class AccountsApi {
     int? limit,
     String? maxId,
     String? sinceId,
+    String? minId,
   }) => _fetchAccountPage(
     '/api/v1/accounts/$id/endorsements',
     limit: limit,
     maxId: maxId,
     sinceId: sinceId,
+    minId: minId,
   );
 
   /// 指定アカウントにプライベートメモを設定する

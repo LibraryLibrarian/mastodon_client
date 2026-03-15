@@ -405,13 +405,21 @@ class StatusesApi {
   /// `POST /api/v1/statuses`
   ///
   /// - [request]: 投稿内容を表す [MastodonStatusCreateRequest]
+  /// - [idempotencyKey]: 重複投稿防止用の任意の文字列。同じキーで複数回リクエスト
+  ///   した場合、サーバーは最初のリクエストと同じ結果を返す
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
-  Future<MastodonStatus> create(MastodonStatusCreateRequest request) async {
+  Future<MastodonStatus> create(
+    MastodonStatusCreateRequest request, {
+    String? idempotencyKey,
+  }) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses',
       method: 'POST',
       data: request.toJson(),
+      headers: idempotencyKey != null
+          ? {'Idempotency-Key': idempotencyKey}
+          : null,
     );
     return MastodonStatus.fromJson(data!);
   }

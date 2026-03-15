@@ -48,13 +48,14 @@ class MastodonHttpClient {
     String method = 'GET',
     Object? data,
     Map<String, dynamic>? queryParameters,
+    Map<String, String>? headers,
   }) async {
     try {
       final response = await dio.request<T>(
         path,
         data: data,
         queryParameters: queryParameters,
-        options: Options(method: method),
+        options: Options(method: method, headers: headers),
       );
       return response.data;
     } on DioException catch (e) {
@@ -71,13 +72,14 @@ class MastodonHttpClient {
     String method = 'GET',
     Object? data,
     Map<String, dynamic>? queryParameters,
+    Map<String, String>? headers,
   }) async {
     try {
       return await dio.request<T>(
         path,
         data: data,
         queryParameters: queryParameters,
-        options: Options(method: method),
+        options: Options(method: method, headers: headers),
       );
     } on DioException catch (e) {
       throw convertDioException(e, path);
