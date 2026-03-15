@@ -1,4 +1,15 @@
 import '../api/accounts_api.dart';
+import '../api/admin/admin_accounts_api.dart';
+import '../api/admin/admin_canonical_email_blocks_api.dart';
+import '../api/admin/admin_dimensions_api.dart';
+import '../api/admin/admin_domain_allows_api.dart';
+import '../api/admin/admin_domain_blocks_api.dart';
+import '../api/admin/admin_email_domain_blocks_api.dart';
+import '../api/admin/admin_ip_blocks_api.dart';
+import '../api/admin/admin_measures_api.dart';
+import '../api/admin/admin_reports_api.dart';
+import '../api/admin/admin_retention_api.dart';
+import '../api/admin/admin_trends_api.dart';
 import '../api/announcements_api.dart';
 import '../api/apps_api.dart';
 import '../api/async_refreshes_api.dart';
@@ -76,6 +87,41 @@ class MastodonClient {
 
   /// アカウント情報に関するAPI
   AccountsApi get accounts => AccountsApi(_http);
+
+  /// 管理者向けアカウント管理API
+  AdminAccountsApi get adminAccounts => AdminAccountsApi(_http);
+
+  /// 管理者向け正規化メールブロック管理API
+  AdminCanonicalEmailBlocksApi get adminCanonicalEmailBlocks =>
+      AdminCanonicalEmailBlocksApi(_http);
+
+  /// 管理者向けディメンション（次元データ）API
+  AdminDimensionsApi get adminDimensions => AdminDimensionsApi(_http);
+
+  /// 管理者向けドメイン許可管理API
+  AdminDomainAllowsApi get adminDomainAllows => AdminDomainAllowsApi(_http);
+
+  /// 管理者向けドメインブロック管理API
+  AdminDomainBlocksApi get adminDomainBlocks => AdminDomainBlocksApi(_http);
+
+  /// 管理者向けメールドメインブロック管理API
+  AdminEmailDomainBlocksApi get adminEmailDomainBlocks =>
+      AdminEmailDomainBlocksApi(_http);
+
+  /// 管理者向けIPブロック管理API
+  AdminIpBlocksApi get adminIpBlocks => AdminIpBlocksApi(_http);
+
+  /// 管理者向けメジャー（定量データ）API
+  AdminMeasuresApi get adminMeasures => AdminMeasuresApi(_http);
+
+  /// 管理者向け通報管理API
+  AdminReportsApi get adminReports => AdminReportsApi(_http);
+
+  /// 管理者向けリテンションAPI
+  AdminRetentionApi get adminRetention => AdminRetentionApi(_http);
+
+  /// 管理者向けトレンドAPI
+  AdminTrendsApi get adminTrends => AdminTrendsApi(_http);
 
   /// サーバーのお知らせに関するAPI
   AnnouncementsApi get announcements => AnnouncementsApi(_http);
