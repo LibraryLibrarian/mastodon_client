@@ -30,17 +30,26 @@ class MediaApi {
   /// - [bytes]: アップロードするファイルのバイト列
   /// - [filename]: マルチパートリクエストで使用するファイル名
   /// - [description]: メディアの代替テキスト（省略可）
+  /// - [thumbnail]: カスタムサムネイル画像のバイト列（省略可）
+  /// - [thumbnailFilename]: サムネイルのファイル名（[thumbnail] 指定時に使用）
+  /// - [focus]: フォーカルポイント（`"x,y"` 形式、各値は -1.0〜1.0）
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
   Future<MastodonMediaAttachment> upload(
     Uint8List bytes,
     String filename, {
     String? description,
+    Uint8List? thumbnail,
+    String? thumbnailFilename,
+    String? focus,
   }) async {
     final response = await _uploadWithFallback(
       bytes: bytes,
       filename: filename,
       description: description,
+      thumbnail: thumbnail,
+      thumbnailFilename: thumbnailFilename,
+      focus: focus,
     );
 
     final data = response.data;
@@ -66,29 +75,34 @@ class MediaApi {
     required Uint8List bytes,
     required String filename,
     String? description,
+    Uint8List? thumbnail,
+    String? thumbnailFilename,
+    String? focus,
   }) async {
+    FormData buildFormData() => FormData.fromMap(<String, dynamic>{
+      'file': MultipartFile.fromBytes(bytes, filename: filename),
+      if (description != null && description.isNotEmpty)
+        'description': description,
+      if (thumbnail != null)
+        'thumbnail': MultipartFile.fromBytes(
+          thumbnail,
+          filename: thumbnailFilename ?? 'thumbnail',
+        ),
+      if (focus != null && focus.isNotEmpty) 'focus': focus,
+    });
+
     try {
-      final formData = FormData.fromMap(<String, dynamic>{
-        'file': MultipartFile.fromBytes(bytes, filename: filename),
-        if (description != null && description.isNotEmpty)
-          'description': description,
-      });
       return await _http.sendRaw<Map<String, dynamic>>(
         '/api/v2/media',
         method: 'POST',
-        data: formData,
+        data: buildFormData(),
       );
     } on MastodonApiException catch (e) {
       if (!_v2FallbackStatusCodes.contains(e.statusCode)) rethrow;
-      final formData = FormData.fromMap(<String, dynamic>{
-        'file': MultipartFile.fromBytes(bytes, filename: filename),
-        if (description != null && description.isNotEmpty)
-          'description': description,
-      });
       return _http.sendRaw<Map<String, dynamic>>(
         '/api/v1/media',
         method: 'POST',
-        data: formData,
+        data: buildFormData(),
       );
     }
   }

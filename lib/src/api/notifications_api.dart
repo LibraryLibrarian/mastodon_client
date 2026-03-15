@@ -17,15 +17,31 @@ class NotificationsApi {
   /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
   /// - [sinceId]: このID以降の通知を取得する（新しい方向）
   /// - [maxId]: このID以前の通知を取得する（古い方向）
+  /// - [minId]: このID直後の通知から取得する（前方ページネーション）
+  /// - [types]: 取得対象の通知タイプ一覧
+  /// - [excludeTypes]: 取得から除外する通知タイプ一覧
+  /// - [accountId]: 特定のアカウントからの通知のみを取得
+  /// - [includeFiltered]: フィルタリングされた通知を含めるかどうか
   Future<List<MastodonNotification>> fetch({
     int? limit,
     String? sinceId,
     String? maxId,
+    String? minId,
+    List<String>? types,
+    List<String>? excludeTypes,
+    String? accountId,
+    bool? includeFiltered,
   }) async {
     final query = <String, dynamic>{
       'limit': ?limit,
       if (sinceId != null && sinceId.isNotEmpty) 'since_id': sinceId,
       if (maxId != null && maxId.isNotEmpty) 'max_id': maxId,
+      if (minId != null && minId.isNotEmpty) 'min_id': minId,
+      if (types != null && types.isNotEmpty) 'types[]': types,
+      if (excludeTypes != null && excludeTypes.isNotEmpty)
+        'exclude_types[]': excludeTypes,
+      if (accountId != null && accountId.isNotEmpty) 'account_id': accountId,
+      'include_filtered': ?includeFiltered,
     };
     final data = await _http.send<List<dynamic>>(
       '/api/v1/notifications',

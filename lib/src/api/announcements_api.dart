@@ -10,9 +10,18 @@ class AnnouncementsApi {
   ///
   /// `GET /api/v1/announcements`
   ///
+  /// - [withDismissed]: `true` の場合、既読済みのお知らせも含めて取得する
+  ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
-  Future<List<MastodonAnnouncement>> fetch() async {
-    final data = await _http.send<List<dynamic>>('/api/v1/announcements');
+  Future<List<MastodonAnnouncement>> fetch({
+    bool? withDismissed,
+  }) async {
+    final data = await _http.send<List<dynamic>>(
+      '/api/v1/announcements',
+      queryParameters: <String, dynamic>{
+        'with_dismissed': ?withDismissed,
+      },
+    );
     return (data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonAnnouncement.fromJson)

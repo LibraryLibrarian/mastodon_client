@@ -36,18 +36,23 @@ class TimelinesApi {
   /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
   /// - [maxId]: このID以前の投稿を取得する（古い方向）
   /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
+  /// - [onlyMedia]: `true` の場合、メディア添付のある投稿のみを返す
   Future<List<MastodonStatus>> fetchLocal({
     int? limit,
     String? sinceId,
     String? maxId,
     String? minId,
+    bool? onlyMedia,
   }) => _fetchTimeline(
     '/api/v1/timelines/public',
     limit: limit,
     sinceId: sinceId,
     maxId: maxId,
     minId: minId,
-    extraQuery: {'local': true},
+    extraQuery: {
+      'local': true,
+      'only_media': ?onlyMedia,
+    },
   );
 
   /// 連合タイムラインを取得する
@@ -58,17 +63,25 @@ class TimelinesApi {
   /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
   /// - [maxId]: このID以前の投稿を取得する（古い方向）
   /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
+  /// - [onlyMedia]: `true` の場合、メディア添付のある投稿のみを返す
+  /// - [remoteOnly]: `true` の場合、リモートの投稿のみを返す
   Future<List<MastodonStatus>> fetchFederated({
     int? limit,
     String? sinceId,
     String? maxId,
     String? minId,
+    bool? onlyMedia,
+    bool? remoteOnly,
   }) => _fetchTimeline(
     '/api/v1/timelines/public',
     limit: limit,
     sinceId: sinceId,
     maxId: maxId,
     minId: minId,
+    extraQuery: {
+      'only_media': ?onlyMedia,
+      'remote': ?remoteOnly,
+    },
   );
 
   /// 指定したハッシュタグのタイムラインを取得する
@@ -92,9 +105,9 @@ class TimelinesApi {
     String? sinceId,
     String? maxId,
     String? minId,
-    bool localOnly = false,
-    bool remoteOnly = false,
-    bool onlyMedia = false,
+    bool? localOnly,
+    bool? remoteOnly,
+    bool? onlyMedia,
     List<String>? any,
     List<String>? all,
     List<String>? none,
@@ -105,9 +118,9 @@ class TimelinesApi {
     maxId: maxId,
     minId: minId,
     extraQuery: {
-      if (localOnly) 'local': true,
-      if (remoteOnly) 'remote': true,
-      if (onlyMedia) 'only_media': true,
+      'local': ?localOnly,
+      'remote': ?remoteOnly,
+      'only_media': ?onlyMedia,
       if (any != null && any.isNotEmpty) 'any[]': any,
       if (all != null && all.isNotEmpty) 'all[]': all,
       if (none != null && none.isNotEmpty) 'none[]': none,

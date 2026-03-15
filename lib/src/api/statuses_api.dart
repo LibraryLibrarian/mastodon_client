@@ -345,11 +345,24 @@ class StatusesApi {
   /// `GET /api/v1/statuses/{id}/reblogged_by`
   ///
   /// - [id]: 対象投稿のID
+  /// - [maxId]: ページネーション用カーソル。この ID より古い結果を返す
+  /// - [sinceId]: この ID より新しい結果を返す
+  /// - [limit]: 最大取得件数（デフォルト: 40、上限: 80）
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
-  Future<List<MastodonAccount>> fetchRebloggedBy(String id) async {
+  Future<List<MastodonAccount>> fetchRebloggedBy(
+    String id, {
+    String? maxId,
+    String? sinceId,
+    int? limit,
+  }) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/statuses/$id/reblogged_by',
+      queryParameters: <String, dynamic>{
+        'max_id': ?maxId,
+        'since_id': ?sinceId,
+        'limit': ?limit,
+      },
     );
     return (data ?? const [])
         .whereType<Map<String, dynamic>>()
@@ -362,11 +375,24 @@ class StatusesApi {
   /// `GET /api/v1/statuses/{id}/favourited_by`
   ///
   /// - [id]: 対象投稿のID
+  /// - [maxId]: ページネーション用カーソル。この ID より古い結果を返す
+  /// - [sinceId]: この ID より新しい結果を返す
+  /// - [limit]: 最大取得件数（デフォルト: 40、上限: 80）
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
-  Future<List<MastodonAccount>> fetchFavouritedBy(String id) async {
+  Future<List<MastodonAccount>> fetchFavouritedBy(
+    String id, {
+    String? maxId,
+    String? sinceId,
+    int? limit,
+  }) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/statuses/$id/favourited_by',
+      queryParameters: <String, dynamic>{
+        'max_id': ?maxId,
+        'since_id': ?sinceId,
+        'limit': ?limit,
+      },
     );
     return (data ?? const [])
         .whereType<Map<String, dynamic>>()
@@ -420,12 +446,16 @@ class StatusesApi {
   /// `text` や `mediaAttachments` などのソース情報が含まれる。
   ///
   /// - [id]: 削除する投稿のID
+  /// - [deleteMedia]: `true` の場合、添付メディアも即座に削除する
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
-  Future<MastodonStatus> delete(String id) async {
+  Future<MastodonStatus> delete(String id, {bool? deleteMedia}) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id',
       method: 'DELETE',
+      queryParameters: <String, dynamic>{
+        'delete_media': ?deleteMedia,
+      },
     );
     return MastodonStatus.fromJson(data!);
   }
