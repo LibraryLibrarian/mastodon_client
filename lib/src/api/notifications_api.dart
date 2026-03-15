@@ -87,6 +87,25 @@ class NotificationsApi {
     );
   }
 
+  /// 指定 ID の通知を削除（ボディベース）
+  ///
+  /// `POST /api/v1/notifications/dismiss`
+  ///
+  /// **非推奨**: Mastodon 1.3.0 で非推奨、3.0.0 で削除済み。
+  /// 代わりに [dismiss]（パスベース）を使用すること。
+  ///
+  /// - [id]: 削除する通知のID（リクエストボディで指定）
+  @Deprecated(
+    'Mastodon 3.0.0 で削除済み。代わりに dismiss() を使用してください',
+  )
+  Future<void> dismissV1(String id) async {
+    await _http.send<dynamic>(
+      '/api/v1/notifications/dismiss',
+      method: 'POST',
+      data: <String, dynamic>{'id': id},
+    );
+  }
+
   /// 未読通知の件数を取得（Mastodon 4.3+）
   ///
   /// `GET /api/v1/notifications/unread_count`

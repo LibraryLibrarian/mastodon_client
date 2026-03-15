@@ -1,4 +1,5 @@
 import '../client/mastodon_http_client.dart';
+import '../models/mastodon_account.dart';
 import '../models/mastodon_suggestion.dart';
 
 /// フォロー候補（サジェスション）に関する API クライアント
@@ -28,6 +29,30 @@ class SuggestionsApi {
     return (data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonSuggestion.fromJson)
+        .toList();
+  }
+
+  /// v1 形式のフォロー候補一覧を取得する
+  ///
+  /// `GET /api/v1/suggestions`
+  ///
+  /// **非推奨**: Mastodon 3.4.0 で非推奨。代わりに [fetch]（v2）を使用すること。
+  /// v2 と異なり、提案のソース情報（`source`）を含まず `Account` の配列を返す。
+  ///
+  /// - [limit]: 最大取得件数（デフォルト: 40、上限: 80）
+  ///
+  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  @Deprecated('Mastodon 3.4.0 で非推奨。代わりに fetch() (v2) を使用してください')
+  Future<List<MastodonAccount>> fetchV1({int? limit}) async {
+    final data = await _http.send<List<dynamic>>(
+      '/api/v1/suggestions',
+      queryParameters: <String, dynamic>{
+        'limit': ?limit,
+      },
+    );
+    return (data ?? const <dynamic>[])
+        .cast<Map<String, dynamic>>()
+        .map(MastodonAccount.fromJson)
         .toList();
   }
 

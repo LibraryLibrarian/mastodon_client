@@ -174,6 +174,33 @@ class TimelinesApi {
     extraQuery: {'url': url},
   );
 
+  /// ダイレクトメッセージのタイムラインを取得する
+  ///
+  /// `GET /api/v1/timelines/direct`
+  ///
+  /// **非推奨**: Mastodon 2.6.0 で非推奨、3.0.0 で削除済み。
+  /// 代わりに Conversations API を使用すること。
+  ///
+  /// - [limit]: 最大取得件数（デフォルト: 20、上限: 40）
+  /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
+  /// - [maxId]: このID以前の投稿を取得する（古い方向）
+  /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
+  @Deprecated(
+    'Mastodon 3.0.0 で削除済み。代わりに ConversationsApi を使用してください',
+  )
+  Future<List<MastodonStatus>> fetchDirect({
+    int? limit,
+    String? sinceId,
+    String? maxId,
+    String? minId,
+  }) => _fetchTimeline(
+    '/api/v1/timelines/direct',
+    limit: limit,
+    sinceId: sinceId,
+    maxId: maxId,
+    minId: minId,
+  );
+
   Future<List<MastodonStatus>> _fetchTimeline(
     String path, {
     int? limit,

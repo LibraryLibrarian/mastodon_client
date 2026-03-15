@@ -6,6 +6,7 @@ import '../models/mastodon_account_page.dart';
 import '../models/mastodon_credential_account_update_request.dart';
 import '../models/mastodon_familiar_followers.dart';
 import '../models/mastodon_featured_tag.dart';
+import '../models/mastodon_identity_proof.dart';
 import '../models/mastodon_list.dart';
 import '../models/mastodon_relationship.dart';
 import '../models/mastodon_status.dart';
@@ -550,6 +551,26 @@ class AccountsApi {
     return (data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonList.fromJson)
+        .toList();
+  }
+
+  /// 指定アカウントの本人確認証明を取得する
+  ///
+  /// `GET /api/v1/accounts/{id}/identity_proofs`
+  ///
+  /// **非推奨**: Mastodon 3.5.0 以降は常に空配列を返す。
+  ///
+  /// - [id]: 対象アカウントの ID
+  ///
+  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  @Deprecated('Mastodon 3.5.0 以降は常に空配列を返す')
+  Future<List<MastodonIdentityProof>> fetchIdentityProofs(String id) async {
+    final data = await _http.send<List<dynamic>>(
+      '/api/v1/accounts/$id/identity_proofs',
+    );
+    return (data ?? const <dynamic>[])
+        .cast<Map<String, dynamic>>()
+        .map(MastodonIdentityProof.fromJson)
         .toList();
   }
 

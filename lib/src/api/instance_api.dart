@@ -2,6 +2,7 @@ import '../client/mastodon_http_client.dart';
 import '../models/mastodon_domain_block.dart';
 import '../models/mastodon_extended_description.dart';
 import '../models/mastodon_instance.dart';
+import '../models/mastodon_instance_v1.dart';
 import '../models/mastodon_privacy_policy.dart';
 import '../models/mastodon_terms_of_service.dart';
 import '../models/mastodon_weekly_activity.dart';
@@ -121,6 +122,20 @@ class InstanceApi {
       '/api/v1/instance/terms_of_service/$date',
     );
     return MastodonTermsOfService.fromJson(data!);
+  }
+
+  /// v1 形式のインスタンス情報を取得する
+  ///
+  /// `GET /api/v1/instance`
+  ///
+  /// **非推奨**: Mastodon 4.0.0 で非推奨。代わりに [fetch]（v2）を使用すること。
+  /// v2 未対応の古いサーバーとの互換性のために提供している。
+  ///
+  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  @Deprecated('Mastodon 4.0.0 で非推奨。代わりに fetch() (v2) を使用してください')
+  Future<MastodonInstanceV1> fetchV1() async {
+    final data = await _http.send<Map<String, dynamic>>('/api/v1/instance');
+    return MastodonInstanceV1.fromJson(data!);
   }
 
   /// 翻訳エンジンが対応する言語ペアを取得
