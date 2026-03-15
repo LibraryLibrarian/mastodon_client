@@ -1,24 +1,30 @@
 import '../api/accounts_api.dart';
 import '../api/announcements_api.dart';
+import '../api/async_refreshes_api.dart';
 import '../api/blocks_api.dart';
 import '../api/bookmarks_api.dart';
 import '../api/conversations_api.dart';
 import '../api/custom_emojis_api.dart';
+import '../api/directory_api.dart';
 import '../api/domain_blocks_api.dart';
+import '../api/emails_api.dart';
 import '../api/favourites_api.dart';
 import '../api/featured_tags_api.dart';
 import '../api/filters_api.dart';
 import '../api/follow_requests_api.dart';
 import '../api/followed_tags_api.dart';
 import '../api/grouped_notifications_api.dart';
+import '../api/health_api.dart';
 import '../api/instance_api.dart';
 import '../api/lists_api.dart';
 import '../api/markers_api.dart';
 import '../api/media_api.dart';
 import '../api/mutes_api.dart';
 import '../api/notifications_api.dart';
+import '../api/oembed_api.dart';
 import '../api/polls_api.dart';
 import '../api/preferences_api.dart';
+import '../api/profile_api.dart';
 import '../api/push_api.dart';
 import '../api/reports_api.dart';
 import '../api/scheduled_statuses_api.dart';
@@ -71,6 +77,9 @@ class MastodonClient {
   /// サーバーのお知らせに関するAPI
   AnnouncementsApi get announcements => AnnouncementsApi(_http);
 
+  /// 非同期リフレッシュのステータス確認に関するAPI（実験的）
+  AsyncRefreshesApi get asyncRefreshes => AsyncRefreshesApi(_http);
+
   /// ブロック中アカウントの一覧取得に関するAPI
   BlocksApi get blocks => BlocksApi(_http);
 
@@ -83,8 +92,14 @@ class MastodonClient {
   /// カスタム絵文字に関するAPI
   CustomEmojisApi get customEmojis => CustomEmojisApi(_http);
 
+  /// プロフィールディレクトリに関するAPI
+  DirectoryApi get directory => DirectoryApi(_http);
+
   /// ユーザーレベルのドメインブロック管理に関するAPI
   DomainBlocksApi get domainBlocks => DomainBlocksApi(_http);
+
+  /// メール確認に関するAPI
+  EmailsApi get emails => EmailsApi(_http);
 
   /// お気に入りした投稿の一覧取得に関するAPI
   FavouritesApi get favourites => FavouritesApi(_http);
@@ -105,6 +120,9 @@ class MastodonClient {
   GroupedNotificationsApi get groupedNotifications =>
       GroupedNotificationsApi(_http);
 
+  /// サーバーヘルスチェックに関するAPI
+  HealthApi get health => HealthApi(_http);
+
   /// インスタンス情報に関するAPI
   InstanceApi get instance => InstanceApi(_http);
 
@@ -123,6 +141,9 @@ class MastodonClient {
   /// 通知に関するAPI
   NotificationsApi get notifications => NotificationsApi(_http);
 
+  /// OEmbed 情報の取得に関するAPI
+  OEmbedApi get oembed => OEmbedApi(_http);
+
   /// 投票に関するAPI
   PollsApi get polls => PollsApi(_http);
 
@@ -131,6 +152,9 @@ class MastodonClient {
 
   /// ユーザー設定の取得に関するAPI
   PreferencesApi get preferences => PreferencesApi(_http);
+
+  /// プロフィール画像の管理に関するAPI
+  ProfileApi get profile => ProfileApi(_http);
 
   /// 通報に関するAPI
   ReportsApi get reports => ReportsApi(_http);
