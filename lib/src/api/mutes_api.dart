@@ -1,6 +1,7 @@
 import '../client/mastodon_http_client.dart';
+import '../internal/link_header_parser.dart';
 import '../models/mastodon_account.dart';
-import '../models/mastodon_account_page.dart';
+import '../models/mastodon_page.dart';
 import 'accounts_api.dart' show AccountsApi;
 
 /// ミュート中アカウントの一覧取得に関する API クライアント
@@ -18,13 +19,13 @@ class MutesApi {
   /// - [maxId]: このIDより古い結果を返す（ページネーション用カーソル）
   /// - [sinceId]: このIDより新しい結果を返す
   ///
-  /// レスポンスの `Link` ヘッダーから次ページの `max_id` を解析し、
-  /// [MastodonAccountPage.nextMaxId] に格納する。
+  /// レスポンスの `Link` ヘッダーから次ページの `max_id` および前ページの
+  /// `min_id` を解析し、[MastodonPage] に格納する。
   ///
   /// ミュートの実行・解除は [AccountsApi] の `mute` / `unmute` を使用する。
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
-  Future<MastodonAccountPage> fetch({
+  Future<MastodonPage<MastodonAccount>> fetch({
     int? limit,
     String? maxId,
     String? sinceId,
@@ -37,32 +38,15 @@ class MutesApi {
         if (sinceId != null && sinceId.isNotEmpty) 'since_id': sinceId,
       },
     );
-    final accounts = (response.data ?? const <dynamic>[])
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonAccount.fromJson)
         .toList();
-    final nextMaxId = _parseNextMaxId(
-      response.headers.map['link']?.join(','),
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
     );
-    return MastodonAccountPage(accounts: accounts, nextMaxId: nextMaxId);
-  }
-
-  /// `Link` レスポンスヘッダーから `rel="next"` の `max_id` クエリパラメーターを
-  /// 取り出す
-  ///
-  /// 次ページが存在しない場合、または解析できない場合は `null` を返す。
-  String? _parseNextMaxId(String? linkHeader) {
-    if (linkHeader == null) return null;
-    for (final segment in linkHeader.split(',')) {
-      final trimmed = segment.trim();
-      if (!trimmed.contains('rel="next"')) continue;
-      final start = trimmed.indexOf('<');
-      final end = trimmed.indexOf('>');
-      if (start == -1 || end == -1 || end <= start + 1) continue;
-      final url = trimmed.substring(start + 1, end);
-      final maxId = Uri.tryParse(url)?.queryParameters['max_id'];
-      if (maxId != null && maxId.isNotEmpty) return maxId;
-    }
-    return null;
   }
 }

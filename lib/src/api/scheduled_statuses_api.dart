@@ -1,4 +1,6 @@
 import '../client/mastodon_http_client.dart';
+import '../internal/link_header_parser.dart';
+import '../models/mastodon_page.dart';
 import '../models/mastodon_scheduled_status.dart';
 
 /// 予約投稿の管理に関するAPI
@@ -18,13 +20,13 @@ class ScheduledStatusesApi {
   /// - [minId]: このIDより新しい結果を返す（逆順）
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
-  Future<List<MastodonScheduledStatus>> fetch({
+  Future<MastodonPage<MastodonScheduledStatus>> fetch({
     int? limit,
     String? maxId,
     String? sinceId,
     String? minId,
   }) async {
-    final data = await _http.send<List<dynamic>>(
+    final response = await _http.sendRaw<List<dynamic>>(
       '/api/v1/scheduled_statuses',
       queryParameters: <String, dynamic>{
         'limit': ?limit,
@@ -33,10 +35,16 @@ class ScheduledStatusesApi {
         if (minId != null && minId.isNotEmpty) 'min_id': minId,
       },
     );
-    return (data ?? const <dynamic>[])
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonScheduledStatus.fromJson)
         .toList();
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 
   /// 指定IDの予約投稿を取得する

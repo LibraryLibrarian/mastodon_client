@@ -57,18 +57,19 @@ class FiltersApi {
   }) async {
     final body = <String, dynamic>{
       'title': title,
-      'context[]': context,
+      'context': context,
       'filter_action': ?filterAction,
       'expires_in': ?expiresIn,
     };
     if (keywordsAttributes != null) {
-      for (var i = 0; i < keywordsAttributes.length; i++) {
-        final kw = keywordsAttributes[i];
-        body['keywords_attributes[$i][keyword]'] = kw.keyword;
-        if (kw.wholeWord != null) {
-          body['keywords_attributes[$i][whole_word]'] = kw.wholeWord;
-        }
-      }
+      body['keywords_attributes'] = keywordsAttributes
+          .map(
+            (kw) => <String, dynamic>{
+              'keyword': kw.keyword,
+              if (kw.wholeWord != null) 'whole_word': kw.wholeWord,
+            },
+          )
+          .toList();
     }
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v2/filters',
@@ -104,22 +105,19 @@ class FiltersApi {
       'expires_in': ?expiresIn,
     };
     if (context != null) {
-      body['context[]'] = context;
+      body['context'] = context;
     }
     if (keywordsAttributes != null) {
-      for (var i = 0; i < keywordsAttributes.length; i++) {
-        final kw = keywordsAttributes[i];
-        if (kw.id != null) {
-          body['keywords_attributes[$i][id]'] = kw.id;
-        }
-        body['keywords_attributes[$i][keyword]'] = kw.keyword;
-        if (kw.wholeWord != null) {
-          body['keywords_attributes[$i][whole_word]'] = kw.wholeWord;
-        }
-        if (kw.destroy != null) {
-          body['keywords_attributes[$i][_destroy]'] = kw.destroy;
-        }
-      }
+      body['keywords_attributes'] = keywordsAttributes
+          .map(
+            (kw) => <String, dynamic>{
+              if (kw.id != null) 'id': kw.id,
+              'keyword': kw.keyword,
+              if (kw.wholeWord != null) 'whole_word': kw.wholeWord,
+              if (kw.destroy != null) '_destroy': kw.destroy,
+            },
+          )
+          .toList();
     }
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v2/filters/$id',
@@ -355,7 +353,7 @@ class FiltersApi {
       method: 'POST',
       data: <String, dynamic>{
         'phrase': phrase,
-        'context[]': context,
+        'context': context,
         'irreversible': ?irreversible,
         'whole_word': ?wholeWord,
         'expires_in': ?expiresIn,
@@ -395,7 +393,7 @@ class FiltersApi {
       method: 'PUT',
       data: <String, dynamic>{
         'phrase': phrase,
-        'context[]': context,
+        'context': context,
         'irreversible': ?irreversible,
         'whole_word': ?wholeWord,
         'expires_in': ?expiresIn,

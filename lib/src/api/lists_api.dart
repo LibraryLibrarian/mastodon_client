@@ -1,7 +1,8 @@
 import '../client/mastodon_http_client.dart';
+import '../internal/link_header_parser.dart';
 import '../models/mastodon_account.dart';
-import '../models/mastodon_account_page.dart';
 import '../models/mastodon_list.dart';
+import '../models/mastodon_page.dart';
 
 /// リストの作成・管理に関する API クライアント
 class ListsApi {
@@ -116,11 +117,11 @@ class ListsApi {
   /// - [sinceId]: ページネーション用カーソル。このID以降の結果を返す
   /// - [minId]: ページネーション用カーソル。このIDより新しい結果を返す
   ///
-  /// レスポンスの `Link` ヘッダーから次ページの `max_id` を解析し、
-  /// [MastodonAccountPage.nextMaxId] に格納する。
+  /// レスポンスの `Link` ヘッダーから次ページ・前ページのカーソルを解析し、
+  /// [MastodonPage.nextMaxId] / [MastodonPage.prevMinId] に格納する。
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
-  Future<MastodonAccountPage> fetchAccounts(
+  Future<MastodonPage<MastodonAccount>> fetchAccounts(
     String id, {
     int? limit,
     String? maxId,
@@ -136,14 +137,16 @@ class ListsApi {
         if (minId != null && minId.isNotEmpty) 'min_id': minId,
       },
     );
-    final accounts = (response.data ?? const <dynamic>[])
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonAccount.fromJson)
         .toList();
-    final nextMaxId = _parseNextMaxId(
-      response.headers.map['link']?.join(','),
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
     );
-    return MastodonAccountPage(accounts: accounts, nextMaxId: nextMaxId);
   }
 
   /// リストにアカウントを追加する
@@ -163,7 +166,7 @@ class ListsApi {
     await _http.send<void>(
       '/api/v1/lists/$id/accounts',
       method: 'POST',
-      data: <String, dynamic>{'account_ids[]': accountIds},
+      data: <String, dynamic>{'account_ids': accountIds},
     );
   }
 
@@ -182,26 +185,7 @@ class ListsApi {
     await _http.send<void>(
       '/api/v1/lists/$id/accounts',
       method: 'DELETE',
-      data: <String, dynamic>{'account_ids[]': accountIds},
+      data: <String, dynamic>{'account_ids': accountIds},
     );
-  }
-
-  /// `Link` レスポンスヘッダーから `rel="next"` の `max_id` クエリパラメーターを
-  /// 取り出す
-  ///
-  /// 次ページが存在しない場合、または解析できない場合は `null` を返す。
-  String? _parseNextMaxId(String? linkHeader) {
-    if (linkHeader == null) return null;
-    for (final segment in linkHeader.split(',')) {
-      final trimmed = segment.trim();
-      if (!trimmed.contains('rel="next"')) continue;
-      final start = trimmed.indexOf('<');
-      final end = trimmed.indexOf('>');
-      if (start == -1 || end == -1 || end <= start + 1) continue;
-      final url = trimmed.substring(start + 1, end);
-      final maxId = Uri.tryParse(url)?.queryParameters['max_id'];
-      if (maxId != null && maxId.isNotEmpty) return maxId;
-    }
-    return null;
   }
 }

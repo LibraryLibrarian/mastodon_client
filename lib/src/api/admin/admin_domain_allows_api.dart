@@ -1,5 +1,7 @@
 import '../../client/mastodon_http_client.dart';
+import '../../internal/link_header_parser.dart';
 import '../../models/admin/mastodon_admin_domain_allow.dart';
+import '../../models/mastodon_page.dart';
 
 /// 管理者向けドメイン許可管理 API
 ///
@@ -16,13 +18,13 @@ class AdminDomainAllowsApi {
   /// `GET /api/v1/admin/domain_allows`
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
-  Future<List<MastodonAdminDomainAllow>> fetch({
+  Future<MastodonPage<MastodonAdminDomainAllow>> fetch({
     String? maxId,
     String? sinceId,
     String? minId,
     int? limit,
   }) async {
-    final data = await _http.send<List<dynamic>>(
+    final response = await _http.sendRaw<List<dynamic>>(
       '/api/v1/admin/domain_allows',
       queryParameters: <String, dynamic>{
         'max_id': ?maxId,
@@ -31,10 +33,16 @@ class AdminDomainAllowsApi {
         'limit': ?limit,
       },
     );
-    return (data ?? const <dynamic>[])
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonAdminDomainAllow.fromJson)
         .toList();
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 
   /// ID を指定して許可ドメインの詳細を取得する

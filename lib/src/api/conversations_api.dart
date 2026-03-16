@@ -1,5 +1,7 @@
 import '../client/mastodon_http_client.dart';
+import '../internal/link_header_parser.dart';
 import '../models/mastodon_conversation.dart';
+import '../models/mastodon_page.dart';
 
 /// ダイレクトメッセージの会話に関するAPI
 class ConversationsApi {
@@ -18,13 +20,13 @@ class ConversationsApi {
   /// - [minId]: このID直後の会話を取得する
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
-  Future<List<MastodonConversation>> fetch({
+  Future<MastodonPage<MastodonConversation>> fetch({
     int? limit,
     String? maxId,
     String? sinceId,
     String? minId,
   }) async {
-    final data = await _http.send<List<dynamic>>(
+    final response = await _http.sendRaw<List<dynamic>>(
       '/api/v1/conversations',
       queryParameters: <String, dynamic>{
         'limit': ?limit,
@@ -33,10 +35,16 @@ class ConversationsApi {
         if (minId != null && minId.isNotEmpty) 'min_id': minId,
       },
     );
-    return (data ?? const <dynamic>[])
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonConversation.fromJson)
         .toList();
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 
   /// 会話を削除する

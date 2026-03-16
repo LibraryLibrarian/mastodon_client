@@ -1,6 +1,8 @@
 import '../../client/mastodon_http_client.dart';
+import '../../internal/link_header_parser.dart';
 import '../../models/admin/mastodon_admin_report.dart';
 import '../../models/admin/mastodon_admin_report_update_request.dart';
+import '../../models/mastodon_page.dart';
 
 /// 管理者向け通報管理 API
 ///
@@ -25,7 +27,7 @@ class AdminReportsApi {
   /// - [limit]: 最大取得件数（デフォルト: 100、最大: 200）
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
-  Future<List<MastodonAdminReport>> fetch({
+  Future<MastodonPage<MastodonAdminReport>> fetch({
     bool? resolved,
     String? accountId,
     String? targetAccountId,
@@ -34,7 +36,7 @@ class AdminReportsApi {
     String? minId,
     int? limit,
   }) async {
-    final data = await _http.send<List<dynamic>>(
+    final response = await _http.sendRaw<List<dynamic>>(
       '/api/v1/admin/reports',
       queryParameters: <String, dynamic>{
         'resolved': ?resolved,
@@ -46,10 +48,16 @@ class AdminReportsApi {
         'limit': ?limit,
       },
     );
-    return (data ?? const <dynamic>[])
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonAdminReport.fromJson)
         .toList();
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 
   /// ID を指定して通報の詳細を取得する

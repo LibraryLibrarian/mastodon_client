@@ -17,6 +17,6 @@ class MastodonAdminReportUpdateRequest {
   /// リクエストボディ用の JSON マップに変換する
   Map<String, dynamic> toJson() => {
     'category': ?category,
-    'rule_ids[]': ?ruleIds,
+    'rule_ids': ?ruleIds,
   };
 }

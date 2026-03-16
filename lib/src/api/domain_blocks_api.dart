@@ -1,4 +1,6 @@
 import '../client/mastodon_http_client.dart';
+import '../internal/link_header_parser.dart';
+import '../models/mastodon_page.dart';
 
 /// ユーザーレベルのドメインブロック管理に関する API クライアント
 class DomainBlocksApi {
@@ -17,13 +19,13 @@ class DomainBlocksApi {
   /// - [minId]: このIDより新しい結果を返す（逆順）
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
-  Future<List<String>> fetch({
+  Future<MastodonPage<String>> fetch({
     int? limit,
     String? maxId,
     String? sinceId,
     String? minId,
   }) async {
-    final data = await _http.send<List<dynamic>>(
+    final response = await _http.sendRaw<List<dynamic>>(
       '/api/v1/domain_blocks',
       queryParameters: <String, dynamic>{
         'limit': ?limit,
@@ -32,7 +34,13 @@ class DomainBlocksApi {
         if (minId != null && minId.isNotEmpty) 'min_id': minId,
       },
     );
-    return (data ?? const <dynamic>[]).cast<String>();
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const <dynamic>[]).cast<String>().toList();
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 
   /// ドメインをブロックする

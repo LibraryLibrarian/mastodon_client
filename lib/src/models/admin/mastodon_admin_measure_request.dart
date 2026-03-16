@@ -62,23 +62,23 @@ class MastodonAdminMeasureRequest {
 
   /// リクエストボディ用の JSON マップに変換する
   Map<String, dynamic> toJson() => {
-    'keys[]': keys,
+    'keys': keys,
     'start_at': startAt.toIso8601String(),
     'end_at': endAt.toIso8601String(),
-    if (tagAccountsId != null) 'tag_accounts[id]': tagAccountsId,
-    if (tagUsesId != null) 'tag_uses[id]': tagUsesId,
-    if (tagServersId != null) 'tag_servers[id]': tagServersId,
+    if (tagAccountsId != null) 'tag_accounts': {'id': tagAccountsId},
+    if (tagUsesId != null) 'tag_uses': {'id': tagUsesId},
+    if (tagServersId != null) 'tag_servers': {'id': tagServersId},
     if (instanceAccountsDomain != null)
-      'instance_accounts[domain]': instanceAccountsDomain,
+      'instance_accounts': {'domain': instanceAccountsDomain},
     if (instanceMediaAttachmentsDomain != null)
-      'instance_media_attachments[domain]': instanceMediaAttachmentsDomain,
+      'instance_media_attachments': {'domain': instanceMediaAttachmentsDomain},
     if (instanceReportsDomain != null)
-      'instance_reports[domain]': instanceReportsDomain,
+      'instance_reports': {'domain': instanceReportsDomain},
     if (instanceStatusesDomain != null)
-      'instance_statuses[domain]': instanceStatusesDomain,
+      'instance_statuses': {'domain': instanceStatusesDomain},
     if (instanceFollowsDomain != null)
-      'instance_follows[domain]': instanceFollowsDomain,
+      'instance_follows': {'domain': instanceFollowsDomain},
     if (instanceFollowersDomain != null)
-      'instance_followers[domain]': instanceFollowersDomain,
+      'instance_followers': {'domain': instanceFollowersDomain},
   };
 }

@@ -44,15 +44,15 @@ class MastodonAdminDimensionRequest {
 
   /// リクエストボディ用の JSON マップに変換する
   Map<String, dynamic> toJson() => {
-    'keys[]': keys,
+    'keys': keys,
     'start_at': ?startAt?.toIso8601String(),
     'end_at': ?endAt?.toIso8601String(),
     'limit': ?limit,
-    if (tagServersId != null) 'tag_servers[id]': tagServersId,
-    if (tagLanguagesId != null) 'tag_languages[id]': tagLanguagesId,
+    if (tagServersId != null) 'tag_servers': {'id': tagServersId},
+    if (tagLanguagesId != null) 'tag_languages': {'id': tagLanguagesId},
     if (instanceAccountsDomain != null)
-      'instance_accounts[domain]': instanceAccountsDomain,
+      'instance_accounts': {'domain': instanceAccountsDomain},
     if (instanceLanguagesDomain != null)
-      'instance_languages[domain]': instanceLanguagesDomain,
+      'instance_languages': {'domain': instanceLanguagesDomain},
   };
 }

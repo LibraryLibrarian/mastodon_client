@@ -1,13 +1,14 @@
 import '../client/mastodon_http_client.dart';
 import '../exception/mastodon_exception.dart';
+import '../internal/link_header_parser.dart';
 import '../models/mastodon_account.dart';
 import '../models/mastodon_account_create_request.dart';
-import '../models/mastodon_account_page.dart';
 import '../models/mastodon_credential_account_update_request.dart';
 import '../models/mastodon_familiar_followers.dart';
 import '../models/mastodon_featured_tag.dart';
 import '../models/mastodon_identity_proof.dart';
 import '../models/mastodon_list.dart';
+import '../models/mastodon_page.dart';
 import '../models/mastodon_relationship.dart';
 import '../models/mastodon_status.dart';
 import '../models/mastodon_token.dart';
@@ -115,9 +116,9 @@ class AccountsApi {
   /// - [sinceId]: この ID より新しい結果を取得する
   /// - [minId]: この ID 直後の結果から取得する（前方ページネーション）
   ///
-  /// 非公開アカウント（HTTP 403）の場合は空の [MastodonAccountPage] を返す。
+  /// 非公開アカウント（HTTP 403）の場合は空の [MastodonPage] を返す。
   /// それ以外の失敗時は [MastodonException] のサブクラスを throw する。
-  Future<MastodonAccountPage> fetchFollowers(
+  Future<MastodonPage<MastodonAccount>> fetchFollowers(
     String accountId, {
     int? limit,
     String? maxId,
@@ -141,9 +142,9 @@ class AccountsApi {
   /// - [sinceId]: この ID より新しい結果を取得する
   /// - [minId]: この ID 直後の結果から取得する（前方ページネーション）
   ///
-  /// 非公開アカウント（HTTP 403）の場合は空の [MastodonAccountPage] を返す。
+  /// 非公開アカウント（HTTP 403）の場合は空の [MastodonPage] を返す。
   /// それ以外の失敗時は [MastodonException] のサブクラスを throw する。
-  Future<MastodonAccountPage> fetchFollowing(
+  Future<MastodonPage<MastodonAccount>> fetchFollowing(
     String accountId, {
     int? limit,
     String? maxId,
@@ -173,7 +174,7 @@ class AccountsApi {
   /// - [tagged]: 指定したハッシュタグを含む投稿のみに絞り込む
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
-  Future<List<MastodonStatus>> fetchStatuses(
+  Future<MastodonPage<MastodonStatus>> fetchStatuses(
     String accountId, {
     int? limit,
     String? maxId,
@@ -185,7 +186,7 @@ class AccountsApi {
     bool? pinned,
     String? tagged,
   }) async {
-    final data = await _http.send<List<dynamic>>(
+    final response = await _http.sendRaw<List<dynamic>>(
       '/api/v1/accounts/$accountId/statuses',
       queryParameters: <String, dynamic>{
         'limit': ?limit,
@@ -199,10 +200,16 @@ class AccountsApi {
         'tagged': ?tagged,
       },
     );
-    return (data ?? const <dynamic>[])
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonStatus.fromJson)
         .toList();
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 
   /// ログイン中ユーザーのプロフィール情報を更新する
@@ -278,7 +285,7 @@ class AccountsApi {
       data: <String, dynamic>{
         'reblogs': ?reblogs,
         'notify': ?notify,
-        'languages[]': ?languages,
+        'languages': ?languages,
       },
     );
     return MastodonRelationship.fromJson(data!);
@@ -448,7 +455,7 @@ class AccountsApi {
   /// - [minId]: この ID 直後の結果から取得する（前方ページネーション）
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
-  Future<MastodonAccountPage> fetchEndorsements(
+  Future<MastodonPage<MastodonAccount>> fetchEndorsements(
     String id, {
     int? limit,
     String? maxId,
@@ -591,7 +598,7 @@ class AccountsApi {
     );
   }
 
-  Future<MastodonAccountPage> _fetchAccountPage(
+  Future<MastodonPage<MastodonAccount>> _fetchAccountPage(
     String path, {
     int? limit,
     String? maxId,
@@ -608,35 +615,18 @@ class AccountsApi {
           'min_id': ?minId,
         },
       );
-      final accounts = (response.data ?? const <dynamic>[])
+      final linkHeader = response.headers.map['link']?.join(',');
+      final items = (response.data ?? const <dynamic>[])
           .cast<Map<String, dynamic>>()
           .map(MastodonAccount.fromJson)
           .toList();
-      final nextMaxId = _parseNextMaxId(
-        response.headers.map['link']?.join(','),
+      return MastodonPage(
+        items: items,
+        nextMaxId: parseNextMaxId(linkHeader),
+        prevMinId: parsePrevMinId(linkHeader),
       );
-      return MastodonAccountPage(accounts: accounts, nextMaxId: nextMaxId);
     } on MastodonForbiddenException {
-      return const MastodonAccountPage(accounts: []);
+      return const MastodonPage(items: []);
     }
-  }
-
-  /// `Link` レスポンスヘッダーから `rel="next"` の `max_id` クエリパラメーターを
-  /// 取り出す
-  ///
-  /// 次ページが存在しない場合、または解析できない場合は `null` を返す。
-  String? _parseNextMaxId(String? linkHeader) {
-    if (linkHeader == null) return null;
-    for (final segment in linkHeader.split(',')) {
-      final trimmed = segment.trim();
-      if (!trimmed.contains('rel="next"')) continue;
-      final start = trimmed.indexOf('<');
-      final end = trimmed.indexOf('>');
-      if (start == -1 || end == -1 || end <= start + 1) continue;
-      final url = trimmed.substring(start + 1, end);
-      final maxId = Uri.tryParse(url)?.queryParameters['max_id'];
-      if (maxId != null && maxId.isNotEmpty) return maxId;
-    }
-    return null;
   }
 }

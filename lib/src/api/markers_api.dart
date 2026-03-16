@@ -52,8 +52,9 @@ class MarkersApi {
     String? notificationsLastReadId,
   }) async {
     final body = <String, dynamic>{
-      'home[last_read_id]': ?homeLastReadId,
-      'notifications[last_read_id]': ?notificationsLastReadId,
+      if (homeLastReadId != null) 'home': {'last_read_id': homeLastReadId},
+      if (notificationsLastReadId != null)
+        'notifications': {'last_read_id': notificationsLastReadId},
     };
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/markers',

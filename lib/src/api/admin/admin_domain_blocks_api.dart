@@ -1,6 +1,8 @@
 import '../../client/mastodon_http_client.dart';
+import '../../internal/link_header_parser.dart';
 import '../../models/admin/mastodon_admin_domain_block.dart';
 import '../../models/admin/mastodon_admin_domain_block_request.dart';
+import '../../models/mastodon_page.dart';
 
 /// 管理者向けドメインブロック管理 API
 ///
@@ -17,13 +19,13 @@ class AdminDomainBlocksApi {
   /// `GET /api/v1/admin/domain_blocks`
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
-  Future<List<MastodonAdminDomainBlock>> fetch({
+  Future<MastodonPage<MastodonAdminDomainBlock>> fetch({
     String? maxId,
     String? sinceId,
     String? minId,
     int? limit,
   }) async {
-    final data = await _http.send<List<dynamic>>(
+    final response = await _http.sendRaw<List<dynamic>>(
       '/api/v1/admin/domain_blocks',
       queryParameters: <String, dynamic>{
         'max_id': ?maxId,
@@ -32,10 +34,16 @@ class AdminDomainBlocksApi {
         'limit': ?limit,
       },
     );
-    return (data ?? const <dynamic>[])
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonAdminDomainBlock.fromJson)
         .toList();
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 
   /// ID を指定してドメインブロックの詳細を取得する

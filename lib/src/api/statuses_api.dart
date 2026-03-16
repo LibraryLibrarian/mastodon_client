@@ -1,9 +1,13 @@
 import '../client/mastodon_http_client.dart';
+import '../internal/link_header_parser.dart';
 import '../models/mastodon_account.dart';
+import '../models/mastodon_page.dart';
 import '../models/mastodon_preview_card.dart';
+import '../models/mastodon_scheduled_status.dart';
 import '../models/mastodon_status.dart';
 import '../models/mastodon_status_context.dart';
 import '../models/mastodon_status_create_request.dart';
+import '../models/mastodon_status_create_result.dart';
 import '../models/mastodon_status_edit.dart';
 import '../models/mastodon_status_edit_request.dart';
 import '../models/mastodon_status_source.dart';
@@ -120,13 +124,13 @@ class StatusesApi {
   /// - [maxId]: このIDより古い投稿のみ取得する
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
-  Future<List<MastodonStatus>> fetchQuotes(
+  Future<MastodonPage<MastodonStatus>> fetchQuotes(
     String id, {
     int? limit,
     String? sinceId,
     String? maxId,
   }) async {
-    final data = await _http.send<List<dynamic>>(
+    final response = await _http.sendRaw<List<dynamic>>(
       '/api/v1/statuses/$id/quotes',
       queryParameters: <String, dynamic>{
         'limit': ?limit,
@@ -134,10 +138,16 @@ class StatusesApi {
         'max_id': ?maxId,
       },
     );
-    return (data ?? const [])
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const [])
         .whereType<Map<String, dynamic>>()
         .map(MastodonStatus.fromJson)
         .toList();
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 
   /// 指定した投稿をブーストする
@@ -350,13 +360,13 @@ class StatusesApi {
   /// - [limit]: 最大取得件数（デフォルト: 40、上限: 80）
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
-  Future<List<MastodonAccount>> fetchRebloggedBy(
+  Future<MastodonPage<MastodonAccount>> fetchRebloggedBy(
     String id, {
     String? maxId,
     String? sinceId,
     int? limit,
   }) async {
-    final data = await _http.send<List<dynamic>>(
+    final response = await _http.sendRaw<List<dynamic>>(
       '/api/v1/statuses/$id/reblogged_by',
       queryParameters: <String, dynamic>{
         'max_id': ?maxId,
@@ -364,10 +374,16 @@ class StatusesApi {
         'limit': ?limit,
       },
     );
-    return (data ?? const [])
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const [])
         .whereType<Map<String, dynamic>>()
         .map(MastodonAccount.fromJson)
         .toList();
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 
   /// 指定した投稿をお気に入りしたアカウントの一覧を取得する
@@ -380,13 +396,13 @@ class StatusesApi {
   /// - [limit]: 最大取得件数（デフォルト: 40、上限: 80）
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
-  Future<List<MastodonAccount>> fetchFavouritedBy(
+  Future<MastodonPage<MastodonAccount>> fetchFavouritedBy(
     String id, {
     String? maxId,
     String? sinceId,
     int? limit,
   }) async {
-    final data = await _http.send<List<dynamic>>(
+    final response = await _http.sendRaw<List<dynamic>>(
       '/api/v1/statuses/$id/favourited_by',
       queryParameters: <String, dynamic>{
         'max_id': ?maxId,
@@ -394,10 +410,16 @@ class StatusesApi {
         'limit': ?limit,
       },
     );
-    return (data ?? const [])
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const [])
         .whereType<Map<String, dynamic>>()
         .map(MastodonAccount.fromJson)
         .toList();
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 
   /// 新しい投稿を作成する
@@ -408,8 +430,11 @@ class StatusesApi {
   /// - [idempotencyKey]: 重複投稿防止用の任意の文字列。同じキーで複数回リクエスト
   ///   した場合、サーバーは最初のリクエストと同じ結果を返す
   ///
+  /// `scheduled_at` を指定した場合は [MastodonStatusScheduled] が、
+  /// 指定しない場合は [MastodonStatusCreated] が返る。
+  ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
-  Future<MastodonStatus> create(
+  Future<MastodonStatusCreateResult> create(
     MastodonStatusCreateRequest request, {
     String? idempotencyKey,
   }) async {
@@ -421,7 +446,12 @@ class StatusesApi {
           ? {'Idempotency-Key': idempotencyKey}
           : null,
     );
-    return MastodonStatus.fromJson(data!);
+    if (request.scheduledAt != null) {
+      return MastodonStatusScheduled(
+        MastodonScheduledStatus.fromJson(data!),
+      );
+    }
+    return MastodonStatusCreated(MastodonStatus.fromJson(data!));
   }
 
   /// 自分の投稿を編集する

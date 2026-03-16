@@ -1,4 +1,6 @@
 import '../client/mastodon_http_client.dart';
+import '../internal/link_header_parser.dart';
+import '../models/mastodon_page.dart';
 import '../models/mastodon_tag.dart';
 
 /// フォロー中のハッシュタグの一覧取得に関するAPI
@@ -21,13 +23,13 @@ class FollowedTagsApi {
   /// カーソルIDは Tag エンティティの ID ではなく内部的なフォロー関係レコードの ID。
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
-  Future<List<MastodonTag>> fetch({
+  Future<MastodonPage<MastodonTag>> fetch({
     int? limit,
     String? maxId,
     String? sinceId,
     String? minId,
   }) async {
-    final data = await _http.send<List<dynamic>>(
+    final response = await _http.sendRaw<List<dynamic>>(
       '/api/v1/followed_tags',
       queryParameters: <String, dynamic>{
         'limit': ?limit,
@@ -36,9 +38,15 @@ class FollowedTagsApi {
         if (minId != null && minId.isNotEmpty) 'min_id': minId,
       },
     );
-    return (data ?? const <dynamic>[])
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonTag.fromJson)
         .toList();
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 }

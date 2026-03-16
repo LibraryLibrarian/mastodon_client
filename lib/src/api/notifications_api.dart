@@ -1,7 +1,9 @@
 import '../client/mastodon_http_client.dart';
+import '../internal/link_header_parser.dart';
 import '../models/mastodon_notification.dart';
 import '../models/mastodon_notification_policy.dart';
 import '../models/mastodon_notification_request.dart';
+import '../models/mastodon_page.dart';
 import '../models/mastodon_unread_notification_count.dart';
 
 /// 通知に関するAPI
@@ -22,7 +24,7 @@ class NotificationsApi {
   /// - [excludeTypes]: 取得から除外する通知タイプ一覧
   /// - [accountId]: 特定のアカウントからの通知のみを取得
   /// - [includeFiltered]: フィルタリングされた通知を含めるかどうか
-  Future<List<MastodonNotification>> fetch({
+  Future<MastodonPage<MastodonNotification>> fetch({
     int? limit,
     String? sinceId,
     String? maxId,
@@ -43,14 +45,20 @@ class NotificationsApi {
       if (accountId != null && accountId.isNotEmpty) 'account_id': accountId,
       'include_filtered': ?includeFiltered,
     };
-    final data = await _http.send<List<dynamic>>(
+    final response = await _http.sendRaw<List<dynamic>>(
       '/api/v1/notifications',
       queryParameters: query,
     );
-    return (data ?? [])
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const <dynamic>[])
         .whereType<Map<String, dynamic>>()
         .map(MastodonNotification.fromJson)
         .toList(growable: false);
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 
   /// 指定IDの通知を取得
@@ -174,7 +182,7 @@ class NotificationsApi {
   /// - [sinceId]: この ID 以降のリクエストを取得する（新しい方向）
   /// - [minId]: この ID 直後のリクエストを取得する（新しい方向、即時）
   /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
-  Future<List<MastodonNotificationRequest>> fetchRequests({
+  Future<MastodonPage<MastodonNotificationRequest>> fetchRequests({
     String? maxId,
     String? sinceId,
     String? minId,
@@ -186,14 +194,20 @@ class NotificationsApi {
       if (minId != null && minId.isNotEmpty) 'min_id': minId,
       'limit': ?limit,
     };
-    final data = await _http.send<List<dynamic>>(
+    final response = await _http.sendRaw<List<dynamic>>(
       '/api/v1/notifications/requests',
       queryParameters: query,
     );
-    return (data ?? [])
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const <dynamic>[])
         .whereType<Map<String, dynamic>>()
         .map(MastodonNotificationRequest.fromJson)
         .toList(growable: false);
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 
   /// 指定IDの通知リクエストを取得（Mastodon 4.3+）
@@ -243,7 +257,7 @@ class NotificationsApi {
     await _http.send<dynamic>(
       '/api/v1/notifications/requests/accept',
       method: 'POST',
-      data: {'id[]': ids},
+      data: {'id': ids},
     );
   }
 
@@ -256,7 +270,7 @@ class NotificationsApi {
     await _http.send<dynamic>(
       '/api/v1/notifications/requests/dismiss',
       method: 'POST',
-      data: {'id[]': ids},
+      data: {'id': ids},
     );
   }
 

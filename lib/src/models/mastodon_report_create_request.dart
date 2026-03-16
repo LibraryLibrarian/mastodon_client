@@ -31,10 +31,10 @@ class MastodonReportCreateRequest {
   /// リクエストボディ用の JSON マップに変換する
   Map<String, dynamic> toJson() => {
     'account_id': accountId,
-    'status_ids[]': ?statusIds,
+    'status_ids': ?statusIds,
     'comment': ?comment,
     'forward': ?forward,
     'category': ?category,
-    'rule_ids[]': ?ruleIds,
+    'rule_ids': ?ruleIds,
   };
 }

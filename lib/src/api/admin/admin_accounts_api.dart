@@ -1,6 +1,8 @@
 import '../../client/mastodon_http_client.dart';
+import '../../internal/link_header_parser.dart';
 import '../../models/admin/mastodon_admin_account.dart';
 import '../../models/admin/mastodon_admin_account_action_request.dart';
+import '../../models/mastodon_page.dart';
 
 /// 管理者向けアカウント管理 API
 ///
@@ -37,7 +39,7 @@ class AdminAccountsApi {
   /// - [limit]: 最大取得件数（デフォルト: 100、最大: 200）
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
-  Future<List<MastodonAdminAccount>> fetch({
+  Future<MastodonPage<MastodonAdminAccount>> fetch({
     bool? local,
     bool? remote,
     bool? active,
@@ -57,7 +59,7 @@ class AdminAccountsApi {
     String? minId,
     int? limit,
   }) async {
-    final data = await _http.send<List<dynamic>>(
+    final response = await _http.sendRaw<List<dynamic>>(
       '/api/v1/admin/accounts',
       queryParameters: <String, dynamic>{
         'local': ?local,
@@ -80,10 +82,16 @@ class AdminAccountsApi {
         'limit': ?limit,
       },
     );
-    return (data ?? const <dynamic>[])
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonAdminAccount.fromJson)
         .toList();
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 
   /// すべてのアカウントを取得する（v2）
@@ -109,7 +117,7 @@ class AdminAccountsApi {
   /// - [limit]: 最大取得件数（デフォルト: 100、最大: 200）
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
-  Future<List<MastodonAdminAccount>> fetchV2({
+  Future<MastodonPage<MastodonAdminAccount>> fetchV2({
     String? origin,
     String? status,
     String? permissions,
@@ -125,7 +133,7 @@ class AdminAccountsApi {
     String? minId,
     int? limit,
   }) async {
-    final data = await _http.send<List<dynamic>>(
+    final response = await _http.sendRaw<List<dynamic>>(
       '/api/v2/admin/accounts',
       queryParameters: <String, dynamic>{
         'origin': ?origin,
@@ -144,10 +152,16 @@ class AdminAccountsApi {
         'limit': ?limit,
       },
     );
-    return (data ?? const <dynamic>[])
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonAdminAccount.fromJson)
         .toList();
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 
   /// ID を指定してアカウントの管理者向け詳細情報を取得する
