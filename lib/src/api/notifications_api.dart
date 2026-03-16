@@ -257,7 +257,7 @@ class NotificationsApi {
     await _http.send<dynamic>(
       '/api/v1/notifications/requests/accept',
       method: 'POST',
-      data: {'id': ids},
+      data: {'id[]': ids},
     );
   }
 
@@ -270,7 +270,7 @@ class NotificationsApi {
     await _http.send<dynamic>(
       '/api/v1/notifications/requests/dismiss',
       method: 'POST',
-      data: {'id': ids},
+      data: {'id[]': ids},
     );
   }
 

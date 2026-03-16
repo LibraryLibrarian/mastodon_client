@@ -148,14 +148,17 @@ class MastodonPushSubscriptionUpdateRequest {
   final String? policy;
 
   /// リクエスト用の JSON マップに変換する
+  ///
+  /// PUT では `policy` はトップレベルに配置する（POST の `data[policy]` とは異なる）。
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     if (alerts != null) {
       data['alerts'] = alerts!.toJson();
     }
+    final json = <String, dynamic>{'data': data};
     if (policy != null) {
-      data['policy'] = policy;
+      json['policy'] = policy;
     }
-    return <String, dynamic>{'data': data};
+    return json;
   }
 }

@@ -64,7 +64,7 @@ class AdminIpBlocksApi {
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
   Future<MastodonAdminIpBlock> create(
-    MastodonAdminIpBlockRequest request,
+    MastodonAdminIpBlockCreateRequest request,
   ) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/ip_blocks',
@@ -81,7 +81,7 @@ class AdminIpBlocksApi {
   /// 失敗時は `MastodonException` のサブクラスを throw する。
   Future<MastodonAdminIpBlock> update(
     String id,
-    MastodonAdminIpBlockRequest request,
+    MastodonAdminIpBlockUpdateRequest request,
   ) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/ip_blocks/$id',
