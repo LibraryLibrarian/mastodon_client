@@ -3,6 +3,7 @@ import '../exception/mastodon_exception.dart';
 import '../internal/link_header_parser.dart';
 import '../models/mastodon_account.dart';
 import '../models/mastodon_account_create_request.dart';
+import '../models/mastodon_credential_account.dart';
 import '../models/mastodon_credential_account_update_request.dart';
 import '../models/mastodon_familiar_followers.dart';
 import '../models/mastodon_featured_tag.dart';
@@ -36,12 +37,15 @@ class AccountsApi {
   ///
   /// `GET /api/v1/accounts/verify_credentials`
   ///
+  /// 公式仕様では [MastodonCredentialAccount] を返す。`source` や `role` など
+  /// 認証済みユーザーにのみ公開される追加情報を含む。
+  ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
-  Future<MastodonAccount> verifyCredentials() async {
+  Future<MastodonCredentialAccount> verifyCredentials() async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/accounts/verify_credentials',
     );
-    return MastodonAccount.fromJson(data!);
+    return MastodonCredentialAccount.fromJson(data!);
   }
 
   /// `acct` 文字列からアカウントを検索して取得する
@@ -219,7 +223,7 @@ class AccountsApi {
   /// [request] に更新したいフィールドのみを指定する。
   ///
   /// 失敗時は [MastodonException] のサブクラスを throw する。
-  Future<MastodonAccount> updateCredentials(
+  Future<MastodonCredentialAccount> updateCredentials(
     MastodonCredentialAccountUpdateRequest request,
   ) async {
     final data = await _http.send<Map<String, dynamic>>(
@@ -227,7 +231,7 @@ class AccountsApi {
       method: 'PATCH',
       data: request.toJson(),
     );
-    return MastodonAccount.fromJson(data!);
+    return MastodonCredentialAccount.fromJson(data!);
   }
 
   /// 新規アカウントを登録する

@@ -1,5 +1,5 @@
 import '../client/mastodon_http_client.dart';
-import '../models/mastodon_account.dart';
+import '../models/mastodon_credential_account.dart';
 
 /// プロフィール画像の管理に関する API クライアント
 class ProfileApi {
@@ -16,12 +16,12 @@ class ProfileApi {
   /// 認証必須（`write:accounts` スコープ）。
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
-  Future<MastodonAccount> deleteAvatar() async {
+  Future<MastodonCredentialAccount> deleteAvatar() async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/profile/avatar',
       method: 'DELETE',
     );
-    return MastodonAccount.fromJson(data!);
+    return MastodonCredentialAccount.fromJson(data!);
   }
 
   /// プロフィールのヘッダー画像を削除する
@@ -32,11 +32,11 @@ class ProfileApi {
   /// 認証必須（`write:accounts` スコープ）。
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
-  Future<MastodonAccount> deleteHeader() async {
+  Future<MastodonCredentialAccount> deleteHeader() async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/profile/header',
       method: 'DELETE',
     );
-    return MastodonAccount.fromJson(data!);
+    return MastodonCredentialAccount.fromJson(data!);
   }
 }

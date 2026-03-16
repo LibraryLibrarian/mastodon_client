@@ -1,6 +1,8 @@
 import '../client/mastodon_http_client.dart';
+import '../internal/link_header_parser.dart';
 import '../models/mastodon_account.dart';
 import '../models/mastodon_grouped_notifications_results.dart';
+import '../models/mastodon_page.dart';
 
 /// グループ化通知に関する API（v2）
 ///
@@ -25,7 +27,11 @@ class GroupedNotificationsApi {
   /// - [expandAccounts]: アカウント情報の展開方法（`full` または `partial_avatars`）
   /// - [groupedTypes]: グループ化対象の通知タイプ一覧
   /// - [includeFiltered]: フィルタリングされた通知を含めるかどうか
-  Future<MastodonGroupedNotificationsResults> fetch({
+  ///
+  /// レスポンスの `Link` ヘッダーから次ページの `max_id` および前ページの
+  /// `min_id` を解析し、[MastodonPage] に格納する。
+  /// [MastodonPage.items] には単一の [MastodonGroupedNotificationsResults] が含まれる。
+  Future<MastodonPage<MastodonGroupedNotificationsResults>> fetch({
     String? maxId,
     String? sinceId,
     String? minId,
@@ -52,11 +58,19 @@ class GroupedNotificationsApi {
         'grouped_types[]': groupedTypes,
       'include_filtered': ?includeFiltered,
     };
-    final data = await _http.send<Map<String, dynamic>>(
+    final response = await _http.sendRaw<Map<String, dynamic>>(
       '/api/v2/notifications',
       queryParameters: query,
     );
-    return MastodonGroupedNotificationsResults.fromJson(data!);
+    final linkHeader = response.headers.map['link']?.join(',');
+    final results = MastodonGroupedNotificationsResults.fromJson(
+      response.data!,
+    );
+    return MastodonPage(
+      items: [results],
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 
   /// 指定グループキーの通知グループを取得

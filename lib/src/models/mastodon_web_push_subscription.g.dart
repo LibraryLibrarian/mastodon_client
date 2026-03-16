@@ -30,4 +30,5 @@ MastodonWebPushSubscription _$MastodonWebPushSubscriptionFromJson(
   serverKey: json['server_key'] as String,
   alerts: MastodonPushAlerts.fromJson(json['alerts'] as Map<String, dynamic>),
   policy: json['policy'] as String,
+  standard: json['standard'] as bool?,
 );

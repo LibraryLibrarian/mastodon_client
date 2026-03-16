@@ -86,6 +86,7 @@ class MastodonWebPushSubscription {
     required this.serverKey,
     required this.alerts,
     required this.policy,
+    this.standard,
   });
 
   factory MastodonWebPushSubscription.fromJson(Map<String, dynamic> json) =>
@@ -105,4 +106,9 @@ class MastodonWebPushSubscription {
 
   /// 通知ポリシー（all / followed / follower / none）
   final String policy;
+
+  /// 標準化された Web Push 仕様に準拠しているかどうか
+  ///
+  /// Mastodon 4.4+ で追加
+  final bool? standard;
 }
