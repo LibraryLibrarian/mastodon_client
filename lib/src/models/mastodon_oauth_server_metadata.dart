@@ -15,11 +15,11 @@ class MastodonOAuthServerMetadata {
     required this.tokenEndpoint,
     required this.appRegistrationEndpoint,
     required this.revocationEndpoint,
-    required this.userinfoEndpoint,
+    this.userinfoEndpoint,
     required this.scopesSupported,
     required this.responseTypesSupported,
     required this.responseModesSupported,
-    required this.codeChallengeMethodsSupported,
+    this.codeChallengeMethodsSupported,
     required this.grantTypesSupported,
     required this.tokenEndpointAuthMethodsSupported,
   });
@@ -47,7 +47,9 @@ class MastodonOAuthServerMetadata {
   final String revocationEndpoint;
 
   /// ユーザー情報エンドポイントの URL
-  final String userinfoEndpoint;
+  ///
+  /// Mastodon 4.4.0 で追加されたフィールド。4.3 系サーバーでは `null` になる。
+  final String? userinfoEndpoint;
 
   /// サポートされるスコープの一覧
   final List<String> scopesSupported;
@@ -59,7 +61,10 @@ class MastodonOAuthServerMetadata {
   final List<String> responseModesSupported;
 
   /// サポートされるコードチャレンジ方式の一覧
-  final List<String> codeChallengeMethodsSupported;
+  ///
+  /// Mastodon 4.3.0 初期リリース後の PKCE 対応で追加されたフィールド。
+  /// 初期の 4.3.0 サーバーでは `null` になる場合がある。
+  final List<String>? codeChallengeMethodsSupported;
 
   /// サポートされるグラントタイプの一覧
   final List<String> grantTypesSupported;

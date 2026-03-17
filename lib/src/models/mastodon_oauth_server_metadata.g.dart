@@ -15,7 +15,7 @@ MastodonOAuthServerMetadata _$MastodonOAuthServerMetadataFromJson(
   tokenEndpoint: json['token_endpoint'] as String,
   appRegistrationEndpoint: json['app_registration_endpoint'] as String,
   revocationEndpoint: json['revocation_endpoint'] as String,
-  userinfoEndpoint: json['userinfo_endpoint'] as String,
+  userinfoEndpoint: json['userinfo_endpoint'] as String?,
   scopesSupported: (json['scopes_supported'] as List<dynamic>)
       .map((e) => e as String)
       .toList(),
@@ -26,8 +26,8 @@ MastodonOAuthServerMetadata _$MastodonOAuthServerMetadataFromJson(
       .map((e) => e as String)
       .toList(),
   codeChallengeMethodsSupported:
-      (json['code_challenge_methods_supported'] as List<dynamic>)
-          .map((e) => e as String)
+      (json['code_challenge_methods_supported'] as List<dynamic>?)
+          ?.map((e) => e as String)
           .toList(),
   grantTypesSupported: (json['grant_types_supported'] as List<dynamic>)
       .map((e) => e as String)
