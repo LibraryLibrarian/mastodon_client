@@ -10,11 +10,12 @@ class AnnouncementsApi {
   ///
   /// `GET /api/v1/announcements`
   ///
-  /// - [withDismissed]: `true` の場合、既読済みのお知らせも含めて取得する
+  /// - [withDismissed]: 現在のサーバー実装ではこのパラメータは処理されない。
+  ///   送信しても無視されるため、将来のバージョンで削除予定。
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
   Future<List<MastodonAnnouncement>> fetch({
-    bool? withDismissed,
+    @Deprecated('サーバー側で未実装のため効果なし。将来削除予定') bool? withDismissed,
   }) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/announcements',
@@ -51,8 +52,9 @@ class AnnouncementsApi {
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
   Future<void> addReaction(String id, String name) async {
+    final encodedName = Uri.encodeComponent(name);
     await _http.send<dynamic>(
-      '/api/v1/announcements/$id/reactions/$name',
+      '/api/v1/announcements/$id/reactions/$encodedName',
       method: 'PUT',
     );
   }
@@ -66,8 +68,9 @@ class AnnouncementsApi {
   ///
   /// 失敗時は `MastodonException` のサブクラスを throw する。
   Future<void> removeReaction(String id, String name) async {
+    final encodedName = Uri.encodeComponent(name);
     await _http.send<dynamic>(
-      '/api/v1/announcements/$id/reactions/$name',
+      '/api/v1/announcements/$id/reactions/$encodedName',
       method: 'DELETE',
     );
   }

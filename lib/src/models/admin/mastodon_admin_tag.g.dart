@@ -21,4 +21,5 @@ MastodonAdminTag _$MastodonAdminTagFromJson(Map<String, dynamic> json) =>
       trendable: json['trendable'] as bool?,
       usable: json['usable'] as bool?,
       requiresReview: json['requires_review'] as bool?,
+      listable: json['listable'] as bool?,
     );

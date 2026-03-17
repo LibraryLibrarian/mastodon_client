@@ -16,6 +16,7 @@ class MastodonAdminTag {
     this.trendable,
     this.usable,
     this.requiresReview,
+    this.listable,
   });
 
   factory MastodonAdminTag.fromJson(Map<String, dynamic> json) =>
@@ -44,4 +45,7 @@ class MastodonAdminTag {
 
   /// レビューが必要かどうか
   final bool? requiresReview;
+
+  /// リスト表示が可能かどうか
+  final bool? listable;
 }

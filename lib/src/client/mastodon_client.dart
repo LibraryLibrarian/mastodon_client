@@ -9,6 +9,7 @@ import '../api/admin/admin_ip_blocks_api.dart';
 import '../api/admin/admin_measures_api.dart';
 import '../api/admin/admin_reports_api.dart';
 import '../api/admin/admin_retention_api.dart';
+import '../api/admin/admin_tags_api.dart';
 import '../api/admin/admin_trends_api.dart';
 import '../api/announcements_api.dart';
 import '../api/apps_api.dart';
@@ -120,6 +121,8 @@ class MastodonClient {
 
   /// 管理者向けリテンションAPI
   AdminRetentionApi get adminRetention => AdminRetentionApi(_http);
+
+  AdminTagsApi get adminTags => AdminTagsApi(_http);
 
   /// 管理者向けトレンドAPI
   AdminTrendsApi get adminTrends => AdminTrendsApi(_http);

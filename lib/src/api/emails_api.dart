@@ -26,4 +26,10 @@ class EmailsApi {
       },
     );
   }
+
+  Future<void> checkConfirmation() async {
+    await _http.send<dynamic>(
+      '/api/v1/emails/check_confirmation',
+    );
+  }
 }
