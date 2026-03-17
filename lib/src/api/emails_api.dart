@@ -27,6 +27,13 @@ class EmailsApi {
     );
   }
 
+  /// メールアドレスが確認済みかどうかを確認する
+  ///
+  /// `GET /api/v1/emails/check_confirmation`
+  ///
+  /// 認証必須（未確認ユーザーを作成したクライアントのトークンが必要）。
+  ///
+  /// 失敗時は `MastodonException` のサブクラスを throw する。
   Future<void> checkConfirmation() async {
     await _http.send<dynamic>(
       '/api/v1/emails/check_confirmation',

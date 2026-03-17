@@ -9,6 +9,16 @@ class AdminTagsApi {
 
   final MastodonHttpClient _http;
 
+  /// 管理者向けタグの一覧を取得する
+  ///
+  /// `GET /api/v1/admin/tags`
+  ///
+  /// - [maxId]: この ID 以前のタグを取得する（古い方向）
+  /// - [sinceId]: この ID 以降のタグを取得する（新しい方向）
+  /// - [minId]: この ID 直後のタグから取得する（前方ページネーション）
+  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
+  ///
+  /// 失敗時は `MastodonException` のサブクラスを throw する。
   Future<MastodonPage<MastodonAdminTag>> fetch({
     String? maxId,
     String? sinceId,
@@ -36,6 +46,13 @@ class AdminTagsApi {
     );
   }
 
+  /// 指定 ID のタグを取得する
+  ///
+  /// `GET /api/v1/admin/tags/:id`
+  ///
+  /// - [id]: 取得するタグの ID
+  ///
+  /// 失敗時は `MastodonException` のサブクラスを throw する。
   Future<MastodonAdminTag> fetchById(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/tags/$id',
@@ -43,6 +60,17 @@ class AdminTagsApi {
     return MastodonAdminTag.fromJson(data!);
   }
 
+  /// 指定 ID のタグを更新する
+  ///
+  /// `PUT /api/v1/admin/tags/:id`
+  ///
+  /// - [id]: 更新するタグの ID
+  /// - [displayName]: タグの表示名
+  /// - [listable]: 一覧に表示するかどうか
+  /// - [trendable]: トレンドに表示可能かどうか
+  /// - [usable]: 投稿で使用可能かどうか
+  ///
+  /// 失敗時は `MastodonException` のサブクラスを throw する。
   Future<MastodonAdminTag> update(
     String id, {
     String? displayName,
