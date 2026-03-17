@@ -21,6 +21,18 @@ MastodonApplication _$MastodonApplicationFromJson(Map<String, dynamic> json) =>
       vapidKey: json['vapid_key'] as String?,
     );
 
+Map<String, dynamic> _$MastodonApplicationToJson(
+  MastodonApplication instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'name': instance.name,
+  'website': instance.website,
+  'scopes': instance.scopes,
+  'redirect_uris': instance.redirectUris,
+  'redirect_uri': instance.redirectUri,
+  'vapid_key': instance.vapidKey,
+};
+
 MastodonCredentialApplication _$MastodonCredentialApplicationFromJson(
   Map<String, dynamic> json,
 ) => MastodonCredentialApplication(
@@ -36,3 +48,17 @@ MastodonCredentialApplication _$MastodonCredentialApplicationFromJson(
   clientSecret: json['client_secret'] as String,
   clientSecretExpiresAt: (json['client_secret_expires_at'] as num).toInt(),
 );
+
+Map<String, dynamic> _$MastodonCredentialApplicationToJson(
+  MastodonCredentialApplication instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'name': instance.name,
+  'website': instance.website,
+  'scopes': instance.scopes,
+  'redirect_uris': instance.redirectUris,
+  'redirect_uri': instance.redirectUri,
+  'client_id': instance.clientId,
+  'client_secret': instance.clientSecret,
+  'client_secret_expires_at': instance.clientSecretExpiresAt,
+};

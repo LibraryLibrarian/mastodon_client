@@ -29,12 +29,28 @@ MastodonTranslation _$MastodonTranslationFromJson(Map<String, dynamic> json) =>
             ),
     );
 
+Map<String, dynamic> _$MastodonTranslationToJson(
+  MastodonTranslation instance,
+) => <String, dynamic>{
+  'content': instance.content,
+  'spoiler_text': instance.spoilerText,
+  'language': instance.language,
+  'detected_source_language': instance.detectedSourceLanguage,
+  'provider': instance.provider,
+  'media_attachments': instance.mediaAttachments,
+  'poll': instance.poll,
+};
+
 MastodonTranslationAttachment _$MastodonTranslationAttachmentFromJson(
   Map<String, dynamic> json,
 ) => MastodonTranslationAttachment(
   id: json['id'] as String,
   description: json['description'] as String? ?? '',
 );
+
+Map<String, dynamic> _$MastodonTranslationAttachmentToJson(
+  MastodonTranslationAttachment instance,
+) => <String, dynamic>{'id': instance.id, 'description': instance.description};
 
 MastodonTranslationPoll _$MastodonTranslationPollFromJson(
   Map<String, dynamic> json,
@@ -51,6 +67,14 @@ MastodonTranslationPoll _$MastodonTranslationPollFromJson(
       [],
 );
 
+Map<String, dynamic> _$MastodonTranslationPollToJson(
+  MastodonTranslationPoll instance,
+) => <String, dynamic>{'id': instance.id, 'options': instance.options};
+
 MastodonTranslationPollOption _$MastodonTranslationPollOptionFromJson(
   Map<String, dynamic> json,
 ) => MastodonTranslationPollOption(title: json['title'] as String);
+
+Map<String, dynamic> _$MastodonTranslationPollOptionToJson(
+  MastodonTranslationPollOption instance,
+) => <String, dynamic>{'title': instance.title};

@@ -7,7 +7,7 @@ import 'mastodon_status.dart';
 part 'mastodon_announcement.g.dart';
 
 /// お知らせに対するリアクション
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAnnouncementReaction {
   const MastodonAnnouncementReaction({
     required this.name,
@@ -19,6 +19,9 @@ class MastodonAnnouncementReaction {
 
   factory MastodonAnnouncementReaction.fromJson(Map<String, dynamic> json) =>
       _$MastodonAnnouncementReactionFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAnnouncementReactionToJson(this);
 
   /// 絵文字名（Unicode絵文字またはカスタム絵文字ショートコード）
   final String name;
@@ -39,7 +42,7 @@ class MastodonAnnouncementReaction {
 }
 
 /// サーバーのお知らせ
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAnnouncement {
   const MastodonAnnouncement({
     required this.id,
@@ -59,6 +62,9 @@ class MastodonAnnouncement {
 
   factory MastodonAnnouncement.fromJson(Map<String, dynamic> json) =>
       _$MastodonAnnouncementFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAnnouncementToJson(this);
 
   /// お知らせの内部ID
   final String id;
@@ -113,7 +119,7 @@ class MastodonAnnouncement {
 }
 
 /// お知らせ本文中で参照されるステータス
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAnnouncementStatus {
   const MastodonAnnouncementStatus({
     required this.id,
@@ -122,6 +128,9 @@ class MastodonAnnouncementStatus {
 
   factory MastodonAnnouncementStatus.fromJson(Map<String, dynamic> json) =>
       _$MastodonAnnouncementStatusFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAnnouncementStatusToJson(this);
 
   /// ステータスID
   final String id;

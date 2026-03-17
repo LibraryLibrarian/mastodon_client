@@ -5,7 +5,7 @@ part 'mastodon_terms_of_service.g.dart';
 /// インスタンスの利用規約
 ///
 /// `GET /api/v1/instance/terms_of_service`
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTermsOfService {
   const MastodonTermsOfService({
     required this.effectiveDate,
@@ -16,6 +16,9 @@ class MastodonTermsOfService {
 
   factory MastodonTermsOfService.fromJson(Map<String, dynamic> json) =>
       _$MastodonTermsOfServiceFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonTermsOfServiceToJson(this);
 
   /// 利用規約の発効日
   final String effectiveDate;

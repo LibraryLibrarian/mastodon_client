@@ -43,6 +43,25 @@ MastodonNotificationGroup _$MastodonNotificationGroupFromJson(
         ),
 );
 
+Map<String, dynamic> _$MastodonNotificationGroupToJson(
+  MastodonNotificationGroup instance,
+) => <String, dynamic>{
+  'group_key': instance.groupKey,
+  'notifications_count': instance.notificationsCount,
+  'type': _$MastodonNotificationTypeEnumMap[instance.type]!,
+  'most_recent_notification_id': instance.mostRecentNotificationId,
+  'page_min_id': instance.pageMinId,
+  'page_max_id': instance.pageMaxId,
+  'latest_page_notification_at': const SafeDateTimeConverter().toJson(
+    instance.latestPageNotificationAt,
+  ),
+  'sample_account_ids': instance.sampleAccountIds,
+  'status_id': instance.statusId,
+  'report': instance.report,
+  'event': instance.event,
+  'moderation_warning': instance.moderationWarning,
+};
+
 const _$MastodonNotificationTypeEnumMap = {
   MastodonNotificationType.mention: 'mention',
   MastodonNotificationType.status: 'status',

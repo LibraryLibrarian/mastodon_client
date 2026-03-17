@@ -5,7 +5,7 @@ import 'mastodon_preview_card.dart';
 part 'mastodon_trends_link.g.dart';
 
 /// トレンドリンクの利用履歴（日別統計）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTrendsLinkHistory {
   const MastodonTrendsLinkHistory({
     required this.day,
@@ -15,6 +15,9 @@ class MastodonTrendsLinkHistory {
 
   factory MastodonTrendsLinkHistory.fromJson(Map<String, dynamic> json) =>
       _$MastodonTrendsLinkHistoryFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonTrendsLinkHistoryToJson(this);
 
   /// UNIX タイムスタンプ（秒）を文字列で表した日付
   @JsonKey(defaultValue: '0')
@@ -33,7 +36,7 @@ class MastodonTrendsLinkHistory {
 ///
 /// `GET /api/v1/trends/links` のレスポンスに対応する。
 /// [MastodonPreviewCard] の全フィールドに加え、トレンド固有の [history] を持つ。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTrendsLink {
   const MastodonTrendsLink({
     required this.url,
@@ -56,6 +59,9 @@ class MastodonTrendsLink {
 
   factory MastodonTrendsLink.fromJson(Map<String, dynamic> json) =>
       _$MastodonTrendsLinkFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonTrendsLinkToJson(this);
 
   static Object? _readType(Map<dynamic, dynamic> json, String key) =>
       json['type'] ?? 'link';

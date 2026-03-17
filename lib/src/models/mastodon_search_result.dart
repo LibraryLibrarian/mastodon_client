@@ -9,7 +9,7 @@ part 'mastodon_search_result.g.dart';
 ///
 /// `GET /api/v2/search` のレスポンスに対応する。
 /// [hashtags] は [MastodonTag] オブジェクトの配列として返される。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonSearchResult {
   const MastodonSearchResult({
     required this.accounts,
@@ -19,6 +19,9 @@ class MastodonSearchResult {
 
   factory MastodonSearchResult.fromJson(Map<String, dynamic> json) =>
       _$MastodonSearchResultFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonSearchResultToJson(this);
 
   /// 検索にマッチしたアカウントの一覧
   @JsonKey(defaultValue: <MastodonAccount>[])
@@ -42,7 +45,7 @@ class MastodonSearchResult {
 /// Mastodon 3.0.0 で v1 search エンドポイントは削除されたため、
 /// 2.x 系以前のインスタンスでのみ使用可能。
 @Deprecated('Mastodon 3.0.0 で削除済み。代わりに MastodonSearchResult (v2) を使用してください')
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonSearchResultV1 {
   @Deprecated('Mastodon 3.0.0 で削除済み。代わりに MastodonSearchResult (v2) を使用してください')
   const MastodonSearchResultV1({
@@ -54,6 +57,9 @@ class MastodonSearchResultV1 {
   @Deprecated('Mastodon 3.0.0 で削除済み。代わりに MastodonSearchResult (v2) を使用してください')
   factory MastodonSearchResultV1.fromJson(Map<String, dynamic> json) =>
       _$MastodonSearchResultV1FromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonSearchResultV1ToJson(this);
 
   /// 検索にマッチしたアカウントの一覧
   @JsonKey(defaultValue: <MastodonAccount>[])

@@ -5,7 +5,7 @@ import 'json_converters.dart';
 part 'mastodon_featured_tag.g.dart';
 
 /// アカウントのプロフィールで紹介されているハッシュタグ
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFeaturedTag {
   /// 各フィールドを指定して [MastodonFeaturedTag] を生成する
   const MastodonFeaturedTag({
@@ -19,6 +19,9 @@ class MastodonFeaturedTag {
   /// JSON マップから [MastodonFeaturedTag] を生成する
   factory MastodonFeaturedTag.fromJson(Map<String, dynamic> json) =>
       _$MastodonFeaturedTagFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonFeaturedTagToJson(this);
 
   /// 紹介タグの内部 ID
   final String id;

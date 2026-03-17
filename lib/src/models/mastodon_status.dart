@@ -21,7 +21,7 @@ enum MastodonVisibility {
 }
 
 /// メンション（投稿内の`@username`部分）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonMention {
   const MastodonMention({
     required this.id,
@@ -33,6 +33,9 @@ class MastodonMention {
   factory MastodonMention.fromJson(Map<String, dynamic> json) =>
       _$MastodonMentionFromJson(json);
 
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonMentionToJson(this);
+
   final String id;
   final String username;
   final String acct;
@@ -42,7 +45,7 @@ class MastodonMention {
 /// Mastodon の投稿（Status）
 ///
 /// `/api/v1/statuses/:id`や各タイムラインAPIのレスポンスに対応する
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonStatus {
   const MastodonStatus({
     required this.id,
@@ -78,6 +81,9 @@ class MastodonStatus {
 
   factory MastodonStatus.fromJson(Map<String, dynamic> json) =>
       _$MastodonStatusFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonStatusToJson(this);
 
   static Object? _readVisibility(Map<dynamic, dynamic> json, String key) =>
       json['visibility'] ?? 'public';

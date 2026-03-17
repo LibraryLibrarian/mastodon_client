@@ -6,7 +6,7 @@ import 'mastodon_media_attachment.dart';
 part 'mastodon_scheduled_status.g.dart';
 
 /// 予約投稿を表すモデル
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonScheduledStatus {
   /// 各フィールドを指定して [MastodonScheduledStatus] を生成する
   const MastodonScheduledStatus({
@@ -19,6 +19,9 @@ class MastodonScheduledStatus {
   /// JSON マップから [MastodonScheduledStatus] を生成する
   factory MastodonScheduledStatus.fromJson(Map<String, dynamic> json) =>
       _$MastodonScheduledStatusFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonScheduledStatusToJson(this);
 
   /// 予約投稿のデータベース ID
   final String id;
@@ -36,7 +39,7 @@ class MastodonScheduledStatus {
 }
 
 /// 予約投稿のパラメータ
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonScheduledStatusParams {
   /// 各フィールドを指定して [MastodonScheduledStatusParams] を生成する
   const MastodonScheduledStatusParams({
@@ -54,6 +57,9 @@ class MastodonScheduledStatusParams {
   /// JSON マップから [MastodonScheduledStatusParams] を生成する
   factory MastodonScheduledStatusParams.fromJson(Map<String, dynamic> json) =>
       _$MastodonScheduledStatusParamsFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonScheduledStatusParamsToJson(this);
 
   /// ステータスの本文テキスト
   @JsonKey(defaultValue: '')
@@ -88,7 +94,7 @@ class MastodonScheduledStatusParams {
 }
 
 /// 予約投稿の投票パラメータ
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonScheduledStatusPoll {
   /// 各フィールドを指定して [MastodonScheduledStatusPoll] を生成する
   const MastodonScheduledStatusPoll({
@@ -101,6 +107,9 @@ class MastodonScheduledStatusPoll {
   /// JSON マップから [MastodonScheduledStatusPoll] を生成する
   factory MastodonScheduledStatusPoll.fromJson(Map<String, dynamic> json) =>
       _$MastodonScheduledStatusPollFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonScheduledStatusPollToJson(this);
 
   /// 投票の選択肢
   @JsonKey(defaultValue: [])

@@ -6,7 +6,7 @@ part 'mastodon_admin_domain_allow.g.dart';
 /// 管理者向けドメイン許可情報
 ///
 /// フェデレーションが許可されているドメインを表す。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminDomainAllow {
   const MastodonAdminDomainAllow({
     required this.id,
@@ -16,6 +16,9 @@ class MastodonAdminDomainAllow {
 
   factory MastodonAdminDomainAllow.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminDomainAllowFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAdminDomainAllowToJson(this);
 
   /// ドメイン許可のデータベース内 ID
   final String id;

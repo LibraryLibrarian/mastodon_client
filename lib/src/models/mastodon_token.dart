@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'mastodon_token.g.dart';
 
 /// OAuth アクセストークン
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonToken {
   /// 各フィールドを指定して [MastodonToken] を生成する
   const MastodonToken({
@@ -16,6 +16,9 @@ class MastodonToken {
   /// JSON マップから [MastodonToken] を生成する
   factory MastodonToken.fromJson(Map<String, dynamic> json) =>
       _$MastodonTokenFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonTokenToJson(this);
 
   /// 認可に使用する OAuth トークン文字列
   final String accessToken;

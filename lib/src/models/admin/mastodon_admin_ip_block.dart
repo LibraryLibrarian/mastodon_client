@@ -19,7 +19,7 @@ enum MastodonAdminIpBlockSeverity {
 /// 管理者向け IP ブロック情報
 ///
 /// ブロックされている IP アドレス範囲の情報。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminIpBlock {
   const MastodonAdminIpBlock({
     required this.id,
@@ -32,6 +32,9 @@ class MastodonAdminIpBlock {
 
   factory MastodonAdminIpBlock.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminIpBlockFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAdminIpBlockToJson(this);
 
   /// IP ブロックのデータベース内 ID
   final String id;

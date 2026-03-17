@@ -22,3 +22,14 @@ MastodonNotificationRequest _$MastodonNotificationRequestFromJson(
       ? null
       : MastodonStatus.fromJson(json['last_status'] as Map<String, dynamic>),
 );
+
+Map<String, dynamic> _$MastodonNotificationRequestToJson(
+  MastodonNotificationRequest instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
+  'updated_at': const SafeDateTimeConverter().toJson(instance.updatedAt),
+  'notifications_count': instance.notificationsCount,
+  'account': instance.account,
+  'last_status': instance.lastStatus,
+};

@@ -13,7 +13,7 @@ part 'mastodon_credential_account.g.dart';
 ///
 /// `/api/v1/accounts/verify_credentials` や `/api/v1/accounts/update_credentials`、
 /// `DELETE /api/v1/profile/avatar|header` などのレスポンスに対応する。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonCredentialAccount {
   const MastodonCredentialAccount({
     required this.id,
@@ -49,6 +49,9 @@ class MastodonCredentialAccount {
 
   factory MastodonCredentialAccount.fromJson(Map<String, dynamic> json) =>
       _$MastodonCredentialAccountFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonCredentialAccountToJson(this);
 
   /// アカウントの内部 ID
   final String id;
@@ -155,7 +158,7 @@ class MastodonCredentialAccount {
 }
 
 /// 認証済みユーザーの投稿デフォルト設定・非公開情報
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAccountSource {
   const MastodonAccountSource({
     this.privacy,
@@ -169,6 +172,9 @@ class MastodonAccountSource {
 
   factory MastodonAccountSource.fromJson(Map<String, dynamic> json) =>
       _$MastodonAccountSourceFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAccountSourceToJson(this);
 
   /// デフォルトの投稿公開範囲
   final String? privacy;
@@ -195,7 +201,7 @@ class MastodonAccountSource {
 }
 
 /// ユーザーロール情報
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonRole {
   const MastodonRole({
     required this.id,
@@ -209,6 +215,9 @@ class MastodonRole {
 
   factory MastodonRole.fromJson(Map<String, dynamic> json) =>
       _$MastodonRoleFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonRoleToJson(this);
 
   /// ロール ID
   final int id;

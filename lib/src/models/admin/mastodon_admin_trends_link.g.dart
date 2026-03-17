@@ -47,6 +47,29 @@ MastodonAdminTrendsLink _$MastodonAdminTrendsLinkFromJson(
   requiresReview: json['requires_review'] as bool?,
 );
 
+Map<String, dynamic> _$MastodonAdminTrendsLinkToJson(
+  MastodonAdminTrendsLink instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'url': instance.url,
+  'title': instance.title,
+  'description': instance.description,
+  'type': _$MastodonPreviewCardTypeEnumMap[instance.type]!,
+  'author_name': instance.authorName,
+  'author_url': instance.authorUrl,
+  'provider_name': instance.providerName,
+  'provider_url': instance.providerUrl,
+  'html': instance.html,
+  'width': instance.width,
+  'height': instance.height,
+  'image': instance.image,
+  'embed_url': instance.embedUrl,
+  'blurhash': instance.blurhash,
+  'authors': instance.authors,
+  'history': instance.history,
+  'requires_review': instance.requiresReview,
+};
+
 const _$MastodonPreviewCardTypeEnumMap = {
   MastodonPreviewCardType.link: 'link',
   MastodonPreviewCardType.photo: 'photo',

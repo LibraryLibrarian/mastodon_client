@@ -23,3 +23,15 @@ MastodonAdminTag _$MastodonAdminTagFromJson(Map<String, dynamic> json) =>
       requiresReview: json['requires_review'] as bool?,
       listable: json['listable'] as bool?,
     );
+
+Map<String, dynamic> _$MastodonAdminTagToJson(MastodonAdminTag instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'url': instance.url,
+      'history': instance.history,
+      'trendable': instance.trendable,
+      'usable': instance.usable,
+      'requires_review': instance.requiresReview,
+      'listable': instance.listable,
+    };

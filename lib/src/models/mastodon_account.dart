@@ -9,7 +9,7 @@ part 'mastodon_account.g.dart';
 ///
 /// `/api/v1/accounts/:id` や `/api/v1/accounts/verify_credentials` などの
 /// レスポンスに対応する
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAccount {
   const MastodonAccount({
     required this.id,
@@ -43,6 +43,9 @@ class MastodonAccount {
 
   factory MastodonAccount.fromJson(Map<String, dynamic> json) =>
       _$MastodonAccountFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAccountToJson(this);
 
   /// アカウントの内部 ID
   final String id;
@@ -146,7 +149,7 @@ class MastodonAccount {
 }
 
 /// Mastodon アカウントのプロフィールフィールド
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonField {
   const MastodonField({
     required this.name,
@@ -156,6 +159,9 @@ class MastodonField {
 
   factory MastodonField.fromJson(Map<String, dynamic> json) =>
       _$MastodonFieldFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonFieldToJson(this);
 
   /// フィールドのラベル名
   final String name;

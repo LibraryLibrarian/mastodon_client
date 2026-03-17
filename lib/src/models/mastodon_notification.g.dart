@@ -20,6 +20,18 @@ MastodonRelationshipSeveranceEvent _$MastodonRelationshipSeveranceEventFromJson(
   ),
 );
 
+Map<String, dynamic> _$MastodonRelationshipSeveranceEventToJson(
+  MastodonRelationshipSeveranceEvent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'type': instance.type,
+  'purged': instance.purged,
+  'target_name': instance.targetName,
+  'followers_count': instance.followersCount,
+  'following_count': instance.followingCount,
+  'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
+};
+
 MastodonAccountWarning _$MastodonAccountWarningFromJson(
   Map<String, dynamic> json,
 ) => MastodonAccountWarning(
@@ -31,6 +43,16 @@ MastodonAccountWarning _$MastodonAccountWarningFromJson(
     json['created_at'] as String?,
   ),
 );
+
+Map<String, dynamic> _$MastodonAccountWarningToJson(
+  MastodonAccountWarning instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'action': instance.action,
+  'text': instance.text,
+  'appeal': instance.appeal,
+  'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
+};
 
 MastodonNotification _$MastodonNotificationFromJson(
   Map<String, dynamic> json,
@@ -57,6 +79,18 @@ MastodonNotification _$MastodonNotificationFromJson(
           json['moderation_warning'] as Map<String, dynamic>,
         ),
 );
+
+Map<String, dynamic> _$MastodonNotificationToJson(
+  MastodonNotification instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'type': _$MastodonNotificationTypeEnumMap[instance.type]!,
+  'created_at': instance.createdAt.toIso8601String(),
+  'account': instance.account,
+  'status': instance.status,
+  'relationship_severance_event': instance.relationshipSeveranceEvent,
+  'moderation_warning': instance.moderationWarning,
+};
 
 const _$MastodonNotificationTypeEnumMap = {
   MastodonNotificationType.mention: 'mention',

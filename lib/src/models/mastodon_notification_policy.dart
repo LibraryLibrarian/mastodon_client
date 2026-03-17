@@ -20,7 +20,7 @@ enum NotificationFilterAction {
 /// 通知ポリシーのサマリー
 ///
 /// フィルタリングされた通知の統計情報を保持
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonNotificationPolicySummary {
   const MastodonNotificationPolicySummary({
     required this.pendingRequestsCount,
@@ -30,6 +30,10 @@ class MastodonNotificationPolicySummary {
   factory MastodonNotificationPolicySummary.fromJson(
     Map<String, dynamic> json,
   ) => _$MastodonNotificationPolicySummaryFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() =>
+      _$MastodonNotificationPolicySummaryToJson(this);
 
   /// 未処理の通知リクエスト数（最大 100）
   @JsonKey(defaultValue: 0)
@@ -45,7 +49,7 @@ class MastodonNotificationPolicySummary {
 /// `/api/v2/notifications/policy`
 ///
 /// 各カテゴリの通知に対するフィルタリングルールを保持
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonNotificationPolicy {
   const MastodonNotificationPolicy({
     required this.forNotFollowing,
@@ -58,6 +62,9 @@ class MastodonNotificationPolicy {
 
   factory MastodonNotificationPolicy.fromJson(Map<String, dynamic> json) =>
       _$MastodonNotificationPolicyFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonNotificationPolicyToJson(this);
 
   /// フォローしていないアカウントからの通知に対するアクション
   @JsonKey(

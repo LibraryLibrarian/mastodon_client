@@ -16,3 +16,14 @@ MastodonOAuthUserInfo _$MastodonOAuthUserInfoFromJson(
   profile: json['profile'] as String,
   picture: json['picture'] as String,
 );
+
+Map<String, dynamic> _$MastodonOAuthUserInfoToJson(
+  MastodonOAuthUserInfo instance,
+) => <String, dynamic>{
+  'iss': instance.iss,
+  'sub': instance.sub,
+  'name': instance.name,
+  'preferred_username': instance.preferredUsername,
+  'profile': instance.profile,
+  'picture': instance.picture,
+};

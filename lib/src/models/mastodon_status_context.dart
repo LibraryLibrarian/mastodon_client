@@ -7,7 +7,7 @@ part 'mastodon_status_context.g.dart';
 /// 投稿のコンテキスト（祖先と子孫）
 ///
 /// `GET /api/v1/statuses/{id}/context` のレスポンスに対応する
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonStatusContext {
   const MastodonStatusContext({
     required this.ancestors,
@@ -16,6 +16,9 @@ class MastodonStatusContext {
 
   factory MastodonStatusContext.fromJson(Map<String, dynamic> json) =>
       _$MastodonStatusContextFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonStatusContextToJson(this);
 
   /// 対象投稿より前の投稿（スレッドの先祖）
   @JsonKey(defaultValue: <MastodonStatus>[])

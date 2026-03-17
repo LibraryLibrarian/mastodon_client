@@ -14,3 +14,12 @@ MastodonWeeklyActivity _$MastodonWeeklyActivityFromJson(
   logins: json['logins'] as String? ?? '0',
   registrations: json['registrations'] as String? ?? '0',
 );
+
+Map<String, dynamic> _$MastodonWeeklyActivityToJson(
+  MastodonWeeklyActivity instance,
+) => <String, dynamic>{
+  'week': instance.week,
+  'statuses': instance.statuses,
+  'logins': instance.logins,
+  'registrations': instance.registrations,
+};

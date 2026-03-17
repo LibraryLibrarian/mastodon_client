@@ -8,7 +8,7 @@ part 'mastodon_proof.g.dart';
 ///
 /// **非推奨**: Mastodon 3.5.0 以降では本人確認証明機能は削除されている。
 /// 古いサーバーバージョンとの互換性のために提供される。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonProof {
   /// 各フィールドを指定して [MastodonProof] を生成する
   const MastodonProof({
@@ -20,6 +20,9 @@ class MastodonProof {
   factory MastodonProof.fromJson(Map<String, dynamic> json) =>
       _$MastodonProofFromJson(json);
 
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonProofToJson(this);
+
   /// プロバイダー上のアバターURL
   final String avatar;
 
@@ -29,7 +32,7 @@ class MastodonProof {
 }
 
 /// 本人確認証明の署名情報
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonProofSignature {
   /// 各フィールドを指定して [MastodonProofSignature] を生成する
   const MastodonProofSignature({
@@ -40,6 +43,9 @@ class MastodonProofSignature {
   /// JSON マップから [MastodonProofSignature] を生成する
   factory MastodonProofSignature.fromJson(Map<String, dynamic> json) =>
       _$MastodonProofSignatureFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonProofSignatureToJson(this);
 
   /// 署名のハッシュ値
   final String sigHash;

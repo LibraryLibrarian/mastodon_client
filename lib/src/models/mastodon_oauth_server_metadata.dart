@@ -5,7 +5,7 @@ part 'mastodon_oauth_server_metadata.g.dart';
 /// OAuth 認可サーバーメタデータを表すモデル
 ///
 /// `GET /.well-known/oauth-authorization-server` のレスポンスに対応する
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonOAuthServerMetadata {
   /// 各フィールドを指定して [MastodonOAuthServerMetadata] を生成する
   const MastodonOAuthServerMetadata({
@@ -27,6 +27,9 @@ class MastodonOAuthServerMetadata {
   /// JSON マップから [MastodonOAuthServerMetadata] を生成する
   factory MastodonOAuthServerMetadata.fromJson(Map<String, dynamic> json) =>
       _$MastodonOAuthServerMetadataFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonOAuthServerMetadataToJson(this);
 
   /// 認可サーバーの識別子 URL
   final String issuer;

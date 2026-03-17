@@ -27,6 +27,21 @@ MastodonAdminDomainBlock _$MastodonAdminDomainBlockFromJson(
   ),
 );
 
+Map<String, dynamic> _$MastodonAdminDomainBlockToJson(
+  MastodonAdminDomainBlock instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'domain': instance.domain,
+  'digest': instance.digest,
+  'severity': _$MastodonAdminDomainBlockSeverityEnumMap[instance.severity]!,
+  'reject_media': instance.rejectMedia,
+  'reject_reports': instance.rejectReports,
+  'private_comment': instance.privateComment,
+  'public_comment': instance.publicComment,
+  'obfuscate': instance.obfuscate,
+  'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
+};
+
 const _$MastodonAdminDomainBlockSeverityEnumMap = {
   MastodonAdminDomainBlockSeverity.silence: 'silence',
   MastodonAdminDomainBlockSeverity.suspend: 'suspend',

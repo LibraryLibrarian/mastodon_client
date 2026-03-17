@@ -6,7 +6,7 @@ part 'mastodon_admin_email_domain_block.g.dart';
 /// 管理者向けメールドメインブロック情報
 ///
 /// サインアップが禁止されているメールドメインの情報。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminEmailDomainBlock {
   const MastodonAdminEmailDomainBlock({
     required this.id,
@@ -17,6 +17,9 @@ class MastodonAdminEmailDomainBlock {
 
   factory MastodonAdminEmailDomainBlock.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminEmailDomainBlockFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAdminEmailDomainBlockToJson(this);
 
   /// ブロックのデータベース内 ID
   final String id;
@@ -34,7 +37,7 @@ class MastodonAdminEmailDomainBlock {
 }
 
 /// メールドメインブロックの日別利用統計
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminEmailDomainBlockHistory {
   const MastodonAdminEmailDomainBlockHistory({
     required this.day,
@@ -45,6 +48,10 @@ class MastodonAdminEmailDomainBlockHistory {
   factory MastodonAdminEmailDomainBlockHistory.fromJson(
     Map<String, dynamic> json,
   ) => _$MastodonAdminEmailDomainBlockHistoryFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() =>
+      _$MastodonAdminEmailDomainBlockHistoryToJson(this);
 
   /// 該当日の深夜0時の UNIX タイムスタンプ（文字列）
   final String day;

@@ -14,3 +14,10 @@ MastodonMarker _$MastodonMarkerFromJson(Map<String, dynamic> json) =>
         json['updated_at'] as String?,
       ),
     );
+
+Map<String, dynamic> _$MastodonMarkerToJson(MastodonMarker instance) =>
+    <String, dynamic>{
+      'last_read_id': instance.lastReadId,
+      'version': instance.version,
+      'updated_at': const SafeDateTimeConverter().toJson(instance.updatedAt),
+    };

@@ -6,7 +6,7 @@ import 'mastodon_custom_emoji.dart';
 part 'mastodon_poll.g.dart';
 
 /// 投票の選択肢
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPollOption {
   const MastodonPollOption({
     required this.title,
@@ -16,6 +16,9 @@ class MastodonPollOption {
   factory MastodonPollOption.fromJson(Map<String, dynamic> json) =>
       _$MastodonPollOptionFromJson(json);
 
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonPollOptionToJson(this);
+
   /// 選択肢のテキスト
   final String title;
 
@@ -24,7 +27,7 @@ class MastodonPollOption {
 }
 
 /// Mastodonの投票
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPoll {
   const MastodonPoll({
     required this.id,
@@ -41,6 +44,9 @@ class MastodonPoll {
 
   factory MastodonPoll.fromJson(Map<String, dynamic> json) =>
       _$MastodonPollFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonPollToJson(this);
 
   /// 投票の内部ID
   final String id;

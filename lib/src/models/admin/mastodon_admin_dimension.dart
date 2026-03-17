@@ -5,7 +5,7 @@ part 'mastodon_admin_dimension.g.dart';
 /// 管理者向けディメンション（次元）データ
 ///
 /// サーバーの定性的な統計情報を表す。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminDimension {
   const MastodonAdminDimension({
     required this.key,
@@ -14,6 +14,9 @@ class MastodonAdminDimension {
 
   factory MastodonAdminDimension.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminDimensionFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAdminDimensionToJson(this);
 
   /// ディメンションの識別キー
   final String key;
@@ -24,7 +27,7 @@ class MastodonAdminDimension {
 }
 
 /// ディメンションの個別データ項目
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminDimensionData {
   const MastodonAdminDimensionData({
     required this.key,
@@ -36,6 +39,9 @@ class MastodonAdminDimensionData {
 
   factory MastodonAdminDimensionData.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminDimensionDataFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAdminDimensionDataToJson(this);
 
   /// データ項目の識別キー
   final String key;

@@ -5,7 +5,7 @@ part 'mastodon_oembed.g.dart';
 /// Mastodon の OEmbed メタデータ
 ///
 /// `/api/oembed` のレスポンスに対応する
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonOEmbed {
   const MastodonOEmbed({
     required this.type,
@@ -23,6 +23,9 @@ class MastodonOEmbed {
 
   factory MastodonOEmbed.fromJson(Map<String, dynamic> json) =>
       _$MastodonOEmbedFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonOEmbedToJson(this);
 
   /// OEmbed タイプ。常に `"rich"`
   final String type;

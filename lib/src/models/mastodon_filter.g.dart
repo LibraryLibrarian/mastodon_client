@@ -36,6 +36,17 @@ MastodonFilter _$MastodonFilterFromJson(
   ),
 );
 
+Map<String, dynamic> _$MastodonFilterToJson(MastodonFilter instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'context': instance.context,
+      'expires_at': const SafeDateTimeConverter().toJson(instance.expiresAt),
+      'filter_action': _$MastodonFilterActionEnumMap[instance.filterAction]!,
+      'keywords': instance.keywords,
+      'statuses': instance.statuses,
+    };
+
 const _$MastodonFilterActionEnumMap = {
   MastodonFilterAction.warn: 'warn',
   MastodonFilterAction.hide: 'hide',
@@ -50,12 +61,24 @@ MastodonFilterKeyword _$MastodonFilterKeywordFromJson(
   wholeWord: json['whole_word'] as bool? ?? false,
 );
 
+Map<String, dynamic> _$MastodonFilterKeywordToJson(
+  MastodonFilterKeyword instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'keyword': instance.keyword,
+  'whole_word': instance.wholeWord,
+};
+
 MastodonFilterStatus _$MastodonFilterStatusFromJson(
   Map<String, dynamic> json,
 ) => MastodonFilterStatus(
   id: json['id'] as String,
   statusId: json['status_id'] as String? ?? '',
 );
+
+Map<String, dynamic> _$MastodonFilterStatusToJson(
+  MastodonFilterStatus instance,
+) => <String, dynamic>{'id': instance.id, 'status_id': instance.statusId};
 
 MastodonFilterV1 _$MastodonFilterV1FromJson(Map<String, dynamic> json) =>
     MastodonFilterV1(
@@ -72,3 +95,13 @@ MastodonFilterV1 _$MastodonFilterV1FromJson(Map<String, dynamic> json) =>
         json['expires_at'] as String?,
       ),
     );
+
+Map<String, dynamic> _$MastodonFilterV1ToJson(MastodonFilterV1 instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'phrase': instance.phrase,
+      'context': instance.context,
+      'expires_at': const SafeDateTimeConverter().toJson(instance.expiresAt),
+      'irreversible': instance.irreversible,
+      'whole_word': instance.wholeWord,
+    };

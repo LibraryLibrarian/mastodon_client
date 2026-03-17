@@ -14,6 +14,13 @@ MastodonNotificationPolicySummary _$MastodonNotificationPolicySummaryFromJson(
       (json['pending_notifications_count'] as num?)?.toInt() ?? 0,
 );
 
+Map<String, dynamic> _$MastodonNotificationPolicySummaryToJson(
+  MastodonNotificationPolicySummary instance,
+) => <String, dynamic>{
+  'pending_requests_count': instance.pendingRequestsCount,
+  'pending_notifications_count': instance.pendingNotificationsCount,
+};
+
 MastodonNotificationPolicy _$MastodonNotificationPolicyFromJson(
   Map<String, dynamic> json,
 ) => MastodonNotificationPolicy(
@@ -48,6 +55,22 @@ MastodonNotificationPolicy _$MastodonNotificationPolicyFromJson(
           json['summary'] as Map<String, dynamic>,
         ),
 );
+
+Map<String, dynamic> _$MastodonNotificationPolicyToJson(
+  MastodonNotificationPolicy instance,
+) => <String, dynamic>{
+  'for_not_following':
+      _$NotificationFilterActionEnumMap[instance.forNotFollowing]!,
+  'for_not_followers':
+      _$NotificationFilterActionEnumMap[instance.forNotFollowers]!,
+  'for_new_accounts':
+      _$NotificationFilterActionEnumMap[instance.forNewAccounts]!,
+  'for_private_mentions':
+      _$NotificationFilterActionEnumMap[instance.forPrivateMentions]!,
+  'for_limited_accounts':
+      _$NotificationFilterActionEnumMap[instance.forLimitedAccounts]!,
+  'summary': instance.summary,
+};
 
 const _$NotificationFilterActionEnumMap = {
   NotificationFilterAction.accept: 'accept',

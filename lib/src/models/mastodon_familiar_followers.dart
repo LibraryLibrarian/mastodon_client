@@ -5,7 +5,7 @@ import 'mastodon_account.dart';
 part 'mastodon_familiar_followers.g.dart';
 
 /// 指定アカウントをフォローしている、自分がフォロー中のアカウントの一覧
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFamiliarFollowers {
   /// 各フィールドを指定して [MastodonFamiliarFollowers] を生成する
   const MastodonFamiliarFollowers({
@@ -16,6 +16,9 @@ class MastodonFamiliarFollowers {
   /// JSON マップから [MastodonFamiliarFollowers] を生成する
   factory MastodonFamiliarFollowers.fromJson(Map<String, dynamic> json) =>
       _$MastodonFamiliarFollowersFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonFamiliarFollowersToJson(this);
 
   /// 対象アカウントの ID
   final String id;

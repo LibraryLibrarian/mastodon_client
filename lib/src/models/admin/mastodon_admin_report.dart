@@ -11,7 +11,7 @@ part 'mastodon_admin_report.g.dart';
 ///
 /// Admin API で返される通報の詳細情報。
 /// 通常の通報情報に加え、担当モデレーターや対応状況などの管理情報を含む。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminReport {
   const MastodonAdminReport({
     required this.id,
@@ -32,6 +32,9 @@ class MastodonAdminReport {
 
   factory MastodonAdminReport.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminReportFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAdminReportToJson(this);
 
   /// 通報のデータベース内 ID
   final String id;

@@ -10,7 +10,7 @@ part 'mastodon_notification_group.g.dart';
 ///
 /// `/api/v2/notifications` のレスポンスで返される通知グループを表すモデル。
 /// 同一タイプ・同一対象の通知がグループ化され、効率的に表示できる。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonNotificationGroup {
   const MastodonNotificationGroup({
     required this.groupKey,
@@ -29,6 +29,9 @@ class MastodonNotificationGroup {
 
   factory MastodonNotificationGroup.fromJson(Map<String, dynamic> json) =>
       _$MastodonNotificationGroupFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonNotificationGroupToJson(this);
 
   static Object? _readType(Map<dynamic, dynamic> json, String key) =>
       json['type'] ?? 'unknown';

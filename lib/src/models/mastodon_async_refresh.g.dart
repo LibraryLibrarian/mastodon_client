@@ -13,3 +13,11 @@ MastodonAsyncRefresh _$MastodonAsyncRefreshFromJson(
   status: json['status'] as String,
   resultCount: (json['result_count'] as num?)?.toInt(),
 );
+
+Map<String, dynamic> _$MastodonAsyncRefreshToJson(
+  MastodonAsyncRefresh instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'status': instance.status,
+  'result_count': instance.resultCount,
+};
