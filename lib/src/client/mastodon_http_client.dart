@@ -43,19 +43,27 @@ class MastodonHttpClient {
   ///
   /// `DioException` は自動的に `MastodonException` に変換される。
   /// レスポンスヘッダーやステータスコードが必要な場合は [sendRaw] を使用する。
+  ///
+  /// [contentType] を指定すると、Dio のデフォルト推論を上書きして
+  /// リクエストの Content-Type を明示的に設定できる。
   Future<T?> send<T>(
     String path, {
     String method = 'GET',
     Object? data,
     Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
+    String? contentType,
   }) async {
     try {
       final response = await dio.request<T>(
         path,
         data: data,
         queryParameters: queryParameters,
-        options: Options(method: method, headers: headers),
+        options: Options(
+          method: method,
+          headers: headers,
+          contentType: contentType,
+        ),
       );
       return response.data;
     } on DioException catch (e) {
@@ -67,19 +75,27 @@ class MastodonHttpClient {
   ///
   /// レスポンスヘッダーやステータスコードへのアクセスが必要な場合に使用する。
   /// `DioException` は自動的に `MastodonException` に変換される。
+  ///
+  /// [contentType] を指定すると、Dio のデフォルト推論を上書きして
+  /// リクエストの Content-Type を明示的に設定できる。
   Future<Response<T>> sendRaw<T>(
     String path, {
     String method = 'GET',
     Object? data,
     Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
+    String? contentType,
   }) async {
     try {
       return await dio.request<T>(
         path,
         data: data,
         queryParameters: queryParameters,
-        options: Options(method: method, headers: headers),
+        options: Options(
+          method: method,
+          headers: headers,
+          contentType: contentType,
+        ),
       );
     } on DioException catch (e) {
       throw convertDioException(e, path);

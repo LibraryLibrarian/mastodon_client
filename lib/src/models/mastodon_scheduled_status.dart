@@ -75,7 +75,10 @@ class MastodonScheduledStatusParams {
   final String? visibility;
 
   /// 返信先のステータス ID
-  final int? inReplyToId;
+  ///
+  /// サーバーから整数または文字列のどちらで返されても `String` に正規化する。
+  @JsonKey(fromJson: flexibleIdFromJson)
+  final String? inReplyToId;
 
   /// 投稿言語（ISO 639-1 コード）
   final String? language;

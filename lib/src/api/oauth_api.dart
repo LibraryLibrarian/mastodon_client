@@ -41,6 +41,7 @@ class OAuthApi {
     final data = await _http.send<Map<String, dynamic>>(
       '/oauth/token',
       method: 'POST',
+      contentType: 'application/x-www-form-urlencoded',
       data: <String, dynamic>{
         'grant_type': grantType,
         'client_id': clientId,
@@ -71,6 +72,7 @@ class OAuthApi {
     await _http.send<dynamic>(
       '/oauth/revoke',
       method: 'POST',
+      contentType: 'application/x-www-form-urlencoded',
       data: <String, dynamic>{
         'client_id': clientId,
         'client_secret': clientSecret,

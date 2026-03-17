@@ -42,7 +42,7 @@ MastodonScheduledStatusParams _$MastodonScheduledStatusParamsFromJson(
   sensitive: json['sensitive'] as bool?,
   spoilerText: json['spoiler_text'] as String?,
   visibility: json['visibility'] as String?,
-  inReplyToId: (json['in_reply_to_id'] as num?)?.toInt(),
+  inReplyToId: flexibleIdFromJson(json['in_reply_to_id']),
   language: json['language'] as String?,
   idempotency: json['idempotency'] as String?,
 );
