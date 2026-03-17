@@ -17,6 +17,7 @@ class MastodonCredentialAccountUpdateRequest {
     this.sourcePrivacy,
     this.sourceSensitive,
     this.sourceLanguage,
+    this.sourceQuotePolicy,
     this.attributionDomains,
   });
 
@@ -59,6 +60,9 @@ class MastodonCredentialAccountUpdateRequest {
   /// デフォルトの投稿言語（ISO 639-1 形式）
   final String? sourceLanguage;
 
+  /// デフォルトの引用承認ポリシー（`public`・`followers`・`nobody`）
+  final String? sourceQuotePolicy;
+
   /// 帰属ドメインのリスト
   final List<String>? attributionDomains;
 
@@ -90,11 +94,13 @@ class MastodonCredentialAccountUpdateRequest {
     }
     if (sourcePrivacy != null ||
         sourceSensitive != null ||
-        sourceLanguage != null) {
+        sourceLanguage != null ||
+        sourceQuotePolicy != null) {
       map['source'] = <String, dynamic>{
         if (sourcePrivacy != null) 'privacy': sourcePrivacy,
         if (sourceSensitive != null) 'sensitive': sourceSensitive,
         if (sourceLanguage != null) 'language': sourceLanguage,
+        if (sourceQuotePolicy != null) 'quote_policy': sourceQuotePolicy,
       };
     }
 

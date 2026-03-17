@@ -14,9 +14,6 @@ MastodonMention _$MastodonMentionFromJson(Map<String, dynamic> json) =>
       url: json['url'] as String,
     );
 
-MastodonTag _$MastodonTagFromJson(Map<String, dynamic> json) =>
-    MastodonTag(name: json['name'] as String, url: json['url'] as String);
-
 MastodonStatus _$MastodonStatusFromJson(
   Map<String, dynamic> json,
 ) => MastodonStatus(

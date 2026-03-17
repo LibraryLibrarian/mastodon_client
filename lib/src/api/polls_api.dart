@@ -1,8 +1,5 @@
-import 'package:dio/dio.dart';
-
 import '../client/mastodon_http_client.dart';
 import '../exception/mastodon_exception.dart';
-import '../internal/dio_error_handler.dart';
 import '../models/mastodon_poll.dart';
 
 /// アンケートに関するAPIクライアント
@@ -15,14 +12,8 @@ class PollsApi {
   ///
   /// `GET /api/v1/polls/{id}`
   Future<MastodonPoll> fetch(String id) async {
-    try {
-      final response = await _http.dio.get<Map<String, dynamic>>(
-        '/api/v1/polls/$id',
-      );
-      return MastodonPoll.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final data = await _http.send<Map<String, dynamic>>('/api/v1/polls/$id');
+    return MastodonPoll.fromJson(data!);
   }
 
   /// アンケートに投票
@@ -34,24 +25,19 @@ class PollsApi {
   /// すでに投票済みの場合は[MastodonAlreadyVotedException]をthrow
   Future<MastodonPoll> vote(String pollId, List<int> choices) async {
     try {
-      final response = await _http.dio.post<Map<String, dynamic>>(
+      final data = await _http.send<Map<String, dynamic>>(
         '/api/v1/polls/$pollId/votes',
+        method: 'POST',
         data: <String, dynamic>{'choices': choices},
       );
-      return MastodonPoll.fromJson(response.data!);
-    } on DioException catch (e) {
-      final statusCode = e.response?.statusCode;
-      if (statusCode == 422) {
-        final serverMessage = e.response?.data is Map<String, dynamic>
-            ? (e.response!.data as Map<String, dynamic>)['error'] as String?
-            : null;
-        final normalized = serverMessage?.toLowerCase() ?? '';
-        if (normalized.contains('already voted') ||
-            normalized.contains('already_voted')) {
-          throw const MastodonAlreadyVotedException();
-        }
+      return MastodonPoll.fromJson(data!);
+    } on MastodonValidationException catch (e) {
+      final normalized = e.serverMessage?.toLowerCase() ?? '';
+      if (normalized.contains('already voted') ||
+          normalized.contains('already_voted')) {
+        throw const MastodonAlreadyVotedException();
       }
-      throw convertDioException(e);
+      rethrow;
     }
   }
 }

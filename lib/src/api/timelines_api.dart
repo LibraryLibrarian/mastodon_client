@@ -1,7 +1,6 @@
-import 'package:dio/dio.dart';
-
 import '../client/mastodon_http_client.dart';
-import '../internal/dio_error_handler.dart';
+import '../internal/link_header_parser.dart';
+import '../models/mastodon_page.dart';
 import '../models/mastodon_status.dart';
 
 /// タイムライン取得に関するAPI
@@ -18,7 +17,7 @@ class TimelinesApi {
   /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
   /// - [maxId]: このID以前の投稿を取得する（古い方向）
   /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
-  Future<List<MastodonStatus>> fetchHome({
+  Future<MastodonPage<MastodonStatus>> fetchHome({
     int? limit,
     String? sinceId,
     String? maxId,
@@ -39,18 +38,23 @@ class TimelinesApi {
   /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
   /// - [maxId]: このID以前の投稿を取得する（古い方向）
   /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
-  Future<List<MastodonStatus>> fetchLocal({
+  /// - [onlyMedia]: `true` の場合、メディア添付のある投稿のみを返す
+  Future<MastodonPage<MastodonStatus>> fetchLocal({
     int? limit,
     String? sinceId,
     String? maxId,
     String? minId,
+    bool? onlyMedia,
   }) => _fetchTimeline(
     '/api/v1/timelines/public',
     limit: limit,
     sinceId: sinceId,
     maxId: maxId,
     minId: minId,
-    extraQuery: {'local': true},
+    extraQuery: {
+      'local': true,
+      'only_media': ?onlyMedia,
+    },
   );
 
   /// 連合タイムラインを取得する
@@ -61,17 +65,25 @@ class TimelinesApi {
   /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
   /// - [maxId]: このID以前の投稿を取得する（古い方向）
   /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
-  Future<List<MastodonStatus>> fetchFederated({
+  /// - [onlyMedia]: `true` の場合、メディア添付のある投稿のみを返す
+  /// - [remoteOnly]: `true` の場合、リモートの投稿のみを返す
+  Future<MastodonPage<MastodonStatus>> fetchFederated({
     int? limit,
     String? sinceId,
     String? maxId,
     String? minId,
+    bool? onlyMedia,
+    bool? remoteOnly,
   }) => _fetchTimeline(
     '/api/v1/timelines/public',
     limit: limit,
     sinceId: sinceId,
     maxId: maxId,
     minId: minId,
+    extraQuery: {
+      'only_media': ?onlyMedia,
+      'remote': ?remoteOnly,
+    },
   );
 
   /// 指定したハッシュタグのタイムラインを取得する
@@ -89,15 +101,15 @@ class TimelinesApi {
   /// - [any]: これらのハッシュタグのいずれかを含む投稿も対象に加える
   /// - [all]: これらのハッシュタグをすべて含む投稿のみを対象にする
   /// - [none]: これらのハッシュタグをいずれかでも含む投稿を除外する
-  Future<List<MastodonStatus>> fetchHashtag(
+  Future<MastodonPage<MastodonStatus>> fetchHashtag(
     String hashtag, {
     int? limit,
     String? sinceId,
     String? maxId,
     String? minId,
-    bool localOnly = false,
-    bool remoteOnly = false,
-    bool onlyMedia = false,
+    bool? localOnly,
+    bool? remoteOnly,
+    bool? onlyMedia,
     List<String>? any,
     List<String>? all,
     List<String>? none,
@@ -108,9 +120,9 @@ class TimelinesApi {
     maxId: maxId,
     minId: minId,
     extraQuery: {
-      if (localOnly) 'local': true,
-      if (remoteOnly) 'remote': true,
-      if (onlyMedia) 'only_media': true,
+      'local': ?localOnly,
+      'remote': ?remoteOnly,
+      'only_media': ?onlyMedia,
       if (any != null && any.isNotEmpty) 'any[]': any,
       if (all != null && all.isNotEmpty) 'all[]': all,
       if (none != null && none.isNotEmpty) 'none[]': none,
@@ -126,7 +138,7 @@ class TimelinesApi {
   /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
   /// - [maxId]: このID以前の投稿を取得する（古い方向）
   /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
-  Future<List<MastodonStatus>> fetchList(
+  Future<MastodonPage<MastodonStatus>> fetchList(
     String listId, {
     int? limit,
     String? sinceId,
@@ -149,7 +161,7 @@ class TimelinesApi {
   /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
   /// - [maxId]: このID以前の投稿を取得する（古い方向）
   /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
-  Future<List<MastodonStatus>> fetchLink(
+  Future<MastodonPage<MastodonStatus>> fetchLink(
     String url, {
     int? limit,
     String? sinceId,
@@ -164,7 +176,34 @@ class TimelinesApi {
     extraQuery: {'url': url},
   );
 
-  Future<List<MastodonStatus>> _fetchTimeline(
+  /// ダイレクトメッセージのタイムラインを取得する
+  ///
+  /// `GET /api/v1/timelines/direct`
+  ///
+  /// **非推奨**: Mastodon 2.6.0 で非推奨、3.0.0 で削除済み。
+  /// 代わりに Conversations API を使用すること。
+  ///
+  /// - [limit]: 最大取得件数（デフォルト: 20、上限: 40）
+  /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
+  /// - [maxId]: このID以前の投稿を取得する（古い方向）
+  /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
+  @Deprecated(
+    'Mastodon 3.0.0 で削除済み。代わりに ConversationsApi を使用してください',
+  )
+  Future<MastodonPage<MastodonStatus>> fetchDirect({
+    int? limit,
+    String? sinceId,
+    String? maxId,
+    String? minId,
+  }) => _fetchTimeline(
+    '/api/v1/timelines/direct',
+    limit: limit,
+    sinceId: sinceId,
+    maxId: maxId,
+    minId: minId,
+  );
+
+  Future<MastodonPage<MastodonStatus>> _fetchTimeline(
     String path, {
     int? limit,
     String? sinceId,
@@ -172,24 +211,26 @@ class TimelinesApi {
     String? minId,
     Map<String, dynamic>? extraQuery,
   }) async {
-    try {
-      final query = <String, dynamic>{
-        'limit': ?limit,
-        if (sinceId != null && sinceId.isNotEmpty) 'since_id': sinceId,
-        if (maxId != null && maxId.isNotEmpty) 'max_id': maxId,
-        if (minId != null && minId.isNotEmpty) 'min_id': minId,
-        ...?extraQuery,
-      };
-      final response = await _http.dio.get<List<dynamic>>(
-        path,
-        queryParameters: query,
-      );
-      return (response.data ?? [])
-          .whereType<Map<String, dynamic>>()
-          .map(MastodonStatus.fromJson)
-          .toList(growable: false);
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    final query = <String, dynamic>{
+      'limit': ?limit,
+      if (sinceId != null && sinceId.isNotEmpty) 'since_id': sinceId,
+      if (maxId != null && maxId.isNotEmpty) 'max_id': maxId,
+      if (minId != null && minId.isNotEmpty) 'min_id': minId,
+      ...?extraQuery,
+    };
+    final response = await _http.sendRaw<List<dynamic>>(
+      path,
+      queryParameters: query,
+    );
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const <dynamic>[])
+        .whereType<Map<String, dynamic>>()
+        .map(MastodonStatus.fromJson)
+        .toList(growable: false);
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 }

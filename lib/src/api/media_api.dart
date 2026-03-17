@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 
 import '../client/mastodon_http_client.dart';
 import '../exception/mastodon_exception.dart';
-import '../internal/dio_error_handler.dart';
 import '../models/mastodon_media_attachment.dart';
 
 /// メディアアップロードに関するAPI
@@ -31,41 +30,44 @@ class MediaApi {
   /// - [bytes]: アップロードするファイルのバイト列
   /// - [filename]: マルチパートリクエストで使用するファイル名
   /// - [description]: メディアの代替テキスト（省略可）
+  /// - [thumbnail]: カスタムサムネイル画像のバイト列（省略可）
+  /// - [thumbnailFilename]: サムネイルのファイル名（[thumbnail] 指定時に使用）
+  /// - [focus]: フォーカルポイント（`"x,y"` 形式、各値は -1.0〜1.0）
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
   Future<MastodonMediaAttachment> upload(
     Uint8List bytes,
     String filename, {
     String? description,
+    Uint8List? thumbnail,
+    String? thumbnailFilename,
+    String? focus,
   }) async {
-    try {
-      final response = await _uploadWithFallback(
-        bytes: bytes,
-        filename: filename,
-        description: description,
+    final response = await _uploadWithFallback(
+      bytes: bytes,
+      filename: filename,
+      description: description,
+      thumbnail: thumbnail,
+      thumbnailFilename: thumbnailFilename,
+      focus: focus,
+    );
+
+    final data = response.data;
+    if (data == null) {
+      throw const MastodonApiException(
+        statusCode: 0,
+        message: 'メディアAPIからのレスポンスが空です',
       );
-
-      final data = response.data;
-      if (data == null) {
-        throw const MastodonApiException(
-          statusCode: 0,
-          message: 'メディアAPIからのレスポンスが空です',
-        );
-      }
-
-      final attachment = MastodonMediaAttachment.fromJson(data);
-
-      final shouldPoll = response.statusCode == 202 && attachment.url == null;
-      if (!shouldPoll) {
-        return attachment;
-      }
-
-      return await _pollUntilReady(attachment.id);
-    } on MastodonException {
-      rethrow;
-    } on DioException catch (e) {
-      throw convertDioException(e);
     }
+
+    final attachment = MastodonMediaAttachment.fromJson(data);
+
+    final shouldPoll = response.statusCode == 202 && attachment.url == null;
+    if (!shouldPoll) {
+      return attachment;
+    }
+
+    return _pollUntilReady(attachment.id);
   }
 
   /// v2を試みて、未対応サーバーならv1にフォールバック
@@ -73,32 +75,59 @@ class MediaApi {
     required Uint8List bytes,
     required String filename,
     String? description,
+    Uint8List? thumbnail,
+    String? thumbnailFilename,
+    String? focus,
   }) async {
+    FormData buildFormData() => FormData.fromMap(<String, dynamic>{
+      'file': MultipartFile.fromBytes(bytes, filename: filename),
+      if (description != null && description.isNotEmpty)
+        'description': description,
+      if (thumbnail != null)
+        'thumbnail': MultipartFile.fromBytes(
+          thumbnail,
+          filename: thumbnailFilename ?? 'thumbnail',
+        ),
+      if (focus != null && focus.isNotEmpty) 'focus': focus,
+    });
+
     try {
-      final formData = FormData.fromMap(<String, dynamic>{
-        'file': MultipartFile.fromBytes(bytes, filename: filename),
-        if (description != null && description.isNotEmpty)
-          'description': description,
-      });
-      return await _http.dio.post<Map<String, dynamic>>(
+      return await _http.sendRaw<Map<String, dynamic>>(
         '/api/v2/media',
-        data: formData,
+        method: 'POST',
+        data: buildFormData(),
       );
-    } on DioException catch (e) {
-      final statusCode = e.response?.statusCode;
-      if (statusCode == null || !_v2FallbackStatusCodes.contains(statusCode)) {
-        rethrow;
-      }
-      final formData = FormData.fromMap(<String, dynamic>{
-        'file': MultipartFile.fromBytes(bytes, filename: filename),
-        if (description != null && description.isNotEmpty)
-          'description': description,
-      });
-      return _http.dio.post<Map<String, dynamic>>(
+    } on MastodonApiException catch (e) {
+      if (!_v2FallbackStatusCodes.contains(e.statusCode)) rethrow;
+      return _http.sendRaw<Map<String, dynamic>>(
         '/api/v1/media',
-        data: formData,
+        method: 'POST',
+        data: buildFormData(),
       );
     }
+  }
+
+  /// 指定されたIDのメディア添付ファイルを取得する
+  ///
+  /// `GET /api/v1/media/:id`
+  ///
+  /// 非同期アップロードの処理状況を確認する際などに使用する。
+  /// 処理中の場合は `url` フィールドが `null` となる。
+  ///
+  /// - [id]: 取得するメディアのID
+  ///
+  /// 失敗時は `MastodonException` のサブクラスをthrow
+  Future<MastodonMediaAttachment> fetchById(String id) async {
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/media/$id',
+    );
+    if (data == null) {
+      throw const MastodonApiException(
+        statusCode: 0,
+        message: 'メディアAPIからのレスポンスが空です',
+      );
+    }
+    return MastodonMediaAttachment.fromJson(data);
   }
 
   /// メディア添付ファイルの属性を更新して[MastodonMediaAttachment]を返す
@@ -119,43 +148,37 @@ class MediaApi {
     String? description,
     String? focus,
   }) async {
-    try {
-      final Object body;
-      if (thumbnail != null) {
-        body = FormData.fromMap(<String, dynamic>{
-          'thumbnail': MultipartFile.fromBytes(
-            thumbnail,
-            filename: thumbnailFilename ?? 'thumbnail',
-          ),
-          'description': ?description,
-          'focus': ?focus,
-        });
-      } else {
-        body = <String, dynamic>{
-          'description': ?description,
-          'focus': ?focus,
-        };
-      }
-
-      final response = await _http.dio.put<Map<String, dynamic>>(
-        '/api/v1/media/$id',
-        data: body,
-      );
-
-      final data = response.data;
-      if (data == null) {
-        throw const MastodonApiException(
-          statusCode: 0,
-          message: 'メディアAPIからのレスポンスが空です',
-        );
-      }
-
-      return MastodonMediaAttachment.fromJson(data);
-    } on MastodonException {
-      rethrow;
-    } on DioException catch (e) {
-      throw convertDioException(e);
+    final Object body;
+    if (thumbnail != null) {
+      body = FormData.fromMap(<String, dynamic>{
+        'thumbnail': MultipartFile.fromBytes(
+          thumbnail,
+          filename: thumbnailFilename ?? 'thumbnail',
+        ),
+        'description': ?description,
+        'focus': ?focus,
+      });
+    } else {
+      body = <String, dynamic>{
+        'description': ?description,
+        'focus': ?focus,
+      };
     }
+
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/media/$id',
+      method: 'PUT',
+      data: body,
+    );
+
+    if (data == null) {
+      throw const MastodonApiException(
+        statusCode: 0,
+        message: 'メディアAPIからのレスポンスが空です',
+      );
+    }
+
+    return MastodonMediaAttachment.fromJson(data);
   }
 
   /// メディア添付ファイルを削除
@@ -168,15 +191,10 @@ class MediaApi {
   ///
   /// 失敗時は `MastodonException` のサブクラスをthrow
   Future<void> delete(String id) async {
-    try {
-      await _http.dio.delete<void>(
-        '/api/v1/media/$id',
-      );
-    } on MastodonException {
-      rethrow;
-    } on DioException catch (e) {
-      throw convertDioException(e);
-    }
+    await _http.send<void>(
+      '/api/v1/media/$id',
+      method: 'DELETE',
+    );
   }
 
   /// `url`フィールドが非nullになるまでポーリングし、完了後の[MastodonMediaAttachment]を返す
@@ -185,19 +203,14 @@ class MediaApi {
       if (i > 0) {
         await Future<void>.delayed(_pollInterval);
       }
-      try {
-        final response = await _http.dio.get<Map<String, dynamic>>(
-          '/api/v1/media/$mediaId',
-        );
-        final data = response.data;
-        if (data != null) {
-          final attachment = MastodonMediaAttachment.fromJson(data);
-          if (attachment.url != null) {
-            return attachment;
-          }
+      final data = await _http.send<Map<String, dynamic>>(
+        '/api/v1/media/$mediaId',
+      );
+      if (data != null) {
+        final attachment = MastodonMediaAttachment.fromJson(data);
+        if (attachment.url != null) {
+          return attachment;
         }
-      } on DioException catch (e) {
-        throw convertDioException(e);
       }
     }
     throw MastodonMediaProcessingTimeoutException(mediaId: mediaId);

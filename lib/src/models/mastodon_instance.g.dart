@@ -55,6 +55,11 @@ MastodonTimelinesAccess _$MastodonTimelinesAccessFromJson(
       : MastodonTimelineHashtagFeeds.fromJson(
           json['hashtag_feeds'] as Map<String, dynamic>,
         ),
+  trendingLinkFeeds: json['trending_link_feeds'] == null
+      ? null
+      : MastodonTimelineLiveFeeds.fromJson(
+          json['trending_link_feeds'] as Map<String, dynamic>,
+        ),
 );
 
 MastodonInstanceUrls _$MastodonInstanceUrlsFromJson(
@@ -166,6 +171,18 @@ MastodonInstanceThumbnail _$MastodonInstanceThumbnailFromJson(
 ) => MastodonInstanceThumbnail(
   url: json['url'] as String,
   blurhash: json['blurhash'] as String?,
+  versions: json['versions'] == null
+      ? null
+      : MastodonInstanceThumbnailVersions.fromJson(
+          json['versions'] as Map<String, dynamic>,
+        ),
+);
+
+MastodonInstanceThumbnailVersions _$MastodonInstanceThumbnailVersionsFromJson(
+  Map<String, dynamic> json,
+) => MastodonInstanceThumbnailVersions(
+  at1x: json['@1x'] as String?,
+  at2x: json['@2x'] as String?,
 );
 
 MastodonInstanceUsage _$MastodonInstanceUsageFromJson(
@@ -183,6 +200,9 @@ MastodonInstanceRegistrations _$MastodonInstanceRegistrationsFromJson(
   enabled: json['enabled'] as bool? ?? false,
   approvalRequired: json['approval_required'] as bool? ?? false,
   message: json['message'] as String?,
+  url: json['url'] as String?,
+  minAge: (json['min_age'] as num?)?.toInt(),
+  reasonRequired: json['reason_required'] as bool?,
 );
 
 MastodonInstanceContact _$MastodonInstanceContactFromJson(
@@ -198,6 +218,19 @@ MastodonInstanceRule _$MastodonInstanceRuleFromJson(
   Map<String, dynamic> json,
 ) => MastodonInstanceRule(
   id: json['id'] as String,
+  text: json['text'] as String,
+  hint: json['hint'] as String?,
+  translations: (json['translations'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(
+      k,
+      MastodonInstanceRuleTranslation.fromJson(e as Map<String, dynamic>),
+    ),
+  ),
+);
+
+MastodonInstanceRuleTranslation _$MastodonInstanceRuleTranslationFromJson(
+  Map<String, dynamic> json,
+) => MastodonInstanceRuleTranslation(
   text: json['text'] as String,
   hint: json['hint'] as String?,
 );
@@ -219,6 +252,9 @@ MastodonInstance _$MastodonInstanceFromJson(
       [],
   sourceUrl: json['source_url'] as String?,
   description: json['description'] as String?,
+  icon: (json['icon'] as List<dynamic>?)
+      ?.map((e) => MastodonInstanceIcon.fromJson(e as Map<String, dynamic>))
+      .toList(),
   thumbnail: json['thumbnail'] == null
       ? null
       : MastodonInstanceThumbnail.fromJson(
@@ -244,4 +280,11 @@ MastodonInstance _$MastodonInstanceFromJson(
       (MastodonInstance._readApiVersionMastodon(json, 'api_version_mastodon')
               as num?)
           ?.toInt(),
+);
+
+MastodonInstanceIcon _$MastodonInstanceIconFromJson(
+  Map<String, dynamic> json,
+) => MastodonInstanceIcon(
+  src: json['src'] as String,
+  size: json['size'] as String,
 );

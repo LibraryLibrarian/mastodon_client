@@ -53,6 +53,7 @@ class MastodonStatusEditRequest {
     this.mediaIds,
     this.mediaAttributes,
     this.poll,
+    this.quoteApprovalPolicy,
   });
 
   /// 投稿本文
@@ -75,6 +76,9 @@ class MastodonStatusEditRequest {
 
   /// アンケートのパラメーター
   final MastodonPollEditRequest? poll;
+
+  /// 引用の承認ポリシー（`public`・`followers`・`nobody`）
+  final String? quoteApprovalPolicy;
 
   /// リクエストボディ用のJSONマップを返す
   Map<String, dynamic> toJson() {
@@ -113,6 +117,9 @@ class MastodonStatusEditRequest {
         'multiple': poll!.multiple,
         'hide_totals': poll!.hideTotals,
       };
+    }
+    if (quoteApprovalPolicy != null) {
+      map['quote_approval_policy'] = quoteApprovalPolicy;
     }
 
     return map;

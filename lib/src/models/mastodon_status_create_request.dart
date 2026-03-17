@@ -7,6 +7,7 @@ class MastodonPollCreateRequest {
     required this.options,
     required this.expiresIn,
     this.multiple = false,
+    this.hideTotals = false,
   });
 
   /// 選択肢の一覧
@@ -17,6 +18,9 @@ class MastodonPollCreateRequest {
 
   /// 複数選択を許可するか否か
   final bool multiple;
+
+  /// 投票終了まで集計結果を非表示にするか否か
+  final bool hideTotals;
 }
 
 /// 投稿作成リクエストのパラメーター
@@ -33,6 +37,7 @@ class MastodonStatusCreateRequest {
     this.quotedStatusId,
     this.quoteApprovalPolicy,
     this.language,
+    this.scheduledAt,
   });
 
   /// 投稿本文
@@ -69,6 +74,12 @@ class MastodonStatusCreateRequest {
   /// 投稿言語コード（ISO 639-1形式）
   final String? language;
 
+  /// 予約投稿の公開日時（ISO 8601 形式）
+  ///
+  /// 指定した場合、投稿は即座に公開されずに予約される。
+  /// 現在時刻から少なくとも5分以上先を指定する必要がある。
+  final String? scheduledAt;
+
   /// リクエストボディ用のJSONマップを返す
   Map<String, dynamic> toJson() {
     final visibilityString = switch (visibility) {
@@ -100,6 +111,7 @@ class MastodonStatusCreateRequest {
         'options': poll!.options,
         'expires_in': poll!.expiresIn,
         'multiple': poll!.multiple,
+        'hide_totals': poll!.hideTotals,
       };
     }
     if (quotedStatusId != null) {
@@ -110,6 +122,9 @@ class MastodonStatusCreateRequest {
     }
     if (language != null) {
       map['language'] = language;
+    }
+    if (scheduledAt != null) {
+      map['scheduled_at'] = scheduledAt;
     }
 
     return map;

@@ -85,6 +85,7 @@ class MastodonTimelinesAccess {
   const MastodonTimelinesAccess({
     this.liveFeeds,
     this.hashtagFeeds,
+    this.trendingLinkFeeds,
   });
 
   factory MastodonTimelinesAccess.fromJson(Map<String, dynamic> json) =>
@@ -95,6 +96,9 @@ class MastodonTimelinesAccess {
 
   /// ハッシュタグフィードのアクセス設定
   final MastodonTimelineHashtagFeeds? hashtagFeeds;
+
+  /// トレンドリンクフィードのアクセス設定（Mastodon 4.5+）
+  final MastodonTimelineLiveFeeds? trendingLinkFeeds;
 }
 
 /// インスタンスのURL設定（`configuration.urls`）
@@ -321,13 +325,41 @@ class MastodonInstanceConfiguration {
 /// インスタンスのサムネイル画像情報（`thumbnail`）
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class MastodonInstanceThumbnail {
-  const MastodonInstanceThumbnail({required this.url, this.blurhash});
+  const MastodonInstanceThumbnail({
+    required this.url,
+    this.blurhash,
+    this.versions,
+  });
 
   factory MastodonInstanceThumbnail.fromJson(Map<String, dynamic> json) =>
       _$MastodonInstanceThumbnailFromJson(json);
 
+  /// サムネイル画像のURL
   final String url;
+
+  /// サムネイル画像のBlurhash
   final String? blurhash;
+
+  /// 解像度別サムネイルバージョン
+  final MastodonInstanceThumbnailVersions? versions;
+}
+
+/// サムネイル画像の解像度別バージョン（`thumbnail.versions`）
+@JsonSerializable(createToJson: false)
+class MastodonInstanceThumbnailVersions {
+  const MastodonInstanceThumbnailVersions({this.at1x, this.at2x});
+
+  factory MastodonInstanceThumbnailVersions.fromJson(
+    Map<String, dynamic> json,
+  ) => _$MastodonInstanceThumbnailVersionsFromJson(json);
+
+  /// 標準解像度（1x）のサムネイルURL
+  @JsonKey(name: '@1x')
+  final String? at1x;
+
+  /// 高解像度（2x）のサムネイルURL
+  @JsonKey(name: '@2x')
+  final String? at2x;
 }
 
 /// インスタンスの利用状況（`usage`）
@@ -353,6 +385,9 @@ class MastodonInstanceRegistrations {
     required this.enabled,
     required this.approvalRequired,
     this.message,
+    this.url,
+    this.minAge,
+    this.reasonRequired,
   });
 
   factory MastodonInstanceRegistrations.fromJson(Map<String, dynamic> json) =>
@@ -368,6 +403,15 @@ class MastodonInstanceRegistrations {
 
   /// 登録を停止している場合に表示するメッセージ
   final String? message;
+
+  /// 外部認証（SSO等）で使用するカスタム登録URL（Mastodon 4.2+）
+  final String? url;
+
+  /// 登録に必要な最小年齢（Mastodon 4.4+）
+  final int? minAge;
+
+  /// 承認制の場合に登録理由の入力が必要かどうか（Mastodon 4.4+）
+  final bool? reasonRequired;
 }
 
 /// インスタンスの連絡先情報（`contact`）
@@ -392,15 +436,41 @@ class MastodonInstanceRule {
     required this.id,
     required this.text,
     this.hint,
+    this.translations,
   });
 
   factory MastodonInstanceRule.fromJson(Map<String, dynamic> json) =>
       _$MastodonInstanceRuleFromJson(json);
 
+  /// 規約の ID
   final String id;
+
+  /// 規約の本文
   final String text;
 
   /// 規約の補足説明
+  final String? hint;
+
+  /// 言語コードをキーとする翻訳マップ
+  final Map<String, MastodonInstanceRuleTranslation>? translations;
+}
+
+/// インスタンス規約の翻訳（`rules[].translations`）
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+class MastodonInstanceRuleTranslation {
+  const MastodonInstanceRuleTranslation({
+    required this.text,
+    this.hint,
+  });
+
+  factory MastodonInstanceRuleTranslation.fromJson(
+    Map<String, dynamic> json,
+  ) => _$MastodonInstanceRuleTranslationFromJson(json);
+
+  /// 翻訳された規約の本文
+  final String text;
+
+  /// 翻訳された規約の補足説明
   final String? hint;
 }
 
@@ -417,6 +487,7 @@ class MastodonInstance {
     required this.rules,
     this.sourceUrl,
     this.description,
+    this.icon,
     this.thumbnail,
     this.usage,
     this.contact,
@@ -453,6 +524,9 @@ class MastodonInstance {
   /// インスタンスの説明文（HTML形式）
   final String? description;
 
+  /// インスタンスのアイコン画像リスト（Mastodon 4.3+）
+  final List<MastodonInstanceIcon>? icon;
+
   /// インスタンスのサムネイル画像
   final MastodonInstanceThumbnail? thumbnail;
 
@@ -479,4 +553,22 @@ class MastodonInstance {
   /// MastodonAPI バージョン番号（`api_versions.mastodon`）
   @JsonKey(readValue: _readApiVersionMastodon)
   final int? apiVersionMastodon;
+}
+
+/// インスタンスのアイコン画像（`icon`、Mastodon 4.3+）
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+class MastodonInstanceIcon {
+  const MastodonInstanceIcon({
+    required this.src,
+    required this.size,
+  });
+
+  factory MastodonInstanceIcon.fromJson(Map<String, dynamic> json) =>
+      _$MastodonInstanceIconFromJson(json);
+
+  /// アイコン画像のURL
+  final String src;
+
+  /// アイコンのサイズ（例: `48x48`、`72x72`）
+  final String size;
 }

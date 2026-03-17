@@ -19,34 +19,68 @@ class MastodonApiException extends MastodonException {
   const MastodonApiException({
     required this.statusCode,
     required String message,
+    this.endpoint,
+    this.raw,
   }) : super(message);
 
   final int statusCode;
 
+  /// エラーが発生したAPIエンドポイント
+  final String? endpoint;
+
+  /// 元例外やエラーオブジェクト
+  final Object? raw;
+
   @override
-  String toString() => '$runtimeType($statusCode): $message';
+  String toString() =>
+      '$runtimeType($statusCode): $message'
+      '${endpoint != null ? ' endpoint=$endpoint' : ''}';
 }
 
 /// 認証エラー（HTTP 401）
 ///
 /// アクセストークンが無効または期限切れ
 class MastodonUnauthorizedException extends MastodonApiException {
-  const MastodonUnauthorizedException({super.message = 'Unauthorized'})
-    : super(statusCode: 401);
+  const MastodonUnauthorizedException({
+    super.message = 'Unauthorized',
+    super.endpoint,
+    super.raw,
+  }) : super(statusCode: 401);
 }
 
 /// 権限エラー（HTTP 403）
 ///
 /// 操作が許可されていない
 class MastodonForbiddenException extends MastodonApiException {
-  const MastodonForbiddenException({super.message = 'Forbidden'})
-    : super(statusCode: 403);
+  const MastodonForbiddenException({
+    super.message = 'Forbidden',
+    super.endpoint,
+    super.raw,
+  }) : super(statusCode: 403);
 }
 
 /// リソースが見つからない（HTTP 404）
 class MastodonNotFoundException extends MastodonApiException {
-  const MastodonNotFoundException({super.message = 'Not found'})
-    : super(statusCode: 404);
+  const MastodonNotFoundException({
+    super.message = 'Not found',
+    super.endpoint,
+    super.raw,
+  }) : super(statusCode: 404);
+}
+
+/// レートリミットエラー（HTTP 429）
+///
+/// リクエスト頻度が制限を超えた
+class MastodonRateLimitException extends MastodonApiException {
+  const MastodonRateLimitException({
+    super.message = 'Rate limited',
+    super.endpoint,
+    super.raw,
+    this.retryAfter,
+  }) : super(statusCode: 429);
+
+  /// サーバーが示した推奨待機時間
+  final Duration? retryAfter;
 }
 
 /// バリデーションエラー（HTTP 422）
@@ -57,6 +91,8 @@ class MastodonNotFoundException extends MastodonApiException {
 class MastodonValidationException extends MastodonApiException {
   const MastodonValidationException({
     super.message = 'Unprocessable entity',
+    super.endpoint,
+    super.raw,
     this.serverMessage,
   }) : super(statusCode: 422);
 
@@ -69,6 +105,8 @@ class MastodonServerException extends MastodonApiException {
   const MastodonServerException({
     required super.statusCode,
     super.message = 'Server error',
+    super.endpoint,
+    super.raw,
   });
 }
 
@@ -80,8 +118,12 @@ class MastodonServerException extends MastodonApiException {
 class MastodonNetworkException extends MastodonException {
   const MastodonNetworkException({
     String message = 'Network error',
+    this.endpoint,
     this.cause,
   }) : super(message);
+
+  /// エラーが発生したAPIエンドポイント
+  final String? endpoint;
 
   /// 元となった例外
   final Object? cause;
