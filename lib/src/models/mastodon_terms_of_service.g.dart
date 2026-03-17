@@ -14,3 +14,12 @@ MastodonTermsOfService _$MastodonTermsOfServiceFromJson(
   content: json['content'] as String? ?? '',
   succeededBy: json['succeeded_by'] as String?,
 );
+
+Map<String, dynamic> _$MastodonTermsOfServiceToJson(
+  MastodonTermsOfService instance,
+) => <String, dynamic>{
+  'effective_date': instance.effectiveDate,
+  'effective': instance.effective,
+  'content': instance.content,
+  'succeeded_by': instance.succeededBy,
+};

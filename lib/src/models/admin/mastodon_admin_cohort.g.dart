@@ -20,6 +20,14 @@ MastodonAdminCohort _$MastodonAdminCohortFromJson(Map<String, dynamic> json) =>
           [],
     );
 
+Map<String, dynamic> _$MastodonAdminCohortToJson(
+  MastodonAdminCohort instance,
+) => <String, dynamic>{
+  'period': const SafeDateTimeConverter().toJson(instance.period),
+  'frequency': instance.frequency,
+  'data': instance.data,
+};
+
 MastodonAdminCohortData _$MastodonAdminCohortDataFromJson(
   Map<String, dynamic> json,
 ) => MastodonAdminCohortData(
@@ -27,3 +35,11 @@ MastodonAdminCohortData _$MastodonAdminCohortDataFromJson(
   rate: (json['rate'] as num).toDouble(),
   value: json['value'] as String,
 );
+
+Map<String, dynamic> _$MastodonAdminCohortDataToJson(
+  MastodonAdminCohortData instance,
+) => <String, dynamic>{
+  'date': const SafeDateTimeConverter().toJson(instance.date),
+  'rate': instance.rate,
+  'value': instance.value,
+};

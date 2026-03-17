@@ -5,7 +5,7 @@ part 'mastodon_admin_canonical_email_block.g.dart';
 /// 管理者向け正規化メールブロック情報
 ///
 /// 正規化されたメールアドレスのハッシュによるブロック情報。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminCanonicalEmailBlock {
   const MastodonAdminCanonicalEmailBlock({
     required this.id,
@@ -15,6 +15,10 @@ class MastodonAdminCanonicalEmailBlock {
   factory MastodonAdminCanonicalEmailBlock.fromJson(
     Map<String, dynamic> json,
   ) => _$MastodonAdminCanonicalEmailBlockFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() =>
+      _$MastodonAdminCanonicalEmailBlockToJson(this);
 
   /// ブロックのデータベース内 ID
   final String id;

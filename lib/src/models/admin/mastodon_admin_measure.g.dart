@@ -23,9 +23,24 @@ MastodonAdminMeasure _$MastodonAdminMeasureFromJson(
       [],
 );
 
+Map<String, dynamic> _$MastodonAdminMeasureToJson(
+  MastodonAdminMeasure instance,
+) => <String, dynamic>{
+  'key': instance.key,
+  'unit': instance.unit,
+  'total': instance.total,
+  'human_value': instance.humanValue,
+  'previous_total': instance.previousTotal,
+  'data': instance.data,
+};
+
 MastodonAdminMeasureData _$MastodonAdminMeasureDataFromJson(
   Map<String, dynamic> json,
 ) => MastodonAdminMeasureData(
   date: json['date'] as String,
   value: json['value'] as String,
 );
+
+Map<String, dynamic> _$MastodonAdminMeasureDataToJson(
+  MastodonAdminMeasureData instance,
+) => <String, dynamic>{'date': instance.date, 'value': instance.value};

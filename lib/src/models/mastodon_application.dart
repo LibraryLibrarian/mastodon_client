@@ -5,7 +5,7 @@ part 'mastodon_application.g.dart';
 /// OAuth アプリケーション情報を表すモデル
 ///
 /// `GET /api/v1/apps/verify_credentials` のレスポンスに対応する
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonApplication {
   /// 各フィールドを指定して [MastodonApplication] を生成する
   const MastodonApplication({
@@ -21,6 +21,9 @@ class MastodonApplication {
   /// JSON マップから [MastodonApplication] を生成する
   factory MastodonApplication.fromJson(Map<String, dynamic> json) =>
       _$MastodonApplicationFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonApplicationToJson(this);
 
   /// アプリケーションのデータベース ID
   final String id;
@@ -50,7 +53,7 @@ class MastodonApplication {
 ///
 /// `POST /api/v1/apps` のレスポンスに対応する。
 /// [MastodonApplication] のフィールドに加え、クライアント認証情報を含む。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonCredentialApplication {
   /// 各フィールドを指定して [MastodonCredentialApplication] を生成する
   const MastodonCredentialApplication({
@@ -68,6 +71,9 @@ class MastodonCredentialApplication {
   /// JSON マップから [MastodonCredentialApplication] を生成する
   factory MastodonCredentialApplication.fromJson(Map<String, dynamic> json) =>
       _$MastodonCredentialApplicationFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonCredentialApplicationToJson(this);
 
   /// アプリケーションのデータベース ID
   final String id;

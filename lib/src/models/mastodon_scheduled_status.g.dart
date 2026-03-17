@@ -27,6 +27,15 @@ MastodonScheduledStatus _$MastodonScheduledStatusFromJson(
       [],
 );
 
+Map<String, dynamic> _$MastodonScheduledStatusToJson(
+  MastodonScheduledStatus instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'scheduled_at': const SafeDateTimeConverter().toJson(instance.scheduledAt),
+  'params': instance.params,
+  'media_attachments': instance.mediaAttachments,
+};
+
 MastodonScheduledStatusParams _$MastodonScheduledStatusParamsFromJson(
   Map<String, dynamic> json,
 ) => MastodonScheduledStatusParams(
@@ -47,6 +56,20 @@ MastodonScheduledStatusParams _$MastodonScheduledStatusParamsFromJson(
   idempotency: json['idempotency'] as String?,
 );
 
+Map<String, dynamic> _$MastodonScheduledStatusParamsToJson(
+  MastodonScheduledStatusParams instance,
+) => <String, dynamic>{
+  'text': instance.text,
+  'poll': instance.poll,
+  'media_ids': instance.mediaIds,
+  'sensitive': instance.sensitive,
+  'spoiler_text': instance.spoilerText,
+  'visibility': instance.visibility,
+  'in_reply_to_id': instance.inReplyToId,
+  'language': instance.language,
+  'idempotency': instance.idempotency,
+};
+
 MastodonScheduledStatusPoll _$MastodonScheduledStatusPollFromJson(
   Map<String, dynamic> json,
 ) => MastodonScheduledStatusPoll(
@@ -57,3 +80,12 @@ MastodonScheduledStatusPoll _$MastodonScheduledStatusPollFromJson(
   multiple: json['multiple'] as bool?,
   hideTotals: json['hide_totals'] as bool?,
 );
+
+Map<String, dynamic> _$MastodonScheduledStatusPollToJson(
+  MastodonScheduledStatusPoll instance,
+) => <String, dynamic>{
+  'options': instance.options,
+  'expires_in': instance.expiresIn,
+  'multiple': instance.multiple,
+  'hide_totals': instance.hideTotals,
+};

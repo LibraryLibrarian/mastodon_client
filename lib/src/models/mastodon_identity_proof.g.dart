@@ -15,3 +15,13 @@ MastodonIdentityProof _$MastodonIdentityProofFromJson(
   proofUrl: json['proof_url'] as String,
   profileUrl: json['profile_url'] as String,
 );
+
+Map<String, dynamic> _$MastodonIdentityProofToJson(
+  MastodonIdentityProof instance,
+) => <String, dynamic>{
+  'provider': instance.provider,
+  'provider_username': instance.providerUsername,
+  'updated_at': instance.updatedAt,
+  'proof_url': instance.proofUrl,
+  'profile_url': instance.profileUrl,
+};

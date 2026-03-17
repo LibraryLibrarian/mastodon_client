@@ -5,7 +5,7 @@ part 'mastodon_admin_measure.g.dart';
 /// 管理者向けメジャー（定量）データ
 ///
 /// サーバーの定量的な統計情報を表す。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminMeasure {
   const MastodonAdminMeasure({
     required this.key,
@@ -18,6 +18,9 @@ class MastodonAdminMeasure {
 
   factory MastodonAdminMeasure.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminMeasureFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAdminMeasureToJson(this);
 
   /// メジャーの識別キー
   final String key;
@@ -40,7 +43,7 @@ class MastodonAdminMeasure {
 }
 
 /// メジャーの日別データ
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminMeasureData {
   const MastodonAdminMeasureData({
     required this.date,
@@ -49,6 +52,9 @@ class MastodonAdminMeasureData {
 
   factory MastodonAdminMeasureData.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminMeasureDataFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAdminMeasureDataToJson(this);
 
   /// 日付（深夜0時のタイムスタンプ）
   final String date;

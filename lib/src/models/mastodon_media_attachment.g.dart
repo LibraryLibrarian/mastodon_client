@@ -22,6 +22,18 @@ MastodonMediaAttachment _$MastodonMediaAttachmentFromJson(
   blurhash: json['blurhash'] as String?,
 );
 
+Map<String, dynamic> _$MastodonMediaAttachmentToJson(
+  MastodonMediaAttachment instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'type': _$MastodonMediaTypeEnumMap[instance.type]!,
+  'url': instance.url,
+  'preview_url': instance.previewUrl,
+  'remote_url': instance.remoteUrl,
+  'description': instance.description,
+  'blurhash': instance.blurhash,
+};
+
 const _$MastodonMediaTypeEnumMap = {
   MastodonMediaType.unknown: 'unknown',
   MastodonMediaType.image: 'image',

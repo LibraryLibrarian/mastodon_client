@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'mastodon_relationship.g.dart';
 
 /// 2つのアカウント間のリレーションシップ（フォロー・ブロック・ミュート等の関係）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonRelationship {
   /// 各フィールドを指定して [MastodonRelationship] を生成する
   const MastodonRelationship({
@@ -27,6 +27,9 @@ class MastodonRelationship {
   /// JSON マップから [MastodonRelationship] を生成する
   factory MastodonRelationship.fromJson(Map<String, dynamic> json) =>
       _$MastodonRelationshipFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonRelationshipToJson(this);
 
   /// 対象アカウントの ID
   final String id;

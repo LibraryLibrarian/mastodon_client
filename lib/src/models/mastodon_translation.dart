@@ -5,7 +5,7 @@ part 'mastodon_translation.g.dart';
 /// 投稿の翻訳結果
 ///
 /// `POST /api/v1/statuses/:id/translate`
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTranslation {
   const MastodonTranslation({
     required this.content,
@@ -19,6 +19,9 @@ class MastodonTranslation {
 
   factory MastodonTranslation.fromJson(Map<String, dynamic> json) =>
       _$MastodonTranslationFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonTranslationToJson(this);
 
   /// 翻訳済みの投稿本文（HTML形式）
   @JsonKey(defaultValue: '')
@@ -49,7 +52,7 @@ class MastodonTranslation {
 }
 
 /// 翻訳結果内のメディア添付情報
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTranslationAttachment {
   const MastodonTranslationAttachment({
     required this.id,
@@ -58,6 +61,9 @@ class MastodonTranslationAttachment {
 
   factory MastodonTranslationAttachment.fromJson(Map<String, dynamic> json) =>
       _$MastodonTranslationAttachmentFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonTranslationAttachmentToJson(this);
 
   /// メディアの内部ID
   final String id;
@@ -68,7 +74,7 @@ class MastodonTranslationAttachment {
 }
 
 /// 翻訳結果内の投票情報
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTranslationPoll {
   const MastodonTranslationPoll({
     required this.id,
@@ -77,6 +83,9 @@ class MastodonTranslationPoll {
 
   factory MastodonTranslationPoll.fromJson(Map<String, dynamic> json) =>
       _$MastodonTranslationPollFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonTranslationPollToJson(this);
 
   /// 投票の内部ID
   final String id;
@@ -87,12 +96,15 @@ class MastodonTranslationPoll {
 }
 
 /// 翻訳結果内の投票選択肢
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTranslationPollOption {
   const MastodonTranslationPollOption({required this.title});
 
   factory MastodonTranslationPollOption.fromJson(Map<String, dynamic> json) =>
       _$MastodonTranslationPollOptionFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonTranslationPollOptionToJson(this);
 
   /// 翻訳済みの選択肢テキスト
   final String title;

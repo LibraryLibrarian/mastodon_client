@@ -20,3 +20,16 @@ MastodonAdminPreviewCardProvider _$MastodonAdminPreviewCardProviderFromJson(
   ),
   requiresReview: json['requires_review'] as bool?,
 );
+
+Map<String, dynamic> _$MastodonAdminPreviewCardProviderToJson(
+  MastodonAdminPreviewCardProvider instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'domain': instance.domain,
+  'trendable': instance.trendable,
+  'reviewed_at': const SafeDateTimeConverter().toJson(instance.reviewedAt),
+  'requested_review_at': const SafeDateTimeConverter().toJson(
+    instance.requestedReviewAt,
+  ),
+  'requires_review': instance.requiresReview,
+};

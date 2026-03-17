@@ -16,6 +16,16 @@ MastodonAnnouncementReaction _$MastodonAnnouncementReactionFromJson(
   staticUrl: json['static_url'] as String?,
 );
 
+Map<String, dynamic> _$MastodonAnnouncementReactionToJson(
+  MastodonAnnouncementReaction instance,
+) => <String, dynamic>{
+  'name': instance.name,
+  'count': instance.count,
+  'me': instance.me,
+  'url': instance.url,
+  'static_url': instance.staticUrl,
+};
+
 MastodonAnnouncement _$MastodonAnnouncementFromJson(
   Map<String, dynamic> json,
 ) => MastodonAnnouncement(
@@ -67,9 +77,31 @@ MastodonAnnouncement _$MastodonAnnouncementFromJson(
   ),
 );
 
+Map<String, dynamic> _$MastodonAnnouncementToJson(
+  MastodonAnnouncement instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'content': instance.content,
+  'starts_at': const SafeDateTimeConverter().toJson(instance.startsAt),
+  'ends_at': const SafeDateTimeConverter().toJson(instance.endsAt),
+  'all_day': instance.allDay,
+  'published_at': const SafeDateTimeConverter().toJson(instance.publishedAt),
+  'updated_at': const SafeDateTimeConverter().toJson(instance.updatedAt),
+  'read': instance.read,
+  'emojis': instance.emojis,
+  'reactions': instance.reactions,
+  'tags': instance.tags,
+  'mentions': instance.mentions,
+  'statuses': instance.statuses,
+};
+
 MastodonAnnouncementStatus _$MastodonAnnouncementStatusFromJson(
   Map<String, dynamic> json,
 ) => MastodonAnnouncementStatus(
   id: json['id'] as String,
   url: json['url'] as String? ?? '',
 );
+
+Map<String, dynamic> _$MastodonAnnouncementStatusToJson(
+  MastodonAnnouncementStatus instance,
+) => <String, dynamic>{'id': instance.id, 'url': instance.url};

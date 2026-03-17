@@ -40,6 +40,30 @@ MastodonAdminAccount _$MastodonAdminAccountFromJson(
   invitedByAccountId: json['invited_by_account_id'] as String?,
 );
 
+Map<String, dynamic> _$MastodonAdminAccountToJson(
+  MastodonAdminAccount instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'username': instance.username,
+  'domain': instance.domain,
+  'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
+  'email': instance.email,
+  'ip': instance.ip,
+  'ips': instance.ips,
+  'locale': instance.locale,
+  'invite_request': instance.inviteRequest,
+  'role': instance.role,
+  'confirmed': instance.confirmed,
+  'approved': instance.approved,
+  'disabled': instance.disabled,
+  'sensitized': instance.sensitized,
+  'silenced': instance.silenced,
+  'suspended': instance.suspended,
+  'account': instance.account,
+  'created_by_application_id': instance.createdByApplicationId,
+  'invited_by_account_id': instance.invitedByAccountId,
+};
+
 MastodonAdminIp _$MastodonAdminIpFromJson(Map<String, dynamic> json) =>
     MastodonAdminIp(
       ip: json['ip'] as String,
@@ -47,6 +71,12 @@ MastodonAdminIp _$MastodonAdminIpFromJson(Map<String, dynamic> json) =>
         json['used_at'] as String?,
       ),
     );
+
+Map<String, dynamic> _$MastodonAdminIpToJson(MastodonAdminIp instance) =>
+    <String, dynamic>{
+      'ip': instance.ip,
+      'used_at': const SafeDateTimeConverter().toJson(instance.usedAt),
+    };
 
 MastodonAdminRole _$MastodonAdminRoleFromJson(Map<String, dynamic> json) =>
     MastodonAdminRole(
@@ -63,3 +93,15 @@ MastodonAdminRole _$MastodonAdminRoleFromJson(Map<String, dynamic> json) =>
         json['updated_at'] as String?,
       ),
     );
+
+Map<String, dynamic> _$MastodonAdminRoleToJson(MastodonAdminRole instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'color': instance.color,
+      'position': instance.position,
+      'permissions': instance.permissions,
+      'highlighted': instance.highlighted,
+      'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
+      'updated_at': const SafeDateTimeConverter().toJson(instance.updatedAt),
+    };

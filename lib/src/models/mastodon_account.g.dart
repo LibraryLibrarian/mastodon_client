@@ -53,6 +53,38 @@ MastodonAccount _$MastodonAccountFromJson(Map<String, dynamic> json) =>
       headerBlurhash: json['header_blurhash'] as String?,
     );
 
+Map<String, dynamic> _$MastodonAccountToJson(
+  MastodonAccount instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'username': instance.username,
+  'acct': instance.acct,
+  'display_name': instance.displayName,
+  'note': instance.note,
+  'url': instance.url,
+  'avatar': instance.avatarUrl,
+  'avatar_static': instance.avatarStaticUrl,
+  'header': instance.headerUrl,
+  'header_static': instance.headerStaticUrl,
+  'locked': instance.locked,
+  'bot': instance.bot,
+  'discoverable': instance.discoverable,
+  'noindex': instance.noindex,
+  'followers_count': instance.followersCount,
+  'following_count': instance.followingCount,
+  'statuses_count': instance.statusesCount,
+  'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
+  'last_status_at': const SafeDateTimeConverter().toJson(instance.lastStatusAt),
+  'fields': instance.fields,
+  'emojis': instance.emojis,
+  'moved': instance.moved,
+  'suspended': instance.suspended,
+  'limited': instance.limited,
+  'hide_collections': instance.hideCollections,
+  'avatar_blurhash': instance.avatarBlurhash,
+  'header_blurhash': instance.headerBlurhash,
+};
+
 MastodonField _$MastodonFieldFromJson(Map<String, dynamic> json) =>
     MastodonField(
       name: json['name'] as String,
@@ -61,3 +93,10 @@ MastodonField _$MastodonFieldFromJson(Map<String, dynamic> json) =>
         json['verified_at'] as String?,
       ),
     );
+
+Map<String, dynamic> _$MastodonFieldToJson(MastodonField instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'value': instance.value,
+      'verified_at': const SafeDateTimeConverter().toJson(instance.verifiedAt),
+    };

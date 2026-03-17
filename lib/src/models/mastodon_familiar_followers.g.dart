@@ -16,3 +16,7 @@ MastodonFamiliarFollowers _$MastodonFamiliarFollowersFromJson(
           .toList() ??
       [],
 );
+
+Map<String, dynamic> _$MastodonFamiliarFollowersToJson(
+  MastodonFamiliarFollowers instance,
+) => <String, dynamic>{'id': instance.id, 'accounts': instance.accounts};

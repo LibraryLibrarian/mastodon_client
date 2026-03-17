@@ -6,7 +6,7 @@ part 'mastodon_preferences.g.dart';
 ///
 /// `GET /api/v1/preferences` で取得される。
 /// 設定の変更は `PATCH /api/v1/accounts/update_credentials` で行う。
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class MastodonPreferences {
   /// 各フィールドを指定して [MastodonPreferences] を生成する
   const MastodonPreferences({
@@ -21,6 +21,9 @@ class MastodonPreferences {
   /// JSON マップから [MastodonPreferences] を生成する
   factory MastodonPreferences.fromJson(Map<String, dynamic> json) =>
       _$MastodonPreferencesFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonPreferencesToJson(this);
 
   /// 新規投稿のデフォルト公開範囲（`public` / `unlisted` / `private` / `direct`）
   @JsonKey(name: 'posting:default:visibility', defaultValue: 'public')

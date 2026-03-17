@@ -5,7 +5,7 @@ part 'mastodon_async_refresh.g.dart';
 /// 非同期リフレッシュ操作のステータス（実験的）
 ///
 /// `GET /api/v1_alpha/async_refreshes/:id` のレスポンスに対応する
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAsyncRefresh {
   const MastodonAsyncRefresh({
     required this.id,
@@ -15,6 +15,9 @@ class MastodonAsyncRefresh {
 
   factory MastodonAsyncRefresh.fromJson(Map<String, dynamic> json) =>
       _$MastodonAsyncRefreshFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAsyncRefreshToJson(this);
 
   /// 非同期リフレッシュの識別子
   final String id;

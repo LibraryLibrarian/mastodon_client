@@ -6,19 +6,22 @@ import 'mastodon_instance.dart';
 part 'mastodon_instance_v1.g.dart';
 
 /// v1 インスタンスのURL設定
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceV1Urls {
   const MastodonInstanceV1Urls({this.streamingApi});
 
   factory MastodonInstanceV1Urls.fromJson(Map<String, dynamic> json) =>
       _$MastodonInstanceV1UrlsFromJson(json);
 
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonInstanceV1UrlsToJson(this);
+
   /// WebSocket ストリーミング API の接続先 URL
   final String? streamingApi;
 }
 
 /// v1 インスタンスの統計情報
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceV1Stats {
   const MastodonInstanceV1Stats({
     required this.userCount,
@@ -28,6 +31,9 @@ class MastodonInstanceV1Stats {
 
   factory MastodonInstanceV1Stats.fromJson(Map<String, dynamic> json) =>
       _$MastodonInstanceV1StatsFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonInstanceV1StatsToJson(this);
 
   /// 登録ユーザー数
   @JsonKey(defaultValue: 0)
@@ -43,7 +49,7 @@ class MastodonInstanceV1Stats {
 }
 
 /// v1 インスタンスの設定情報
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceV1Configuration {
   const MastodonInstanceV1Configuration({
     this.statuses,
@@ -54,6 +60,10 @@ class MastodonInstanceV1Configuration {
   factory MastodonInstanceV1Configuration.fromJson(
     Map<String, dynamic> json,
   ) => _$MastodonInstanceV1ConfigurationFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() =>
+      _$MastodonInstanceV1ConfigurationToJson(this);
 
   /// 投稿制限設定
   final MastodonStatusesConfiguration? statuses;
@@ -70,7 +80,7 @@ class MastodonInstanceV1Configuration {
 /// `/api/v1/instance` のレスポンスに対応する。
 ///
 /// **非推奨**: Mastodon 4.0.0 以降は [MastodonInstance]（v2）を使用すること。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceV1 {
   const MastodonInstanceV1({
     required this.uri,
@@ -93,6 +103,9 @@ class MastodonInstanceV1 {
 
   factory MastodonInstanceV1.fromJson(Map<String, dynamic> json) =>
       _$MastodonInstanceV1FromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonInstanceV1ToJson(this);
 
   /// サーバーのドメイン
   final String uri;

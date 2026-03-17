@@ -14,6 +14,14 @@ MastodonTrendsLinkHistory _$MastodonTrendsLinkHistoryFromJson(
   uses: json['uses'] as String? ?? '0',
 );
 
+Map<String, dynamic> _$MastodonTrendsLinkHistoryToJson(
+  MastodonTrendsLinkHistory instance,
+) => <String, dynamic>{
+  'day': instance.day,
+  'accounts': instance.accounts,
+  'uses': instance.uses,
+};
+
 MastodonTrendsLink _$MastodonTrendsLinkFromJson(
   Map<String, dynamic> json,
 ) => MastodonTrendsLink(
@@ -52,6 +60,26 @@ MastodonTrendsLink _$MastodonTrendsLinkFromJson(
   image: json['image'] as String?,
   blurhash: json['blurhash'] as String?,
 );
+
+Map<String, dynamic> _$MastodonTrendsLinkToJson(MastodonTrendsLink instance) =>
+    <String, dynamic>{
+      'url': instance.url,
+      'title': instance.title,
+      'description': instance.description,
+      'type': _$MastodonPreviewCardTypeEnumMap[instance.type]!,
+      'author_name': instance.authorName,
+      'author_url': instance.authorUrl,
+      'provider_name': instance.providerName,
+      'provider_url': instance.providerUrl,
+      'html': instance.html,
+      'width': instance.width,
+      'height': instance.height,
+      'image': instance.image,
+      'embed_url': instance.embedUrl,
+      'blurhash': instance.blurhash,
+      'authors': instance.authors,
+      'history': instance.history,
+    };
 
 const _$MastodonPreviewCardTypeEnumMap = {
   MastodonPreviewCardType.link: 'link',

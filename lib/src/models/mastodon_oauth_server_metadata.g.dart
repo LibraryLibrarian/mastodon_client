@@ -37,3 +37,22 @@ MastodonOAuthServerMetadata _$MastodonOAuthServerMetadataFromJson(
           .map((e) => e as String)
           .toList(),
 );
+
+Map<String, dynamic> _$MastodonOAuthServerMetadataToJson(
+  MastodonOAuthServerMetadata instance,
+) => <String, dynamic>{
+  'issuer': instance.issuer,
+  'service_documentation': instance.serviceDocumentation,
+  'authorization_endpoint': instance.authorizationEndpoint,
+  'token_endpoint': instance.tokenEndpoint,
+  'app_registration_endpoint': instance.appRegistrationEndpoint,
+  'revocation_endpoint': instance.revocationEndpoint,
+  'userinfo_endpoint': instance.userinfoEndpoint,
+  'scopes_supported': instance.scopesSupported,
+  'response_types_supported': instance.responseTypesSupported,
+  'response_modes_supported': instance.responseModesSupported,
+  'code_challenge_methods_supported': instance.codeChallengeMethodsSupported,
+  'grant_types_supported': instance.grantTypesSupported,
+  'token_endpoint_auth_methods_supported':
+      instance.tokenEndpointAuthMethodsSupported,
+};

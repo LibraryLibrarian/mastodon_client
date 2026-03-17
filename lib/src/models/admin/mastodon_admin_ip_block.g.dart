@@ -25,6 +25,17 @@ MastodonAdminIpBlock _$MastodonAdminIpBlockFromJson(
   ),
 );
 
+Map<String, dynamic> _$MastodonAdminIpBlockToJson(
+  MastodonAdminIpBlock instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'ip': instance.ip,
+  'severity': _$MastodonAdminIpBlockSeverityEnumMap[instance.severity]!,
+  'comment': instance.comment,
+  'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
+  'expires_at': const SafeDateTimeConverter().toJson(instance.expiresAt),
+};
+
 const _$MastodonAdminIpBlockSeverityEnumMap = {
   MastodonAdminIpBlockSeverity.signUpRequiresApproval:
       'sign_up_requires_approval',

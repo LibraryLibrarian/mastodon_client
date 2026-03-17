@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'mastodon_tag.g.dart';
 
 /// ハッシュタグ情報を表すモデル
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTag {
   /// 各フィールドを指定して [MastodonTag] を生成する
   const MastodonTag({
@@ -18,6 +18,9 @@ class MastodonTag {
   /// JSON マップから [MastodonTag] を生成する
   factory MastodonTag.fromJson(Map<String, dynamic> json) =>
       _$MastodonTagFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonTagToJson(this);
 
   /// タグのデータベース ID
   @JsonKey(defaultValue: '')
@@ -42,7 +45,7 @@ class MastodonTag {
 }
 
 /// ハッシュタグの日別利用統計
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTagHistory {
   /// 各フィールドを指定して [MastodonTagHistory] を生成する
   const MastodonTagHistory({
@@ -54,6 +57,9 @@ class MastodonTagHistory {
   /// JSON マップから [MastodonTagHistory] を生成する
   factory MastodonTagHistory.fromJson(Map<String, dynamic> json) =>
       _$MastodonTagHistoryFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonTagHistoryToJson(this);
 
   /// 該当日の深夜0時の UNIX タイムスタンプ（文字列）
   final String day;

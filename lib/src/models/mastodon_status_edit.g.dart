@@ -31,6 +31,18 @@ MastodonStatusEdit _$MastodonStatusEditFromJson(
       : MastodonStatusEditPoll.fromJson(json['poll'] as Map<String, dynamic>),
 );
 
+Map<String, dynamic> _$MastodonStatusEditToJson(MastodonStatusEdit instance) =>
+    <String, dynamic>{
+      'content': instance.content,
+      'spoiler_text': instance.spoilerText,
+      'sensitive': instance.sensitive,
+      'created_at': instance.createdAt.toIso8601String(),
+      'account': instance.account,
+      'media_attachments': instance.mediaAttachments,
+      'emojis': instance.emojis,
+      'poll': instance.poll,
+    };
+
 MastodonStatusEditPoll _$MastodonStatusEditPollFromJson(
   Map<String, dynamic> json,
 ) => MastodonStatusEditPoll(
@@ -45,6 +57,14 @@ MastodonStatusEditPoll _$MastodonStatusEditPollFromJson(
       [],
 );
 
+Map<String, dynamic> _$MastodonStatusEditPollToJson(
+  MastodonStatusEditPoll instance,
+) => <String, dynamic>{'options': instance.options};
+
 MastodonStatusEditPollOption _$MastodonStatusEditPollOptionFromJson(
   Map<String, dynamic> json,
 ) => MastodonStatusEditPollOption(title: json['title'] as String);
+
+Map<String, dynamic> _$MastodonStatusEditPollOptionToJson(
+  MastodonStatusEditPollOption instance,
+) => <String, dynamic>{'title': instance.title};

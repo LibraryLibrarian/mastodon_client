@@ -6,7 +6,7 @@ part 'mastodon_admin_cohort.g.dart';
 /// 管理者向けリテンションコホートデータ
 ///
 /// 特定の期間に登録したユーザーのリテンション率を表す。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminCohort {
   const MastodonAdminCohort({
     this.period,
@@ -16,6 +16,9 @@ class MastodonAdminCohort {
 
   factory MastodonAdminCohort.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminCohortFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAdminCohortToJson(this);
 
   /// コホート期間の開始日時（深夜0時）
   @SafeDateTimeConverter()
@@ -30,7 +33,7 @@ class MastodonAdminCohort {
 }
 
 /// コホートの個別リテンションデータ
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminCohortData {
   const MastodonAdminCohortData({
     this.date,
@@ -40,6 +43,9 @@ class MastodonAdminCohortData {
 
   factory MastodonAdminCohortData.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminCohortDataFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAdminCohortDataToJson(this);
 
   /// バケット開始日時（深夜0時）
   @SafeDateTimeConverter()

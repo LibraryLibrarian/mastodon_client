@@ -15,3 +15,11 @@ MastodonAdminDomainAllow _$MastodonAdminDomainAllowFromJson(
     json['created_at'] as String?,
   ),
 );
+
+Map<String, dynamic> _$MastodonAdminDomainAllowToJson(
+  MastodonAdminDomainAllow instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'domain': instance.domain,
+  'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
+};

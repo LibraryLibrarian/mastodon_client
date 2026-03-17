@@ -8,7 +8,7 @@ part 'mastodon_admin_account.g.dart';
 ///
 /// Admin API のレスポンスで返されるアカウント情報。
 /// 通常の [MastodonAccount] に加え、管理者向けの詳細情報を含む。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminAccount {
   const MastodonAdminAccount({
     required this.id,
@@ -34,6 +34,9 @@ class MastodonAdminAccount {
 
   factory MastodonAdminAccount.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminAccountFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAdminAccountToJson(this);
 
   /// アカウントのデータベース内 ID
   final String id;
@@ -103,7 +106,7 @@ class MastodonAdminAccount {
 }
 
 /// 管理者向け IP アドレス情報
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminIp {
   const MastodonAdminIp({
     required this.ip,
@@ -112,6 +115,9 @@ class MastodonAdminIp {
 
   factory MastodonAdminIp.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminIpFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAdminIpToJson(this);
 
   /// IP アドレス
   final String ip;
@@ -122,7 +128,7 @@ class MastodonAdminIp {
 }
 
 /// 管理者向けロール情報
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminRole {
   const MastodonAdminRole({
     required this.id,
@@ -137,6 +143,9 @@ class MastodonAdminRole {
 
   factory MastodonAdminRole.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminRoleFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAdminRoleToJson(this);
 
   /// ロールの ID
   final int id;

@@ -37,3 +37,12 @@ _$MastodonGroupedNotificationsResultsFromJson(Map<String, dynamic> json) =>
               .toList() ??
           [],
     );
+
+Map<String, dynamic> _$MastodonGroupedNotificationsResultsToJson(
+  MastodonGroupedNotificationsResults instance,
+) => <String, dynamic>{
+  'accounts': instance.accounts,
+  'partial_accounts': instance.partialAccounts,
+  'statuses': instance.statuses,
+  'notification_groups': instance.notificationGroups,
+};

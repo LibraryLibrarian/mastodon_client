@@ -25,6 +25,15 @@ MastodonAdminEmailDomainBlock _$MastodonAdminEmailDomainBlockFromJson(
       [],
 );
 
+Map<String, dynamic> _$MastodonAdminEmailDomainBlockToJson(
+  MastodonAdminEmailDomainBlock instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'domain': instance.domain,
+  'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
+  'history': instance.history,
+};
+
 MastodonAdminEmailDomainBlockHistory
 _$MastodonAdminEmailDomainBlockHistoryFromJson(Map<String, dynamic> json) =>
     MastodonAdminEmailDomainBlockHistory(
@@ -32,3 +41,11 @@ _$MastodonAdminEmailDomainBlockHistoryFromJson(Map<String, dynamic> json) =>
       accounts: json['accounts'] as String,
       uses: json['uses'] as String,
     );
+
+Map<String, dynamic> _$MastodonAdminEmailDomainBlockHistoryToJson(
+  MastodonAdminEmailDomainBlockHistory instance,
+) => <String, dynamic>{
+  'day': instance.day,
+  'accounts': instance.accounts,
+  'uses': instance.uses,
+};

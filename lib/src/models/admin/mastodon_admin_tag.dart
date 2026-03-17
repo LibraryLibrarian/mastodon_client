@@ -6,7 +6,7 @@ part 'mastodon_admin_tag.g.dart';
 /// 管理者向けハッシュタグ情報
 ///
 /// 通常の [MastodonTag] に管理者向けのトレンド管理フィールドを追加したもの。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminTag {
   const MastodonAdminTag({
     required this.id,
@@ -21,6 +21,9 @@ class MastodonAdminTag {
 
   factory MastodonAdminTag.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminTagFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAdminTagToJson(this);
 
   /// タグのデータベース ID
   @JsonKey(defaultValue: '')

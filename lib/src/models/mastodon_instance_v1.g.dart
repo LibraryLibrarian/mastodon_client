@@ -10,6 +10,10 @@ MastodonInstanceV1Urls _$MastodonInstanceV1UrlsFromJson(
   Map<String, dynamic> json,
 ) => MastodonInstanceV1Urls(streamingApi: json['streaming_api'] as String?);
 
+Map<String, dynamic> _$MastodonInstanceV1UrlsToJson(
+  MastodonInstanceV1Urls instance,
+) => <String, dynamic>{'streaming_api': instance.streamingApi};
+
 MastodonInstanceV1Stats _$MastodonInstanceV1StatsFromJson(
   Map<String, dynamic> json,
 ) => MastodonInstanceV1Stats(
@@ -17,6 +21,14 @@ MastodonInstanceV1Stats _$MastodonInstanceV1StatsFromJson(
   statusCount: (json['status_count'] as num?)?.toInt() ?? 0,
   domainCount: (json['domain_count'] as num?)?.toInt() ?? 0,
 );
+
+Map<String, dynamic> _$MastodonInstanceV1StatsToJson(
+  MastodonInstanceV1Stats instance,
+) => <String, dynamic>{
+  'user_count': instance.userCount,
+  'status_count': instance.statusCount,
+  'domain_count': instance.domainCount,
+};
 
 MastodonInstanceV1Configuration _$MastodonInstanceV1ConfigurationFromJson(
   Map<String, dynamic> json,
@@ -37,6 +49,14 @@ MastodonInstanceV1Configuration _$MastodonInstanceV1ConfigurationFromJson(
           json['polls'] as Map<String, dynamic>,
         ),
 );
+
+Map<String, dynamic> _$MastodonInstanceV1ConfigurationToJson(
+  MastodonInstanceV1Configuration instance,
+) => <String, dynamic>{
+  'statuses': instance.statuses,
+  'media_attachments': instance.mediaAttachments,
+  'polls': instance.polls,
+};
 
 MastodonInstanceV1 _$MastodonInstanceV1FromJson(
   Map<String, dynamic> json,
@@ -76,3 +96,23 @@ MastodonInstanceV1 _$MastodonInstanceV1FromJson(
           json['contact_account'] as Map<String, dynamic>,
         ),
 );
+
+Map<String, dynamic> _$MastodonInstanceV1ToJson(MastodonInstanceV1 instance) =>
+    <String, dynamic>{
+      'uri': instance.uri,
+      'title': instance.title,
+      'short_description': instance.shortDescription,
+      'description': instance.description,
+      'email': instance.email,
+      'version': instance.version,
+      'urls': instance.urls,
+      'stats': instance.stats,
+      'thumbnail': instance.thumbnail,
+      'languages': instance.languages,
+      'registrations': instance.registrations,
+      'approval_required': instance.approvalRequired,
+      'invites_enabled': instance.invitesEnabled,
+      'configuration': instance.configuration,
+      'contact_account': instance.contactAccount,
+      'rules': instance.rules,
+    };

@@ -61,7 +61,7 @@ enum MastodonNotificationType {
 }
 
 /// フォロー関係の強制解除イベント（Mastodon 4.3+）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonRelationshipSeveranceEvent {
   const MastodonRelationshipSeveranceEvent({
     required this.id,
@@ -76,6 +76,10 @@ class MastodonRelationshipSeveranceEvent {
   factory MastodonRelationshipSeveranceEvent.fromJson(
     Map<String, dynamic> json,
   ) => _$MastodonRelationshipSeveranceEventFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() =>
+      _$MastodonRelationshipSeveranceEventToJson(this);
 
   final String id;
 
@@ -102,7 +106,7 @@ class MastodonRelationshipSeveranceEvent {
 }
 
 /// モデレーション警告（Mastodon 4.3+）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAccountWarning {
   const MastodonAccountWarning({
     required this.id,
@@ -114,6 +118,9 @@ class MastodonAccountWarning {
 
   factory MastodonAccountWarning.fromJson(Map<String, dynamic> json) =>
       _$MastodonAccountWarningFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAccountWarningToJson(this);
 
   static Object? _readAppeal(Map<dynamic, dynamic> json, String key) =>
       json['appeal'] != null;
@@ -139,7 +146,7 @@ class MastodonAccountWarning {
 /// Mastodonの通知
 ///
 /// `/api/v1/notifications` のレスポンスに対応する
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonNotification {
   const MastodonNotification({
     required this.id,
@@ -153,6 +160,9 @@ class MastodonNotification {
 
   factory MastodonNotification.fromJson(Map<String, dynamic> json) =>
       _$MastodonNotificationFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonNotificationToJson(this);
 
   static Object? _readType(Map<dynamic, dynamic> json, String key) =>
       json['type'] ?? 'unknown';

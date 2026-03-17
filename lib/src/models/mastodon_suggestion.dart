@@ -5,7 +5,7 @@ import 'mastodon_account.dart';
 part 'mastodon_suggestion.g.dart';
 
 /// フォロー候補として提案されたアカウントとその理由
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonSuggestion {
   /// 各フィールドを指定して [MastodonSuggestion] を生成する
   const MastodonSuggestion({
@@ -16,6 +16,9 @@ class MastodonSuggestion {
   /// JSON マップから [MastodonSuggestion] を生成する
   factory MastodonSuggestion.fromJson(Map<String, dynamic> json) =>
       _$MastodonSuggestionFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonSuggestionToJson(this);
 
   /// 提案の理由を示す文字列
   ///

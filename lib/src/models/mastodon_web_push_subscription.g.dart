@@ -22,6 +22,22 @@ MastodonPushAlerts _$MastodonPushAlertsFromJson(Map<String, dynamic> json) =>
       adminReport: json['admin.report'] as bool? ?? false,
     );
 
+Map<String, dynamic> _$MastodonPushAlertsToJson(MastodonPushAlerts instance) =>
+    <String, dynamic>{
+      'mention': instance.mention,
+      'quote': instance.quote,
+      'status': instance.status,
+      'reblog': instance.reblog,
+      'follow': instance.follow,
+      'follow_request': instance.followRequest,
+      'favourite': instance.favourite,
+      'poll': instance.poll,
+      'update': instance.update,
+      'quoted_update': instance.quotedUpdate,
+      'admin.sign_up': instance.adminSignUp,
+      'admin.report': instance.adminReport,
+    };
+
 MastodonWebPushSubscription _$MastodonWebPushSubscriptionFromJson(
   Map<String, dynamic> json,
 ) => MastodonWebPushSubscription(
@@ -32,3 +48,14 @@ MastodonWebPushSubscription _$MastodonWebPushSubscriptionFromJson(
   policy: json['policy'] as String,
   standard: json['standard'] as bool?,
 );
+
+Map<String, dynamic> _$MastodonWebPushSubscriptionToJson(
+  MastodonWebPushSubscription instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'endpoint': instance.endpoint,
+  'server_key': instance.serverKey,
+  'alerts': instance.alerts,
+  'policy': instance.policy,
+  'standard': instance.standard,
+};

@@ -5,7 +5,7 @@ part 'mastodon_oauth_user_info.g.dart';
 /// OAuth userinfo エンドポイントのレスポンスを表すモデル
 ///
 /// `GET /oauth/userinfo` のレスポンスに対応する
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonOAuthUserInfo {
   /// 各フィールドを指定して [MastodonOAuthUserInfo] を生成する
   const MastodonOAuthUserInfo({
@@ -20,6 +20,9 @@ class MastodonOAuthUserInfo {
   /// JSON マップから [MastodonOAuthUserInfo] を生成する
   factory MastodonOAuthUserInfo.fromJson(Map<String, dynamic> json) =>
       _$MastodonOAuthUserInfoFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonOAuthUserInfoToJson(this);
 
   /// トークンを発行したインスタンスの URL
   final String iss;

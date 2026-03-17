@@ -11,7 +11,7 @@ part 'mastodon_grouped_notifications_results.g.dart';
 ///
 /// `/api/v2/notifications` のレスポンスに対応するモデル。
 /// 通知グループ・関連アカウント・関連投稿を一括で返す。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonGroupedNotificationsResults {
   const MastodonGroupedNotificationsResults({
     required this.accounts,
@@ -23,6 +23,10 @@ class MastodonGroupedNotificationsResults {
   factory MastodonGroupedNotificationsResults.fromJson(
     Map<String, dynamic> json,
   ) => _$MastodonGroupedNotificationsResultsFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() =>
+      _$MastodonGroupedNotificationsResultsToJson(this);
 
   /// 通知に関連するアカウントの一覧
   @JsonKey(defaultValue: <MastodonAccount>[])

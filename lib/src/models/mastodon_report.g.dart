@@ -31,3 +31,19 @@ MastodonReport _$MastodonReportFromJson(Map<String, dynamic> json) =>
               json['target_account'] as Map<String, dynamic>,
             ),
     );
+
+Map<String, dynamic> _$MastodonReportToJson(MastodonReport instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'action_taken': instance.actionTaken,
+      'action_taken_at': const SafeDateTimeConverter().toJson(
+        instance.actionTakenAt,
+      ),
+      'category': instance.category,
+      'comment': instance.comment,
+      'forwarded': instance.forwarded,
+      'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
+      'status_ids': instance.statusIds,
+      'rule_ids': instance.ruleIds,
+      'target_account': instance.targetAccount,
+    };

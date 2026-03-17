@@ -5,7 +5,7 @@ part 'mastodon_web_push_subscription.g.dart';
 /// Web Push 通知のアラート種別ごとの設定
 ///
 /// 各フィールドは、対応する通知タイプの Push 通知を受け取るかどうかを表す
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPushAlerts {
   const MastodonPushAlerts({
     required this.mention,
@@ -24,6 +24,9 @@ class MastodonPushAlerts {
 
   factory MastodonPushAlerts.fromJson(Map<String, dynamic> json) =>
       _$MastodonPushAlertsFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonPushAlertsToJson(this);
 
   /// メンション通知を受け取るかどうか
   @JsonKey(defaultValue: false)
@@ -78,7 +81,7 @@ class MastodonPushAlerts {
 ///
 /// `/api/v1/push/subscription` で取得・作成・更新される
 /// Push 通知の受信設定を表すエンティティ
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonWebPushSubscription {
   const MastodonWebPushSubscription({
     required this.id,
@@ -91,6 +94,9 @@ class MastodonWebPushSubscription {
 
   factory MastodonWebPushSubscription.fromJson(Map<String, dynamic> json) =>
       _$MastodonWebPushSubscriptionFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonWebPushSubscriptionToJson(this);
 
   /// サブスクリプション ID
   final String id;

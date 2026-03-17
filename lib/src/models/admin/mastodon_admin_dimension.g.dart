@@ -20,6 +20,10 @@ MastodonAdminDimension _$MastodonAdminDimensionFromJson(
       [],
 );
 
+Map<String, dynamic> _$MastodonAdminDimensionToJson(
+  MastodonAdminDimension instance,
+) => <String, dynamic>{'key': instance.key, 'data': instance.data};
+
 MastodonAdminDimensionData _$MastodonAdminDimensionDataFromJson(
   Map<String, dynamic> json,
 ) => MastodonAdminDimensionData(
@@ -29,3 +33,13 @@ MastodonAdminDimensionData _$MastodonAdminDimensionDataFromJson(
   unit: json['unit'] as String?,
   humanValue: json['human_value'] as String?,
 );
+
+Map<String, dynamic> _$MastodonAdminDimensionDataToJson(
+  MastodonAdminDimensionData instance,
+) => <String, dynamic>{
+  'key': instance.key,
+  'human_key': instance.humanKey,
+  'value': instance.value,
+  'unit': instance.unit,
+  'human_value': instance.humanValue,
+};
