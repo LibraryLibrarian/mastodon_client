@@ -18,7 +18,7 @@ enum MastodonTimelineAccessLevel {
 }
 
 /// ライブフィード（リアルタイムタイムライン）のアクセス設定
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTimelineLiveFeeds {
   const MastodonTimelineLiveFeeds({
     required this.local,
@@ -27,6 +27,9 @@ class MastodonTimelineLiveFeeds {
 
   factory MastodonTimelineLiveFeeds.fromJson(Map<String, dynamic> json) =>
       _$MastodonTimelineLiveFeedsFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonTimelineLiveFeedsToJson(this);
 
   static Object? _readLocal(Map<dynamic, dynamic> json, String key) =>
       json['local'] ?? 'public';
@@ -50,7 +53,7 @@ class MastodonTimelineLiveFeeds {
 }
 
 /// ハッシュタグフィードのアクセス設定
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTimelineHashtagFeeds {
   const MastodonTimelineHashtagFeeds({
     required this.local,
@@ -59,6 +62,9 @@ class MastodonTimelineHashtagFeeds {
 
   factory MastodonTimelineHashtagFeeds.fromJson(Map<String, dynamic> json) =>
       _$MastodonTimelineHashtagFeedsFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonTimelineHashtagFeedsToJson(this);
 
   static Object? _readLocal(Map<dynamic, dynamic> json, String key) =>
       json['local'] ?? 'public';
@@ -80,7 +86,7 @@ class MastodonTimelineHashtagFeeds {
 }
 
 /// インスタンスのタイムラインアクセス設定（`configuration.timelines_access`）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTimelinesAccess {
   const MastodonTimelinesAccess({
     this.liveFeeds,
@@ -90,6 +96,9 @@ class MastodonTimelinesAccess {
 
   factory MastodonTimelinesAccess.fromJson(Map<String, dynamic> json) =>
       _$MastodonTimelinesAccessFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonTimelinesAccessToJson(this);
 
   /// ライブフィードのアクセス設定nullの場合は両タイムラインともpublicとみなす
   final MastodonTimelineLiveFeeds? liveFeeds;
@@ -102,7 +111,7 @@ class MastodonTimelinesAccess {
 }
 
 /// インスタンスのURL設定（`configuration.urls`）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceUrls {
   const MastodonInstanceUrls({
     this.streaming,
@@ -114,6 +123,9 @@ class MastodonInstanceUrls {
 
   factory MastodonInstanceUrls.fromJson(Map<String, dynamic> json) =>
       _$MastodonInstanceUrlsFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonInstanceUrlsToJson(this);
 
   /// WebSocketストリーミングの接続先URL
   final String? streaming;
@@ -132,7 +144,7 @@ class MastodonInstanceUrls {
 }
 
 /// 投稿に関する制限設定（`configuration.statuses`）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonStatusesConfiguration {
   const MastodonStatusesConfiguration({
     required this.maxCharacters,
@@ -142,6 +154,9 @@ class MastodonStatusesConfiguration {
 
   factory MastodonStatusesConfiguration.fromJson(Map<String, dynamic> json) =>
       _$MastodonStatusesConfigurationFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonStatusesConfigurationToJson(this);
 
   /// 投稿の最大文字数
   @JsonKey(defaultValue: 500)
@@ -157,7 +172,7 @@ class MastodonStatusesConfiguration {
 }
 
 /// メディア添付に関する制限設定（`configuration.media_attachments`）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonMediaConfiguration {
   const MastodonMediaConfiguration({
     required this.supportedMimeTypes,
@@ -171,6 +186,9 @@ class MastodonMediaConfiguration {
 
   factory MastodonMediaConfiguration.fromJson(Map<String, dynamic> json) =>
       _$MastodonMediaConfigurationFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonMediaConfigurationToJson(this);
 
   /// 受け付けるMIMEタイプのリスト
   @JsonKey(defaultValue: <String>[])
@@ -196,7 +214,7 @@ class MastodonMediaConfiguration {
 }
 
 /// 投票に関する制限設定（`configuration.polls`）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPollsConfiguration {
   const MastodonPollsConfiguration({
     required this.maxOptions,
@@ -207,6 +225,9 @@ class MastodonPollsConfiguration {
 
   factory MastodonPollsConfiguration.fromJson(Map<String, dynamic> json) =>
       _$MastodonPollsConfigurationFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonPollsConfigurationToJson(this);
 
   /// 投票の最大選択肢数
   @JsonKey(defaultValue: 4)
@@ -226,7 +247,7 @@ class MastodonPollsConfiguration {
 }
 
 /// アカウントに関する制限設定（`configuration.accounts`）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAccountsConfiguration {
   const MastodonAccountsConfiguration({
     required this.maxFeaturedTags,
@@ -238,6 +259,9 @@ class MastodonAccountsConfiguration {
 
   factory MastodonAccountsConfiguration.fromJson(Map<String, dynamic> json) =>
       _$MastodonAccountsConfigurationFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAccountsConfigurationToJson(this);
 
   /// フィーチャータグの最大件数
   @JsonKey(defaultValue: 10)
@@ -261,7 +285,7 @@ class MastodonAccountsConfiguration {
 }
 
 /// インスタンスの各種制限・設定（`configuration`）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceConfiguration {
   const MastodonInstanceConfiguration({
     required this.urls,
@@ -277,6 +301,9 @@ class MastodonInstanceConfiguration {
 
   factory MastodonInstanceConfiguration.fromJson(Map<String, dynamic> json) =>
       _$MastodonInstanceConfigurationFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonInstanceConfigurationToJson(this);
 
   static Object? _readUrls(Map<dynamic, dynamic> json, String key) =>
       json['urls'] ?? const <String, dynamic>{};
@@ -323,7 +350,7 @@ class MastodonInstanceConfiguration {
 }
 
 /// インスタンスのサムネイル画像情報（`thumbnail`）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceThumbnail {
   const MastodonInstanceThumbnail({
     required this.url,
@@ -333,6 +360,9 @@ class MastodonInstanceThumbnail {
 
   factory MastodonInstanceThumbnail.fromJson(Map<String, dynamic> json) =>
       _$MastodonInstanceThumbnailFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonInstanceThumbnailToJson(this);
 
   /// サムネイル画像のURL
   final String url;
@@ -345,13 +375,17 @@ class MastodonInstanceThumbnail {
 }
 
 /// サムネイル画像の解像度別バージョン（`thumbnail.versions`）
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class MastodonInstanceThumbnailVersions {
   const MastodonInstanceThumbnailVersions({this.at1x, this.at2x});
 
   factory MastodonInstanceThumbnailVersions.fromJson(
     Map<String, dynamic> json,
   ) => _$MastodonInstanceThumbnailVersionsFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() =>
+      _$MastodonInstanceThumbnailVersionsToJson(this);
 
   /// 標準解像度（1x）のサムネイルURL
   @JsonKey(name: '@1x')
@@ -363,12 +397,15 @@ class MastodonInstanceThumbnailVersions {
 }
 
 /// インスタンスの利用状況（`usage`）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceUsage {
   const MastodonInstanceUsage({required this.activeMonth});
 
   factory MastodonInstanceUsage.fromJson(Map<String, dynamic> json) =>
       _$MastodonInstanceUsageFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonInstanceUsageToJson(this);
 
   static Object? _readActiveMonth(Map<dynamic, dynamic> json, String key) =>
       (json['users'] as Map<String, dynamic>?)?['active_month'];
@@ -379,7 +416,7 @@ class MastodonInstanceUsage {
 }
 
 /// インスタンスの登録設定（`registrations`）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceRegistrations {
   const MastodonInstanceRegistrations({
     required this.enabled,
@@ -392,6 +429,9 @@ class MastodonInstanceRegistrations {
 
   factory MastodonInstanceRegistrations.fromJson(Map<String, dynamic> json) =>
       _$MastodonInstanceRegistrationsFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonInstanceRegistrationsToJson(this);
 
   /// 新規登録を受け付けているかどうか
   @JsonKey(defaultValue: false)
@@ -415,12 +455,15 @@ class MastodonInstanceRegistrations {
 }
 
 /// インスタンスの連絡先情報（`contact`）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceContact {
   const MastodonInstanceContact({this.email, this.account});
 
   factory MastodonInstanceContact.fromJson(Map<String, dynamic> json) =>
       _$MastodonInstanceContactFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonInstanceContactToJson(this);
 
   /// 管理者の連絡先メールアドレス。
   final String? email;
@@ -430,7 +473,7 @@ class MastodonInstanceContact {
 }
 
 /// インスタンスの利用規約（`rules`）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceRule {
   const MastodonInstanceRule({
     required this.id,
@@ -441,6 +484,9 @@ class MastodonInstanceRule {
 
   factory MastodonInstanceRule.fromJson(Map<String, dynamic> json) =>
       _$MastodonInstanceRuleFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonInstanceRuleToJson(this);
 
   /// 規約の ID
   final String id;
@@ -456,7 +502,7 @@ class MastodonInstanceRule {
 }
 
 /// インスタンス規約の翻訳（`rules[].translations`）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceRuleTranslation {
   const MastodonInstanceRuleTranslation({
     required this.text,
@@ -466,6 +512,10 @@ class MastodonInstanceRuleTranslation {
   factory MastodonInstanceRuleTranslation.fromJson(
     Map<String, dynamic> json,
   ) => _$MastodonInstanceRuleTranslationFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() =>
+      _$MastodonInstanceRuleTranslationToJson(this);
 
   /// 翻訳された規約の本文
   final String text;
@@ -477,7 +527,7 @@ class MastodonInstanceRuleTranslation {
 /// Mastodonインスタンスの情報
 ///
 /// `/api/v2/instance`のレスポンスに対応
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstance {
   const MastodonInstance({
     required this.domain,
@@ -498,6 +548,9 @@ class MastodonInstance {
 
   factory MastodonInstance.fromJson(Map<String, dynamic> json) =>
       _$MastodonInstanceFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonInstanceToJson(this);
 
   static Object? _readConfiguration(Map<dynamic, dynamic> json, String key) =>
       json['configuration'] ?? const <String, dynamic>{};
@@ -556,7 +609,7 @@ class MastodonInstance {
 }
 
 /// インスタンスのアイコン画像（`icon`、Mastodon 4.3+）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceIcon {
   const MastodonInstanceIcon({
     required this.src,
@@ -565,6 +618,9 @@ class MastodonInstanceIcon {
 
   factory MastodonInstanceIcon.fromJson(Map<String, dynamic> json) =>
       _$MastodonInstanceIconFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonInstanceIconToJson(this);
 
   /// アイコン画像のURL
   final String src;

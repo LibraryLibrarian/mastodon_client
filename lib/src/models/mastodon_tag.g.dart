@@ -19,9 +19,26 @@ MastodonTag _$MastodonTagFromJson(Map<String, dynamic> json) => MastodonTag(
   featuring: json['featuring'] as bool?,
 );
 
+Map<String, dynamic> _$MastodonTagToJson(MastodonTag instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'url': instance.url,
+      'history': instance.history,
+      'following': instance.following,
+      'featuring': instance.featuring,
+    };
+
 MastodonTagHistory _$MastodonTagHistoryFromJson(Map<String, dynamic> json) =>
     MastodonTagHistory(
       day: json['day'] as String,
       uses: json['uses'] as String,
       accounts: json['accounts'] as String,
     );
+
+Map<String, dynamic> _$MastodonTagHistoryToJson(MastodonTagHistory instance) =>
+    <String, dynamic>{
+      'day': instance.day,
+      'uses': instance.uses,
+      'accounts': instance.accounts,
+    };

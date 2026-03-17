@@ -21,6 +21,13 @@ MastodonTimelineLiveFeeds _$MastodonTimelineLiveFeedsFromJson(
   ),
 );
 
+Map<String, dynamic> _$MastodonTimelineLiveFeedsToJson(
+  MastodonTimelineLiveFeeds instance,
+) => <String, dynamic>{
+  'local': _$MastodonTimelineAccessLevelEnumMap[instance.local]!,
+  'remote': _$MastodonTimelineAccessLevelEnumMap[instance.remote]!,
+};
+
 const _$MastodonTimelineAccessLevelEnumMap = {
   MastodonTimelineAccessLevel.public: 'public',
   MastodonTimelineAccessLevel.authenticated: 'authenticated',
@@ -42,6 +49,13 @@ MastodonTimelineHashtagFeeds _$MastodonTimelineHashtagFeedsFromJson(
   ),
 );
 
+Map<String, dynamic> _$MastodonTimelineHashtagFeedsToJson(
+  MastodonTimelineHashtagFeeds instance,
+) => <String, dynamic>{
+  'local': _$MastodonTimelineAccessLevelEnumMap[instance.local]!,
+  'remote': _$MastodonTimelineAccessLevelEnumMap[instance.remote]!,
+};
+
 MastodonTimelinesAccess _$MastodonTimelinesAccessFromJson(
   Map<String, dynamic> json,
 ) => MastodonTimelinesAccess(
@@ -62,6 +76,14 @@ MastodonTimelinesAccess _$MastodonTimelinesAccessFromJson(
         ),
 );
 
+Map<String, dynamic> _$MastodonTimelinesAccessToJson(
+  MastodonTimelinesAccess instance,
+) => <String, dynamic>{
+  'live_feeds': instance.liveFeeds,
+  'hashtag_feeds': instance.hashtagFeeds,
+  'trending_link_feeds': instance.trendingLinkFeeds,
+};
+
 MastodonInstanceUrls _$MastodonInstanceUrlsFromJson(
   Map<String, dynamic> json,
 ) => MastodonInstanceUrls(
@@ -72,6 +94,16 @@ MastodonInstanceUrls _$MastodonInstanceUrlsFromJson(
   termsOfService: json['terms_of_service'] as String?,
 );
 
+Map<String, dynamic> _$MastodonInstanceUrlsToJson(
+  MastodonInstanceUrls instance,
+) => <String, dynamic>{
+  'streaming': instance.streaming,
+  'status': instance.status,
+  'about': instance.about,
+  'privacy_policy': instance.privacyPolicy,
+  'terms_of_service': instance.termsOfService,
+};
+
 MastodonStatusesConfiguration _$MastodonStatusesConfigurationFromJson(
   Map<String, dynamic> json,
 ) => MastodonStatusesConfiguration(
@@ -80,6 +112,14 @@ MastodonStatusesConfiguration _$MastodonStatusesConfigurationFromJson(
   charactersReservedPerUrl:
       (json['characters_reserved_per_url'] as num?)?.toInt() ?? 23,
 );
+
+Map<String, dynamic> _$MastodonStatusesConfigurationToJson(
+  MastodonStatusesConfiguration instance,
+) => <String, dynamic>{
+  'max_characters': instance.maxCharacters,
+  'max_media_attachments': instance.maxMediaAttachments,
+  'characters_reserved_per_url': instance.charactersReservedPerUrl,
+};
 
 MastodonMediaConfiguration _$MastodonMediaConfigurationFromJson(
   Map<String, dynamic> json,
@@ -97,6 +137,18 @@ MastodonMediaConfiguration _$MastodonMediaConfigurationFromJson(
   videoMatrixLimit: (json['video_matrix_limit'] as num?)?.toInt(),
 );
 
+Map<String, dynamic> _$MastodonMediaConfigurationToJson(
+  MastodonMediaConfiguration instance,
+) => <String, dynamic>{
+  'supported_mime_types': instance.supportedMimeTypes,
+  'description_limit': instance.descriptionLimit,
+  'image_size_limit': instance.imageSizeLimit,
+  'image_matrix_limit': instance.imageMatrixLimit,
+  'video_size_limit': instance.videoSizeLimit,
+  'video_frame_rate_limit': instance.videoFrameRateLimit,
+  'video_matrix_limit': instance.videoMatrixLimit,
+};
+
 MastodonPollsConfiguration _$MastodonPollsConfigurationFromJson(
   Map<String, dynamic> json,
 ) => MastodonPollsConfiguration(
@@ -106,6 +158,15 @@ MastodonPollsConfiguration _$MastodonPollsConfigurationFromJson(
   minExpiration: (json['min_expiration'] as num?)?.toInt() ?? 300,
   maxExpiration: (json['max_expiration'] as num?)?.toInt() ?? 2629746,
 );
+
+Map<String, dynamic> _$MastodonPollsConfigurationToJson(
+  MastodonPollsConfiguration instance,
+) => <String, dynamic>{
+  'max_options': instance.maxOptions,
+  'max_characters_per_option': instance.maxCharactersPerOption,
+  'min_expiration': instance.minExpiration,
+  'max_expiration': instance.maxExpiration,
+};
 
 MastodonAccountsConfiguration _$MastodonAccountsConfigurationFromJson(
   Map<String, dynamic> json,
@@ -118,6 +179,16 @@ MastodonAccountsConfiguration _$MastodonAccountsConfigurationFromJson(
   profileFieldValueLimit:
       (json['profile_field_value_limit'] as num?)?.toInt() ?? 255,
 );
+
+Map<String, dynamic> _$MastodonAccountsConfigurationToJson(
+  MastodonAccountsConfiguration instance,
+) => <String, dynamic>{
+  'max_featured_tags': instance.maxFeaturedTags,
+  'max_pinned_statuses': instance.maxPinnedStatuses,
+  'max_profile_fields': instance.maxProfileFields,
+  'profile_field_name_limit': instance.profileFieldNameLimit,
+  'profile_field_value_limit': instance.profileFieldValueLimit,
+};
 
 MastodonInstanceConfiguration _$MastodonInstanceConfigurationFromJson(
   Map<String, dynamic> json,
@@ -166,6 +237,20 @@ MastodonInstanceConfiguration _$MastodonInstanceConfigurationFromJson(
           as String?,
 );
 
+Map<String, dynamic> _$MastodonInstanceConfigurationToJson(
+  MastodonInstanceConfiguration instance,
+) => <String, dynamic>{
+  'urls': instance.urls,
+  'statuses': instance.statuses,
+  'media_attachments': instance.mediaAttachments,
+  'polls': instance.polls,
+  'accounts': instance.accounts,
+  'timelines_access': instance.timelinesAccess,
+  'translation_enabled': instance.translationEnabled,
+  'limited_federation': instance.limitedFederation,
+  'vapid_public_key': instance.vapidPublicKey,
+};
+
 MastodonInstanceThumbnail _$MastodonInstanceThumbnailFromJson(
   Map<String, dynamic> json,
 ) => MastodonInstanceThumbnail(
@@ -178,12 +263,24 @@ MastodonInstanceThumbnail _$MastodonInstanceThumbnailFromJson(
         ),
 );
 
+Map<String, dynamic> _$MastodonInstanceThumbnailToJson(
+  MastodonInstanceThumbnail instance,
+) => <String, dynamic>{
+  'url': instance.url,
+  'blurhash': instance.blurhash,
+  'versions': instance.versions,
+};
+
 MastodonInstanceThumbnailVersions _$MastodonInstanceThumbnailVersionsFromJson(
   Map<String, dynamic> json,
 ) => MastodonInstanceThumbnailVersions(
   at1x: json['@1x'] as String?,
   at2x: json['@2x'] as String?,
 );
+
+Map<String, dynamic> _$MastodonInstanceThumbnailVersionsToJson(
+  MastodonInstanceThumbnailVersions instance,
+) => <String, dynamic>{'@1x': instance.at1x, '@2x': instance.at2x};
 
 MastodonInstanceUsage _$MastodonInstanceUsageFromJson(
   Map<String, dynamic> json,
@@ -193,6 +290,10 @@ MastodonInstanceUsage _$MastodonInstanceUsageFromJson(
           ?.toInt() ??
       0,
 );
+
+Map<String, dynamic> _$MastodonInstanceUsageToJson(
+  MastodonInstanceUsage instance,
+) => <String, dynamic>{'active_month': instance.activeMonth};
 
 MastodonInstanceRegistrations _$MastodonInstanceRegistrationsFromJson(
   Map<String, dynamic> json,
@@ -205,6 +306,17 @@ MastodonInstanceRegistrations _$MastodonInstanceRegistrationsFromJson(
   reasonRequired: json['reason_required'] as bool?,
 );
 
+Map<String, dynamic> _$MastodonInstanceRegistrationsToJson(
+  MastodonInstanceRegistrations instance,
+) => <String, dynamic>{
+  'enabled': instance.enabled,
+  'approval_required': instance.approvalRequired,
+  'message': instance.message,
+  'url': instance.url,
+  'min_age': instance.minAge,
+  'reason_required': instance.reasonRequired,
+};
+
 MastodonInstanceContact _$MastodonInstanceContactFromJson(
   Map<String, dynamic> json,
 ) => MastodonInstanceContact(
@@ -213,6 +325,10 @@ MastodonInstanceContact _$MastodonInstanceContactFromJson(
       ? null
       : MastodonAccount.fromJson(json['account'] as Map<String, dynamic>),
 );
+
+Map<String, dynamic> _$MastodonInstanceContactToJson(
+  MastodonInstanceContact instance,
+) => <String, dynamic>{'email': instance.email, 'account': instance.account};
 
 MastodonInstanceRule _$MastodonInstanceRuleFromJson(
   Map<String, dynamic> json,
@@ -228,12 +344,25 @@ MastodonInstanceRule _$MastodonInstanceRuleFromJson(
   ),
 );
 
+Map<String, dynamic> _$MastodonInstanceRuleToJson(
+  MastodonInstanceRule instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'text': instance.text,
+  'hint': instance.hint,
+  'translations': instance.translations,
+};
+
 MastodonInstanceRuleTranslation _$MastodonInstanceRuleTranslationFromJson(
   Map<String, dynamic> json,
 ) => MastodonInstanceRuleTranslation(
   text: json['text'] as String,
   hint: json['hint'] as String?,
 );
+
+Map<String, dynamic> _$MastodonInstanceRuleTranslationToJson(
+  MastodonInstanceRuleTranslation instance,
+) => <String, dynamic>{'text': instance.text, 'hint': instance.hint};
 
 MastodonInstance _$MastodonInstanceFromJson(
   Map<String, dynamic> json,
@@ -282,9 +411,31 @@ MastodonInstance _$MastodonInstanceFromJson(
           ?.toInt(),
 );
 
+Map<String, dynamic> _$MastodonInstanceToJson(MastodonInstance instance) =>
+    <String, dynamic>{
+      'domain': instance.domain,
+      'title': instance.title,
+      'version': instance.version,
+      'source_url': instance.sourceUrl,
+      'description': instance.description,
+      'icon': instance.icon,
+      'thumbnail': instance.thumbnail,
+      'usage': instance.usage,
+      'configuration': instance.configuration,
+      'contact': instance.contact,
+      'registrations': instance.registrations,
+      'languages': instance.languages,
+      'rules': instance.rules,
+      'api_version_mastodon': instance.apiVersionMastodon,
+    };
+
 MastodonInstanceIcon _$MastodonInstanceIconFromJson(
   Map<String, dynamic> json,
 ) => MastodonInstanceIcon(
   src: json['src'] as String,
   size: json['size'] as String,
 );
+
+Map<String, dynamic> _$MastodonInstanceIconToJson(
+  MastodonInstanceIcon instance,
+) => <String, dynamic>{'src': instance.src, 'size': instance.size};

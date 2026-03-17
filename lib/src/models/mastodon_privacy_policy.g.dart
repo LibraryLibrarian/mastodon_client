@@ -14,3 +14,10 @@ MastodonPrivacyPolicy _$MastodonPrivacyPolicyFromJson(
   ),
   content: json['content'] as String? ?? '',
 );
+
+Map<String, dynamic> _$MastodonPrivacyPolicyToJson(
+  MastodonPrivacyPolicy instance,
+) => <String, dynamic>{
+  'updated_at': const SafeDateTimeConverter().toJson(instance.updatedAt),
+  'content': instance.content,
+};

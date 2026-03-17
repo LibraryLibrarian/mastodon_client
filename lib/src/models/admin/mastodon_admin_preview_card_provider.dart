@@ -7,7 +7,7 @@ part 'mastodon_admin_preview_card_provider.g.dart';
 /// 管理者向けプレビューカード発行元
 ///
 /// トレンドリンクの発行元ドメインの管理情報を表す。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminPreviewCardProvider {
   const MastodonAdminPreviewCardProvider({
     required this.id,
@@ -21,6 +21,10 @@ class MastodonAdminPreviewCardProvider {
   factory MastodonAdminPreviewCardProvider.fromJson(
     Map<String, dynamic> json,
   ) => _$MastodonAdminPreviewCardProviderFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() =>
+      _$MastodonAdminPreviewCardProviderToJson(this);
 
   /// 発行元のデータベース ID
   final String id;

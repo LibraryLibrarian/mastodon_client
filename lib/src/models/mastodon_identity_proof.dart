@@ -5,7 +5,7 @@ part 'mastodon_identity_proof.g.dart';
 /// アカウントの本人確認証明情報
 ///
 /// **非推奨**: Mastodon 3.5.0 以降は常に空配列を返す。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonIdentityProof {
   const MastodonIdentityProof({
     required this.provider,
@@ -17,6 +17,9 @@ class MastodonIdentityProof {
 
   factory MastodonIdentityProof.fromJson(Map<String, dynamic> json) =>
       _$MastodonIdentityProofFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonIdentityProofToJson(this);
 
   /// 証明プロバイダー名（例: Keybase）
   final String provider;

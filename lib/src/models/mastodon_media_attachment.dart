@@ -13,7 +13,7 @@ enum MastodonMediaType {
 }
 
 /// Mastodon のメディア添付ファイル
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonMediaAttachment {
   const MastodonMediaAttachment({
     required this.id,
@@ -27,6 +27,9 @@ class MastodonMediaAttachment {
 
   factory MastodonMediaAttachment.fromJson(Map<String, dynamic> json) =>
       _$MastodonMediaAttachmentFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonMediaAttachmentToJson(this);
 
   static Object? _readType(Map<dynamic, dynamic> json, String key) =>
       json['type'] ?? 'unknown';

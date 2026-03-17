@@ -8,7 +8,7 @@ part 'mastodon_report.g.dart';
 /// 通報エンティティ
 ///
 /// 管理者向け通知やグループ化通知で参照される通報情報を表すモデル。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonReport {
   const MastodonReport({
     required this.id,
@@ -25,6 +25,9 @@ class MastodonReport {
 
   factory MastodonReport.fromJson(Map<String, dynamic> json) =>
       _$MastodonReportFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonReportToJson(this);
 
   /// 通報のID
   final String id;

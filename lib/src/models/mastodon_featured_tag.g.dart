@@ -16,3 +16,13 @@ MastodonFeaturedTag _$MastodonFeaturedTagFromJson(Map<String, dynamic> json) =>
         json['last_status_at'] as String?,
       ),
     );
+
+Map<String, dynamic> _$MastodonFeaturedTagToJson(
+  MastodonFeaturedTag instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'name': instance.name,
+  'url': instance.url,
+  'statuses_count': instance.statusesCount,
+  'last_status_at': const SafeDateTimeConverter().toJson(instance.lastStatusAt),
+};

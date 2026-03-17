@@ -27,3 +27,23 @@ MastodonRelationship _$MastodonRelationshipFromJson(
       ?.map((e) => e as String)
       .toList(),
 );
+
+Map<String, dynamic> _$MastodonRelationshipToJson(
+  MastodonRelationship instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'following': instance.following,
+  'showing_reblogs': instance.showingReblogs,
+  'notifying': instance.notifying,
+  'languages': instance.languages,
+  'followed_by': instance.followedBy,
+  'blocking': instance.blocking,
+  'blocked_by': instance.blockedBy,
+  'muting': instance.muting,
+  'muting_notifications': instance.mutingNotifications,
+  'requested': instance.requested,
+  'requested_by': instance.requestedBy,
+  'domain_blocking': instance.domainBlocking,
+  'endorsed': instance.endorsed,
+  'note': instance.note,
+};

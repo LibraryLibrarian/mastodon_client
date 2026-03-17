@@ -9,7 +9,7 @@ part 'mastodon_admin_trends_link.g.dart';
 ///
 /// 通常の [MastodonTrendsLink] のフィールドに加え、
 /// 管理者向けの [id] と [requiresReview] を持つ。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminTrendsLink {
   const MastodonAdminTrendsLink({
     required this.id,
@@ -34,6 +34,9 @@ class MastodonAdminTrendsLink {
 
   factory MastodonAdminTrendsLink.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminTrendsLinkFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAdminTrendsLinkToJson(this);
 
   static Object? _readType(Map<dynamic, dynamic> json, String key) =>
       json['type'] ?? 'link';

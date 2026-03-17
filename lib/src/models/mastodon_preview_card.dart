@@ -21,7 +21,7 @@ enum MastodonPreviewCardType {
 /// リンク先のプレビューカード
 ///
 /// `GET /api/v1/statuses/:id/card` のレスポンスに対応する
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPreviewCard {
   const MastodonPreviewCard({
     required this.url,
@@ -43,6 +43,9 @@ class MastodonPreviewCard {
 
   factory MastodonPreviewCard.fromJson(Map<String, dynamic> json) =>
       _$MastodonPreviewCardFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonPreviewCardToJson(this);
 
   static Object? _readType(Map<dynamic, dynamic> json, String key) =>
       json['type'] ?? 'link';
@@ -110,12 +113,15 @@ class MastodonPreviewCard {
 }
 
 /// プレビューカードの作成者情報（Mastodon 4.3.0+）
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPreviewCardAuthor {
   const MastodonPreviewCardAuthor({required this.name, this.url, this.account});
 
   factory MastodonPreviewCardAuthor.fromJson(Map<String, dynamic> json) =>
       _$MastodonPreviewCardAuthorFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonPreviewCardAuthorToJson(this);
 
   /// 作成者の名前
   @JsonKey(defaultValue: '')

@@ -20,3 +20,12 @@ MastodonConversation _$MastodonConversationFromJson(
       ? null
       : MastodonStatus.fromJson(json['last_status'] as Map<String, dynamic>),
 );
+
+Map<String, dynamic> _$MastodonConversationToJson(
+  MastodonConversation instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'unread': instance.unread,
+  'accounts': instance.accounts,
+  'last_status': instance.lastStatus,
+};

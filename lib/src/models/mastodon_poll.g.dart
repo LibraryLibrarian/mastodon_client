@@ -12,6 +12,12 @@ MastodonPollOption _$MastodonPollOptionFromJson(Map<String, dynamic> json) =>
       votesCount: (json['votes_count'] as num?)?.toInt(),
     );
 
+Map<String, dynamic> _$MastodonPollOptionToJson(MastodonPollOption instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'votes_count': instance.votesCount,
+    };
+
 MastodonPoll _$MastodonPollFromJson(Map<String, dynamic> json) => MastodonPoll(
   id: json['id'] as String,
   expired: json['expired'] as bool? ?? false,
@@ -34,3 +40,17 @@ MastodonPoll _$MastodonPollFromJson(Map<String, dynamic> json) => MastodonPoll(
       ?.map((e) => (e as num).toInt())
       .toList(),
 );
+
+Map<String, dynamic> _$MastodonPollToJson(MastodonPoll instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'expires_at': const SafeDateTimeConverter().toJson(instance.expiresAt),
+      'expired': instance.expired,
+      'multiple': instance.multiple,
+      'votes_count': instance.votesCount,
+      'voters_count': instance.votersCount,
+      'options': instance.options,
+      'emojis': instance.emojis,
+      'voted': instance.voted,
+      'own_votes': instance.ownVotes,
+    };

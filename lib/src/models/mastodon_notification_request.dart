@@ -11,7 +11,7 @@ part 'mastodon_notification_request.g.dart';
 /// `/api/v1/notifications/requests`
 ///
 /// 特定のアカウントからフィルタリングされた通知をまとめて保持
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonNotificationRequest {
   const MastodonNotificationRequest({
     required this.id,
@@ -24,6 +24,9 @@ class MastodonNotificationRequest {
 
   factory MastodonNotificationRequest.fromJson(Map<String, dynamic> json) =>
       _$MastodonNotificationRequestFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonNotificationRequestToJson(this);
 
   /// 通知リクエストの内部 ID
   final String id;

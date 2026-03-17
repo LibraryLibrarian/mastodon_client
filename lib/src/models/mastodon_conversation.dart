@@ -8,7 +8,7 @@ part 'mastodon_conversation.g.dart';
 /// ダイレクトメッセージの会話
 ///
 /// `/api/v1/conversations` のレスポンスに対応する
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonConversation {
   const MastodonConversation({
     required this.id,
@@ -19,6 +19,9 @@ class MastodonConversation {
 
   factory MastodonConversation.fromJson(Map<String, dynamic> json) =>
       _$MastodonConversationFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonConversationToJson(this);
 
   /// 会話の内部 ID
   final String id;

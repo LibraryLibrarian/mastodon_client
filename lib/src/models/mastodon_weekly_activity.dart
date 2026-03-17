@@ -5,7 +5,7 @@ part 'mastodon_weekly_activity.g.dart';
 /// インスタンスの週間アクティビティ統計
 ///
 /// `GET /api/v1/instance/activity`
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonWeeklyActivity {
   const MastodonWeeklyActivity({
     required this.week,
@@ -16,6 +16,9 @@ class MastodonWeeklyActivity {
 
   factory MastodonWeeklyActivity.fromJson(Map<String, dynamic> json) =>
       _$MastodonWeeklyActivityFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonWeeklyActivityToJson(this);
 
   /// 週の開始時点の UNIX タイムスタンプ（文字列）
   @JsonKey(defaultValue: '0')

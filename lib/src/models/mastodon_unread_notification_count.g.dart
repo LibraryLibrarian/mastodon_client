@@ -11,3 +11,7 @@ MastodonUnreadNotificationCount _$MastodonUnreadNotificationCountFromJson(
 ) => MastodonUnreadNotificationCount(
   count: (json['count'] as num?)?.toInt() ?? 0,
 );
+
+Map<String, dynamic> _$MastodonUnreadNotificationCountToJson(
+  MastodonUnreadNotificationCount instance,
+) => <String, dynamic>{'count': instance.count};

@@ -13,3 +13,11 @@ MastodonToken _$MastodonTokenFromJson(Map<String, dynamic> json) =>
       scope: json['scope'] as String,
       createdAt: (json['created_at'] as num).toInt(),
     );
+
+Map<String, dynamic> _$MastodonTokenToJson(MastodonToken instance) =>
+    <String, dynamic>{
+      'access_token': instance.accessToken,
+      'token_type': instance.tokenType,
+      'scope': instance.scope,
+      'created_at': instance.createdAt,
+    };

@@ -17,3 +17,15 @@ MastodonPartialAccount _$MastodonPartialAccountFromJson(
   locked: json['locked'] as bool? ?? false,
   bot: json['bot'] as bool? ?? false,
 );
+
+Map<String, dynamic> _$MastodonPartialAccountToJson(
+  MastodonPartialAccount instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'acct': instance.acct,
+  'url': instance.url,
+  'avatar': instance.avatar,
+  'avatar_static': instance.avatarStatic,
+  'locked': instance.locked,
+  'bot': instance.bot,
+};

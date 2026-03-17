@@ -10,7 +10,7 @@ part 'mastodon_status_edit.g.dart';
 ///
 /// `GET /api/v1/statuses/:id/history` のレスポンス要素に対応する
 /// 各リビジョンの時点での投稿内容を保持する。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonStatusEdit {
   const MastodonStatusEdit({
     required this.content,
@@ -25,6 +25,9 @@ class MastodonStatusEdit {
 
   factory MastodonStatusEdit.fromJson(Map<String, dynamic> json) =>
       _$MastodonStatusEditFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonStatusEditToJson(this);
 
   /// リビジョン時点の投稿本文（HTML形式）
   @JsonKey(defaultValue: '')
@@ -59,12 +62,15 @@ class MastodonStatusEdit {
 /// 編集履歴内の投票スナップショット。
 ///
 /// `MastodonPoll` とは異なり、投票結果を持たない選択肢のみの構造
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonStatusEditPoll {
   const MastodonStatusEditPoll({required this.options});
 
   factory MastodonStatusEditPoll.fromJson(Map<String, dynamic> json) =>
       _$MastodonStatusEditPollFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonStatusEditPollToJson(this);
 
   /// 投票の選択肢リスト
   @JsonKey(defaultValue: <MastodonStatusEditPollOption>[])
@@ -72,12 +78,15 @@ class MastodonStatusEditPoll {
 }
 
 /// 編集履歴内の投票選択肢
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonStatusEditPollOption {
   const MastodonStatusEditPollOption({required this.title});
 
   factory MastodonStatusEditPollOption.fromJson(Map<String, dynamic> json) =>
       _$MastodonStatusEditPollOptionFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonStatusEditPollOptionToJson(this);
 
   /// 選択肢のテキスト
   final String title;

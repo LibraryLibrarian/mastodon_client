@@ -19,7 +19,7 @@ enum MastodonAdminDomainBlockSeverity {
 /// 管理者向けドメインブロック情報
 ///
 /// フェデレーションがブロックされているドメインの詳細情報。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminDomainBlock {
   const MastodonAdminDomainBlock({
     required this.id,
@@ -36,6 +36,9 @@ class MastodonAdminDomainBlock {
 
   factory MastodonAdminDomainBlock.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminDomainBlockFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonAdminDomainBlockToJson(this);
 
   /// ドメインブロックのデータベース内 ID
   final String id;

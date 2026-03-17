@@ -5,7 +5,7 @@ part 'mastodon_custom_emoji.g.dart';
 /// Mastodon のカスタム絵文字
 ///
 /// アカウントのプロフィールや投稿テキストに含まれる `:shortcode:` 形式の絵文字を表す
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonCustomEmoji {
   const MastodonCustomEmoji({
     required this.shortcode,
@@ -17,6 +17,9 @@ class MastodonCustomEmoji {
 
   factory MastodonCustomEmoji.fromJson(Map<String, dynamic> json) =>
       _$MastodonCustomEmojiFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonCustomEmojiToJson(this);
 
   /// `:shortcode:` 形式のショートコード（コロンを除いた部分）
   final String shortcode;

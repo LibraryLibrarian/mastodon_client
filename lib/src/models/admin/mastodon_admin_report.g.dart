@@ -52,3 +52,24 @@ MastodonAdminReport _$MastodonAdminReportFromJson(
           .toList() ??
       [],
 );
+
+Map<String, dynamic> _$MastodonAdminReportToJson(
+  MastodonAdminReport instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'action_taken': instance.actionTaken,
+  'action_taken_at': const SafeDateTimeConverter().toJson(
+    instance.actionTakenAt,
+  ),
+  'category': instance.category,
+  'comment': instance.comment,
+  'forwarded': instance.forwarded,
+  'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
+  'updated_at': const SafeDateTimeConverter().toJson(instance.updatedAt),
+  'account': instance.account,
+  'target_account': instance.targetAccount,
+  'assigned_account': instance.assignedAccount,
+  'action_taken_by_account': instance.actionTakenByAccount,
+  'statuses': instance.statuses,
+  'rules': instance.rules,
+};

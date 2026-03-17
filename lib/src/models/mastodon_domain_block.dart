@@ -18,7 +18,7 @@ enum MastodonDomainBlockSeverity {
 /// インスタンスがブロックしているドメインの情報
 ///
 /// `GET /api/v1/instance/domain_blocks`
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonDomainBlock {
   const MastodonDomainBlock({
     required this.domain,
@@ -29,6 +29,9 @@ class MastodonDomainBlock {
 
   factory MastodonDomainBlock.fromJson(Map<String, dynamic> json) =>
       _$MastodonDomainBlockFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonDomainBlockToJson(this);
 
   /// ブロック対象のドメイン名
   final String domain;

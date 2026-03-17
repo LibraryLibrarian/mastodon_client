@@ -6,7 +6,7 @@ part 'mastodon_partial_account.g.dart';
 ///
 /// グループ化通知APIで返される、必要最低限のアカウント情報を表すモデル。
 /// `expand_accounts=partial_avatars` を指定した場合に使用される。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPartialAccount {
   const MastodonPartialAccount({
     required this.id,
@@ -20,6 +20,9 @@ class MastodonPartialAccount {
 
   factory MastodonPartialAccount.fromJson(Map<String, dynamic> json) =>
       _$MastodonPartialAccountFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonPartialAccountToJson(this);
 
   /// アカウントID
   final String id;

@@ -20,3 +20,18 @@ MastodonOEmbed _$MastodonOEmbedFromJson(Map<String, dynamic> json) =>
       width: (json['width'] as num).toInt(),
       height: (json['height'] as num?)?.toInt(),
     );
+
+Map<String, dynamic> _$MastodonOEmbedToJson(MastodonOEmbed instance) =>
+    <String, dynamic>{
+      'type': instance.type,
+      'version': instance.version,
+      'title': instance.title,
+      'author_name': instance.authorName,
+      'author_url': instance.authorUrl,
+      'provider_name': instance.providerName,
+      'provider_url': instance.providerUrl,
+      'cache_age': instance.cacheAge,
+      'html': instance.html,
+      'width': instance.width,
+      'height': instance.height,
+    };

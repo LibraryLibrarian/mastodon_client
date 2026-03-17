@@ -14,3 +14,10 @@ MastodonExtendedDescription _$MastodonExtendedDescriptionFromJson(
   ),
   content: json['content'] as String? ?? '',
 );
+
+Map<String, dynamic> _$MastodonExtendedDescriptionToJson(
+  MastodonExtendedDescription instance,
+) => <String, dynamic>{
+  'updated_at': const SafeDateTimeConverter().toJson(instance.updatedAt),
+  'content': instance.content,
+};

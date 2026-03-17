@@ -7,7 +7,7 @@ part 'mastodon_status_source.g.dart';
 /// `GET /api/v1/statuses/:id/source`
 ///
 /// 編集画面で使用するプレーンテキストの投稿内容を保持
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonStatusSource {
   const MastodonStatusSource({
     required this.id,
@@ -17,6 +17,9 @@ class MastodonStatusSource {
 
   factory MastodonStatusSource.fromJson(Map<String, dynamic> json) =>
       _$MastodonStatusSourceFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonStatusSourceToJson(this);
 
   /// 投稿の内部ID
   final String id;

@@ -58,6 +58,40 @@ MastodonCredentialAccount _$MastodonCredentialAccountFromJson(
       : MastodonRole.fromJson(json['role'] as Map<String, dynamic>),
 );
 
+Map<String, dynamic> _$MastodonCredentialAccountToJson(
+  MastodonCredentialAccount instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'username': instance.username,
+  'acct': instance.acct,
+  'display_name': instance.displayName,
+  'note': instance.note,
+  'url': instance.url,
+  'avatar': instance.avatarUrl,
+  'avatar_static': instance.avatarStaticUrl,
+  'header': instance.headerUrl,
+  'header_static': instance.headerStaticUrl,
+  'locked': instance.locked,
+  'bot': instance.bot,
+  'discoverable': instance.discoverable,
+  'noindex': instance.noindex,
+  'followers_count': instance.followersCount,
+  'following_count': instance.followingCount,
+  'statuses_count': instance.statusesCount,
+  'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
+  'last_status_at': const SafeDateTimeConverter().toJson(instance.lastStatusAt),
+  'fields': instance.fields,
+  'emojis': instance.emojis,
+  'moved': instance.moved,
+  'suspended': instance.suspended,
+  'limited': instance.limited,
+  'hide_collections': instance.hideCollections,
+  'avatar_blurhash': instance.avatarBlurhash,
+  'header_blurhash': instance.headerBlurhash,
+  'source': instance.source,
+  'role': instance.role,
+};
+
 MastodonAccountSource _$MastodonAccountSourceFromJson(
   Map<String, dynamic> json,
 ) => MastodonAccountSource(
@@ -74,6 +108,18 @@ MastodonAccountSource _$MastodonAccountSourceFromJson(
   quotePolicy: json['quote_policy'] as String?,
 );
 
+Map<String, dynamic> _$MastodonAccountSourceToJson(
+  MastodonAccountSource instance,
+) => <String, dynamic>{
+  'privacy': instance.privacy,
+  'sensitive': instance.sensitive,
+  'language': instance.language,
+  'note': instance.note,
+  'fields': instance.fields,
+  'follow_requests_count': instance.followRequestsCount,
+  'quote_policy': instance.quotePolicy,
+};
+
 MastodonRole _$MastodonRoleFromJson(Map<String, dynamic> json) => MastodonRole(
   id: (json['id'] as num).toInt(),
   name: json['name'] as String,
@@ -87,3 +133,14 @@ MastodonRole _$MastodonRoleFromJson(Map<String, dynamic> json) => MastodonRole(
     json['updated_at'] as String?,
   ),
 );
+
+Map<String, dynamic> _$MastodonRoleToJson(MastodonRole instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'permissions': instance.permissions,
+      'color': instance.color,
+      'highlighted': instance.highlighted,
+      'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
+      'updated_at': const SafeDateTimeConverter().toJson(instance.updatedAt),
+    };

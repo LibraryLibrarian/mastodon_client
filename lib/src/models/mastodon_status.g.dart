@@ -14,6 +14,14 @@ MastodonMention _$MastodonMentionFromJson(Map<String, dynamic> json) =>
       url: json['url'] as String,
     );
 
+Map<String, dynamic> _$MastodonMentionToJson(MastodonMention instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'username': instance.username,
+      'acct': instance.acct,
+      'url': instance.url,
+    };
+
 MastodonStatus _$MastodonStatusFromJson(
   Map<String, dynamic> json,
 ) => MastodonStatus(
@@ -67,6 +75,39 @@ MastodonStatus _$MastodonStatusFromJson(
       ? null
       : MastodonStatus.fromJson(json['quote'] as Map<String, dynamic>),
 );
+
+Map<String, dynamic> _$MastodonStatusToJson(MastodonStatus instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'uri': instance.uri,
+      'url': instance.url,
+      'created_at': instance.createdAt.toIso8601String(),
+      'in_reply_to_id': instance.inReplyToId,
+      'in_reply_to_account_id': instance.inReplyToAccountId,
+      'sensitive': instance.sensitive,
+      'spoiler_text': instance.spoilerText,
+      'visibility': _$MastodonVisibilityEnumMap[instance.visibility]!,
+      'language': instance.language,
+      'content': instance.content,
+      'text': instance.text,
+      'edited_at': const SafeDateTimeConverter().toJson(instance.editedAt),
+      'reblogs_count': instance.reblogsCount,
+      'favourites_count': instance.favouritesCount,
+      'replies_count': instance.repliesCount,
+      'favourited': instance.favourited,
+      'reblogged': instance.reblogged,
+      'bookmarked': instance.bookmarked,
+      'muted': instance.muted,
+      'pinned': instance.pinned,
+      'account': instance.account,
+      'media_attachments': instance.mediaAttachments,
+      'mentions': instance.mentions,
+      'tags': instance.tags,
+      'emojis': instance.emojis,
+      'reblog': instance.reblog,
+      'poll': instance.poll,
+      'quote': instance.quote,
+    };
 
 const _$MastodonVisibilityEnumMap = {
   MastodonVisibility.public: 'public',

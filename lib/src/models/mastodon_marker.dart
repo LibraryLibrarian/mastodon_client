@@ -5,7 +5,7 @@ import 'json_converters.dart';
 part 'mastodon_marker.g.dart';
 
 /// タイムラインの既読位置マーカーを表すモデル
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonMarker {
   /// 各フィールドを指定して [MastodonMarker] を生成する
   const MastodonMarker({
@@ -17,6 +17,9 @@ class MastodonMarker {
   /// JSON マップから [MastodonMarker] を生成する
   factory MastodonMarker.fromJson(Map<String, dynamic> json) =>
       _$MastodonMarkerFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonMarkerToJson(this);
 
   /// 最後に閲覧したエンティティ（ステータスまたは通知）の ID
   final String lastReadId;

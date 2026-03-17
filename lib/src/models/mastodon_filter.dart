@@ -22,7 +22,7 @@ enum MastodonFilterAction {
 /// `/api/v2/filters` のレスポンスに対応する。
 /// サーバーサイドでフィルタリングを行い、1つのフィルターに複数のキーワードや
 /// ステータスを関連付けることができる。
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFilter {
   const MastodonFilter({
     required this.id,
@@ -36,6 +36,9 @@ class MastodonFilter {
 
   factory MastodonFilter.fromJson(Map<String, dynamic> json) =>
       _$MastodonFilterFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonFilterToJson(this);
 
   /// フィルターの内部 ID
   final String id;
@@ -68,7 +71,7 @@ class MastodonFilter {
 /// フィルターキーワード
 ///
 /// `/api/v2/filters/:filter_id/keywords` のレスポンスに対応する
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFilterKeyword {
   const MastodonFilterKeyword({
     required this.id,
@@ -78,6 +81,9 @@ class MastodonFilterKeyword {
 
   factory MastodonFilterKeyword.fromJson(Map<String, dynamic> json) =>
       _$MastodonFilterKeywordFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonFilterKeywordToJson(this);
 
   /// FilterKeyword の内部 ID
   final String id;
@@ -94,7 +100,7 @@ class MastodonFilterKeyword {
 /// ステータスフィルター
 ///
 /// `/api/v2/filters/:filter_id/statuses` のレスポンスに対応する
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFilterStatus {
   const MastodonFilterStatus({
     required this.id,
@@ -103,6 +109,9 @@ class MastodonFilterStatus {
 
   factory MastodonFilterStatus.fromJson(Map<String, dynamic> json) =>
       _$MastodonFilterStatusFromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonFilterStatusToJson(this);
 
   /// FilterStatus の内部 ID
   final String id;
@@ -117,7 +126,7 @@ class MastodonFilterStatus {
 /// `/api/v1/filters` のレスポンスに対応する。
 /// クライアントサイドフィルタリング用で、1フィルター = 1キーワードの構造。
 @Deprecated('Mastodon 4.0.0 で非推奨。代わりに MastodonFilter (v2) を使用してください')
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFilterV1 {
   @Deprecated('Mastodon 4.0.0 で非推奨。代わりに MastodonFilter (v2) を使用してください')
   const MastodonFilterV1({
@@ -132,6 +141,9 @@ class MastodonFilterV1 {
   @Deprecated('Mastodon 4.0.0 で非推奨。代わりに MastodonFilter (v2) を使用してください')
   factory MastodonFilterV1.fromJson(Map<String, dynamic> json) =>
       _$MastodonFilterV1FromJson(json);
+
+  /// JSON シリアライズ
+  Map<String, dynamic> toJson() => _$MastodonFilterV1ToJson(this);
 
   /// フィルターの内部 ID
   final String id;

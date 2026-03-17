@@ -26,6 +26,14 @@ MastodonSearchResult _$MastodonSearchResultFromJson(
       [],
 );
 
+Map<String, dynamic> _$MastodonSearchResultToJson(
+  MastodonSearchResult instance,
+) => <String, dynamic>{
+  'accounts': instance.accounts,
+  'statuses': instance.statuses,
+  'hashtags': instance.hashtags,
+};
+
 MastodonSearchResultV1 _$MastodonSearchResultV1FromJson(
   Map<String, dynamic> json,
 ) => MastodonSearchResultV1(
@@ -43,3 +51,11 @@ MastodonSearchResultV1 _$MastodonSearchResultV1FromJson(
       (json['hashtags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       [],
 );
+
+Map<String, dynamic> _$MastodonSearchResultV1ToJson(
+  MastodonSearchResultV1 instance,
+) => <String, dynamic>{
+  'accounts': instance.accounts,
+  'statuses': instance.statuses,
+  'hashtags': instance.hashtags,
+};

@@ -19,9 +19,22 @@ MastodonProof _$MastodonProofFromJson(Map<String, dynamic> json) =>
           [],
     );
 
+Map<String, dynamic> _$MastodonProofToJson(MastodonProof instance) =>
+    <String, dynamic>{
+      'avatar': instance.avatar,
+      'signatures': instance.signatures,
+    };
+
 MastodonProofSignature _$MastodonProofSignatureFromJson(
   Map<String, dynamic> json,
 ) => MastodonProofSignature(
   sigHash: json['sig_hash'] as String,
   kbUsername: json['kb_username'] as String,
 );
+
+Map<String, dynamic> _$MastodonProofSignatureToJson(
+  MastodonProofSignature instance,
+) => <String, dynamic>{
+  'sig_hash': instance.sigHash,
+  'kb_username': instance.kbUsername,
+};

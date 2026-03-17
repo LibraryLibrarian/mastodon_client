@@ -17,3 +17,14 @@ MastodonPreferences _$MastodonPreferencesFromJson(
   readingExpandMedia: json['reading:expand:media'] as String? ?? 'default',
   readingExpandSpoilers: json['reading:expand:spoilers'] as bool? ?? false,
 );
+
+Map<String, dynamic> _$MastodonPreferencesToJson(
+  MastodonPreferences instance,
+) => <String, dynamic>{
+  'posting:default:visibility': instance.postingDefaultVisibility,
+  'posting:default:sensitive': instance.postingDefaultSensitive,
+  'posting:default:language': instance.postingDefaultLanguage,
+  'posting:default:quote_policy': instance.postingDefaultQuotePolicy,
+  'reading:expand:media': instance.readingExpandMedia,
+  'reading:expand:spoilers': instance.readingExpandSpoilers,
+};
