@@ -29,7 +29,7 @@ Map<String, dynamic> _$MastodonAdminTagToJson(MastodonAdminTag instance) =>
       'id': instance.id,
       'name': instance.name,
       'url': instance.url,
-      'history': instance.history,
+      'history': instance.history.map((e) => e.toJson()).toList(),
       'trendable': instance.trendable,
       'usable': instance.usable,
       'requires_review': instance.requiresReview,

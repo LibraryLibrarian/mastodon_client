@@ -24,7 +24,7 @@ Map<String, dynamic> _$MastodonTagToJson(MastodonTag instance) =>
       'id': instance.id,
       'name': instance.name,
       'url': instance.url,
-      'history': instance.history,
+      'history': instance.history.map((e) => e.toJson()).toList(),
       'following': instance.following,
       'featuring': instance.featuring,
     };

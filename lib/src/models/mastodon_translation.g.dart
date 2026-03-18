@@ -37,8 +37,10 @@ Map<String, dynamic> _$MastodonTranslationToJson(
   'language': instance.language,
   'detected_source_language': instance.detectedSourceLanguage,
   'provider': instance.provider,
-  'media_attachments': instance.mediaAttachments,
-  'poll': instance.poll,
+  'media_attachments': instance.mediaAttachments
+      .map((e) => e.toJson())
+      .toList(),
+  'poll': instance.poll?.toJson(),
 };
 
 MastodonTranslationAttachment _$MastodonTranslationAttachmentFromJson(
@@ -69,7 +71,10 @@ MastodonTranslationPoll _$MastodonTranslationPollFromJson(
 
 Map<String, dynamic> _$MastodonTranslationPollToJson(
   MastodonTranslationPoll instance,
-) => <String, dynamic>{'id': instance.id, 'options': instance.options};
+) => <String, dynamic>{
+  'id': instance.id,
+  'options': instance.options.map((e) => e.toJson()).toList(),
+};
 
 MastodonTranslationPollOption _$MastodonTranslationPollOptionFromJson(
   Map<String, dynamic> json,

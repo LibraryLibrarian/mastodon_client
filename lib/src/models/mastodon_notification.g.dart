@@ -86,10 +86,10 @@ Map<String, dynamic> _$MastodonNotificationToJson(
   'id': instance.id,
   'type': _$MastodonNotificationTypeEnumMap[instance.type]!,
   'created_at': instance.createdAt.toIso8601String(),
-  'account': instance.account,
-  'status': instance.status,
-  'relationship_severance_event': instance.relationshipSeveranceEvent,
-  'moderation_warning': instance.moderationWarning,
+  'account': instance.account.toJson(),
+  'status': instance.status?.toJson(),
+  'relationship_severance_event': instance.relationshipSeveranceEvent?.toJson(),
+  'moderation_warning': instance.moderationWarning?.toJson(),
 };
 
 const _$MastodonNotificationTypeEnumMap = {

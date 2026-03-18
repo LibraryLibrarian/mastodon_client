@@ -88,11 +88,11 @@ Map<String, dynamic> _$MastodonAnnouncementToJson(
   'published_at': const SafeDateTimeConverter().toJson(instance.publishedAt),
   'updated_at': const SafeDateTimeConverter().toJson(instance.updatedAt),
   'read': instance.read,
-  'emojis': instance.emojis,
-  'reactions': instance.reactions,
-  'tags': instance.tags,
-  'mentions': instance.mentions,
-  'statuses': instance.statuses,
+  'emojis': instance.emojis.map((e) => e.toJson()).toList(),
+  'reactions': instance.reactions.map((e) => e.toJson()).toList(),
+  'tags': instance.tags.map((e) => e.toJson()).toList(),
+  'mentions': instance.mentions.map((e) => e.toJson()).toList(),
+  'statuses': instance.statuses.map((e) => e.toJson()).toList(),
 };
 
 MastodonAnnouncementStatus _$MastodonAnnouncementStatusFromJson(

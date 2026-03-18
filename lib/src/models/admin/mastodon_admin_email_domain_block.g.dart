@@ -31,7 +31,7 @@ Map<String, dynamic> _$MastodonAdminEmailDomainBlockToJson(
   'id': instance.id,
   'domain': instance.domain,
   'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
-  'history': instance.history,
+  'history': instance.history.map((e) => e.toJson()).toList(),
 };
 
 MastodonAdminEmailDomainBlockHistory
