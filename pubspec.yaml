@@ -3,6 +3,7 @@ version: 0.0.1
 environment:
   sdk: ^3.8.0
 description: A pure Dart Mastodon API client library.
+documentation: https://librarylibrarian.github.io/mastodon_client/
 dependencies:
   crypto: ^3.0.7
   dio: ^5.9.2
