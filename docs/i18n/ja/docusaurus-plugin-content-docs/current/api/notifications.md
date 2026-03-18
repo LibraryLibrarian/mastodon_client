@@ -2,13 +2,13 @@
 sidebar_position: 3
 ---
 
-# Notifications
+# 通知
 
-The `client.notifications` API manages notification retrieval, dismissal, and policies.
+`client.notifications` API は通知の取得・削除・ポリシー管理を提供します。
 
-## Fetching notifications
+## 通知の取得
 
-### List
+### 一覧
 
 ```dart
 final page = await client.notifications.fetch(limit: 20);
@@ -18,100 +18,100 @@ for (final n in page.items) {
 }
 ```
 
-### Filtering by type
+### タイプでフィルタリング
 
 ```dart
-// Only mentions and favourites
+// メンションとお気に入りのみ
 final page = await client.notifications.fetch(
   types: ['mention', 'favourite'],
 );
 
-// Everything except follows
+// フォロー以外すべて
 final page = await client.notifications.fetch(
   excludeTypes: ['follow'],
 );
 ```
 
-### Single notification
+### 単一の通知
 
 ```dart
 final notification = await client.notifications.fetchById('12345');
 ```
 
-### Unread count (Mastodon 4.3+)
+### 未読数（Mastodon 4.3+）
 
 ```dart
 final count = await client.notifications.fetchUnreadCount();
 print(count.count);
 ```
 
-## Dismissing notifications
+## 通知の削除
 
-### Dismiss one
+### 個別削除
 
 ```dart
 await client.notifications.dismiss('12345');
 ```
 
-### Clear all
+### 全件クリア
 
 ```dart
 await client.notifications.clear();
 ```
 
-## Notification policy (Mastodon 4.3+)
+## 通知ポリシー（Mastodon 4.3+）
 
-### Fetch current policy
+### 現在のポリシーを取得
 
 ```dart
 final policy = await client.notifications.fetchPolicy();
 print(policy.forNotFollowing); // accept, filter, drop
 ```
 
-### Update policy
+### ポリシーの更新
 
 ```dart
 await client.notifications.updatePolicy(policy);
 ```
 
-## Notification requests (Mastodon 4.3+)
+## 通知リクエスト（Mastodon 4.3+）
 
-Filtered notifications from accounts that match the policy are collected as requests.
+ポリシーに一致するアカウントからのフィルタリングされた通知はリクエストとして収集されます。
 
-### List requests
+### リクエスト一覧
 
 ```dart
 final page = await client.notifications.fetchRequests(limit: 20);
 ```
 
-### Accept / dismiss
+### 承認 / 却下
 
 ```dart
-// Single
+// 個別
 await client.notifications.acceptRequest('12345');
 await client.notifications.dismissRequest('12345');
 
-// Batch
+// 一括
 await client.notifications.acceptRequests(['1', '2', '3']);
 await client.notifications.dismissRequests(['4', '5']);
 ```
 
-### Check merge status
+### マージ状態の確認
 
 ```dart
 final merged = await client.notifications.checkRequestsMerged();
 if (merged) {
-  // Accepted requests have been merged into the notification list
+  // 承認されたリクエストが通知一覧にマージされた
 }
 ```
 
-## Grouped notifications (v2)
+## グループ化された通知（v2）
 
-For the grouped notifications API, use `client.groupedNotifications`:
+グループ化された通知 API には `client.groupedNotifications` を使用します。
 
 ```dart
 final result = await client.groupedNotifications.fetch(limit: 20);
 for (final group in result.notificationGroups) {
-  print('${group.type}: ${group.notificationsCount} notifications');
+  print('${group.type}: ${group.notificationsCount} 件の通知');
 }
 ```

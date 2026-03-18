@@ -2,36 +2,36 @@
 sidebar_position: 2
 ---
 
-# Statuses
+# 投稿（Statuses）
 
-The `client.statuses` API provides operations for creating, fetching, and interacting with statuses (posts).
+`client.statuses` API は投稿の作成・取得・操作を提供します。
 
-## Fetching statuses
+## 投稿の取得
 
-### Single status
+### 単一の投稿
 
 ```dart
 final status = await client.statuses.fetch('12345');
 print(status.content);
 ```
 
-### Multiple statuses
+### 複数の投稿
 
 ```dart
 final statuses = await client.statuses.fetchMultiple(['1', '2', '3']);
 ```
 
-Non-existent or inaccessible IDs are silently excluded from the results.
+存在しない、またはアクセスできない ID は結果から除外されます。
 
-### Thread context
+### スレッドコンテキスト
 
 ```dart
 final context = await client.statuses.fetchContext('12345');
-print('${context.ancestors.length} ancestors');
-print('${context.descendants.length} descendants');
+print('${context.ancestors.length} 件の先祖');
+print('${context.descendants.length} 件の子孫');
 ```
 
-### Edit history
+### 編集履歴
 
 ```dart
 final history = await client.statuses.fetchHistory('12345');
@@ -40,15 +40,15 @@ for (final edit in history) {
 }
 ```
 
-### Source (for editing)
+### ソース（編集用）
 
 ```dart
 final source = await client.statuses.fetchSource('12345');
-print(source.text);        // Plain text content
-print(source.spoilerText); // CW text
+print(source.text);        // プレーンテキスト
+print(source.spoilerText); // CW テキスト
 ```
 
-## Creating a status
+## 投稿の作成
 
 ```dart
 final result = await client.statuses.create(
@@ -58,58 +58,58 @@ final result = await client.statuses.create(
   ),
 );
 
-// result is MastodonStatusCreated or MastodonStatusScheduled
+// result は MastodonStatusCreated または MastodonStatusScheduled
 if (result case MastodonStatusCreated(:final status)) {
-  print('Posted: ${status.url}');
+  print('投稿完了: ${status.url}');
 }
 ```
 
-### With media
+### メディア付き
 
 ```dart
 final attachment = await client.media.upload(imageBytes, 'photo.jpg',
-  description: 'A beautiful sunset',
+  description: '美しい夕焼け',
 );
 
 final result = await client.statuses.create(
   MastodonStatusCreateRequest(
-    status: 'Check this out!',
+    status: 'これを見てください！',
     mediaIds: [attachment.id],
   ),
 );
 ```
 
-### With a poll
+### アンケート付き
 
 ```dart
 final result = await client.statuses.create(
   MastodonStatusCreateRequest(
-    status: 'What do you prefer?',
+    status: 'どちらが好きですか？',
     poll: MastodonPollCreateRequest(
-      options: ['Option A', 'Option B', 'Option C'],
-      expiresIn: 86400, // 24 hours
+      options: ['選択肢A', '選択肢B', '選択肢C'],
+      expiresIn: 86400, // 24時間
       multiple: false,
     ),
   ),
 );
 ```
 
-### Scheduled status
+### 予約投稿
 
 ```dart
 final result = await client.statuses.create(
   MastodonStatusCreateRequest(
-    status: 'This will be posted later',
+    status: 'これは後で投稿されます',
     scheduledAt: '2025-12-31T00:00:00.000Z',
   ),
 );
 
 if (result case MastodonStatusScheduled(:final scheduledStatus)) {
-  print('Scheduled for: ${scheduledStatus.scheduledAt}');
+  print('予約日時: ${scheduledStatus.scheduledAt}');
 }
 ```
 
-### Idempotency
+### 冪等性
 
 ```dart
 final result = await client.statuses.create(
@@ -118,81 +118,81 @@ final result = await client.statuses.create(
 );
 ```
 
-Repeated requests with the same key return the same result.
+同じキーでのリクエストは同一の結果を返します。
 
-## Editing a status
+## 投稿の編集
 
 ```dart
 final updated = await client.statuses.edit(
   '12345',
   MastodonStatusEditRequest(
-    status: 'Updated content',
+    status: '更新されたコンテンツ',
   ),
 );
 ```
 
-## Deleting a status
+## 投稿の削除
 
 ```dart
 final deleted = await client.statuses.delete('12345');
-// Returns a snapshot with source info for redraft purposes
+// 再投稿用にソース情報を含むスナップショットが返される
 print(deleted.text);
 ```
 
-## Interactions
+## インタラクション
 
-### Boost / unboost
+### ブースト / ブースト解除
 
 ```dart
 final boosted = await client.statuses.boost('12345');
-// Returns a wrapper status; the original is in boosted.reblog
+// ラッパーステータスが返される。元の投稿は boosted.reblog に格納
 
 final unboosted = await client.statuses.unboost('12345');
-// Returns the original status directly
+// 元の投稿が直接返される
 ```
 
-### Favourite / unfavourite
+### お気に入り / お気に入り解除
 
 ```dart
 await client.statuses.favourite('12345');
 await client.statuses.unfavourite('12345');
 ```
 
-### Bookmark / unbookmark
+### ブックマーク / ブックマーク解除
 
 ```dart
 await client.statuses.bookmark('12345');
 await client.statuses.unbookmark('12345');
 ```
 
-### Mute / unmute conversation
+### 会話のミュート / ミュート解除
 
 ```dart
-await client.statuses.mute('12345');   // Stop thread notifications
+await client.statuses.mute('12345');   // スレッド通知を停止
 await client.statuses.unmute('12345');
 ```
 
-### Pin / unpin
+### ピン留め / ピン留め解除
 
 ```dart
 await client.statuses.pin('12345');
 await client.statuses.unpin('12345');
 ```
 
-## Who boosted / favourited
+## ブースト / お気に入りしたユーザー
 
 ```dart
 final boosters = await client.statuses.fetchRebloggedBy('12345', limit: 40);
 final favouriters = await client.statuses.fetchFavouritedBy('12345', limit: 40);
 ```
 
-Both return `MastodonPage<MastodonAccount>` with pagination.
+どちらもページネーション対応の `MastodonPage<MastodonAccount>` を返します。
 
-## Translation
+## 翻訳
 
 ```dart
 final translation = await client.statuses.translate('12345', lang: 'en');
 print(translation.content);
 ```
 
-Only public or unlisted statuses can be translated.
+公開または未収載の投稿のみ翻訳可能です。
