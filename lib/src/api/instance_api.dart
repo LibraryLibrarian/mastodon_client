@@ -132,6 +132,7 @@ class InstanceApi {
   /// Provided for compatibility with older servers that do not support v2.
   ///
   /// Throws a `MastodonException` on failure.
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Deprecated in Mastodon 4.0.0. Use fetch() (v2) instead')
   Future<MastodonInstanceV1> fetchV1() async {
     final data = await _http.send<Map<String, dynamic>>('/api/v1/instance');

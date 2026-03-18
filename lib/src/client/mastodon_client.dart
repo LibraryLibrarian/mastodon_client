@@ -218,6 +218,7 @@ class MastodonClient {
   /// Identity proofs API.
   ///
   /// **Deprecated**: The identity proofs feature was removed in Mastodon 3.5.0.
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated(
     'Removed in Mastodon 3.5.0. Only use for compatibility with older servers.',
   )

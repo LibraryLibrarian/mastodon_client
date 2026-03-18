@@ -5,6 +5,14 @@ slug: /
 
 # 시작하기
 
+:::warning 베타
+
+이 라이브러리는 현재 **베타** 단계입니다. API 구현은 완료되었으나 테스트 커버리지가 최소한입니다. 테스트 결과에 따라 응답 모델 및 메서드 시그니처가 변경될 수 있습니다.
+
+잘못된 응답 모델이나 예상치 못한 동작을 발견하시면 [GitHub Issues](https://github.com/LibraryLibrarian/mastodon_client/issues)로 보고하시거나 [Pull Request](https://github.com/LibraryLibrarian/mastodon_client/pulls)를 제출해 주세요.
+
+:::
+
 mastodon_client는 순수 Dart로 작성된 Mastodon API 클라이언트 라이브러리입니다.
 Flutter, 서버사이드 Dart, CLI 도구 등 Dart가 실행되는 모든 환경에서 사용할 수 있습니다.
 
@@ -14,7 +22,7 @@ Flutter, 서버사이드 Dart, CLI 도구 등 Dart가 실행되는 모든 환경
 
 ```yaml
 dependencies:
-  mastodon_client: ^0.0.1
+  mastodon_client: ^1.0.0-beta.1
 ```
 
 그런 다음 패키지를 가져옵니다:

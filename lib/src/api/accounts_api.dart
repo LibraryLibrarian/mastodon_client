@@ -389,6 +389,7 @@ class AccountsApi {
   /// **Deprecated**: Use [endorse] since Mastodon 4.4.0.
   ///
   /// Throws a subclass of [MastodonException] on failure.
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Use endorse() since Mastodon 4.4.0')
   Future<MastodonRelationship> pin(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
@@ -405,6 +406,7 @@ class AccountsApi {
   /// **Deprecated**: Use [unendorse] since Mastodon 4.4.0.
   ///
   /// Throws a subclass of [MastodonException] on failure.
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Use unendorse() since Mastodon 4.4.0')
   Future<MastodonRelationship> unpin(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
@@ -571,6 +573,7 @@ class AccountsApi {
   /// **Deprecated**: Always returns an empty array since Mastodon 3.5.0.
   ///
   /// Throws a subclass of [MastodonException] on failure.
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Always returns an empty array since Mastodon 3.5.0')
   Future<List<MastodonIdentityProof>> fetchIdentityProofs(String id) async {
     final data = await _http.send<List<dynamic>>(

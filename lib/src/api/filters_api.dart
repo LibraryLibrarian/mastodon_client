@@ -287,6 +287,7 @@ class FiltersApi {
   /// Use [fetch] (v2) instead since Mastodon 4.0.
   ///
   /// Throws a `MastodonException` on failure.
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Deprecated in Mastodon 4.0.0. Use fetch() (v2) instead')
   Future<List<MastodonFilterV1>> fetchV1() async {
     final data = await _http.send<List<dynamic>>('/api/v1/filters');
@@ -303,6 +304,7 @@ class FiltersApi {
   /// Use [fetchById] (v2) instead since Mastodon 4.0.
   ///
   /// Throws a `MastodonException` on failure.
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Deprecated in Mastodon 4.0.0. Use fetchById() (v2) instead')
   Future<MastodonFilterV1> fetchByIdV1(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
@@ -325,6 +327,7 @@ class FiltersApi {
   /// Use [create] (v2) instead since Mastodon 4.0.
   ///
   /// Throws a `MastodonException` on failure.
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Deprecated in Mastodon 4.0.0. Use create() (v2) instead')
   Future<MastodonFilterV1> createV1({
     required String phrase,
@@ -360,6 +363,7 @@ class FiltersApi {
   /// Use [update] (v2) instead since Mastodon 4.0.
   ///
   /// Throws a `MastodonException` on failure.
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Deprecated in Mastodon 4.0.0. Use update() (v2) instead')
   Future<MastodonFilterV1> updateV1(
     String id, {
@@ -393,6 +397,7 @@ class FiltersApi {
   /// Use [delete] (v2) instead since Mastodon 4.0.
   ///
   /// Throws a `MastodonException` on failure.
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Deprecated in Mastodon 4.0.0. Use delete() (v2) instead')
   Future<void> deleteV1(String id) async {
     await _http.send<void>(

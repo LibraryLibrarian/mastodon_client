@@ -95,6 +95,7 @@ class NotificationsApi {
   ///
   /// **Deprecated**: Deprecated in Mastodon 1.3.0, removed in 3.0.0.
   /// Use [dismiss] (path-based) instead.
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated(
     'Removed in Mastodon 3.0.0. Use dismiss() instead',
   )

@@ -126,9 +126,11 @@ class MastodonFilterStatus {
 ///
 /// Corresponds to the response from `/api/v1/filters`.
 /// Designed for client-side filtering with a one-filter-per-keyword structure.
+// ignore: remove_deprecations_in_breaking_versions
 @Deprecated('Deprecated in Mastodon 4.0.0. Use MastodonFilter (v2) instead')
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFilterV1 {
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Deprecated in Mastodon 4.0.0. Use MastodonFilter (v2) instead')
   const MastodonFilterV1({
     required this.id,
@@ -139,6 +141,7 @@ class MastodonFilterV1 {
     this.expiresAt,
   });
 
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Deprecated in Mastodon 4.0.0. Use MastodonFilter (v2) instead')
   factory MastodonFilterV1.fromJson(Map<String, dynamic> json) =>
       _$MastodonFilterV1FromJson(json);

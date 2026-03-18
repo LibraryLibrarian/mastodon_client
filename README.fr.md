@@ -4,6 +4,8 @@
 
 Une bibliothèque cliente pure Dart pour l'API [Mastodon](https://joinmastodon.org/). Fournit un accès typé à toutes les principales catégories d'API avec prise en charge OAuth intégrée, pagination par curseur et gestion structurée des erreurs.
 
+> **Bêta** : L'implémentation de l'API est complète mais la couverture de tests est minimale. Les modèles de réponse et les signatures de méthodes peuvent évoluer suite aux résultats des tests. Voir le [CHANGELOG](CHANGELOG.md) pour plus de détails.
+
 ## Fonctionnalités
 
 - Couvre toutes les principales catégories de l'API Mastodon (comptes, statuts, fils d'actualité, notifications, médias, et plus)
@@ -20,7 +22,7 @@ Ajoutez le paquet à votre `pubspec.yaml` :
 
 ```yaml
 dependencies:
-  mastodon_client: ^0.0.1
+  mastodon_client: ^1.0.0-beta.1
 ```
 
 Puis exécutez :

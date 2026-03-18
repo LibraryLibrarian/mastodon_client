@@ -5,6 +5,14 @@ slug: /
 
 # Démarrage rapide
 
+:::warning Bêta
+
+Cette bibliothèque est actuellement en **bêta**. L'implémentation de l'API est complète, mais la couverture de tests est minimale. Les modèles de réponse et les signatures de méthodes peuvent évoluer suite aux résultats des tests.
+
+Si vous constatez des modèles de réponse incorrects ou un comportement inattendu, veuillez le signaler via [GitHub Issues](https://github.com/LibraryLibrarian/mastodon_client/issues) ou soumettre une [Pull Request](https://github.com/LibraryLibrarian/mastodon_client/pulls).
+
+:::
+
 mastodon_client est une bibliothèque cliente Mastodon API écrite en Dart pur.
 Elle fonctionne dans tout environnement où Dart est disponible : Flutter, Dart côté serveur, outils CLI, et bien d'autres.
 
@@ -14,7 +22,7 @@ Ajoutez la dépendance dans votre `pubspec.yaml` :
 
 ```yaml
 dependencies:
-  mastodon_client: ^0.0.1
+  mastodon_client: ^1.0.0-beta.1
 ```
 
 Puis récupérez-la :

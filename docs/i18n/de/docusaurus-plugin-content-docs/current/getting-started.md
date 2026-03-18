@@ -5,6 +5,14 @@ slug: /
 
 # Erste Schritte
 
+:::warning Beta
+
+Diese Bibliothek befindet sich derzeit im **Beta**-Stadium. Die API-Implementierung ist abgeschlossen, die Testabdeckung ist jedoch minimal. Response-Modelle und Methodensignaturen können sich auf Basis von Testergebnissen ändern.
+
+Falls Sie fehlerhafte Response-Modelle oder unerwartetes Verhalten feststellen, melden Sie dies bitte über [GitHub Issues](https://github.com/LibraryLibrarian/mastodon_client/issues) oder reichen Sie einen [Pull Request](https://github.com/LibraryLibrarian/mastodon_client/pulls) ein.
+
+:::
+
 mastodon_client ist eine reine Dart-Bibliothek für die Mastodon-API.
 Sie läuft in jeder Umgebung, in der Dart unterstützt wird: Flutter, serverseitiges Dart, CLI-Tools und mehr.
 
@@ -14,7 +22,7 @@ Füge die Abhängigkeit in deine `pubspec.yaml` ein:
 
 ```yaml
 dependencies:
-  mastodon_client: ^0.0.1
+  mastodon_client: ^1.0.0-beta.1
 ```
 
 Anschließend ausführen:

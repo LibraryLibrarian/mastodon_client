@@ -4,6 +4,8 @@
 
 纯 Dart 实现的 [Mastodon](https://joinmastodon.org/) API 客户端库。提供对所有主要 API 类别的类型化访问，内置 OAuth 支持、基于游标的分页以及结构化的错误处理。
 
+> **Beta 版本**: API 实现已完成，但测试覆盖率较低。响应模型和方法签名可能会根据测试结果进行调整。详情请参阅 [CHANGELOG](CHANGELOG.md)。
+
 ## 功能特性
 
 - 覆盖所有主要 Mastodon API 类别（账户、嘟文、时间线、通知、媒体等）
@@ -20,7 +22,7 @@
 
 ```yaml
 dependencies:
-  mastodon_client: ^0.0.1
+  mastodon_client: ^1.0.0-beta.1
 ```
 
 然后运行：

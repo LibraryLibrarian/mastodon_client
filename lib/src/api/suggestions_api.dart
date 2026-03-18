@@ -41,6 +41,7 @@ class SuggestionsApi {
   /// maximum number of results (default: 40, max: 80).
   ///
   /// Throws a `MastodonException` on failure.
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Deprecated in Mastodon 3.4.0. Use fetch() (v2) instead')
   Future<List<MastodonAccount>> fetchV1({int? limit}) async {
     final data = await _http.send<List<dynamic>>(

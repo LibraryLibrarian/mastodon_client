@@ -75,6 +75,7 @@ class SearchApi {
   /// beginning and is only effective when [type] is specified.
   ///
   /// Throws a `MastodonException` on failure.
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated(
     'Removed in Mastodon 3.0.0. Use search() (v2) instead',
   )

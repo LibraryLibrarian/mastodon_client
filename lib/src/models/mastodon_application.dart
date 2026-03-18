@@ -14,7 +14,9 @@ class MastodonApplication {
     this.website,
     required this.scopes,
     required this.redirectUris,
+    // ignore: remove_deprecations_in_breaking_versions
     @Deprecated('Use redirectUris instead') this.redirectUri,
+    // ignore: remove_deprecations_in_breaking_versions
     @Deprecated('VAPID key used by the Push Streaming API') this.vapidKey,
   });
 
@@ -41,10 +43,12 @@ class MastodonApplication {
   final List<String> redirectUris;
 
   /// Redirect URI (deprecated, for backward compatibility).
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Use redirectUris instead')
   final String? redirectUri;
 
   /// VAPID key for the Web Push API (deprecated).
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('VAPID key used by the Push Streaming API')
   final String? vapidKey;
 }
@@ -62,6 +66,7 @@ class MastodonCredentialApplication {
     this.website,
     required this.scopes,
     required this.redirectUris,
+    // ignore: remove_deprecations_in_breaking_versions
     @Deprecated('Use redirectUris instead') this.redirectUri,
     required this.clientId,
     required this.clientSecret,
@@ -91,6 +96,7 @@ class MastodonCredentialApplication {
   final List<String> redirectUris;
 
   /// Redirect URI (deprecated, for backward compatibility).
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Use redirectUris instead')
   final String? redirectUri;
 

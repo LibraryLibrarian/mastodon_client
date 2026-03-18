@@ -12,6 +12,7 @@ class AnnouncementsApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<List<MastodonAnnouncement>> fetch({
+    // ignore: remove_deprecations_in_breaking_versions
     @Deprecated(
       'Not implemented server-side; has no effect. '
       'Will be removed in the future',

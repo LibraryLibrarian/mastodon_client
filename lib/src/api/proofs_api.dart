@@ -5,11 +5,13 @@ import '../models/mastodon_proof.dart';
 ///
 /// **Deprecated**: Identity proof functionality was removed in Mastodon 3.5.0.
 /// Provided only for compatibility with older server versions.
+// ignore: remove_deprecations_in_breaking_versions
 @Deprecated(
   'Removed in Mastodon 3.5.0. For compatibility with older servers only',
 )
 class ProofsApi {
   /// Creates a [ProofsApi] instance with the given [MastodonHttpClient].
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated(
     'Removed in Mastodon 3.5.0. For compatibility with older servers only',
   )

@@ -4,6 +4,8 @@
 
 [Mastodon](https://joinmastodon.org/) API를 위한 순수 Dart 클라이언트 라이브러리. 모든 주요 API 카테고리에 대한 타입 안전 접근을 제공하며, 내장 OAuth 지원, 커서 기반 페이지네이션, 구조화된 오류 처리를 갖추고 있습니다.
 
+> **베타**: API 구현은 완료되었으나 테스트 커버리지가 최소한입니다. 테스트 결과에 따라 응답 모델 및 메서드 시그니처가 변경될 수 있습니다. 자세한 내용은 [CHANGELOG](CHANGELOG.md)를 참조하세요.
+
 ## 기능
 
 - Mastodon의 모든 주요 API 카테고리 지원 (계정, 포스트, 타임라인, 알림, 미디어 등)
@@ -20,7 +22,7 @@
 
 ```yaml
 dependencies:
-  mastodon_client: ^0.0.1
+  mastodon_client: ^1.0.0-beta.1
 ```
 
 그런 다음 실행하세요:

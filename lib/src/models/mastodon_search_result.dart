@@ -44,9 +44,11 @@ class MastodonSearchResult {
 ///
 /// The v1 search endpoint was removed in Mastodon 3.0.0 and is only
 /// available on 2.x instances.
+// ignore: remove_deprecations_in_breaking_versions
 @Deprecated('Removed in Mastodon 3.0.0. Use MastodonSearchResult (v2) instead')
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonSearchResultV1 {
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated(
     'Removed in Mastodon 3.0.0. Use MastodonSearchResult (v2) instead',
   )
@@ -56,6 +58,7 @@ class MastodonSearchResultV1 {
     required this.hashtags,
   });
 
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated(
     'Removed in Mastodon 3.0.0. Use MastodonSearchResult (v2) instead',
   )

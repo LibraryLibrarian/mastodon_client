@@ -176,6 +176,7 @@ class TimelinesApi {
   /// [limit] controls the maximum number of results (default: 20, max: 40).
   /// Use [sinceId] for newer statuses, [maxId] for older ones, and [minId]
   /// for forward pagination.
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated(
     'Removed in Mastodon 3.0.0. Use ConversationsApi instead',
   )
