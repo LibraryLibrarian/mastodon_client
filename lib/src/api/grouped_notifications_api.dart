@@ -4,33 +4,30 @@ import '../models/mastodon_account.dart';
 import '../models/mastodon_grouped_notifications_results.dart';
 import '../models/mastodon_page.dart';
 
-/// グループ化通知に関する API（v2）
+/// Grouped notifications API (v2).
 ///
-/// Mastodon 4.3+ で追加されたグループ化通知エンドポイントを提供する。
-/// 同一タイプ・同一対象の通知をグループ化して効率的に取得できる。
+/// Provides the grouped notifications endpoints added in Mastodon 4.3+.
+/// Groups notifications of the same type and target for efficient retrieval.
 class GroupedNotificationsApi {
   const GroupedNotificationsApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// グループ化された通知一覧を取得
+  /// Fetches grouped notifications.
   ///
   /// `GET /api/v2/notifications`
   ///
-  /// - [maxId]: このグループキー以前の通知を取得する（古い方向）
-  /// - [sinceId]: このグループキー以降の通知を取得する（新しい方向）
-  /// - [minId]: このグループキー直後の通知を取得する（新しい方向、即時）
-  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
-  /// - [types]: 取得対象の通知タイプ一覧
-  /// - [excludeTypes]: 取得から除外する通知タイプ一覧
-  /// - [accountId]: 特定のアカウントからの通知のみを取得
-  /// - [expandAccounts]: アカウント情報の展開方法（`full` または `partial_avatars`）
-  /// - [groupedTypes]: グループ化対象の通知タイプ一覧
-  /// - [includeFiltered]: フィルタリングされた通知を含めるかどうか
+  /// Use [maxId], [sinceId], and [minId] for pagination by group key.
+  /// [limit] controls the maximum number of results (uses server default
+  /// when omitted). [types] and [excludeTypes] filter by notification type.
+  /// [accountId] restricts results to a specific account. [expandAccounts]
+  /// sets the account expansion method (`full` or `partial_avatars`).
+  /// [groupedTypes] lists the notification types to group, and
+  /// [includeFiltered] controls whether filtered notifications are included.
   ///
-  /// レスポンスの `Link` ヘッダーから次ページの `max_id` および前ページの
-  /// `min_id` を解析し、[MastodonPage] に格納する。
-  /// [MastodonPage.items] には単一の [MastodonGroupedNotificationsResults] が含まれる。
+  /// Pagination cursors are parsed from the `Link` response header and
+  /// stored in [MastodonPage]. [MastodonPage.items] contains a single
+  /// [MastodonGroupedNotificationsResults].
   Future<MastodonPage<MastodonGroupedNotificationsResults>> fetch({
     String? maxId,
     String? sinceId,
@@ -73,11 +70,9 @@ class GroupedNotificationsApi {
     );
   }
 
-  /// 指定グループキーの通知グループを取得
+  /// Fetches a notification group by its group key.
   ///
   /// `GET /api/v2/notifications/:group_key`
-  ///
-  /// - [groupKey]: 取得する通知グループのキー
   Future<MastodonGroupedNotificationsResults> fetchByGroupKey(
     String groupKey,
   ) async {
@@ -87,11 +82,9 @@ class GroupedNotificationsApi {
     return MastodonGroupedNotificationsResults.fromJson(data!);
   }
 
-  /// 指定グループキーの通知を削除
+  /// Dismisses a notification group by its group key.
   ///
   /// `POST /api/v2/notifications/:group_key/dismiss`
-  ///
-  /// - [groupKey]: 削除する通知グループのキー
   Future<void> dismiss(String groupKey) async {
     await _http.send<dynamic>(
       '/api/v2/notifications/$groupKey/dismiss',
@@ -99,11 +92,9 @@ class GroupedNotificationsApi {
     );
   }
 
-  /// 指定グループキーの通知に関連するアカウント一覧を取得
+  /// Fetches the accounts associated with a notification group.
   ///
   /// `GET /api/v2/notifications/:group_key/accounts`
-  ///
-  /// - [groupKey]: 取得する通知グループのキー
   Future<List<MastodonAccount>> fetchAccounts(String groupKey) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v2/notifications/$groupKey/accounts',
@@ -114,15 +105,14 @@ class GroupedNotificationsApi {
         .toList(growable: false);
   }
 
-  /// 未読通知グループの件数を取得
+  /// Fetches the count of unread notification groups.
   ///
   /// `GET /api/v2/notifications/unread_count`
   ///
-  /// - [limit]: カウントの上限。省略時はサーバーのデフォルト値が適用される
-  /// - [types]: 集計対象の通知タイプ一覧
-  /// - [excludeTypes]: 集計から除外する通知タイプ一覧
-  /// - [accountId]: 特定のアカウントからの通知のみを集計
-  /// - [groupedTypes]: グループ化対象の通知タイプ一覧
+  /// [limit] sets an upper bound on the returned count (uses server default
+  /// when omitted). [types] and [excludeTypes] filter by notification type.
+  /// [accountId] restricts the count to a specific account, and
+  /// [groupedTypes] lists the notification types to group.
   Future<int> fetchUnreadCount({
     int? limit,
     List<String>? types,

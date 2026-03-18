@@ -2,18 +2,18 @@ import '../client/mastodon_http_client.dart';
 import '../models/mastodon_featured_tag.dart';
 import '../models/mastodon_tag.dart';
 
-/// 注目ハッシュタグの管理に関するAPI
+/// API for managing featured hashtags.
 class FeaturedTagsApi {
-  /// [MastodonHttpClient] を受け取り、注目タグAPIへのアクセスを提供する
+  /// Creates a [FeaturedTagsApi] instance with the given [MastodonHttpClient].
   const FeaturedTagsApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 自分のプロフィールにフィーチャーしているハッシュタグの一覧を取得する
+  /// Fetches the hashtags featured on the user's profile.
   ///
   /// `GET /api/v1/featured_tags`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonFeaturedTag>> fetch() async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/featured_tags',
@@ -24,13 +24,13 @@ class FeaturedTagsApi {
         .toList();
   }
 
-  /// ハッシュタグをプロフィール上でフィーチャー（注目表示）する
+  /// Features a hashtag on the user's profile.
   ///
   /// `POST /api/v1/featured_tags`
   ///
-  /// - [name]: フィーチャーするハッシュタグ名（`#` 記号なし）
+  /// [name] is the hashtag name to feature, without the `#` prefix.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonFeaturedTag> create(String name) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/featured_tags',
@@ -40,13 +40,11 @@ class FeaturedTagsApi {
     return MastodonFeaturedTag.fromJson(data!);
   }
 
-  /// ハッシュタグのフィーチャー（注目表示）を解除する
+  /// Removes a featured hashtag from the user's profile.
   ///
   /// `DELETE /api/v1/featured_tags/:id`
   ///
-  /// - [id]: 解除する FeaturedTag の ID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> delete(String id) async {
     await _http.send<void>(
       '/api/v1/featured_tags/$id',
@@ -54,11 +52,11 @@ class FeaturedTagsApi {
     );
   }
 
-  /// フィーチャー候補として最近使用したハッシュタグを最大10件取得する
+  /// Fetches up to 10 recently used hashtags as feature candidates.
   ///
   /// `GET /api/v1/featured_tags/suggestions`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonTag>> fetchSuggestions() async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/featured_tags/suggestions',

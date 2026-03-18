@@ -2,12 +2,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_oauth_user_info.g.dart';
 
-/// OAuth userinfo エンドポイントのレスポンスを表すモデル
+/// OAuth userinfo endpoint response model.
 ///
-/// `GET /oauth/userinfo` のレスポンスに対応する
+/// Corresponds to the response from `GET /oauth/userinfo`.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonOAuthUserInfo {
-  /// 各フィールドを指定して [MastodonOAuthUserInfo] を生成する
+  /// Creates a [MastodonOAuthUserInfo] with the given fields.
   const MastodonOAuthUserInfo({
     required this.iss,
     required this.sub,
@@ -17,28 +17,28 @@ class MastodonOAuthUserInfo {
     required this.picture,
   });
 
-  /// JSON マップから [MastodonOAuthUserInfo] を生成する
+  /// Creates a [MastodonOAuthUserInfo] from a JSON map.
   factory MastodonOAuthUserInfo.fromJson(Map<String, dynamic> json) =>
       _$MastodonOAuthUserInfoFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonOAuthUserInfoToJson(this);
 
-  /// トークンを発行したインスタンスの URL
+  /// URL of the instance that issued the token.
   final String iss;
 
-  /// ユーザーの URI
+  /// URI of the user.
   final String sub;
 
-  /// ユーザーの表示名
+  /// Display name of the user.
   final String name;
 
-  /// ユーザー名
+  /// Username of the user.
   final String preferredUsername;
 
-  /// ユーザーのプロフィール URL
+  /// URL of the user's profile.
   final String profile;
 
-  /// ユーザーのアバター画像 URL
+  /// URL of the user's avatar image.
   final String picture;
 }

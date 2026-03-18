@@ -1,8 +1,8 @@
-/// 管理者向けアカウントアクション実行リクエスト
+/// Request for performing an admin account action.
 ///
-/// `POST /api/v1/admin/accounts/:id/action` のリクエストボディ。
+/// Request body for `POST /api/v1/admin/accounts/:id/action`.
 class MastodonAdminAccountActionRequest {
-  /// [MastodonAdminAccountActionRequest] を生成する
+  /// Creates a [MastodonAdminAccountActionRequest].
   const MastodonAdminAccountActionRequest({
     required this.type,
     this.reportId,
@@ -11,22 +11,22 @@ class MastodonAdminAccountActionRequest {
     this.sendEmailNotification,
   });
 
-  /// アクションの種類（`none` / `sensitive` / `disable` / `silence` / `suspend`）
+  /// Type of action (`none` / `sensitive` / `disable` / `silence` / `suspend`).
   final String type;
 
-  /// 関連する通報の ID
+  /// ID of the associated report.
   final String? reportId;
 
-  /// 警告プリセットの ID
+  /// ID of the warning preset.
   final String? warningPresetId;
 
-  /// 追加の説明テキスト
+  /// Additional explanation text.
   final String? text;
 
-  /// ユーザーにメール通知を送信するかどうか
+  /// Whether to send an email notification to the user.
   final bool? sendEmailNotification;
 
-  /// リクエストボディ用の JSON マップに変換する
+  /// Converts to a JSON map for the request body.
   Map<String, dynamic> toJson() => {
     'type': type,
     'report_id': ?reportId,

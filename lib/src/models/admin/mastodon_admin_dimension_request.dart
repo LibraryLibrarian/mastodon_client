@@ -1,8 +1,8 @@
-/// 管理者向けディメンションデータ取得リクエスト
+/// Request for fetching admin dimension data.
 ///
-/// `POST /api/v1/admin/dimensions` のリクエストボディ。
+/// Request body for `POST /api/v1/admin/dimensions`.
 class MastodonAdminDimensionRequest {
-  /// [MastodonAdminDimensionRequest] を生成する
+  /// Creates a [MastodonAdminDimensionRequest].
   const MastodonAdminDimensionRequest({
     required this.keys,
     this.startAt,
@@ -14,35 +14,35 @@ class MastodonAdminDimensionRequest {
     this.instanceLanguagesDomain,
   });
 
-  /// 取得するディメンションのキーリスト
+  /// List of dimension keys to fetch.
   ///
-  /// 有効な値: `languages`, `sources`, `servers`, `space_usage`,
+  /// Valid values: `languages`, `sources`, `servers`, `space_usage`,
   /// `software_versions`, `tag_servers`, `tag_languages`,
   /// `instance_accounts`, `instance_languages`
   final List<String> keys;
 
-  /// 開始日時（時刻部分は無視される）
+  /// Start date (time portion is ignored).
   final DateTime? startAt;
 
-  /// 終了日時（時刻部分は無視される）
+  /// End date (time portion is ignored).
   final DateTime? endAt;
 
-  /// sources/servers/languages 等の最大取得件数
+  /// Maximum number of results for sources/servers/languages, etc.
   final int? limit;
 
-  /// `tag_servers` キーに必要なタグ ID
+  /// Tag ID required for the `tag_servers` key.
   final String? tagServersId;
 
-  /// `tag_languages` キーに必要なタグ ID
+  /// Tag ID required for the `tag_languages` key.
   final String? tagLanguagesId;
 
-  /// `instance_accounts` キーに必要なドメイン
+  /// Domain required for the `instance_accounts` key.
   final String? instanceAccountsDomain;
 
-  /// `instance_languages` キーに必要なドメイン
+  /// Domain required for the `instance_languages` key.
   final String? instanceLanguagesDomain;
 
-  /// リクエストボディ用の JSON マップに変換する
+  /// Converts to a JSON map for the request body.
   Map<String, dynamic> toJson() => {
     'keys': keys,
     'start_at': ?startAt?.toIso8601String(),

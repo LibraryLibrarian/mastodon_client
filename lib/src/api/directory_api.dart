@@ -1,25 +1,26 @@
 import '../client/mastodon_http_client.dart';
 import '../models/mastodon_account.dart';
 
-/// プロフィールディレクトリに関する API クライアント
+/// API client for the profile directory.
 class DirectoryApi {
-  /// [MastodonHttpClient] を受け取り、ディレクトリ API へのアクセスを提供する
+  /// Creates a [DirectoryApi] instance with the given [MastodonHttpClient].
   const DirectoryApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// プロフィールディレクトリに掲載されているアカウント一覧を取得する
+  /// Fetches accounts listed in the profile directory.
   ///
   /// `GET /api/v1/directory`
   ///
-  /// 認証不要。
+  /// No authentication required.
   ///
-  /// - [offset]: 先頭 n 件をスキップする
-  /// - [limit]: 取得件数（デフォルト: 40、最大: 80）
-  /// - [order]: ソート順。`active`（最近投稿順）または `new`（作成日順）
-  /// - [local]: `true` の場合、ローカルアカウントのみを返す
+  /// [limit] controls the number of results returned (default: 40, max: 80),
+  /// and [offset] skips that many results from the beginning. [order] sets
+  /// the sort order: `active` sorts by most recently posted, `new` by
+  /// account creation date. Set [local] to `true` to return only local
+  /// accounts.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonAccount>> fetch({
     int? offset,
     int? limit,

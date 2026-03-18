@@ -11,7 +11,7 @@ export 'mastodon_tag.dart';
 
 part 'mastodon_status.g.dart';
 
-/// 投稿の公開範囲
+/// Visibility of a status.
 @JsonEnum(fieldRename: FieldRename.snake)
 enum MastodonVisibility {
   public,
@@ -20,7 +20,7 @@ enum MastodonVisibility {
   direct,
 }
 
-/// メンション（投稿内の`@username`部分）
+/// Mention (the `@username` portion within a status).
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonMention {
   const MastodonMention({
@@ -33,7 +33,7 @@ class MastodonMention {
   factory MastodonMention.fromJson(Map<String, dynamic> json) =>
       _$MastodonMentionFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonMentionToJson(this);
 
   final String id;
@@ -42,9 +42,9 @@ class MastodonMention {
   final String url;
 }
 
-/// Mastodon の投稿（Status）
+/// Mastodon status (post).
 ///
-/// `/api/v1/statuses/:id`や各タイムラインAPIのレスポンスに対応する
+/// Corresponds to responses from `/api/v1/statuses/:id` and various timeline APIs.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonStatus {
   const MastodonStatus({
@@ -82,107 +82,108 @@ class MastodonStatus {
   factory MastodonStatus.fromJson(Map<String, dynamic> json) =>
       _$MastodonStatusFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonStatusToJson(this);
 
   static Object? _readVisibility(Map<dynamic, dynamic> json, String key) =>
       json['visibility'] ?? 'public';
 
-  /// 投稿の内部ID
+  /// Internal ID of the status.
   final String id;
 
-  /// 投稿のURI（ActivityPub識別子）
+  /// URI of the status (ActivityPub identifier).
   final String? uri;
 
-  /// 投稿のパーマリンクURL
+  /// Permalink URL of the status.
   final String? url;
 
-  /// 投稿日時
+  /// Timestamp when the status was posted.
   final DateTime createdAt;
 
-  /// 返信先の投稿ID
+  /// ID of the status being replied to.
   final String? inReplyToId;
 
-  /// 返信先のアカウントID
+  /// ID of the account being replied to.
   final String? inReplyToAccountId;
 
-  /// センシティブコンテンツかどうか
+  /// Whether the status is marked as sensitive content.
   @JsonKey(defaultValue: false)
   final bool sensitive;
 
-  /// コンテンツ警告（CW）テキスト なければ空文字
+  /// Content warning (CW) text. Empty string if none.
   @JsonKey(defaultValue: '')
   final String spoilerText;
 
-  /// 公開範囲
+  /// Visibility of the status.
   @JsonKey(
     readValue: _readVisibility,
     unknownEnumValue: MastodonVisibility.public,
   )
   final MastodonVisibility visibility;
 
-  /// 言語コード（BCP47形式）
+  /// Language code (BCP47 format).
   final String? language;
 
-  /// 投稿本文（HTML形式）
+  /// Body text of the status (HTML format).
   @JsonKey(defaultValue: '')
   final String content;
 
-  /// 投稿本文のプレーンテキスト 編集履歴取得時など一部APIでのみ含まれる
+  /// Plain text of the status body. Included only in certain APIs such as
+  /// edit history retrieval.
   final String? text;
 
-  /// 最終編集日時 編集されていない場合はnull
+  /// Timestamp of the last edit. Null if never edited.
   @SafeDateTimeConverter()
   final DateTime? editedAt;
 
-  /// ブースト数
+  /// Number of boosts.
   @JsonKey(defaultValue: 0)
   final int reblogsCount;
 
-  /// お気に入り数
+  /// Number of favourites.
   @JsonKey(defaultValue: 0)
   final int favouritesCount;
 
-  /// 返信数
+  /// Number of replies.
   @JsonKey(defaultValue: 0)
   final int repliesCount;
 
-  /// 自分がお気に入り済みかどうか
+  /// Whether the authenticated user has favourited this status.
   final bool? favourited;
 
-  /// 自分がブースト済みかどうか
+  /// Whether the authenticated user has boosted this status.
   final bool? reblogged;
 
-  /// 自分がブックマーク済みかどうか
+  /// Whether the authenticated user has bookmarked this status.
   final bool? bookmarked;
 
-  /// 自分がミュートしているスレッドかどうか
+  /// Whether the authenticated user has muted the thread.
   final bool? muted;
 
-  /// ピン留めされているかどうか
+  /// Whether the status is pinned.
   final bool? pinned;
 
-  /// 投稿者のアカウント
+  /// Account of the author.
   final MastodonAccount account;
 
-  /// 添付メディアのリスト
+  /// List of media attachments.
   final List<MastodonMediaAttachment> mediaAttachments;
 
-  /// メンションのリスト
+  /// List of mentions.
   final List<MastodonMention> mentions;
 
-  /// ハッシュタグのリスト
+  /// List of hashtags.
   final List<MastodonTag> tags;
 
-  /// 投稿内で使われているカスタム絵文字のリスト
+  /// List of custom emojis used in the status.
   final List<MastodonCustomEmoji> emojis;
 
-  /// ブースト元の投稿 ブーストでない場合はnull
+  /// Original boosted status. Null if not a boost.
   final MastodonStatus? reblog;
 
-  /// 投票 投票付き投稿でない場合はnull
+  /// Poll. Null if the status does not have a poll.
   final MastodonPoll? poll;
 
-  /// 引用元の投稿（Mastodon 4.5+ / FEP-044f）引用でない場合はnull
+  /// Quoted status (Mastodon 4.5+ / FEP-044f). Null if not a quote.
   final MastodonStatus? quote;
 }

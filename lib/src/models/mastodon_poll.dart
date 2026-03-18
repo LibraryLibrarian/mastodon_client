@@ -5,7 +5,7 @@ import 'mastodon_custom_emoji.dart';
 
 part 'mastodon_poll.g.dart';
 
-/// 投票の選択肢
+/// Poll option.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPollOption {
   const MastodonPollOption({
@@ -16,17 +16,17 @@ class MastodonPollOption {
   factory MastodonPollOption.fromJson(Map<String, dynamic> json) =>
       _$MastodonPollOptionFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonPollOptionToJson(this);
 
-  /// 選択肢のテキスト
+  /// Text of the option.
   final String title;
 
-  /// この選択肢への投票数 非公開投票ではnull
+  /// Number of votes for this option. Null for non-public polls.
   final int? votesCount;
 }
 
-/// Mastodonの投票
+/// Mastodon poll.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPoll {
   const MastodonPoll({
@@ -45,41 +45,42 @@ class MastodonPoll {
   factory MastodonPoll.fromJson(Map<String, dynamic> json) =>
       _$MastodonPollFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonPollToJson(this);
 
-  /// 投票の内部ID
+  /// Internal ID of the poll.
   final String id;
 
-  /// 投票の締め切り日時
+  /// Expiration timestamp of the poll.
   @SafeDateTimeConverter()
   final DateTime? expiresAt;
 
-  /// 投票が終了しているかどうか
+  /// Whether the poll has ended.
   @JsonKey(defaultValue: false)
   final bool expired;
 
-  /// 複数選択可能かどうか
+  /// Whether multiple choices are allowed.
   @JsonKey(defaultValue: false)
   final bool multiple;
 
-  /// 総投票数
+  /// Total number of votes.
   @JsonKey(defaultValue: 0)
   final int votesCount;
 
-  /// 投票に参加したユーザー数（複数選択可の場合はvotesCountと異なる）
+  /// Number of unique voters (differs from votesCount for multiple-choice
+  /// polls).
   final int? votersCount;
 
-  /// 選択肢のリスト
+  /// List of options.
   final List<MastodonPollOption> options;
 
-  /// 投票に含まれるカスタム絵文字のリスト
+  /// List of custom emojis used in the poll.
   @JsonKey(defaultValue: <MastodonCustomEmoji>[])
   final List<MastodonCustomEmoji> emojis;
 
-  /// 自分が投票済みかどうか
+  /// Whether the authenticated user has voted.
   final bool? voted;
 
-  /// 自分が投票した選択肢のインデックスリスト
+  /// List of option indices the authenticated user voted for.
   final List<int>? ownVotes;
 }

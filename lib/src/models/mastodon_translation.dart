@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_translation.g.dart';
 
-/// 投稿の翻訳結果
+/// Translation result of a status.
 ///
 /// `POST /api/v1/statuses/:id/translate`
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -20,38 +20,38 @@ class MastodonTranslation {
   factory MastodonTranslation.fromJson(Map<String, dynamic> json) =>
       _$MastodonTranslationFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonTranslationToJson(this);
 
-  /// 翻訳済みの投稿本文（HTML形式）
+  /// Translated body text of the status (HTML format).
   @JsonKey(defaultValue: '')
   final String content;
 
-  /// 翻訳済みのコンテンツ警告テキスト
+  /// Translated content warning text.
   @JsonKey(defaultValue: '')
   final String spoilerText;
 
-  /// 翻訳先の言語コード
+  /// Target language code of the translation.
   @JsonKey(defaultValue: '')
   final String language;
 
-  /// 機械翻訳プロバイダーが自動検出した元の言語コード
+  /// Source language code auto-detected by the translation provider.
   @JsonKey(defaultValue: '')
   final String detectedSourceLanguage;
 
-  /// 機械翻訳サービスの名前
+  /// Name of the translation service.
   @JsonKey(defaultValue: '')
   final String provider;
 
-  /// 翻訳済みのメディア説明文のリスト
+  /// List of translated media descriptions.
   @JsonKey(defaultValue: <MastodonTranslationAttachment>[])
   final List<MastodonTranslationAttachment> mediaAttachments;
 
-  /// 翻訳済みの投票。投票なしの場合は `null`
+  /// Translated poll. `null` if no poll.
   final MastodonTranslationPoll? poll;
 }
 
-/// 翻訳結果内のメディア添付情報
+/// Media attachment information within a translation result.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTranslationAttachment {
   const MastodonTranslationAttachment({
@@ -62,18 +62,18 @@ class MastodonTranslationAttachment {
   factory MastodonTranslationAttachment.fromJson(Map<String, dynamic> json) =>
       _$MastodonTranslationAttachmentFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonTranslationAttachmentToJson(this);
 
-  /// メディアの内部ID
+  /// Internal ID of the media.
   final String id;
 
-  /// 翻訳済みの代替テキスト
+  /// Translated alt text.
   @JsonKey(defaultValue: '')
   final String description;
 }
 
-/// 翻訳結果内の投票情報
+/// Poll information within a translation result.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTranslationPoll {
   const MastodonTranslationPoll({
@@ -84,18 +84,18 @@ class MastodonTranslationPoll {
   factory MastodonTranslationPoll.fromJson(Map<String, dynamic> json) =>
       _$MastodonTranslationPollFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonTranslationPollToJson(this);
 
-  /// 投票の内部ID
+  /// Internal ID of the poll.
   final String id;
 
-  /// 翻訳済みの選択肢リスト
+  /// List of translated options.
   @JsonKey(defaultValue: <MastodonTranslationPollOption>[])
   final List<MastodonTranslationPollOption> options;
 }
 
-/// 翻訳結果内の投票選択肢
+/// Poll option within a translation result.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTranslationPollOption {
   const MastodonTranslationPollOption({required this.title});
@@ -103,9 +103,9 @@ class MastodonTranslationPollOption {
   factory MastodonTranslationPollOption.fromJson(Map<String, dynamic> json) =>
       _$MastodonTranslationPollOptionFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonTranslationPollOptionToJson(this);
 
-  /// 翻訳済みの選択肢テキスト
+  /// Translated option text.
   final String title;
 }

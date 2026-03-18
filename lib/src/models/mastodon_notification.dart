@@ -6,61 +6,61 @@ import 'mastodon_status.dart';
 
 part 'mastodon_notification.g.dart';
 
-/// 通知の種別
+/// Type of notification.
 ///
-/// Mastodon の標準通知タイプを網羅する。
-/// Fedibird 固有のタイプ（`emoji_reaction` 等）は [unknown] として扱われる。
+/// Covers standard Mastodon notification types.
+/// Fedibird-specific types (such as `emoji_reaction`) are treated as [unknown].
 @JsonEnum(fieldRename: FieldRename.snake)
 enum MastodonNotificationType {
-  /// 自分の投稿がメンションされた
+  /// Your status was mentioned.
   mention,
 
-  /// フォロー中のユーザーが投稿した（Mastodon 3.3+）
+  /// A user you follow posted a new status (Mastodon 3.3+).
   status,
 
-  /// 自分の投稿がブーストされた
+  /// Your status was boosted.
   reblog,
 
-  /// フォローされた
+  /// You gained a follower.
   follow,
 
-  /// フォローリクエストを受け取った
+  /// You received a follow request.
   followRequest,
 
-  /// 自分の投稿がお気に入りされた
+  /// Your status was favourited.
   favourite,
 
-  /// 自分が参加した投票が終了した
+  /// A poll you participated in has ended.
   poll,
 
-  /// 自分の投稿が編集された（Mastodon 3.5+）
+  /// A status you interacted with was edited (Mastodon 3.5+).
   update,
 
-  /// 管理者向け：新規ユーザー登録（Mastodon 3.5+）
+  /// Admin: a new user signed up (Mastodon 3.5+).
   @JsonValue('admin.sign_up')
   adminSignUp,
 
-  /// 管理者向け：通報を受け取った（Mastodon 4.0+）
+  /// Admin: a new report was filed (Mastodon 4.0+).
   @JsonValue('admin.report')
   adminReport,
 
-  /// フォロー関係が強制解除された（Mastodon 4.3+）
+  /// A follow relationship was forcibly severed (Mastodon 4.3+).
   severedRelationships,
 
-  /// モデレーション警告を受け取った（Mastodon 4.3+）
+  /// A moderation warning was received (Mastodon 4.3+).
   moderationWarning,
 
-  /// 自分の投稿が引用された（Mastodon 4.5+ / FEP-044f）
+  /// Your status was quoted (Mastodon 4.5+ / FEP-044f).
   quote,
 
-  /// 引用した投稿が更新された（Mastodon 4.5+ / FEP-044f）
+  /// A quoted status was updated (Mastodon 4.5+ / FEP-044f).
   quotedUpdate,
 
-  /// 未知または将来追加される通知タイプ
+  /// Unknown or future notification type.
   unknown,
 }
 
-/// フォロー関係の強制解除イベント（Mastodon 4.3+）
+/// Relationship severance event (Mastodon 4.3+).
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonRelationshipSeveranceEvent {
   const MastodonRelationshipSeveranceEvent({
@@ -77,27 +77,27 @@ class MastodonRelationshipSeveranceEvent {
     Map<String, dynamic> json,
   ) => _$MastodonRelationshipSeveranceEventFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() =>
       _$MastodonRelationshipSeveranceEventToJson(this);
 
   final String id;
 
-  /// イベントの種別（`domain_block` / `user_domain_block` / `account_suspension`）
+  /// Type of event (`domain_block` / `user_domain_block` / `account_suspension`).
   final String type;
 
-  /// アカウントが削除されたかどうか
+  /// Whether the account was purged.
   @JsonKey(defaultValue: false)
   final bool purged;
 
-  /// 解除されたドメインまたはアカウント名
+  /// Name of the severed domain or account.
   final String targetName;
 
-  /// 影響を受けたフォロワー数
+  /// Number of affected followers.
   @JsonKey(defaultValue: 0)
   final int followersCount;
 
-  /// 影響を受けたフォロー数
+  /// Number of affected followings.
   @JsonKey(defaultValue: 0)
   final int followingCount;
 
@@ -105,7 +105,7 @@ class MastodonRelationshipSeveranceEvent {
   final DateTime? createdAt;
 }
 
-/// モデレーション警告（Mastodon 4.3+）
+/// Moderation warning (Mastodon 4.3+).
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAccountWarning {
   const MastodonAccountWarning({
@@ -119,7 +119,7 @@ class MastodonAccountWarning {
   factory MastodonAccountWarning.fromJson(Map<String, dynamic> json) =>
       _$MastodonAccountWarningFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAccountWarningToJson(this);
 
   static Object? _readAppeal(Map<dynamic, dynamic> json, String key) =>
@@ -127,25 +127,25 @@ class MastodonAccountWarning {
 
   final String id;
 
-  /// 警告の種別（`none` / `disable` / `mark_statuses_as_sensitive` 等）
+  /// Type of warning (`none` / `disable` / `mark_statuses_as_sensitive`, etc.).
   final String action;
 
-  /// 警告の本文
+  /// Body text of the warning.
   @JsonKey(defaultValue: '')
   final String text;
 
-  /// 異議申し立てが存在するかどうか
+  /// Whether an appeal exists.
   @JsonKey(readValue: _readAppeal, defaultValue: false)
   final bool appeal;
 
-  /// 通知の作成日時
+  /// Timestamp when the notification was created.
   @SafeDateTimeConverter()
   final DateTime? createdAt;
 }
 
-/// Mastodonの通知
+/// Mastodon notification.
 ///
-/// `/api/v1/notifications` のレスポンスに対応する
+/// Corresponds to the response from `/api/v1/notifications`.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonNotification {
   const MastodonNotification({
@@ -161,36 +161,37 @@ class MastodonNotification {
   factory MastodonNotification.fromJson(Map<String, dynamic> json) =>
       _$MastodonNotificationFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonNotificationToJson(this);
 
   static Object? _readType(Map<dynamic, dynamic> json, String key) =>
       json['type'] ?? 'unknown';
 
-  /// 通知の内ID
+  /// Internal ID of the notification.
   final String id;
 
-  /// 通知の種別
+  /// Type of the notification.
   @JsonKey(
     readValue: _readType,
     unknownEnumValue: MastodonNotificationType.unknown,
   )
   final MastodonNotificationType type;
 
-  /// 通知の作成日時
+  /// Timestamp when the notification was created.
   final DateTime createdAt;
 
-  /// 通知を発生させたアカウント
+  /// Account that triggered the notification.
   final MastodonAccount account;
 
-  /// 関連する投稿 種別によってはnull
+  /// Associated status. Null depending on the notification type.
   final MastodonStatus? status;
 
-  /// フォロー関係強制解除イベントの詳細
+  /// Details of the relationship severance event.
   ///
-  /// [MastodonNotificationType.severedRelationships] の場合のみ非null
+  /// Non-null only for [MastodonNotificationType.severedRelationships].
   final MastodonRelationshipSeveranceEvent? relationshipSeveranceEvent;
 
-  /// モデレーション警告の詳細 [MastodonNotificationType.moderationWarning] の場合のみ非 null
+  /// Details of the moderation warning. Non-null only for
+  /// [MastodonNotificationType.moderationWarning].
   final MastodonAccountWarning? moderationWarning;
 }

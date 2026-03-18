@@ -2,20 +2,20 @@ import '../../client/mastodon_http_client.dart';
 import '../../models/admin/mastodon_admin_cohort.dart';
 import '../../models/admin/mastodon_admin_retention_request.dart';
 
-/// 管理者向けリテンション API
+/// Admin retention API.
 ///
-/// ユーザーリテンションのコホートデータを生成する。
-/// `admin:read` の OAuth スコープが必要。
+/// Generates user retention cohort data.
+/// Requires the `admin:read` OAuth scope.
 class AdminRetentionApi {
   const AdminRetentionApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// リテンションデータを取得する
+  /// Fetches retention data.
   ///
   /// `POST /api/v1/admin/retention`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonAdminCohort>> fetch(
     MastodonAdminRetentionRequest request,
   ) async {

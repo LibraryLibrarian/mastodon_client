@@ -5,9 +5,10 @@ import 'mastodon_account.dart';
 
 part 'mastodon_report.g.dart';
 
-/// 通報エンティティ
+/// Report entity.
 ///
-/// 管理者向け通知やグループ化通知で参照される通報情報を表すモデル。
+/// Model representing report information referenced by admin notifications
+/// and grouped notifications.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonReport {
   const MastodonReport({
@@ -26,42 +27,42 @@ class MastodonReport {
   factory MastodonReport.fromJson(Map<String, dynamic> json) =>
       _$MastodonReportFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonReportToJson(this);
 
-  /// 通報のID
+  /// ID of the report.
   final String id;
 
-  /// 対応が完了したかどうか
+  /// Whether action has been taken.
   @JsonKey(defaultValue: false)
   final bool actionTaken;
 
-  /// 対応が完了した日時
+  /// Timestamp when action was taken.
   @SafeDateTimeConverter()
   final DateTime? actionTakenAt;
 
-  /// 通報のカテゴリ（`spam` / `legal` / `violation` / `other`）
+  /// Category of the report (`spam` / `legal` / `violation` / `other`).
   @JsonKey(defaultValue: 'other')
   final String category;
 
-  /// 通報者が付記したコメント
+  /// Comment added by the reporter.
   @JsonKey(defaultValue: '')
   final String comment;
 
-  /// リモートサーバーに転送されたかどうか
+  /// Whether the report was forwarded to a remote server.
   @JsonKey(defaultValue: false)
   final bool forwarded;
 
-  /// 通報の作成日時
+  /// Timestamp when the report was created.
   @SafeDateTimeConverter()
   final DateTime? createdAt;
 
-  /// 通報に関連する投稿のIDリスト
+  /// List of status IDs associated with the report.
   final List<String>? statusIds;
 
-  /// 通報に関連するルールのIDリスト
+  /// List of rule IDs associated with the report.
   final List<String>? ruleIds;
 
-  /// 通報対象のアカウント
+  /// Target account of the report.
   final MastodonAccount? targetAccount;
 }

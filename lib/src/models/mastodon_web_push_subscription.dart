@@ -2,9 +2,10 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_web_push_subscription.g.dart';
 
-/// Web Push 通知のアラート種別ごとの設定
+/// Alert settings per Web Push notification type.
 ///
-/// 各フィールドは、対応する通知タイプの Push 通知を受け取るかどうかを表す
+/// Each field indicates whether to receive Push notifications for the
+/// corresponding notification type.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPushAlerts {
   const MastodonPushAlerts({
@@ -25,62 +26,62 @@ class MastodonPushAlerts {
   factory MastodonPushAlerts.fromJson(Map<String, dynamic> json) =>
       _$MastodonPushAlertsFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonPushAlertsToJson(this);
 
-  /// メンション通知を受け取るかどうか
+  /// Whether to receive mention notifications.
   @JsonKey(defaultValue: false)
   final bool mention;
 
-  /// 引用通知を受け取るかどうか
+  /// Whether to receive quote notifications.
   @JsonKey(defaultValue: false)
   final bool quote;
 
-  /// フォロー中ユーザーの新規投稿通知を受け取るかどうか
+  /// Whether to receive new post notifications from followed users.
   @JsonKey(defaultValue: false)
   final bool status;
 
-  /// ブースト通知を受け取るかどうか
+  /// Whether to receive boost notifications.
   @JsonKey(defaultValue: false)
   final bool reblog;
 
-  /// フォロー通知を受け取るかどうか
+  /// Whether to receive follow notifications.
   @JsonKey(defaultValue: false)
   final bool follow;
 
-  /// フォローリクエスト通知を受け取るかどうか
+  /// Whether to receive follow request notifications.
   @JsonKey(defaultValue: false)
   final bool followRequest;
 
-  /// お気に入り通知を受け取るかどうか
+  /// Whether to receive favourite notifications.
   @JsonKey(defaultValue: false)
   final bool favourite;
 
-  /// 投票終了通知を受け取るかどうか
+  /// Whether to receive poll ended notifications.
   @JsonKey(defaultValue: false)
   final bool poll;
 
-  /// 投稿編集通知を受け取るかどうか
+  /// Whether to receive status edit notifications.
   @JsonKey(defaultValue: false)
   final bool update;
 
-  /// 引用の更新通知を受け取るかどうか
+  /// Whether to receive quoted status update notifications.
   @JsonKey(defaultValue: false)
   final bool quotedUpdate;
 
-  /// 管理者向け：新規サインアップ通知を受け取るかどうか
+  /// Admin: whether to receive new sign-up notifications.
   @JsonKey(name: 'admin.sign_up', defaultValue: false)
   final bool adminSignUp;
 
-  /// 管理者向け：通報通知を受け取るかどうか
+  /// Admin: whether to receive report notifications.
   @JsonKey(name: 'admin.report', defaultValue: false)
   final bool adminReport;
 }
 
-/// Mastodon の Web Push サブスクリプション
+/// Mastodon Web Push subscription.
 ///
-/// `/api/v1/push/subscription` で取得・作成・更新される
-/// Push 通知の受信設定を表すエンティティ
+/// Retrieved, created, and updated via `/api/v1/push/subscription`.
+/// Entity representing Push notification settings.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonWebPushSubscription {
   const MastodonWebPushSubscription({
@@ -95,26 +96,26 @@ class MastodonWebPushSubscription {
   factory MastodonWebPushSubscription.fromJson(Map<String, dynamic> json) =>
       _$MastodonWebPushSubscriptionFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonWebPushSubscriptionToJson(this);
 
-  /// サブスクリプション ID
+  /// Subscription ID.
   final String id;
 
-  /// 通知送信先 URL
+  /// URL for sending notifications.
   final String endpoint;
 
-  /// サーバーの公開鍵
+  /// Server public key.
   final String serverKey;
 
-  /// 通知種別ごとの設定
+  /// Settings per notification type.
   final MastodonPushAlerts alerts;
 
-  /// 通知ポリシー（all / followed / follower / none）
+  /// Notification policy (all / followed / follower / none).
   final String policy;
 
-  /// 標準化された Web Push 仕様に準拠しているかどうか
+  /// Whether conforming to the standardized Web Push specification.
   ///
-  /// Mastodon 4.4+ で追加
+  /// Added in Mastodon 4.4+.
   final bool? standard;
 }

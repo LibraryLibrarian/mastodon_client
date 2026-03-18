@@ -3,22 +3,22 @@ import '../json_converters.dart';
 
 part 'mastodon_admin_ip_block.g.dart';
 
-/// IP ブロックの制限レベル
+/// Severity level of an IP block.
 @JsonEnum(fieldRename: FieldRename.snake)
 enum MastodonAdminIpBlockSeverity {
-  /// サインアップ時に承認が必要
+  /// Sign-up requires approval.
   signUpRequiresApproval,
 
-  /// サインアップをブロック
+  /// Sign-up is blocked.
   signUpBlock,
 
-  /// すべてのアクセスを拒否
+  /// All access is denied.
   noAccess,
 }
 
-/// 管理者向け IP ブロック情報
+/// Admin-level IP block information.
 ///
-/// ブロックされている IP アドレス範囲の情報。
+/// Information about a blocked IP address range.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminIpBlock {
   const MastodonAdminIpBlock({
@@ -33,28 +33,28 @@ class MastodonAdminIpBlock {
   factory MastodonAdminIpBlock.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminIpBlockFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAdminIpBlockToJson(this);
 
-  /// IP ブロックのデータベース内 ID
+  /// Database ID of the IP block.
   final String id;
 
-  /// ブロック対象の IP アドレス範囲（CIDR 表記）
+  /// Blocked IP address range (CIDR notation).
   final String ip;
 
-  /// ブロックの制限レベル
+  /// Severity level of the block.
   @JsonKey(unknownEnumValue: MastodonAdminIpBlockSeverity.signUpBlock)
   final MastodonAdminIpBlockSeverity severity;
 
-  /// ブロックの理由
+  /// Reason for the block.
   @JsonKey(defaultValue: '')
   final String? comment;
 
-  /// ブロックの作成日時
+  /// Timestamp when the block was created.
   @SafeDateTimeConverter()
   final DateTime? createdAt;
 
-  /// ブロックの有効期限（null の場合は無期限）
+  /// Expiration timestamp of the block (null if permanent).
   @SafeDateTimeConverter()
   final DateTime? expiresAt;
 }

@@ -2,9 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_admin_canonical_email_block.g.dart';
 
-/// 管理者向け正規化メールブロック情報
+/// Admin-level canonical email block information.
 ///
-/// 正規化されたメールアドレスのハッシュによるブロック情報。
+/// Block information based on the hash of a canonicalized email address.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminCanonicalEmailBlock {
   const MastodonAdminCanonicalEmailBlock({
@@ -16,13 +16,13 @@ class MastodonAdminCanonicalEmailBlock {
     Map<String, dynamic> json,
   ) => _$MastodonAdminCanonicalEmailBlockFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() =>
       _$MastodonAdminCanonicalEmailBlockToJson(this);
 
-  /// ブロックのデータベース内 ID
+  /// Database ID of the block.
   final String id;
 
-  /// 正規化されたメールアドレスの SHA256 ハッシュ
+  /// SHA256 hash of the canonicalized email address.
   final String canonicalEmailHash;
 }

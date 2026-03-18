@@ -4,21 +4,21 @@ import '../../models/admin/mastodon_admin_domain_block.dart';
 import '../../models/admin/mastodon_admin_domain_block_request.dart';
 import '../../models/mastodon_page.dart';
 
-/// 管理者向けドメインブロック管理 API
+/// Admin domain block management API.
 ///
-/// フェデレーションブロックドメインの一覧取得・作成・更新・削除を行う。
-/// すべてのエンドポイントに `admin:read:domain_blocks` または
-/// `admin:write:domain_blocks` の OAuth スコープが必要。
+/// Manages the list of blocked federation domains.
+/// All endpoints require `admin:read:domain_blocks` or
+/// `admin:write:domain_blocks` OAuth scopes.
 class AdminDomainBlocksApi {
   const AdminDomainBlocksApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// すべてのブロック済みドメインを取得する
+  /// Fetches all blocked domains.
   ///
   /// `GET /api/v1/admin/domain_blocks`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonAdminDomainBlock>> fetch({
     String? maxId,
     String? sinceId,
@@ -46,11 +46,11 @@ class AdminDomainBlocksApi {
     );
   }
 
-  /// ID を指定してドメインブロックの詳細を取得する
+  /// Fetches a domain block by its ID.
   ///
   /// `GET /api/v1/admin/domain_blocks/{id}`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminDomainBlock> fetchById(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/domain_blocks/$id',
@@ -58,11 +58,11 @@ class AdminDomainBlocksApi {
     return MastodonAdminDomainBlock.fromJson(data!);
   }
 
-  /// ドメインをブロックする
+  /// Blocks a domain.
   ///
   /// `POST /api/v1/admin/domain_blocks`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminDomainBlock> create(
     MastodonAdminDomainBlockRequest request,
   ) async {
@@ -74,11 +74,11 @@ class AdminDomainBlocksApi {
     return MastodonAdminDomainBlock.fromJson(data!);
   }
 
-  /// ドメインブロックを更新する
+  /// Updates a domain block.
   ///
   /// `PUT /api/v1/admin/domain_blocks/{id}`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminDomainBlock> update(
     String id,
     MastodonAdminDomainBlockRequest request,
@@ -91,11 +91,11 @@ class AdminDomainBlocksApi {
     return MastodonAdminDomainBlock.fromJson(data!);
   }
 
-  /// ドメインブロックを削除する
+  /// Deletes a domain block.
   ///
   /// `DELETE /api/v1/admin/domain_blocks/{id}`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> delete(String id) async {
     await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/domain_blocks/$id',

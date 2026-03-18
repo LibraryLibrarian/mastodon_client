@@ -14,18 +14,18 @@ import '../models/mastodon_relationship.dart';
 import '../models/mastodon_status.dart';
 import '../models/mastodon_token.dart';
 
-/// アカウント情報の取得・操作を行う API クライアント
+/// API client for retrieving and managing account information.
 class AccountsApi {
-  /// [MastodonHttpClient] を受け取り、アカウント API へのアクセスを提供する
+  /// Creates an [AccountsApi] instance with the given [MastodonHttpClient].
   const AccountsApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// ID を指定してアカウント情報を取得する
+  /// Fetches account information by ID.
   ///
   /// `GET /api/v1/accounts/{accountId}`
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonAccount> fetchById(String accountId) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/accounts/$accountId',
@@ -33,14 +33,15 @@ class AccountsApi {
     return MastodonAccount.fromJson(data!);
   }
 
-  /// 認証済みユーザー自身のアカウント情報を取得する
+  /// Verifies the authenticated user's credentials.
   ///
   /// `GET /api/v1/accounts/verify_credentials`
   ///
-  /// 公式仕様では [MastodonCredentialAccount] を返す。`source` や `role` など
-  /// 認証済みユーザーにのみ公開される追加情報を含む。
+  /// Returns a [MastodonCredentialAccount] as defined by the official spec.
+  /// Includes additional information only available to the authenticated user,
+  /// such as `source` and `role`.
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonCredentialAccount> verifyCredentials() async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/accounts/verify_credentials',
@@ -48,16 +49,17 @@ class AccountsApi {
     return MastodonCredentialAccount.fromJson(data!);
   }
 
-  /// `acct` 文字列からアカウントを検索して取得する
+  /// Looks up an account by its `acct` string.
   ///
   /// `GET /api/v1/accounts/lookup?acct={acct}`
   ///
-  /// 404・405・410・501 が返された場合は [search] にフォールバックし、
-  /// `acct` フィールドが一致（大文字小文字を無視）する最初の結果を返す。
-  /// フォールバック後も一致するアカウントが見つからない場合は
-  /// [MastodonNotFoundException] を throw する。
+  /// Falls back to [search] when the server returns 404, 405, 410, or 501,
+  /// and returns the first result whose `acct` field matches
+  /// (case-insensitive).
+  /// Throws [MastodonNotFoundException] if no matching account is found after
+  /// the fallback.
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonAccount> lookup(String acct) async {
     try {
       final data = await _http.send<Map<String, dynamic>>(
@@ -76,17 +78,17 @@ class AccountsApi {
     }
   }
 
-  /// キーワードでアカウントを検索する
+  /// Searches for accounts by keyword.
   ///
   /// `GET /api/v1/accounts/search?q={query}&resolve={resolve}&limit={limit}`
   ///
-  /// - [query]: 検索クエリ文字列
-  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
-  /// - [offset]: 先頭から指定件数をスキップする
-  /// - [resolve]: `true` の場合、リモートアカウントを WebFinger で解決する
-  /// - [following]: `true` の場合、フォロー中のアカウントのみを返す
+  /// [query] is the search string. [limit] controls the maximum number of
+  /// results (uses server default when omitted), and [offset] skips that
+  /// many results from the beginning. When [resolve] is `true`, remote
+  /// accounts are resolved via WebFinger. When [following] is `true`,
+  /// only accounts the user is already following are returned.
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<List<MastodonAccount>> search(
     String query, {
     int? limit,
@@ -110,18 +112,17 @@ class AccountsApi {
         .toList();
   }
 
-  /// 指定アカウントのフォロワー一覧を取得する
+  /// Fetches the followers of the specified account.
   ///
   /// `GET /api/v1/accounts/{accountId}/followers`
   ///
-  /// - [accountId]: 対象アカウントの ID
-  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
-  /// - [maxId]: ページネーション用カーソル。直前のレスポンスの `nextMaxId` を渡す
-  /// - [sinceId]: この ID より新しい結果を取得する
-  /// - [minId]: この ID 直後の結果から取得する（前方ページネーション）
+  /// [limit] controls the maximum number of results (uses server default
+  /// when omitted). Use [maxId], [sinceId], and [minId] for pagination:
+  /// pass the `nextMaxId` from the previous response as [maxId] to page
+  /// backward, or use [minId] for forward pagination.
   ///
-  /// 非公開アカウント（HTTP 403）の場合は空の [MastodonPage] を返す。
-  /// それ以外の失敗時は [MastodonException] のサブクラスを throw する。
+  /// Returns an empty [MastodonPage] for private accounts (HTTP 403).
+  /// Throws a subclass of [MastodonException] on other failures.
   Future<MastodonPage<MastodonAccount>> fetchFollowers(
     String accountId, {
     int? limit,
@@ -136,18 +137,17 @@ class AccountsApi {
     minId: minId,
   );
 
-  /// 指定アカウントのフォロー中一覧を取得する
+  /// Fetches the accounts followed by the specified account.
   ///
   /// `GET /api/v1/accounts/{accountId}/following`
   ///
-  /// - [accountId]: 対象アカウントの ID
-  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
-  /// - [maxId]: ページネーション用カーソル。直前のレスポンスの `nextMaxId` を渡す
-  /// - [sinceId]: この ID より新しい結果を取得する
-  /// - [minId]: この ID 直後の結果から取得する（前方ページネーション）
+  /// [limit] controls the maximum number of results (uses server default
+  /// when omitted). Use [maxId], [sinceId], and [minId] for pagination:
+  /// pass the `nextMaxId` from the previous response as [maxId] to page
+  /// backward, or use [minId] for forward pagination.
   ///
-  /// 非公開アカウント（HTTP 403）の場合は空の [MastodonPage] を返す。
-  /// それ以外の失敗時は [MastodonException] のサブクラスを throw する。
+  /// Returns an empty [MastodonPage] for private accounts (HTTP 403).
+  /// Throws a subclass of [MastodonException] on other failures.
   Future<MastodonPage<MastodonAccount>> fetchFollowing(
     String accountId, {
     int? limit,
@@ -162,22 +162,19 @@ class AccountsApi {
     minId: minId,
   );
 
-  /// 指定アカウントの投稿一覧を取得する
+  /// Fetches the statuses posted by the specified account.
   ///
   /// `GET /api/v1/accounts/{accountId}/statuses`
   ///
-  /// - [accountId]: 対象アカウントの ID
-  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
-  /// - [maxId]: ページネーション用カーソル。前回取得した末尾の投稿 ID を渡す
-  /// - [sinceId]: この ID より新しい投稿を取得する
-  /// - [minId]: この ID 直後の投稿から取得する（前方ページネーション）
-  /// - [excludeReplies]: `true` のとき返信投稿を除外する
-  /// - [excludeReblogs]: `true` のときブースト投稿を除外する
-  /// - [onlyMedia]: `true` のときメディア添付のある投稿のみを返す
-  /// - [pinned]: `true` のときピン留め投稿のみを返す
-  /// - [tagged]: 指定したハッシュタグを含む投稿のみに絞り込む
+  /// [limit] controls the maximum number of results (uses server default
+  /// when omitted). Pass the last status ID as [maxId] to page backward,
+  /// or use [minId] for forward pagination; [sinceId] returns only statuses
+  /// newer than that ID. Set [excludeReplies] or [excludeReblogs] to `true`
+  /// to omit replies or boosts respectively. [onlyMedia] restricts results
+  /// to statuses with media attachments, [pinned] to pinned statuses only,
+  /// and [tagged] filters to statuses containing the specified hashtag.
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonPage<MastodonStatus>> fetchStatuses(
     String accountId, {
     int? limit,
@@ -216,13 +213,13 @@ class AccountsApi {
     );
   }
 
-  /// ログイン中ユーザーのプロフィール情報を更新する
+  /// Updates the authenticated user's profile information.
   ///
   /// `PATCH /api/v1/accounts/update_credentials`
   ///
-  /// [request] に更新したいフィールドのみを指定する。
+  /// Specify only the fields to update in [request].
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonCredentialAccount> updateCredentials(
     MastodonCredentialAccountUpdateRequest request,
   ) async {
@@ -234,14 +231,14 @@ class AccountsApi {
     return MastodonCredentialAccount.fromJson(data!);
   }
 
-  /// 新規アカウントを登録する
+  /// Registers a new account.
   ///
   /// `POST /api/v1/accounts`
   ///
-  /// アプリトークンを用いてリクエストする必要がある。
-  /// 成功時はユーザーに紐づく [MastodonToken] を返す。
+  /// Requires an app token. Returns a [MastodonToken] associated with the
+  /// newly created user on success.
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonToken> create(MastodonAccountCreateRequest request) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/accounts',
@@ -251,11 +248,11 @@ class AccountsApi {
     return MastodonToken.fromJson(data!);
   }
 
-  /// 複数の ID を指定してアカウント情報をまとめて取得する
+  /// Fetches multiple accounts by their IDs.
   ///
   /// `GET /api/v1/accounts?id[]={id}`
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<List<MastodonAccount>> fetchMultiple(List<String> ids) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/accounts',
@@ -267,16 +264,16 @@ class AccountsApi {
         .toList();
   }
 
-  /// 指定アカウントをフォローする
+  /// Follows the specified account.
   ///
   /// `POST /api/v1/accounts/{id}/follow`
   ///
-  /// - [id]: 対象アカウントの ID
-  /// - [reblogs]: ブースト投稿をホームタイムラインに表示するかどうか
-  /// - [notify]: 投稿時に通知を受け取るかどうか
-  /// - [languages]: フォローする言語のリスト（ISO 639-1 形式）
+  /// [reblogs] controls whether boosts appear on the home timeline.
+  /// Set [notify] to `true` to receive notifications when the account
+  /// posts. [languages] restricts the followed content to the given
+  /// ISO 639-1 language codes.
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonRelationship> follow(
     String id, {
     bool? reblogs,
@@ -295,11 +292,11 @@ class AccountsApi {
     return MastodonRelationship.fromJson(data!);
   }
 
-  /// 指定アカウントのフォローを解除する
+  /// Unfollows the specified account.
   ///
   /// `POST /api/v1/accounts/{id}/unfollow`
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonRelationship> unfollow(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/accounts/$id/unfollow',
@@ -308,11 +305,11 @@ class AccountsApi {
     return MastodonRelationship.fromJson(data!);
   }
 
-  /// 指定アカウントを自分のフォロワーから削除する
+  /// Removes the specified account from the user's followers.
   ///
   /// `POST /api/v1/accounts/{id}/remove_from_followers`
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonRelationship> removeFromFollowers(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/accounts/$id/remove_from_followers',
@@ -321,11 +318,11 @@ class AccountsApi {
     return MastodonRelationship.fromJson(data!);
   }
 
-  /// 指定アカウントをブロックする
+  /// Blocks the specified account.
   ///
   /// `POST /api/v1/accounts/{id}/block`
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonRelationship> block(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/accounts/$id/block',
@@ -334,11 +331,11 @@ class AccountsApi {
     return MastodonRelationship.fromJson(data!);
   }
 
-  /// 指定アカウントのブロックを解除する
+  /// Unblocks the specified account.
   ///
   /// `POST /api/v1/accounts/{id}/unblock`
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonRelationship> unblock(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/accounts/$id/unblock',
@@ -347,15 +344,15 @@ class AccountsApi {
     return MastodonRelationship.fromJson(data!);
   }
 
-  /// 指定アカウントをミュートする
+  /// Mutes the specified account.
   ///
   /// `POST /api/v1/accounts/{id}/mute`
   ///
-  /// - [id]: 対象アカウントの ID
-  /// - [notifications]: 通知もミュートするかどうか（デフォルト: `true`）
-  /// - [duration]: ミュート期間（秒）。`0` または未指定で無期限
+  /// [notifications] controls whether notifications are also muted
+  /// (defaults to `true`). [duration] sets the mute duration in seconds;
+  /// pass `0` or omit it for an indefinite mute.
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonRelationship> mute(
     String id, {
     bool? notifications,
@@ -372,11 +369,11 @@ class AccountsApi {
     return MastodonRelationship.fromJson(data!);
   }
 
-  /// 指定アカウントのミュートを解除する
+  /// Unmutes the specified account.
   ///
   /// `POST /api/v1/accounts/{id}/unmute`
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonRelationship> unmute(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/accounts/$id/unmute',
@@ -385,14 +382,14 @@ class AccountsApi {
     return MastodonRelationship.fromJson(data!);
   }
 
-  /// 指定アカウントをプロフィールで紹介（ピン）する
+  /// Pins the specified account on the user's profile.
   ///
   /// `POST /api/v1/accounts/{id}/pin`
   ///
-  /// **非推奨**: Mastodon 4.4.0 以降は [endorse] を使用すること。
+  /// **Deprecated**: Use [endorse] since Mastodon 4.4.0.
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
-  @Deprecated('Mastodon 4.4.0 以降は endorse() を使用してください')
+  /// Throws a subclass of [MastodonException] on failure.
+  @Deprecated('Use endorse() since Mastodon 4.4.0')
   Future<MastodonRelationship> pin(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/accounts/$id/pin',
@@ -401,14 +398,14 @@ class AccountsApi {
     return MastodonRelationship.fromJson(data!);
   }
 
-  /// 指定アカウントのプロフィール紹介（ピン）を解除する
+  /// Unpins the specified account from the user's profile.
   ///
   /// `POST /api/v1/accounts/{id}/unpin`
   ///
-  /// **非推奨**: Mastodon 4.4.0 以降は [unendorse] を使用すること。
+  /// **Deprecated**: Use [unendorse] since Mastodon 4.4.0.
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
-  @Deprecated('Mastodon 4.4.0 以降は unendorse() を使用してください')
+  /// Throws a subclass of [MastodonException] on failure.
+  @Deprecated('Use unendorse() since Mastodon 4.4.0')
   Future<MastodonRelationship> unpin(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/accounts/$id/unpin',
@@ -417,14 +414,14 @@ class AccountsApi {
     return MastodonRelationship.fromJson(data!);
   }
 
-  /// 指定アカウントをプロフィールでフィーチャー（紹介）する
+  /// Features the specified account on the user's profile.
   ///
   /// `POST /api/v1/accounts/{id}/endorse`
   ///
-  /// 対象アカウントを事前にフォローしている必要がある。
-  /// フォローしていない場合は HTTP 422 エラーとなる。
+  /// The target account must be followed beforehand.
+  /// Returns HTTP 422 if the account is not followed.
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonRelationship> endorse(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/accounts/$id/endorse',
@@ -433,13 +430,13 @@ class AccountsApi {
     return MastodonRelationship.fromJson(data!);
   }
 
-  /// 指定アカウントのプロフィールフィーチャー（紹介）を解除する
+  /// Removes the specified account from the user's profile features.
   ///
   /// `POST /api/v1/accounts/{id}/unendorse`
   ///
-  /// 既にフィーチャーされていない場合でも成功する。
+  /// Succeeds even if the account is not currently featured.
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonRelationship> unendorse(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/accounts/$id/unendorse',
@@ -448,17 +445,16 @@ class AccountsApi {
     return MastodonRelationship.fromJson(data!);
   }
 
-  /// 指定アカウントがフィーチャーしているアカウント一覧を取得する
+  /// Fetches the accounts featured by the specified account.
   ///
   /// `GET /api/v1/accounts/{id}/endorsements`
   ///
-  /// - [id]: 対象アカウントの ID
-  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値（40）が適用される
-  /// - [maxId]: ページネーション用カーソル。直前のレスポンスの `nextMaxId` を渡す
-  /// - [sinceId]: この ID より新しい結果を取得する
-  /// - [minId]: この ID 直後の結果から取得する（前方ページネーション）
+  /// [limit] controls the maximum number of results (server default is 40).
+  /// Pass the `nextMaxId` from the previous response as [maxId] to page
+  /// backward; use [sinceId] to receive only newer results, or [minId]
+  /// for forward pagination.
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonPage<MastodonAccount>> fetchEndorsements(
     String id, {
     int? limit,
@@ -473,14 +469,14 @@ class AccountsApi {
     minId: minId,
   );
 
-  /// 指定アカウントにプライベートメモを設定する
+  /// Sets a private note on the specified account.
   ///
   /// `POST /api/v1/accounts/{id}/note`
   ///
-  /// - [id]: 対象アカウントの ID
-  /// - [comment]: メモの内容。`null` または空文字でメモを削除する
+  /// [comment] is the note content. Pass `null` or an empty string to
+  /// remove the note.
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonRelationship> setNote(
     String id, {
     String? comment,
@@ -495,14 +491,14 @@ class AccountsApi {
     return MastodonRelationship.fromJson(data!);
   }
 
-  /// 複数アカウントとのリレーションシップをまとめて取得する
+  /// Fetches relationships with multiple accounts.
   ///
   /// `GET /api/v1/accounts/relationships?id[]={id}`
   ///
-  /// - [ids]: 対象アカウントの ID リスト
-  /// - [withSuspended]: 凍結アカウントを含めるかどうか
+  /// [ids] is the list of target account IDs. Set [withSuspended] to `true`
+  /// to include suspended accounts in the results.
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<List<MastodonRelationship>> fetchRelationships(
     List<String> ids, {
     bool? withSuspended,
@@ -520,11 +516,11 @@ class AccountsApi {
         .toList();
   }
 
-  /// 指定アカウントをフォローしている共通フォロイーを取得する
+  /// Fetches familiar followers (mutual followees) of the specified accounts.
   ///
   /// `GET /api/v1/accounts/familiar_followers?id[]={id}`
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<List<MastodonFamiliarFollowers>> fetchFamiliarFollowers(
     List<String> ids,
   ) async {
@@ -538,11 +534,11 @@ class AccountsApi {
         .toList();
   }
 
-  /// 指定アカウントの紹介タグ一覧を取得する
+  /// Fetches the featured tags of the specified account.
   ///
   /// `GET /api/v1/accounts/{id}/featured_tags`
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<List<MastodonFeaturedTag>> fetchFeaturedTags(String id) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/accounts/$id/featured_tags',
@@ -553,11 +549,11 @@ class AccountsApi {
         .toList();
   }
 
-  /// 指定アカウントが属するリスト一覧を取得する
+  /// Fetches the lists that contain the specified account.
   ///
   /// `GET /api/v1/accounts/{id}/lists`
   ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
+  /// Throws a subclass of [MastodonException] on failure.
   Future<List<MastodonList>> fetchLists(String id) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/accounts/$id/lists',
@@ -568,16 +564,14 @@ class AccountsApi {
         .toList();
   }
 
-  /// 指定アカウントの本人確認証明を取得する
+  /// Fetches the identity proofs of the specified account.
   ///
   /// `GET /api/v1/accounts/{id}/identity_proofs`
   ///
-  /// **非推奨**: Mastodon 3.5.0 以降は常に空配列を返す。
+  /// **Deprecated**: Always returns an empty array since Mastodon 3.5.0.
   ///
-  /// - [id]: 対象アカウントの ID
-  ///
-  /// 失敗時は [MastodonException] のサブクラスを throw する。
-  @Deprecated('Mastodon 3.5.0 以降は常に空配列を返す')
+  /// Throws a subclass of [MastodonException] on failure.
+  @Deprecated('Always returns an empty array since Mastodon 3.5.0')
   Future<List<MastodonIdentityProof>> fetchIdentityProofs(String id) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/accounts/$id/identity_proofs',

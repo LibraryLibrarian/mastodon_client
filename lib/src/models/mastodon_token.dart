@@ -2,10 +2,10 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_token.g.dart';
 
-/// OAuth アクセストークン
+/// OAuth access token.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonToken {
-  /// 各フィールドを指定して [MastodonToken] を生成する
+  /// Creates a [MastodonToken] with the given fields.
   const MastodonToken({
     required this.accessToken,
     required this.tokenType,
@@ -13,22 +13,22 @@ class MastodonToken {
     required this.createdAt,
   });
 
-  /// JSON マップから [MastodonToken] を生成する
+  /// Creates a [MastodonToken] from a JSON map.
   factory MastodonToken.fromJson(Map<String, dynamic> json) =>
       _$MastodonTokenFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonTokenToJson(this);
 
-  /// 認可に使用する OAuth トークン文字列
+  /// OAuth token string used for authorization.
   final String accessToken;
 
-  /// OAuth トークンの種別（Mastodon では `Bearer`）
+  /// Type of the OAuth token (`Bearer` in Mastodon).
   final String tokenType;
 
-  /// このトークンに付与されたスコープ（スペース区切り）
+  /// Scopes granted to this token (space-delimited).
   final String scope;
 
-  /// トークンが生成された日時（UNIX タイムスタンプ）
+  /// Timestamp when the token was generated (UNIX timestamp).
   final int createdAt;
 }

@@ -1,26 +1,30 @@
 import '../client/mastodon_http_client.dart';
 import '../models/mastodon_proof.dart';
 
-/// 本人確認証明（Identity Proofs）に関する API クライアント
+/// API client for identity proofs.
 ///
-/// **非推奨**: Mastodon 3.5.0 以降では本人確認証明機能は削除されている。
-/// 古いサーバーバージョンとの互換性のために提供される。
-@Deprecated('Mastodon 3.5.0 で削除済み。古いサーバーとの互換性のためのみ使用')
+/// **Deprecated**: Identity proof functionality was removed in Mastodon 3.5.0.
+/// Provided only for compatibility with older server versions.
+@Deprecated(
+  'Removed in Mastodon 3.5.0. For compatibility with older servers only',
+)
 class ProofsApi {
-  /// [MastodonHttpClient] を受け取り、Proofs API へのアクセスを提供する
-  @Deprecated('Mastodon 3.5.0 で削除済み。古いサーバーとの互換性のためのみ使用')
+  /// Creates a [ProofsApi] instance with the given [MastodonHttpClient].
+  @Deprecated(
+    'Removed in Mastodon 3.5.0. For compatibility with older servers only',
+  )
   const ProofsApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 指定した本人確認プロバイダーのユーザー証明情報を取得する
+  /// Fetches user proof information for the specified identity provider.
   ///
   /// `GET /api/proofs`
   ///
-  /// - [provider]: 本人確認プロバイダー名（大文字小文字を区別、例: `keybase`）
-  /// - [username]: プロバイダー上のユーザー名
+  /// [provider] is the identity provider name (case-sensitive, e.g.
+  /// `keybase`) and [username] is the username on that provider.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonProof> fetch({
     required String provider,
     required String username,

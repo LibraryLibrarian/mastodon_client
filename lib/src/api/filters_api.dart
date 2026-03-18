@@ -1,21 +1,21 @@
 import '../client/mastodon_http_client.dart';
 import '../models/mastodon_filter.dart';
 
-/// フィルターに関する API クライアント
+/// API client for filters.
 ///
-/// v2（サーバーサイドフィルタリング、Mastodon 4.0+）と
-/// v1（クライアントサイドフィルタリング、非推奨）の両方を提供する。
+/// Provides both v2 (server-side filtering, Mastodon 4.0+) and
+/// v1 (client-side filtering, deprecated) endpoints.
 class FiltersApi {
-  /// [MastodonHttpClient] を受け取り、フィルター API へのアクセスを提供する
+  /// Creates a [FiltersApi] instance with the given [MastodonHttpClient].
   const FiltersApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 全フィルターを取得する
+  /// Fetches all filters.
   ///
   /// `GET /api/v2/filters`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonFilter>> fetch() async {
     final data = await _http.send<List<dynamic>>('/api/v2/filters');
     return (data ?? const <dynamic>[])
@@ -24,11 +24,11 @@ class FiltersApi {
         .toList();
   }
 
-  /// 指定された ID のフィルターを取得する
+  /// Fetches a filter by its ID.
   ///
   /// `GET /api/v2/filters/{id}`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonFilter> fetchById(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v2/filters/$id',
@@ -36,18 +36,17 @@ class FiltersApi {
     return MastodonFilter.fromJson(data!);
   }
 
-  /// フィルターを新規作成する
+  /// Creates a new filter.
   ///
   /// `POST /api/v2/filters`
   ///
-  /// - [title]: フィルターグループの名前（必須）
-  /// - [context]: 適用コンテキスト（必須）。
-  ///   `home`, `notifications`, `public`, `thread`, `account` のうち1つ以上
-  /// - [filterAction]: マッチ時のアクション（`warn` / `hide` / `blur`）
-  /// - [expiresIn]: 有効期限（秒）。`null` で無期限
-  /// - [keywordsAttributes]: 作成時に追加するキーワードのリスト
+  /// [title] and [context] are required. [context] is one or more of
+  /// `home`, `notifications`, `public`, `thread`, `account`. [filterAction]
+  /// sets the action on match (`warn`, `hide`, or `blur`). [expiresIn] is
+  /// the expiration in seconds; pass `null` for no expiration. Provide
+  /// [keywordsAttributes] to add keywords at creation time.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonFilter> create({
     required String title,
     required List<String> context,
@@ -79,18 +78,15 @@ class FiltersApi {
     return MastodonFilter.fromJson(data!);
   }
 
-  /// フィルターを更新する
+  /// Updates a filter.
   ///
   /// `PUT /api/v2/filters/{id}`
   ///
-  /// - [id]: 更新するフィルターの ID
-  /// - [title]: フィルターグループの名前
-  /// - [context]: 適用コンテキスト
-  /// - [filterAction]: マッチ時のアクション
-  /// - [expiresIn]: 有効期限（秒）
-  /// - [keywordsAttributes]: 追加・更新・削除するキーワードのリスト
+  /// All parameters are optional; only the fields provided are updated.
+  /// [keywordsAttributes] may include new keywords to add, existing ones
+  /// to update, or ones marked with `_destroy` to delete.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonFilter> update(
     String id, {
     String? title,
@@ -127,13 +123,11 @@ class FiltersApi {
     return MastodonFilter.fromJson(data!);
   }
 
-  /// フィルターを削除する
+  /// Deletes a filter.
   ///
   /// `DELETE /api/v2/filters/{id}`
   ///
-  /// - [id]: 削除するフィルターの ID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> delete(String id) async {
     await _http.send<void>(
       '/api/v2/filters/$id',
@@ -141,11 +135,11 @@ class FiltersApi {
     );
   }
 
-  /// フィルター内のキーワード一覧を取得する
+  /// Fetches the keywords within a filter.
   ///
   /// `GET /api/v2/filters/{filterId}/keywords`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonFilterKeyword>> fetchKeywords(String filterId) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v2/filters/$filterId/keywords',
@@ -156,15 +150,14 @@ class FiltersApi {
         .toList();
   }
 
-  /// フィルターにキーワードを追加する
+  /// Adds a keyword to a filter.
   ///
   /// `POST /api/v2/filters/{filterId}/keywords`
   ///
-  /// - [filterId]: 対象フィルターの ID
-  /// - [keyword]: キーワード文字列（必須）
-  /// - [wholeWord]: 単語境界を考慮するかどうか
+  /// [keyword] is required. Set [wholeWord] to `true` to match only on
+  /// word boundaries.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonFilterKeyword> createKeyword(
     String filterId, {
     required String keyword,
@@ -181,11 +174,11 @@ class FiltersApi {
     return MastodonFilterKeyword.fromJson(data!);
   }
 
-  /// 特定のキーワードを取得する
+  /// Fetches a specific keyword by ID.
   ///
   /// `GET /api/v2/filters/keywords/{id}`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonFilterKeyword> fetchKeywordById(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v2/filters/keywords/$id',
@@ -193,15 +186,14 @@ class FiltersApi {
     return MastodonFilterKeyword.fromJson(data!);
   }
 
-  /// キーワードを更新する
+  /// Updates a keyword.
   ///
   /// `PUT /api/v2/filters/keywords/{id}`
   ///
-  /// - [id]: 更新する FilterKeyword の ID
-  /// - [keyword]: キーワード文字列（必須）
-  /// - [wholeWord]: 単語境界を考慮するかどうか
+  /// [keyword] is required. Set [wholeWord] to `true` to match only on
+  /// word boundaries.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonFilterKeyword> updateKeyword(
     String id, {
     required String keyword,
@@ -218,13 +210,11 @@ class FiltersApi {
     return MastodonFilterKeyword.fromJson(data!);
   }
 
-  /// キーワードを削除する
+  /// Deletes a keyword.
   ///
   /// `DELETE /api/v2/filters/keywords/{id}`
   ///
-  /// - [id]: 削除する FilterKeyword の ID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> deleteKeyword(String id) async {
     await _http.send<void>(
       '/api/v2/filters/keywords/$id',
@@ -232,11 +222,11 @@ class FiltersApi {
     );
   }
 
-  /// フィルター内のステータスフィルター一覧を取得する
+  /// Fetches the status filters within a filter.
   ///
   /// `GET /api/v2/filters/{filterId}/statuses`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonFilterStatus>> fetchStatuses(String filterId) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v2/filters/$filterId/statuses',
@@ -247,14 +237,13 @@ class FiltersApi {
         .toList();
   }
 
-  /// フィルターにステータスフィルターを追加する
+  /// Adds a status filter to a filter.
   ///
   /// `POST /api/v2/filters/{filterId}/statuses`
   ///
-  /// - [filterId]: 対象フィルターの ID
-  /// - [statusId]: フィルター対象のステータス ID（必須）
+  /// [statusId] is the ID of the status to filter (required).
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonFilterStatus> createStatus(
     String filterId, {
     required String statusId,
@@ -267,11 +256,11 @@ class FiltersApi {
     return MastodonFilterStatus.fromJson(data!);
   }
 
-  /// 特定のステータスフィルターを取得する
+  /// Fetches a specific status filter by ID.
   ///
   /// `GET /api/v2/filters/statuses/{id}`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonFilterStatus> fetchStatusById(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v2/filters/statuses/$id',
@@ -279,13 +268,11 @@ class FiltersApi {
     return MastodonFilterStatus.fromJson(data!);
   }
 
-  /// ステータスフィルターを削除する
+  /// Deletes a status filter.
   ///
   /// `DELETE /api/v2/filters/statuses/{id}`
   ///
-  /// - [id]: 削除する FilterStatus の ID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> deleteStatus(String id) async {
     await _http.send<void>(
       '/api/v2/filters/statuses/$id',
@@ -293,14 +280,14 @@ class FiltersApi {
     );
   }
 
-  /// 全フィルターを取得する（v1・非推奨）
+  /// Fetches all filters (v1, deprecated).
   ///
   /// `GET /api/v1/filters`
   ///
-  /// Mastodon 4.0 以降は [fetch]（v2）の使用を推奨。
+  /// Use [fetch] (v2) instead since Mastodon 4.0.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
-  @Deprecated('Mastodon 4.0.0 で非推奨。代わりに fetch() (v2) を使用してください')
+  /// Throws a `MastodonException` on failure.
+  @Deprecated('Deprecated in Mastodon 4.0.0. Use fetch() (v2) instead')
   Future<List<MastodonFilterV1>> fetchV1() async {
     final data = await _http.send<List<dynamic>>('/api/v1/filters');
     return (data ?? const <dynamic>[])
@@ -309,16 +296,14 @@ class FiltersApi {
         .toList();
   }
 
-  /// 指定された ID のフィルターを取得する（v1・非推奨）
+  /// Fetches a filter by ID (v1, deprecated).
   ///
   /// `GET /api/v1/filters/{id}`
   ///
-  /// - [id]: FilterKeyword の ID
+  /// Use [fetchById] (v2) instead since Mastodon 4.0.
   ///
-  /// Mastodon 4.0 以降は [fetchById]（v2）の使用を推奨。
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
-  @Deprecated('Mastodon 4.0.0 で非推奨。代わりに fetchById() (v2) を使用してください')
+  /// Throws a `MastodonException` on failure.
+  @Deprecated('Deprecated in Mastodon 4.0.0. Use fetchById() (v2) instead')
   Future<MastodonFilterV1> fetchByIdV1(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/filters/$id',
@@ -326,21 +311,21 @@ class FiltersApi {
     return MastodonFilterV1.fromJson(data!);
   }
 
-  /// フィルターを新規作成する（v1・非推奨）
+  /// Creates a new filter (v1, deprecated).
   ///
   /// `POST /api/v1/filters`
   ///
-  /// - [phrase]: フィルター対象のテキスト（必須）
-  /// - [context]: 適用コンテキスト（必須）。
-  ///   `home`, `notifications`, `public`, `thread`, `account` のうち1つ以上
-  /// - [irreversible]: ホーム・通知で不可逆的に除外するか（デフォルト: `false`）
-  /// - [wholeWord]: 単語境界を考慮するか（デフォルト: `false`）
-  /// - [expiresIn]: 有効期限（秒）。`null` で無期限
+  /// [phrase] and [context] are required. [context] is one or more of
+  /// `home`, `notifications`, `public`, `thread`, `account`. Set
+  /// [irreversible] to `true` to permanently drop matching posts from
+  /// home and notifications (default: `false`). [wholeWord] enables
+  /// word-boundary matching (default: `false`). [expiresIn] is the
+  /// expiration in seconds; pass `null` for no expiration.
   ///
-  /// Mastodon 4.0 以降は [create]（v2）の使用を推奨。
+  /// Use [create] (v2) instead since Mastodon 4.0.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
-  @Deprecated('Mastodon 4.0.0 で非推奨。代わりに create() (v2) を使用してください')
+  /// Throws a `MastodonException` on failure.
+  @Deprecated('Deprecated in Mastodon 4.0.0. Use create() (v2) instead')
   Future<MastodonFilterV1> createV1({
     required String phrase,
     required List<String> context,
@@ -362,24 +347,20 @@ class FiltersApi {
     return MastodonFilterV1.fromJson(data!);
   }
 
-  /// フィルターを更新する（v1・非推奨）
+  /// Updates a filter (v1, deprecated).
   ///
   /// `PUT /api/v1/filters/{id}`
   ///
-  /// 複数キーワードを持つフィルターの `expires_in`, `irreversible`, `context`
-  /// を変更しようとするとエラーが返る。
+  /// Returns an error when attempting to change `expires_in`, `irreversible`,
+  /// or `context` on a filter with multiple keywords.
   ///
-  /// - [id]: 更新する FilterKeyword の ID
-  /// - [phrase]: フィルター対象のテキスト（必須）
-  /// - [context]: 適用コンテキスト（必須）
-  /// - [irreversible]: ホーム・通知で不可逆的に除外するか（デフォルト: `false`）
-  /// - [wholeWord]: 単語境界を考慮するか（デフォルト: `false`）
-  /// - [expiresIn]: 有効期限（秒）
+  /// [phrase] and [context] are required. [irreversible] and [wholeWord]
+  /// default to `false`. [expiresIn] is the expiration in seconds.
   ///
-  /// Mastodon 4.0 以降は [update]（v2）の使用を推奨。
+  /// Use [update] (v2) instead since Mastodon 4.0.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
-  @Deprecated('Mastodon 4.0.0 で非推奨。代わりに update() (v2) を使用してください')
+  /// Throws a `MastodonException` on failure.
+  @Deprecated('Deprecated in Mastodon 4.0.0. Use update() (v2) instead')
   Future<MastodonFilterV1> updateV1(
     String id, {
     required String phrase,
@@ -402,18 +383,17 @@ class FiltersApi {
     return MastodonFilterV1.fromJson(data!);
   }
 
-  /// フィルターを削除する（v1・非推奨）
+  /// Deletes a filter (v1, deprecated).
   ///
   /// `DELETE /api/v1/filters/{id}`
   ///
-  /// FilterKeyword のみを削除する。親 Filter 自体の削除には v2 の [delete] が必要。
+  /// Deletes only the FilterKeyword. Use [delete] (v2) to delete the
+  /// parent Filter itself.
   ///
-  /// - [id]: 削除する Filter の ID
+  /// Use [delete] (v2) instead since Mastodon 4.0.
   ///
-  /// Mastodon 4.0 以降は [delete]（v2）の使用を推奨。
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
-  @Deprecated('Mastodon 4.0.0 で非推奨。代わりに delete() (v2) を使用してください')
+  /// Throws a `MastodonException` on failure.
+  @Deprecated('Deprecated in Mastodon 4.0.0. Use delete() (v2) instead')
   Future<void> deleteV1(String id) async {
     await _http.send<void>(
       '/api/v1/filters/$id',
@@ -422,24 +402,25 @@ class FiltersApi {
   }
 }
 
-/// フィルター作成時のキーワードパラメーター
+/// Keyword parameter for filter creation.
 class MastodonFilterKeywordParam {
-  /// [keyword] にキーワード文字列、[wholeWord] に単語境界考慮フラグを指定する
+  /// Creates a keyword parameter with [keyword] and optional [wholeWord] flag.
   const MastodonFilterKeywordParam({
     required this.keyword,
     this.wholeWord,
   });
 
-  /// キーワード文字列
+  /// Keyword string.
   final String keyword;
 
-  /// 単語境界を考慮するかどうか
+  /// Whether to consider word boundaries.
   final bool? wholeWord;
 }
 
-/// フィルター更新時のキーワードパラメーター
+/// Keyword parameter for filter updates.
 class MastodonFilterKeywordUpdateParam {
-  /// 既存キーワードの更新には [id] を指定し、削除には [destroy] を `true` にする
+  /// Creates a keyword update parameter. Specify [id] for existing keywords
+  /// and set [destroy] to `true` to delete them.
   const MastodonFilterKeywordUpdateParam({
     required this.keyword,
     this.id,
@@ -447,15 +428,15 @@ class MastodonFilterKeywordUpdateParam {
     this.destroy,
   });
 
-  /// 既存キーワードの ID（更新時に指定）
+  /// ID of the existing keyword (specified for updates).
   final String? id;
 
-  /// キーワード文字列
+  /// Keyword string.
   final String keyword;
 
-  /// 単語境界を考慮するかどうか
+  /// Whether to consider word boundaries.
   final bool? wholeWord;
 
-  /// `true` に設定するとこのキーワードを削除する
+  /// Set to `true` to delete this keyword.
   final bool? destroy;
 }

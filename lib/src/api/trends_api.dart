@@ -2,25 +2,24 @@ import '../client/mastodon_http_client.dart';
 import '../models/mastodon_status.dart';
 import '../models/mastodon_trends_link.dart';
 
-/// トレンドに関する API クライアント
+/// Trends API client.
 ///
-/// 全エンドポイントが認証不要の公開 API。
+/// All endpoints are public and require no authentication.
 class TrendsApi {
-  /// [MastodonHttpClient] を受け取り、トレンド API へのアクセスを提供する
+  /// Creates a [TrendsApi] instance with the given [MastodonHttpClient].
   const TrendsApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// トレンドタグを取得する
+  /// Fetches trending tags.
   ///
   /// `GET /api/v1/trends/tags`
   ///
-  /// 過去1週間で使用頻度が増加しているタグを内部トレンドスコア順に返す。
+  /// Returns tags with increasing usage over the past week, sorted by
+  /// internal trend score. [limit] controls the maximum number of results
+  /// (default: 10, max: 20) and [offset] skips that many for pagination.
   ///
-  /// - [limit]: 最大取得件数（デフォルト: 10、上限: 20）
-  /// - [offset]: スキップ件数（ページネーション用）
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonTag>> fetchTags({
     int? limit,
     int? offset,
@@ -38,16 +37,15 @@ class TrendsApi {
         .toList();
   }
 
-  /// トレンド投稿を取得する
+  /// Fetches trending statuses.
   ///
   /// `GET /api/v1/trends/statuses`
   ///
-  /// 他の投稿よりも多くのインタラクションを受けている投稿を返す。
+  /// Returns statuses that have received more interactions than others.
+  /// [limit] controls the maximum number of results (default: 20, max: 40)
+  /// and [offset] skips that many for pagination.
   ///
-  /// - [limit]: 最大取得件数（デフォルト: 20、上限: 40）
-  /// - [offset]: スキップ件数（ページネーション用）
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonStatus>> fetchStatuses({
     int? limit,
     int? offset,
@@ -65,16 +63,15 @@ class TrendsApi {
         .toList();
   }
 
-  /// トレンドリンクを取得する
+  /// Fetches trending links.
   ///
   /// `GET /api/v1/trends/links`
   ///
-  /// ネットワーク全体で高頻度に共有されているリンクを返す。
+  /// Returns links that are being frequently shared across the network.
+  /// [limit] controls the maximum number of results (default: 10, max: 20)
+  /// and [offset] skips that many for pagination.
   ///
-  /// - [limit]: 最大取得件数（デフォルト: 10、上限: 20）
-  /// - [offset]: スキップ件数（ページネーション用）
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonTrendsLink>> fetchLinks({
     int? limit,
     int? offset,

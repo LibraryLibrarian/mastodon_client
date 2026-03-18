@@ -2,9 +2,9 @@ import 'package:dio/dio.dart';
 
 import '../exception/mastodon_exception.dart';
 
-/// [DioException]を[MastodonException]に変換する
+/// Converts a [DioException] to a [MastodonException].
 ///
-/// 全APIクラスで共通して使用する内部ユーティリティ
+/// Internal utility used by all API classes.
 MastodonException convertDioException(DioException e, [String? endpoint]) {
   final statusCode = e.response?.statusCode;
 

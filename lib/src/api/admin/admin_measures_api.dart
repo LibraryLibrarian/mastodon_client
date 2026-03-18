@@ -2,20 +2,21 @@ import '../../client/mastodon_http_client.dart';
 import '../../models/admin/mastodon_admin_measure.dart';
 import '../../models/admin/mastodon_admin_measure_request.dart';
 
-/// 管理者向けメジャー（定量データ）API
+/// Admin measures (quantitative data) API.
 ///
-/// サーバーの定量的な統計情報（アクティブユーザー数・新規ユーザー数等）を取得する。
-/// `admin:read` の OAuth スコープが必要。
+/// Retrieves quantitative statistics about the server
+/// (active users, new users, etc.).
+/// Requires the `admin:read` OAuth scope.
 class AdminMeasuresApi {
   const AdminMeasuresApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// メジャーデータを取得する
+  /// Fetches measure data.
   ///
   /// `POST /api/v1/admin/measures`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonAdminMeasure>> fetch(
     MastodonAdminMeasureRequest request,
   ) async {

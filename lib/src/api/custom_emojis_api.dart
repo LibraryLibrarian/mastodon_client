@@ -1,19 +1,19 @@
 import '../client/mastodon_http_client.dart';
 import '../models/mastodon_custom_emoji.dart';
 
-/// カスタム絵文字に関する API
+/// Custom emojis API.
 class CustomEmojisApi {
   const CustomEmojisApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// サーバーで利用可能なカスタム絵文字の一覧を取得する
+  /// Fetches a list of custom emojis available on the server.
   ///
   /// `GET /api/v1/custom_emojis`
   ///
-  /// 認証不要。
+  /// No authentication required.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonCustomEmoji>> fetch() async {
     final data = await _http.send<List<dynamic>>('/api/v1/custom_emojis');
     return (data ?? const <dynamic>[])

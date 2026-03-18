@@ -1,6 +1,6 @@
-/// Web Push アラート種別ごとの設定（リクエスト用）
+/// Alert settings per Web Push notification type (for requests).
 ///
-/// `null` のフィールドはリクエストに含まれない
+/// Fields set to `null` are not included in the request.
 class MastodonPushAlertSettings {
   const MastodonPushAlertSettings({
     this.mention,
@@ -17,43 +17,43 @@ class MastodonPushAlertSettings {
     this.adminReport,
   });
 
-  /// メンション通知を受け取るかどうか
+  /// Whether to receive mention notifications.
   final bool? mention;
 
-  /// 引用通知を受け取るかどうか
+  /// Whether to receive quote notifications.
   final bool? quote;
 
-  /// フォロー中ユーザーの新規投稿通知を受け取るかどうか
+  /// Whether to receive new post notifications from followed users.
   final bool? status;
 
-  /// ブースト通知を受け取るかどうか
+  /// Whether to receive boost notifications.
   final bool? reblog;
 
-  /// フォロー通知を受け取るかどうか
+  /// Whether to receive follow notifications.
   final bool? follow;
 
-  /// フォローリクエスト通知を受け取るかどうか
+  /// Whether to receive follow request notifications.
   final bool? followRequest;
 
-  /// お気に入り通知を受け取るかどうか
+  /// Whether to receive favourite notifications.
   final bool? favourite;
 
-  /// 投票終了通知を受け取るかどうか
+  /// Whether to receive poll ended notifications.
   final bool? poll;
 
-  /// 投稿編集通知を受け取るかどうか
+  /// Whether to receive status edit notifications.
   final bool? update;
 
-  /// 引用の更新通知を受け取るかどうか
+  /// Whether to receive quoted status update notifications.
   final bool? quotedUpdate;
 
-  /// 管理者向け：新規サインアップ通知を受け取るかどうか
+  /// Admin: whether to receive new sign-up notifications.
   final bool? adminSignUp;
 
-  /// 管理者向け：通報通知を受け取るかどうか
+  /// Admin: whether to receive report notifications.
   final bool? adminReport;
 
-  /// リクエスト用の JSON マップに変換する
+  /// Converts to a JSON map for the request.
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
     if (mention != null) json['mention'] = mention;
@@ -72,9 +72,9 @@ class MastodonPushAlertSettings {
   }
 }
 
-/// Web Push サブスクリプション登録リクエスト
+/// Web Push subscription creation request.
 ///
-/// `POST /api/v1/push/subscription` で使用する
+/// Used with `POST /api/v1/push/subscription`.
 class MastodonPushSubscriptionRequest {
   const MastodonPushSubscriptionRequest({
     required this.endpoint,
@@ -85,25 +85,25 @@ class MastodonPushSubscriptionRequest {
     this.policy,
   });
 
-  /// 通知送信先 URL
+  /// URL for sending notifications.
   final String endpoint;
 
-  /// ユーザーエージェントの公開鍵（P-256 ECDH 鍵ペアの公開鍵を Base64url エンコードしたもの）
+  /// User agent public key (Base64url-encoded P-256 ECDH public key).
   final String p256dh;
 
-  /// 認証シークレット（Base64url エンコード）
+  /// Authentication secret (Base64url-encoded).
   final String auth;
 
-  /// Web Push 標準仕様に準拠するかどうか
+  /// Whether to conform to the standard Web Push specification.
   final bool? standard;
 
-  /// 通知種別ごとの設定
+  /// Settings per notification type.
   final MastodonPushAlertSettings? alerts;
 
-  /// 通知ポリシー（all / followed / follower / none）
+  /// Notification policy (all / followed / follower / none).
   final String? policy;
 
-  /// リクエスト用の JSON マップに変換する
+  /// Converts to a JSON map for the request.
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{
       'subscription': <String, dynamic>{
@@ -131,25 +131,27 @@ class MastodonPushSubscriptionRequest {
   }
 }
 
-/// Web Push サブスクリプション更新リクエスト
+/// Web Push subscription update request.
 ///
-/// `PUT /api/v1/push/subscription` で使用する。
-/// サブスクリプションの `data` 部分（アラート設定・ポリシー）のみを更新する
+/// Used with `PUT /api/v1/push/subscription`.
+/// Updates only the `data` portion (alert settings and policy) of the
+/// subscription.
 class MastodonPushSubscriptionUpdateRequest {
   const MastodonPushSubscriptionUpdateRequest({
     this.alerts,
     this.policy,
   });
 
-  /// 通知種別ごとの設定
+  /// Settings per notification type.
   final MastodonPushAlertSettings? alerts;
 
-  /// 通知ポリシー（all / followed / follower / none）
+  /// Notification policy (all / followed / follower / none).
   final String? policy;
 
-  /// リクエスト用の JSON マップに変換する
+  /// Converts to a JSON map for the request.
   ///
-  /// PUT では `policy` はトップレベルに配置する（POST の `data[policy]` とは異なる）。
+  /// For PUT requests, `policy` is placed at the top level (unlike
+  /// `data[policy]` in POST).
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     if (alerts != null) {

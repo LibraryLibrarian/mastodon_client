@@ -2,104 +2,104 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_application.g.dart';
 
-/// OAuth アプリケーション情報を表すモデル
+/// OAuth application information model.
 ///
-/// `GET /api/v1/apps/verify_credentials` のレスポンスに対応する
+/// Corresponds to the response from `GET /api/v1/apps/verify_credentials`.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonApplication {
-  /// 各フィールドを指定して [MastodonApplication] を生成する
+  /// Creates a [MastodonApplication] with the given fields.
   const MastodonApplication({
     required this.id,
     required this.name,
     this.website,
     required this.scopes,
     required this.redirectUris,
-    @Deprecated('redirectUris を使用してください') this.redirectUri,
-    @Deprecated('Push Streaming API で使用されていた VAPID キー') this.vapidKey,
+    @Deprecated('Use redirectUris instead') this.redirectUri,
+    @Deprecated('VAPID key used by the Push Streaming API') this.vapidKey,
   });
 
-  /// JSON マップから [MastodonApplication] を生成する
+  /// Creates a [MastodonApplication] from a JSON map.
   factory MastodonApplication.fromJson(Map<String, dynamic> json) =>
       _$MastodonApplicationFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonApplicationToJson(this);
 
-  /// アプリケーションのデータベース ID
+  /// Database ID of the application.
   final String id;
 
-  /// アプリケーション名
+  /// Name of the application.
   final String name;
 
-  /// アプリケーションのウェブサイト URL
+  /// Website URL of the application.
   final String? website;
 
-  /// アプリケーションに付与されたスコープ
+  /// Scopes granted to the application.
   final List<String> scopes;
 
-  /// 登録済みリダイレクト URI のリスト
+  /// List of registered redirect URIs.
   final List<String> redirectUris;
 
-  /// リダイレクト URI（非推奨・後方互換用）
-  @Deprecated('redirectUris を使用してください')
+  /// Redirect URI (deprecated, for backward compatibility).
+  @Deprecated('Use redirectUris instead')
   final String? redirectUri;
 
-  /// Web Push API 用の VAPID キー（非推奨）
-  @Deprecated('Push Streaming API で使用されていた VAPID キー')
+  /// VAPID key for the Web Push API (deprecated).
+  @Deprecated('VAPID key used by the Push Streaming API')
   final String? vapidKey;
 }
 
-/// OAuth アプリケーション登録時のレスポンスを表すモデル
+/// OAuth application registration response model.
 ///
-/// `POST /api/v1/apps` のレスポンスに対応する。
-/// [MastodonApplication] のフィールドに加え、クライアント認証情報を含む。
+/// Corresponds to the response from `POST /api/v1/apps`.
+/// Includes client credentials in addition to the [MastodonApplication] fields.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonCredentialApplication {
-  /// 各フィールドを指定して [MastodonCredentialApplication] を生成する
+  /// Creates a [MastodonCredentialApplication] with the given fields.
   const MastodonCredentialApplication({
     required this.id,
     required this.name,
     this.website,
     required this.scopes,
     required this.redirectUris,
-    @Deprecated('redirectUris を使用してください') this.redirectUri,
+    @Deprecated('Use redirectUris instead') this.redirectUri,
     required this.clientId,
     required this.clientSecret,
     required this.clientSecretExpiresAt,
   });
 
-  /// JSON マップから [MastodonCredentialApplication] を生成する
+  /// Creates a [MastodonCredentialApplication] from a JSON map.
   factory MastodonCredentialApplication.fromJson(Map<String, dynamic> json) =>
       _$MastodonCredentialApplicationFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonCredentialApplicationToJson(this);
 
-  /// アプリケーションのデータベース ID
+  /// Database ID of the application.
   final String id;
 
-  /// アプリケーション名
+  /// Name of the application.
   final String name;
 
-  /// アプリケーションのウェブサイト URL
+  /// Website URL of the application.
   final String? website;
 
-  /// アプリケーションに付与されたスコープ
+  /// Scopes granted to the application.
   final List<String> scopes;
 
-  /// 登録済みリダイレクト URI のリスト
+  /// List of registered redirect URIs.
   final List<String> redirectUris;
 
-  /// リダイレクト URI（非推奨・後方互換用）
-  @Deprecated('redirectUris を使用してください')
+  /// Redirect URI (deprecated, for backward compatibility).
+  @Deprecated('Use redirectUris instead')
   final String? redirectUri;
 
-  /// OAuth トークン取得に使用するクライアント ID
+  /// Client ID used for obtaining OAuth tokens.
   final String clientId;
 
-  /// OAuth トークン取得に使用するクライアントシークレット
+  /// Client secret used for obtaining OAuth tokens.
   final String clientSecret;
 
-  /// クライアントシークレットの有効期限（現在は常に 0）
+  /// Expiration time of the client secret (currently always 0).
   final int clientSecretExpiresAt;
 }

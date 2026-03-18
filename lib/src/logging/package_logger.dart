@@ -2,18 +2,20 @@ import 'package:logger/logger.dart' as pkg;
 
 import '../client/constants.dart';
 
-/// mastodon_clientライブラリ共通のロガーを提供
+/// Provides the shared logger for the mastodon_client library.
 ///
-/// - デバッグビルド: 詳細ログ（debug/trace）を出力
-/// - リリースビルド: 警告以上のみ出力（大量ログを抑制）
+/// In debug builds, detailed logs at the debug/trace level are output. In
+/// release builds, only warnings and above are emitted, suppressing
+/// verbose logs.
 final pkg.Logger clientLog = pkg.Logger(
   level: kReleaseMode ? pkg.Level.warning : pkg.Level.debug,
   printer: _CustomLogPrinter(),
 );
 
-/// カスタムログプリンター
+/// Custom log printer.
 ///
-/// 出力形式: `[mastodon_client] [LEVEL] YYYY-MM-DD HH:MM:SS.ffffff メッセージ`
+/// Output format:
+/// `[mastodon_client] [LEVEL] YYYY-MM-DD HH:MM:SS.ffffff message`
 class _CustomLogPrinter extends pkg.LogPrinter {
   static final Map<pkg.Level, String> _levelLabels = {
     pkg.Level.trace: 'TRACE',

@@ -3,20 +3,19 @@ import '../internal/link_header_parser.dart';
 import '../models/mastodon_page.dart';
 import '../models/mastodon_status.dart';
 
-/// タイムライン取得に関するAPI
+/// Timelines API.
 class TimelinesApi {
   const TimelinesApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// ホームタイムラインを取得する
+  /// Fetches the home timeline.
   ///
   /// `GET /api/v1/timelines/home`
   ///
-  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
-  /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
-  /// - [maxId]: このID以前の投稿を取得する（古い方向）
-  /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
+  /// [limit] controls the maximum number of results (uses server default
+  /// when omitted). Use [sinceId] for newer statuses, [maxId] for older
+  /// ones, and [minId] for forward pagination.
   Future<MastodonPage<MastodonStatus>> fetchHome({
     int? limit,
     String? sinceId,
@@ -30,15 +29,14 @@ class TimelinesApi {
     minId: minId,
   );
 
-  /// ローカルタイムラインを取得する
+  /// Fetches the local timeline.
   ///
   /// `GET /api/v1/timelines/public?local=true`
   ///
-  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
-  /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
-  /// - [maxId]: このID以前の投稿を取得する（古い方向）
-  /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
-  /// - [onlyMedia]: `true` の場合、メディア添付のある投稿のみを返す
+  /// [limit] controls the maximum number of results (uses server default
+  /// when omitted). Use [sinceId] for newer statuses, [maxId] for older
+  /// ones, and [minId] for forward pagination. Set [onlyMedia] to `true`
+  /// to return only statuses with media attachments.
   Future<MastodonPage<MastodonStatus>> fetchLocal({
     int? limit,
     String? sinceId,
@@ -57,16 +55,15 @@ class TimelinesApi {
     },
   );
 
-  /// 連合タイムラインを取得する
+  /// Fetches the federated timeline.
   ///
   /// `GET /api/v1/timelines/public`
   ///
-  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
-  /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
-  /// - [maxId]: このID以前の投稿を取得する（古い方向）
-  /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
-  /// - [onlyMedia]: `true` の場合、メディア添付のある投稿のみを返す
-  /// - [remoteOnly]: `true` の場合、リモートの投稿のみを返す
+  /// [limit] controls the maximum number of results (uses server default
+  /// when omitted). Use [sinceId] for newer statuses, [maxId] for older
+  /// ones, and [minId] for forward pagination. Set [onlyMedia] to `true`
+  /// to return only statuses with media attachments, or [remoteOnly] to
+  /// `true` to return only remote statuses.
   Future<MastodonPage<MastodonStatus>> fetchFederated({
     int? limit,
     String? sinceId,
@@ -86,21 +83,18 @@ class TimelinesApi {
     },
   );
 
-  /// 指定したハッシュタグのタイムラインを取得する
+  /// Fetches the timeline for the specified hashtag.
   ///
   /// `GET /api/v1/timelines/tag/:hashtag`
   ///
-  /// - [hashtag]: 検索するハッシュタグ（`#` を除いた文字列）
-  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
-  /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
-  /// - [maxId]: このID以前の投稿を取得する（古い方向）
-  /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
-  /// - [localOnly]: `true` の場合、ローカルの投稿のみを返す
-  /// - [remoteOnly]: `true` の場合、リモートの投稿のみを返す
-  /// - [onlyMedia]: `true` の場合、メディア添付のある投稿のみを返す
-  /// - [any]: これらのハッシュタグのいずれかを含む投稿も対象に加える
-  /// - [all]: これらのハッシュタグをすべて含む投稿のみを対象にする
-  /// - [none]: これらのハッシュタグをいずれかでも含む投稿を除外する
+  /// [hashtag] is the tag to filter on, without the `#` prefix. [limit]
+  /// controls the maximum number of results (uses server default when
+  /// omitted). Use [sinceId] for newer statuses, [maxId] for older ones,
+  /// and [minId] for forward pagination. Set [localOnly] or [remoteOnly]
+  /// to restrict to local or remote statuses respectively, and [onlyMedia]
+  /// to require media attachments. [any] also includes statuses with any
+  /// of those additional tags, [all] requires all of them, and [none]
+  /// excludes statuses containing any of them.
   Future<MastodonPage<MastodonStatus>> fetchHashtag(
     String hashtag, {
     int? limit,
@@ -129,15 +123,13 @@ class TimelinesApi {
     },
   );
 
-  /// 指定したリストのタイムラインを取得する
+  /// Fetches the timeline for the specified list.
   ///
   /// `GET /api/v1/timelines/list/:list_id`
   ///
-  /// - [listId]: 対象リストのID
-  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
-  /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
-  /// - [maxId]: このID以前の投稿を取得する（古い方向）
-  /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
+  /// [limit] controls the maximum number of results (uses server default
+  /// when omitted). Use [sinceId] for newer statuses, [maxId] for older
+  /// ones, and [minId] for forward pagination.
   Future<MastodonPage<MastodonStatus>> fetchList(
     String listId, {
     int? limit,
@@ -152,15 +144,13 @@ class TimelinesApi {
     minId: minId,
   );
 
-  /// 指定したURLに関連する投稿のタイムラインを取得する
+  /// Fetches the timeline of statuses related to the specified URL.
   ///
   /// `GET /api/v1/timelines/link`
   ///
-  /// - [url]: タイムラインを取得する対象のURL（必須）
-  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
-  /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
-  /// - [maxId]: このID以前の投稿を取得する（古い方向）
-  /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
+  /// [url] is required. [limit] controls the maximum number of results
+  /// (uses server default when omitted). Use [sinceId] for newer statuses,
+  /// [maxId] for older ones, and [minId] for forward pagination.
   Future<MastodonPage<MastodonStatus>> fetchLink(
     String url, {
     int? limit,
@@ -176,19 +166,18 @@ class TimelinesApi {
     extraQuery: {'url': url},
   );
 
-  /// ダイレクトメッセージのタイムラインを取得する
+  /// Fetches the direct message timeline.
   ///
   /// `GET /api/v1/timelines/direct`
   ///
-  /// **非推奨**: Mastodon 2.6.0 で非推奨、3.0.0 で削除済み。
-  /// 代わりに Conversations API を使用すること。
+  /// **Deprecated**: Deprecated in Mastodon 2.6.0, removed in 3.0.0.
+  /// Use the Conversations API instead.
   ///
-  /// - [limit]: 最大取得件数（デフォルト: 20、上限: 40）
-  /// - [sinceId]: このID以降の投稿を取得する（新しい方向）
-  /// - [maxId]: このID以前の投稿を取得する（古い方向）
-  /// - [minId]: このID以降で最も古い投稿から取得する（前方ページネーション）
+  /// [limit] controls the maximum number of results (default: 20, max: 40).
+  /// Use [sinceId] for newer statuses, [maxId] for older ones, and [minId]
+  /// for forward pagination.
   @Deprecated(
-    'Mastodon 3.0.0 で削除済み。代わりに ConversationsApi を使用してください',
+    'Removed in Mastodon 3.0.0. Use ConversationsApi instead',
   )
   Future<MastodonPage<MastodonStatus>> fetchDirect({
     int? limit,

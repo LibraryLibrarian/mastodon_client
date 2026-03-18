@@ -4,30 +4,30 @@ import 'json_converters.dart';
 
 part 'mastodon_marker.g.dart';
 
-/// タイムラインの既読位置マーカーを表すモデル
+/// Timeline read position marker model.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonMarker {
-  /// 各フィールドを指定して [MastodonMarker] を生成する
+  /// Creates a [MastodonMarker] with the given fields.
   const MastodonMarker({
     required this.lastReadId,
     required this.version,
     this.updatedAt,
   });
 
-  /// JSON マップから [MastodonMarker] を生成する
+  /// Creates a [MastodonMarker] from a JSON map.
   factory MastodonMarker.fromJson(Map<String, dynamic> json) =>
       _$MastodonMarkerFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonMarkerToJson(this);
 
-  /// 最後に閲覧したエンティティ（ステータスまたは通知）の ID
+  /// ID of the last viewed entity (status or notification).
   final String lastReadId;
 
-  /// 書き込み競合防止用のバージョンカウンター
+  /// Version counter for write conflict prevention.
   final int version;
 
-  /// マーカーが設定された日時
+  /// Timestamp when the marker was set.
   @SafeDateTimeConverter()
   final DateTime? updatedAt;
 }

@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_weekly_activity.g.dart';
 
-/// インスタンスの週間アクティビティ統計
+/// Weekly activity statistics of the instance.
 ///
 /// `GET /api/v1/instance/activity`
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -17,22 +17,22 @@ class MastodonWeeklyActivity {
   factory MastodonWeeklyActivity.fromJson(Map<String, dynamic> json) =>
       _$MastodonWeeklyActivityFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonWeeklyActivityToJson(this);
 
-  /// 週の開始時点の UNIX タイムスタンプ（文字列）
+  /// UNIX timestamp at the start of the week (string).
   @JsonKey(defaultValue: '0')
   final String week;
 
-  /// その週に投稿された投稿数（文字列）
+  /// Number of statuses posted during the week (string).
   @JsonKey(defaultValue: '0')
   final String statuses;
 
-  /// その週にログインしたユーザー数（文字列）
+  /// Number of users who logged in during the week (string).
   @JsonKey(defaultValue: '0')
   final String logins;
 
-  /// その週に登録したユーザー数（文字列）
+  /// Number of users who registered during the week (string).
   @JsonKey(defaultValue: '0')
   final String registrations;
 }

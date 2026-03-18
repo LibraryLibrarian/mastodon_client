@@ -4,10 +4,11 @@ import '../mastodon_account.dart';
 
 part 'mastodon_admin_account.g.dart';
 
-/// 管理者向けアカウント情報
+/// Admin-level account information.
 ///
-/// Admin API のレスポンスで返されるアカウント情報。
-/// 通常の [MastodonAccount] に加え、管理者向けの詳細情報を含む。
+/// Account information returned by the Admin API responses.
+/// Includes additional admin-specific details beyond the standard
+/// [MastodonAccount].
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminAccount {
   const MastodonAdminAccount({
@@ -35,77 +36,77 @@ class MastodonAdminAccount {
   factory MastodonAdminAccount.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminAccountFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAdminAccountToJson(this);
 
-  /// アカウントのデータベース内 ID
+  /// Database ID of the account.
   final String id;
 
-  /// ユーザー名
+  /// Username of the account.
   final String username;
 
-  /// アカウントのドメイン（ローカルアカウントの場合は null）
+  /// Domain of the account (null for local accounts).
   final String? domain;
 
-  /// アカウントの作成日時
+  /// Timestamp when the account was created.
   @SafeDateTimeConverter()
   final DateTime? createdAt;
 
-  /// アカウントに紐づくメールアドレス
+  /// Email address associated with the account.
   @JsonKey(defaultValue: '')
   final String? email;
 
-  /// 最後にログインに使用された IP アドレス
+  /// IP address last used for login.
   final String? ip;
 
-  /// このアカウントに関連する全 IP アドレスの履歴
+  /// History of all IP addresses associated with this account.
   @JsonKey(defaultValue: <MastodonAdminIp>[])
   final List<MastodonAdminIp> ips;
 
-  /// アカウントのロケール（ISO 639-1 言語コード）
+  /// Locale of the account (ISO 639-1 language code).
   final String? locale;
 
-  /// 招待リクエスト時に入力された理由
+  /// Reason provided when requesting an invite.
   final String? inviteRequest;
 
-  /// アカウントの現在のロール
+  /// Current role of the account.
   final MastodonAdminRole? role;
 
-  /// メールアドレスが確認済みかどうか
+  /// Whether the email address has been confirmed.
   @JsonKey(defaultValue: false)
   final bool confirmed;
 
-  /// アカウントが承認済みかどうか
+  /// Whether the account has been approved.
   @JsonKey(defaultValue: false)
   final bool approved;
 
-  /// アカウントが無効化されているかどうか
+  /// Whether the account has been disabled.
   @JsonKey(defaultValue: false)
   final bool disabled;
 
-  /// アカウントがセンシティブ指定されているかどうか
+  /// Whether the account has been marked as sensitive.
   @JsonKey(defaultValue: false)
   final bool sensitized;
 
-  /// アカウントがサイレンスされているかどうか
+  /// Whether the account has been silenced.
   @JsonKey(defaultValue: false)
   final bool silenced;
 
-  /// アカウントが凍結されているかどうか
+  /// Whether the account has been suspended.
   @JsonKey(defaultValue: false)
   final bool suspended;
 
-  /// ユーザーレベルのアカウント情報
+  /// User-level account information.
   final MastodonAccount? account;
 
-  /// このアカウントを作成したアプリケーションの ID
+  /// ID of the application that created this account.
   final String? createdByApplicationId;
 
-  /// このユーザーを招待したアカウントの ID
+  /// ID of the account that invited this user.
   final String? invitedByAccountId;
 }
 
-/// 管理者向け IP アドレス情報
+/// Admin-level IP address information.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminIp {
   const MastodonAdminIp({
@@ -116,18 +117,18 @@ class MastodonAdminIp {
   factory MastodonAdminIp.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminIpFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAdminIpToJson(this);
 
-  /// IP アドレス
+  /// IP address.
   final String ip;
 
-  /// この IP アドレスが最後に使用された日時
+  /// Timestamp when this IP address was last used.
   @SafeDateTimeConverter()
   final DateTime? usedAt;
 }
 
-/// 管理者向けロール情報
+/// Admin-level role information.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminRole {
   const MastodonAdminRole({
@@ -144,34 +145,34 @@ class MastodonAdminRole {
   factory MastodonAdminRole.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminRoleFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAdminRoleToJson(this);
 
-  /// ロールの ID
+  /// ID of the role.
   final int id;
 
-  /// ロール名
+  /// Name of the role.
   final String name;
 
-  /// ロールのカラーコード
+  /// Color code of the role.
   @JsonKey(defaultValue: '')
   final String? color;
 
-  /// ロールの優先順位
+  /// Priority of the role.
   final int? position;
 
-  /// ロールの権限ビットマスク
+  /// Permission bitmask of the role.
   final String? permissions;
 
-  /// ロールをバッジとして表示するかどうか
+  /// Whether to display the role as a badge.
   @JsonKey(defaultValue: false)
   final bool highlighted;
 
-  /// ロールの作成日時
+  /// Timestamp when the role was created.
   @SafeDateTimeConverter()
   final DateTime? createdAt;
 
-  /// ロールの最終更新日時
+  /// Timestamp when the role was last updated.
   @SafeDateTimeConverter()
   final DateTime? updatedAt;
 }

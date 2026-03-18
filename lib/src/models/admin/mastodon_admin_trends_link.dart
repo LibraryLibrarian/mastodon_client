@@ -5,10 +5,10 @@ import '../mastodon_trends_link.dart';
 
 part 'mastodon_admin_trends_link.g.dart';
 
-/// 管理者向けトレンドリンク
+/// Admin-level trending link.
 ///
-/// 通常の [MastodonTrendsLink] のフィールドに加え、
-/// 管理者向けの [id] と [requiresReview] を持つ。
+/// Includes all fields from the standard [MastodonTrendsLink] plus
+/// admin-specific [id] and [requiresReview].
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminTrendsLink {
   const MastodonAdminTrendsLink({
@@ -35,79 +35,79 @@ class MastodonAdminTrendsLink {
   factory MastodonAdminTrendsLink.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminTrendsLinkFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAdminTrendsLinkToJson(this);
 
   static Object? _readType(Map<dynamic, dynamic> json, String key) =>
       json['type'] ?? 'link';
 
-  /// トレンドリンクのデータベース ID
+  /// Database ID of the trending link.
   final String id;
 
-  /// リンク先のURL
+  /// URL of the link target.
   final String url;
 
-  /// リンク先のタイトル
+  /// Title of the link target.
   @JsonKey(defaultValue: '')
   final String title;
 
-  /// プレビューの説明文
+  /// Description of the preview.
   @JsonKey(defaultValue: '')
   final String description;
 
-  /// プレビューカードの種別
+  /// Type of the preview card.
   @JsonKey(
     readValue: _readType,
     unknownEnumValue: MastodonPreviewCardType.link,
   )
   final MastodonPreviewCardType type;
 
-  /// コンテンツ作成者の名前
+  /// Name of the content author.
   @JsonKey(defaultValue: '')
   final String authorName;
 
-  /// コンテンツ作成者のURL
+  /// URL of the content author.
   @JsonKey(defaultValue: '')
   final String authorUrl;
 
-  /// コンテンツ提供元の名前
+  /// Name of the content provider.
   @JsonKey(defaultValue: '')
   final String providerName;
 
-  /// コンテンツ提供元のURL
+  /// URL of the content provider.
   @JsonKey(defaultValue: '')
   final String providerUrl;
 
-  /// プレビュー生成用のHTML
+  /// HTML for generating the preview.
   @JsonKey(defaultValue: '')
   final String html;
 
-  /// プレビューの幅（ピクセル）
+  /// Width of the preview in pixels.
   @JsonKey(defaultValue: 0)
   final int width;
 
-  /// プレビューの高さ（ピクセル）
+  /// Height of the preview in pixels.
   @JsonKey(defaultValue: 0)
   final int height;
 
-  /// プレビューサムネイルのURL
+  /// URL of the preview thumbnail.
   final String? image;
 
-  /// 写真埋め込み用のURL
+  /// URL for embedding photos.
   @JsonKey(defaultValue: '')
   final String embedUrl;
 
-  /// サムネイル用のBlurhash文字列
+  /// Blurhash string for the thumbnail.
   final String? blurhash;
 
-  /// コンテンツ作成者のリスト（Mastodon 4.3.0+）
+  /// List of content authors (Mastodon 4.3.0+).
   @JsonKey(defaultValue: <MastodonPreviewCardAuthor>[])
   final List<MastodonPreviewCardAuthor> authors;
 
-  /// 日別利用統計の履歴
+  /// History of daily usage statistics.
   @JsonKey(defaultValue: <MastodonTrendsLinkHistory>[])
   final List<MastodonTrendsLinkHistory> history;
 
-  /// モデレーターによるレビューが必要かどうか
+  /// Whether moderator review is required.
   final bool? requiresReview;
 }

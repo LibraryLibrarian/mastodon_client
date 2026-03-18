@@ -1,21 +1,22 @@
 import '../client/mastodon_http_client.dart';
 import '../models/mastodon_announcement.dart';
 
-/// サーバーのお知らせに関する API
+/// Server announcements API.
 class AnnouncementsApi {
   const AnnouncementsApi(this._http);
   final MastodonHttpClient _http;
 
-  /// アクティブなお知らせ一覧を取得する
+  /// Fetches a list of active announcements.
   ///
   /// `GET /api/v1/announcements`
   ///
-  /// - [withDismissed]: 現在のサーバー実装ではこのパラメータは処理されない。
-  ///   送信しても無視されるため、将来のバージョンで削除予定。
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonAnnouncement>> fetch({
-    @Deprecated('サーバー側で未実装のため効果なし。将来削除予定') bool? withDismissed,
+    @Deprecated(
+      'Not implemented server-side; has no effect. '
+      'Will be removed in the future',
+    )
+    bool? withDismissed,
   }) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/announcements',
@@ -29,13 +30,11 @@ class AnnouncementsApi {
         .toList();
   }
 
-  /// お知らせを既読にする
+  /// Dismisses an announcement (marks it as read).
   ///
   /// `POST /api/v1/announcements/:id/dismiss`
   ///
-  /// - [id]: お知らせのID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> dismiss(String id) async {
     await _http.send<dynamic>(
       '/api/v1/announcements/$id/dismiss',
@@ -43,14 +42,13 @@ class AnnouncementsApi {
     );
   }
 
-  /// お知らせにリアクションを追加する
+  /// Adds a reaction to an announcement.
   ///
   /// `PUT /api/v1/announcements/:id/reactions/:name`
   ///
-  /// - [id]: お知らせのID
-  /// - [name]: Unicode 絵文字またはカスタム絵文字のショートコード
+  /// [name] is a Unicode emoji character or a custom emoji shortcode.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> addReaction(String id, String name) async {
     final encodedName = Uri.encodeComponent(name);
     await _http.send<dynamic>(
@@ -59,14 +57,13 @@ class AnnouncementsApi {
     );
   }
 
-  /// お知らせからリアクションを削除する
+  /// Removes a reaction from an announcement.
   ///
   /// `DELETE /api/v1/announcements/:id/reactions/:name`
   ///
-  /// - [id]: お知らせのID
-  /// - [name]: Unicode 絵文字またはカスタム絵文字のショートコード
+  /// [name] is a Unicode emoji character or a custom emoji shortcode.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> removeReaction(String id, String name) async {
     final encodedName = Uri.encodeComponent(name);
     await _http.send<dynamic>(

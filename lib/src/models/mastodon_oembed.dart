@@ -2,9 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_oembed.g.dart';
 
-/// Mastodon の OEmbed メタデータ
+/// OEmbed metadata for Mastodon.
 ///
-/// `/api/oembed` のレスポンスに対応する
+/// Corresponds to the response from `/api/oembed`.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonOEmbed {
   const MastodonOEmbed({
@@ -24,39 +24,39 @@ class MastodonOEmbed {
   factory MastodonOEmbed.fromJson(Map<String, dynamic> json) =>
       _$MastodonOEmbedFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonOEmbedToJson(this);
 
-  /// OEmbed タイプ。常に `"rich"`
+  /// OEmbed type. Always `"rich"`.
   final String type;
 
-  /// OEmbed バージョン。常に `"1.0"`
+  /// OEmbed version. Always `"1.0"`.
   final String version;
 
-  /// ステータスの説明タイトル
+  /// Description title of the status.
   final String title;
 
-  /// 投稿者の表示名
+  /// Display name of the author.
   final String authorName;
 
-  /// 投稿者のプロフィール URL
+  /// Profile URL of the author.
   final String authorUrl;
 
-  /// インスタンスのドメイン名
+  /// Domain name of the instance.
   final String providerName;
 
-  /// インスタンスのベース URL
+  /// Base URL of the instance.
   final String providerUrl;
 
-  /// 推奨キャッシュ期間（秒）
+  /// Recommended cache duration in seconds.
   final int cacheAge;
 
-  /// 埋め込み用 iframe の HTML コード
+  /// HTML code for the embed iframe.
   final String html;
 
-  /// iframe の幅（ピクセル）
+  /// Width of the iframe in pixels.
   final int width;
 
-  /// iframe の高さ（ピクセル）。未指定の場合は `null`
+  /// Height of the iframe in pixels. `null` if unspecified.
   final int? height;
 }

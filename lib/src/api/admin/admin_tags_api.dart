@@ -3,22 +3,22 @@ import '../../internal/link_header_parser.dart';
 import '../../models/admin/mastodon_admin_tag.dart';
 import '../../models/mastodon_page.dart';
 
-/// 管理者向けタグ API
+/// Admin tags API.
 class AdminTagsApi {
   const AdminTagsApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 管理者向けタグの一覧を取得する
+  /// Fetches a list of admin tags.
   ///
   /// `GET /api/v1/admin/tags`
   ///
-  /// - [maxId]: この ID 以前のタグを取得する（古い方向）
-  /// - [sinceId]: この ID 以降のタグを取得する（新しい方向）
-  /// - [minId]: この ID 直後のタグから取得する（前方ページネーション）
-  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
+  /// Use [maxId] to return results older than that ID, [sinceId] for
+  /// newer results, and [minId] for immediate forward pagination. [limit]
+  /// controls the maximum number of results (uses server default when
+  /// omitted).
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonAdminTag>> fetch({
     String? maxId,
     String? sinceId,
@@ -46,13 +46,11 @@ class AdminTagsApi {
     );
   }
 
-  /// 指定 ID のタグを取得する
+  /// Fetches a tag by its ID.
   ///
   /// `GET /api/v1/admin/tags/:id`
   ///
-  /// - [id]: 取得するタグの ID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminTag> fetchById(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/tags/$id',
@@ -60,17 +58,16 @@ class AdminTagsApi {
     return MastodonAdminTag.fromJson(data!);
   }
 
-  /// 指定 ID のタグを更新する
+  /// Updates a tag by its ID.
   ///
   /// `PUT /api/v1/admin/tags/:id`
   ///
-  /// - [id]: 更新するタグの ID
-  /// - [displayName]: タグの表示名
-  /// - [listable]: 一覧に表示するかどうか
-  /// - [trendable]: トレンドに表示可能かどうか
-  /// - [usable]: 投稿で使用可能かどうか
+  /// All parameters are optional; only provided fields are updated.
+  /// [displayName] sets the display name, [listable] controls whether
+  /// the tag appears in listings, [trendable] whether it is allowed in
+  /// trends, and [usable] whether it may be used in posts.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminTag> update(
     String id, {
     String? displayName,

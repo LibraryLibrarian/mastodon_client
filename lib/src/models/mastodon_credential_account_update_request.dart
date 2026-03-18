@@ -1,8 +1,8 @@
-/// プロフィール更新リクエストのパラメーター
+/// Parameters for a profile update request.
 ///
-/// `PATCH /api/v1/accounts/update_credentials` のリクエストボディに対応する。
+/// Corresponds to the request body for `PATCH /api/v1/accounts/update_credentials`.
 class MastodonCredentialAccountUpdateRequest {
-  /// プロフィール更新リクエストのパラメーターを生成
+  /// Creates parameters for a profile update request.
   const MastodonCredentialAccountUpdateRequest({
     this.displayName,
     this.note,
@@ -21,52 +21,52 @@ class MastodonCredentialAccountUpdateRequest {
     this.attributionDomains,
   });
 
-  /// 表示名
+  /// Display name.
   final String? displayName;
 
-  /// プロフィール文
+  /// Profile bio.
   final String? note;
 
-  /// アバター画像（Base64 エンコードされたデータ URI）
+  /// Avatar image (Base64-encoded data URI).
   final String? avatar;
 
-  /// ヘッダー画像（Base64 エンコードされたデータ URI）
+  /// Header image (Base64-encoded data URI).
   final String? header;
 
-  /// フォロー承認制にするかどうか
+  /// Whether to require follow approval.
   final bool? locked;
 
-  /// Bot アカウントかどうか
+  /// Whether this is a bot account.
   final bool? bot;
 
-  /// ディスカバリー機能への掲載を許可するかどうか
+  /// Whether to opt in to discovery features.
   final bool? discoverable;
 
-  /// フォロー・フォロワー一覧を非公開にするかどうか
+  /// Whether to hide the follow/followers lists.
   final bool? hideCollections;
 
-  /// 検索エンジンによるインデックスを許可するかどうか
+  /// Whether to allow search engine indexing.
   final bool? indexable;
 
-  /// プロフィールのカスタムフィールド一覧
+  /// List of custom profile fields.
   final List<MastodonFieldAttribute>? fieldsAttributes;
 
-  /// デフォルトの投稿公開範囲（`public`・`unlisted`・`private`・`direct`）
+  /// Default posting visibility (`public` / `unlisted` / `private` / `direct`).
   final String? sourcePrivacy;
 
-  /// デフォルトでセンシティブフラグを付けるかどうか
+  /// Whether to mark posts as sensitive by default.
   final bool? sourceSensitive;
 
-  /// デフォルトの投稿言語（ISO 639-1 形式）
+  /// Default posting language (ISO 639-1 format).
   final String? sourceLanguage;
 
-  /// デフォルトの引用承認ポリシー（`public`・`followers`・`nobody`）
+  /// Default quote approval policy (`public` / `followers` / `nobody`).
   final String? sourceQuotePolicy;
 
-  /// 帰属ドメインのリスト
+  /// List of attribution domains.
   final List<String>? attributionDomains;
 
-  /// リクエストボディ用の JSON マップを返す
+  /// Returns a JSON map for the request body.
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
 
@@ -108,17 +108,17 @@ class MastodonCredentialAccountUpdateRequest {
   }
 }
 
-/// プロフィールのカスタムフィールド属性
+/// Custom profile field attribute.
 class MastodonFieldAttribute {
-  /// フィールド名と値を指定して生成する
+  /// Creates with the given field name and value.
   const MastodonFieldAttribute({
     required this.name,
     required this.value,
   });
 
-  /// フィールドのラベル名
+  /// Label name of the field.
   final String name;
 
-  /// フィールドの値
+  /// Value of the field.
   final String value;
 }

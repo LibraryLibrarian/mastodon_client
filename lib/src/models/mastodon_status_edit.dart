@@ -6,10 +6,10 @@ import 'mastodon_media_attachment.dart';
 
 part 'mastodon_status_edit.g.dart';
 
-/// 投稿の編集リビジョン
+/// Revision of a status edit.
 ///
-/// `GET /api/v1/statuses/:id/history` のレスポンス要素に対応する
-/// 各リビジョンの時点での投稿内容を保持する。
+/// Corresponds to an element of the response from `GET /api/v1/statuses/:id/history`.
+/// Holds the status content at the time of each revision.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonStatusEdit {
   const MastodonStatusEdit({
@@ -26,42 +26,43 @@ class MastodonStatusEdit {
   factory MastodonStatusEdit.fromJson(Map<String, dynamic> json) =>
       _$MastodonStatusEditFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonStatusEditToJson(this);
 
-  /// リビジョン時点の投稿本文（HTML形式）
+  /// Body text of the status at revision time (HTML format).
   @JsonKey(defaultValue: '')
   final String content;
 
-  /// リビジョン時点のコンテンツ警告テキスト
+  /// Content warning text at revision time.
   @JsonKey(defaultValue: '')
   final String spoilerText;
 
-  /// リビジョン時点でセンシティブとしてマークされていたかどうか
+  /// Whether the status was marked as sensitive at revision time.
   @JsonKey(defaultValue: false)
   final bool sensitive;
 
-  /// リビジョンの公開日時
+  /// Timestamp when the revision was published.
   final DateTime createdAt;
 
-  /// リビジョンを公開したアカウント
+  /// Account that published the revision.
   final MastodonAccount account;
 
-  /// リビジョン時点の添付メディアのリスト
+  /// List of media attachments at revision time.
   @JsonKey(defaultValue: <MastodonMediaAttachment>[])
   final List<MastodonMediaAttachment> mediaAttachments;
 
-  /// リビジョン時点のカスタム絵文字のリスト
+  /// List of custom emojis at revision time.
   @JsonKey(defaultValue: <MastodonCustomEmoji>[])
   final List<MastodonCustomEmoji> emojis;
 
-  /// リビジョン時点の投票。投票なしの場合は `null`
+  /// Poll at revision time. `null` if no poll.
   final MastodonStatusEditPoll? poll;
 }
 
-/// 編集履歴内の投票スナップショット。
+/// Poll snapshot within the edit history.
 ///
-/// `MastodonPoll` とは異なり、投票結果を持たない選択肢のみの構造
+/// Unlike `MastodonPoll`, this is an options-only structure without vote
+/// results.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonStatusEditPoll {
   const MastodonStatusEditPoll({required this.options});
@@ -69,15 +70,15 @@ class MastodonStatusEditPoll {
   factory MastodonStatusEditPoll.fromJson(Map<String, dynamic> json) =>
       _$MastodonStatusEditPollFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonStatusEditPollToJson(this);
 
-  /// 投票の選択肢リスト
+  /// List of poll options.
   @JsonKey(defaultValue: <MastodonStatusEditPollOption>[])
   final List<MastodonStatusEditPollOption> options;
 }
 
-/// 編集履歴内の投票選択肢
+/// Poll option within the edit history.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonStatusEditPollOption {
   const MastodonStatusEditPollOption({required this.title});
@@ -85,9 +86,9 @@ class MastodonStatusEditPollOption {
   factory MastodonStatusEditPollOption.fromJson(Map<String, dynamic> json) =>
       _$MastodonStatusEditPollOptionFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonStatusEditPollOptionToJson(this);
 
-  /// 選択肢のテキスト
+  /// Text of the option.
   final String title;
 }

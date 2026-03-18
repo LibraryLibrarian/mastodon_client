@@ -1,36 +1,29 @@
 import '../client/mastodon_http_client.dart';
 import '../models/mastodon_search_result.dart';
 
-/// 検索に関する API クライアント
+/// Search API client.
 class SearchApi {
-  /// [MastodonHttpClient] を受け取り、検索 API へのアクセスを提供する
+  /// Creates a [SearchApi] instance with the given [MastodonHttpClient].
   const SearchApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// アカウント・投稿・ハッシュタグを横断検索する（v2）
+  /// Searches across accounts, statuses, and hashtags (v2).
   ///
   /// `GET /api/v2/search`
   ///
-  /// - [query]: 検索クエリ文字列（必須）
-  /// - [type]: 結果を特定の種別に限定する。
-  ///   `accounts`・`hashtags`・`statuses` のいずれか。
-  ///   省略時は全種別を検索する
-  /// - [resolve]: `true` の場合、リモートアカウントの WebFinger ルックアップ
-  ///   や URL の解決を行う。**ユーザートークンが必要**（デフォルト: `false`）
-  /// - [following]: `true` の場合、認証ユーザーがフォロー中の
-  ///   アカウントのみを返す（デフォルト: `false`）
-  /// - [accountId]: 指定した場合、そのアカウントが投稿した
-  ///   ステータスのみを返す
-  /// - [excludeUnreviewed]: `true` の場合、未レビューのタグを除外する。
-  ///   トレンドタグの検索時に使用する（Mastodon 3.0.0 で追加）
-  /// - [maxId]: この ID より小さい結果のみを返す（ページネーション）
-  /// - [minId]: この ID より大きい結果のみを返す（前方ページネーション）
-  /// - [limit]: カテゴリごとの最大結果数。最大 40（デフォルト: 20）
-  /// - [offset]: 先頭から指定件数をスキップする。
-  ///   [type] が指定されている場合のみ有効。**ユーザートークンが必要**
+  /// [query] is required. [type] limits results to `accounts`, `hashtags`,
+  /// or `statuses`; all types are searched when omitted. When [resolve] is
+  /// `true`, remote accounts are resolved via WebFinger (requires a user
+  /// token; default: `false`). When [following] is `true`, only followed
+  /// accounts are returned (default: `false`). [accountId] restricts status
+  /// results to a specific account. [excludeUnreviewed] excludes unreviewed
+  /// tags when `true` (added in Mastodon 3.0.0). Use [maxId] and [minId]
+  /// for pagination. [limit] sets the maximum results per category (max 40,
+  /// default: 20). [offset] skips results from the beginning and is only
+  /// effective when [type] is specified (requires a user token).
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonSearchResult> search(
     String query, {
     String? type,
@@ -61,35 +54,29 @@ class SearchApi {
     return MastodonSearchResult.fromJson(data!);
   }
 
-  /// アカウント・投稿・ハッシュタグを横断検索する（v1・非推奨）
+  /// Searches across accounts, statuses, and hashtags (v1, deprecated).
   ///
   /// `GET /api/v1/search`
   ///
-  /// **Mastodon 2.4.1 で非推奨、3.0.0 で削除済み。**
-  /// 2.x 系以前のインスタンスとの互換性のために提供している。
-  /// 新規利用の場合は [search] (v2) を使用すること。
+  /// **Deprecated in Mastodon 2.4.1, removed in 3.0.0.**
+  /// Provided for compatibility with instances running 2.x or earlier.
+  /// Use [search] (v2) for new integrations.
   ///
-  /// v2 との主な違いとして、レスポンスの `hashtags` は Tag オブジェクトではなく
-  /// 単純な文字列の配列として返される。また `following` および
-  /// `exclude_unreviewed` パラメータは利用できない。
+  /// Key differences from v2: the `hashtags` response field returns plain
+  /// strings rather than Tag objects, and the `following` and
+  /// `exclude_unreviewed` parameters are not available.
   ///
-  /// - [query]: 検索クエリ文字列（必須）
-  /// - [type]: 結果を特定の種別に限定する。
-  ///   `accounts`・`hashtags`・`statuses` のいずれか。
-  ///   省略時は全種別を検索する
-  /// - [resolve]: `true` の場合、リモートアカウントの WebFinger ルックアップ
-  ///   を行う（デフォルト: `false`）
-  /// - [accountId]: 指定した場合、そのアカウントが投稿した
-  ///   ステータスのみを返す
-  /// - [maxId]: この ID より小さい結果のみを返す（ページネーション）
-  /// - [minId]: この ID より大きい結果のみを返す（前方ページネーション）
-  /// - [limit]: カテゴリごとの最大結果数。最大 40（デフォルト: 20）
-  /// - [offset]: 先頭から指定件数をスキップする。
-  ///   [type] が指定されている場合のみ有効
+  /// [query] is required. [type] limits results to `accounts`, `hashtags`,
+  /// or `statuses`; all types are searched when omitted. When [resolve] is
+  /// `true`, remote accounts are resolved via WebFinger (default: `false`).
+  /// [accountId] restricts status results to a specific account. Use
+  /// [maxId] and [minId] for pagination. [limit] sets the maximum results
+  /// per category (max 40, default: 20). [offset] skips results from the
+  /// beginning and is only effective when [type] is specified.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   @Deprecated(
-    'Mastodon 3.0.0 で削除済み。代わりに search() (v2) を使用してください',
+    'Removed in Mastodon 3.0.0. Use search() (v2) instead',
   )
   Future<MastodonSearchResultV1> searchV1(
     String query, {

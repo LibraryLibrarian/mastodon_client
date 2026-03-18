@@ -1,20 +1,20 @@
-/// 管理者向け通報更新リクエスト
+/// Request for updating an admin report.
 ///
-/// `PUT /api/v1/admin/reports/:id` のリクエストボディ。
+/// Request body for `PUT /api/v1/admin/reports/:id`.
 class MastodonAdminReportUpdateRequest {
-  /// [MastodonAdminReportUpdateRequest] を生成する
+  /// Creates a [MastodonAdminReportUpdateRequest].
   const MastodonAdminReportUpdateRequest({
     this.category,
     this.ruleIds,
   });
 
-  /// 通報カテゴリ（`spam` / `legal` / `violation` / `other`）
+  /// Report category (`spam` / `legal` / `violation` / `other`).
   final String? category;
 
-  /// violation カテゴリ時の違反ルール ID リスト
+  /// List of violated rule IDs when the category is `violation`.
   final List<int>? ruleIds;
 
-  /// リクエストボディ用の JSON マップに変換する
+  /// Converts to a JSON map for the request body.
   Map<String, dynamic> toJson() => {
     'category': ?category,
     'rule_ids': ?ruleIds,

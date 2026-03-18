@@ -1,9 +1,9 @@
-/// 管理者向け IP ブロック作成リクエスト
+/// Request for creating an admin IP block.
 ///
-/// `POST /api/v1/admin/ip_blocks` のリクエストボディ。
-/// `severity` は公式ドキュメントで必須パラメータのため非 nullable。
+/// Request body for `POST /api/v1/admin/ip_blocks`.
+/// `severity` is required per the official documentation.
 class MastodonAdminIpBlockCreateRequest {
-  /// [MastodonAdminIpBlockCreateRequest] を生成する
+  /// Creates a [MastodonAdminIpBlockCreateRequest].
   const MastodonAdminIpBlockCreateRequest({
     required this.severity,
     this.ip,
@@ -11,19 +11,19 @@ class MastodonAdminIpBlockCreateRequest {
     this.expiresIn,
   });
 
-  /// ブロック対象の IP アドレス範囲（CIDR 表記）
+  /// IP address range to block (CIDR notation).
   final String? ip;
 
-  /// 制限レベル（`sign_up_requires_approval` / `sign_up_block` / `no_access`）
+  /// Severity level (`sign_up_requires_approval` / `sign_up_block` / `no_access`).
   final String severity;
 
-  /// ブロックの理由
+  /// Reason for the block.
   final String? comment;
 
-  /// 有効期限（秒）。未指定で無期限
+  /// Expiration time in seconds. Omit for permanent.
   final int? expiresIn;
 
-  /// リクエストボディ用の JSON マップに変換する
+  /// Converts to a JSON map for the request body.
   Map<String, dynamic> toJson() => {
     'ip': ?ip,
     'severity': severity,
@@ -32,12 +32,12 @@ class MastodonAdminIpBlockCreateRequest {
   };
 }
 
-/// 管理者向け IP ブロック更新リクエスト
+/// Request for updating an admin IP block.
 ///
-/// `PUT /api/v1/admin/ip_blocks/:id` のリクエストボディ。
-/// すべてのフィールドは任意（部分更新可能）。
+/// Request body for `PUT /api/v1/admin/ip_blocks/:id`.
+/// All fields are optional (partial update).
 class MastodonAdminIpBlockUpdateRequest {
-  /// [MastodonAdminIpBlockUpdateRequest] を生成する
+  /// Creates a [MastodonAdminIpBlockUpdateRequest].
   const MastodonAdminIpBlockUpdateRequest({
     this.ip,
     this.severity,
@@ -45,19 +45,19 @@ class MastodonAdminIpBlockUpdateRequest {
     this.expiresIn,
   });
 
-  /// ブロック対象の IP アドレス範囲（CIDR 表記）
+  /// IP address range to block (CIDR notation).
   final String? ip;
 
-  /// 制限レベル（`sign_up_requires_approval` / `sign_up_block` / `no_access`）
+  /// Severity level (`sign_up_requires_approval` / `sign_up_block` / `no_access`).
   final String? severity;
 
-  /// ブロックの理由
+  /// Reason for the block.
   final String? comment;
 
-  /// 有効期限（秒）。未指定で無期限
+  /// Expiration time in seconds. Omit for permanent.
   final int? expiresIn;
 
-  /// リクエストボディ用の JSON マップに変換する
+  /// Converts to a JSON map for the request body.
   Map<String, dynamic> toJson() => {
     'ip': ?ip,
     'severity': ?severity,

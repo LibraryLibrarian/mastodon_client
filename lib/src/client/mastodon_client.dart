@@ -53,9 +53,9 @@ import '../api/trends_api.dart';
 import '../logging/logger.dart';
 import 'mastodon_http_client.dart';
 
-/// Mastodon API クライアントのメインエントリーポイント
+/// Main entry point for the Mastodon API client.
 ///
-/// 各 API カテゴリはプロパティとして公開され、名前空間として利用する
+/// Each API category is exposed as a property and used as a namespace.
 ///
 /// ```dart
 /// final client = MastodonClient(
@@ -66,13 +66,13 @@ import 'mastodon_http_client.dart';
 /// final info = await client.instance.fetch();
 /// ```
 class MastodonClient {
-  /// [baseUrl] にはスキームを含むホスト URL（例: `https://mastodon.social`）を指定する
+  /// Creates a [MastodonClient].
   ///
-  /// [accessToken] は認証が不要なエンドポイントのみ利用する場合は省略可能
-  ///
-  /// [enableLog] を `false` にするとHTTPログ出力を無効化する
-  ///
-  /// [logger] にカスタムロガーを渡すことでログ出力先を差し替え可能
+  /// [baseUrl] must be the host URL including the scheme
+  /// (e.g. `https://mastodon.social`). [accessToken] can be omitted when
+  /// only using endpoints that do not require authentication. Set
+  /// [enableLog] to `false` to disable HTTP log output, or pass a custom
+  /// [logger] to redirect log output to a different destination.
   MastodonClient({
     required String baseUrl,
     String? accessToken,
@@ -87,164 +87,166 @@ class MastodonClient {
 
   final MastodonHttpClient _http;
 
-  /// アカウント情報に関するAPI
+  /// Account information API.
   AccountsApi get accounts => AccountsApi(_http);
 
-  /// 管理者向けアカウント管理API
+  /// Admin account management API.
   AdminAccountsApi get adminAccounts => AdminAccountsApi(_http);
 
-  /// 管理者向け正規化メールブロック管理API
+  /// Admin canonical email block management API.
   AdminCanonicalEmailBlocksApi get adminCanonicalEmailBlocks =>
       AdminCanonicalEmailBlocksApi(_http);
 
-  /// 管理者向けディメンション（次元データ）API
+  /// Admin dimensions (dimensional data) API.
   AdminDimensionsApi get adminDimensions => AdminDimensionsApi(_http);
 
-  /// 管理者向けドメイン許可管理API
+  /// Admin domain allow management API.
   AdminDomainAllowsApi get adminDomainAllows => AdminDomainAllowsApi(_http);
 
-  /// 管理者向けドメインブロック管理API
+  /// Admin domain block management API.
   AdminDomainBlocksApi get adminDomainBlocks => AdminDomainBlocksApi(_http);
 
-  /// 管理者向けメールドメインブロック管理API
+  /// Admin email domain block management API.
   AdminEmailDomainBlocksApi get adminEmailDomainBlocks =>
       AdminEmailDomainBlocksApi(_http);
 
-  /// 管理者向けIPブロック管理API
+  /// Admin IP block management API.
   AdminIpBlocksApi get adminIpBlocks => AdminIpBlocksApi(_http);
 
-  /// 管理者向けメジャー（定量データ）API
+  /// Admin measures (quantitative data) API.
   AdminMeasuresApi get adminMeasures => AdminMeasuresApi(_http);
 
-  /// 管理者向け通報管理API
+  /// Admin report management API.
   AdminReportsApi get adminReports => AdminReportsApi(_http);
 
-  /// 管理者向けリテンションAPI
+  /// Admin retention API.
   AdminRetentionApi get adminRetention => AdminRetentionApi(_http);
 
   AdminTagsApi get adminTags => AdminTagsApi(_http);
 
-  /// 管理者向けトレンドAPI
+  /// Admin trends API.
   AdminTrendsApi get adminTrends => AdminTrendsApi(_http);
 
-  /// サーバーのお知らせに関するAPI
+  /// Server announcements API.
   AnnouncementsApi get announcements => AnnouncementsApi(_http);
 
-  /// OAuth アプリケーションの登録・検証に関するAPI
+  /// OAuth application registration and verification API.
   AppsApi get apps => AppsApi(_http);
 
-  /// 非同期リフレッシュのステータス確認に関するAPI（実験的）
+  /// Async refresh status checking API (experimental).
   AsyncRefreshesApi get asyncRefreshes => AsyncRefreshesApi(_http);
 
-  /// ブロック中アカウントの一覧取得に関するAPI
+  /// Blocked accounts listing API.
   BlocksApi get blocks => BlocksApi(_http);
 
-  /// ブックマークした投稿の一覧取得に関するAPI
+  /// Bookmarked statuses listing API.
   BookmarksApi get bookmarks => BookmarksApi(_http);
 
-  /// ダイレクトメッセージの会話に関するAPI
+  /// Direct message conversations API.
   ConversationsApi get conversations => ConversationsApi(_http);
 
-  /// カスタム絵文字に関するAPI
+  /// Custom emoji API.
   CustomEmojisApi get customEmojis => CustomEmojisApi(_http);
 
-  /// プロフィールディレクトリに関するAPI
+  /// Profile directory API.
   DirectoryApi get directory => DirectoryApi(_http);
 
-  /// ユーザーレベルのドメインブロック管理に関するAPI
+  /// User-level domain block management API.
   DomainBlocksApi get domainBlocks => DomainBlocksApi(_http);
 
-  /// メール確認に関するAPI
+  /// Email confirmation API.
   EmailsApi get emails => EmailsApi(_http);
 
-  /// フィーチャー中アカウント（エンドースメント）の一覧取得に関するAPI
+  /// Featured accounts (endorsements) listing API.
   EndorsementsApi get endorsements => EndorsementsApi(_http);
 
-  /// お気に入りした投稿の一覧取得に関するAPI
+  /// Favourited statuses listing API.
   FavouritesApi get favourites => FavouritesApi(_http);
 
-  /// 注目ハッシュタグの管理に関するAPI
+  /// Featured tags management API.
   FeaturedTagsApi get featuredTags => FeaturedTagsApi(_http);
 
-  /// フィルターに関するAPI（v2 + v1 非推奨メソッド）
+  /// Filters API (v2 + v1 deprecated methods).
   FiltersApi get filters => FiltersApi(_http);
 
-  /// フォローリクエストの管理に関するAPI
+  /// Follow request management API.
   FollowRequestsApi get followRequests => FollowRequestsApi(_http);
 
-  /// フォロー中のハッシュタグの一覧取得に関するAPI
+  /// Followed hashtags listing API.
   FollowedTagsApi get followedTags => FollowedTagsApi(_http);
 
-  /// グループ化通知に関するAPI（v2）
+  /// Grouped notifications API (v2).
   GroupedNotificationsApi get groupedNotifications =>
       GroupedNotificationsApi(_http);
 
-  /// サーバーヘルスチェックに関するAPI
+  /// Server health check API.
   HealthApi get health => HealthApi(_http);
 
-  /// インスタンス情報に関するAPI
+  /// Instance information API.
   InstanceApi get instance => InstanceApi(_http);
 
-  /// リストの作成・管理に関するAPI
+  /// List creation and management API.
   ListsApi get lists => ListsApi(_http);
 
-  /// タイムラインの既読位置マーカーに関するAPI
+  /// Timeline read position markers API.
   MarkersApi get markers => MarkersApi(_http);
 
-  /// メディアアップロードに関するAPI
+  /// Media upload API.
   MediaApi get media => MediaApi(_http);
 
-  /// ミュート中アカウントの一覧取得に関するAPI
+  /// Muted accounts listing API.
   MutesApi get mutes => MutesApi(_http);
 
-  /// 通知に関するAPI
+  /// Notifications API.
   NotificationsApi get notifications => NotificationsApi(_http);
 
-  /// OAuth トークン操作に関するAPI
+  /// OAuth token operations API.
   OAuthApi get oauth => OAuthApi(_http);
 
-  /// OEmbed 情報の取得に関するAPI
+  /// OEmbed information retrieval API.
   OEmbedApi get oembed => OEmbedApi(_http);
 
-  /// 投票に関するAPI
+  /// Polls API.
   PollsApi get polls => PollsApi(_http);
 
-  /// Web Push 通知サブスクリプションに関するAPI
+  /// Web Push notification subscription API.
   PushApi get push => PushApi(_http);
 
-  /// ユーザー設定の取得に関するAPI
+  /// User preferences retrieval API.
   PreferencesApi get preferences => PreferencesApi(_http);
 
-  /// 本人確認証明に関するAPI
+  /// Identity proofs API.
   ///
-  /// **非推奨**: Mastodon 3.5.0 以降では本人確認証明機能は削除されている。
-  @Deprecated('Mastodon 3.5.0 で削除済み。古いサーバーとの互換性のためのみ使用')
+  /// **Deprecated**: The identity proofs feature was removed in Mastodon 3.5.0.
+  @Deprecated(
+    'Removed in Mastodon 3.5.0. Only use for compatibility with older servers.',
+  )
   ProofsApi get proofs => ProofsApi(_http);
 
-  /// プロフィール画像の管理に関するAPI
+  /// Profile image management API.
   ProfileApi get profile => ProfileApi(_http);
 
-  /// 通報に関するAPI
+  /// Reports API.
   ReportsApi get reports => ReportsApi(_http);
 
-  /// 予約投稿の管理に関するAPI
+  /// Scheduled statuses management API.
   ScheduledStatusesApi get scheduledStatuses => ScheduledStatusesApi(_http);
 
-  /// 検索に関するAPI
+  /// Search API.
   SearchApi get search => SearchApi(_http);
 
-  /// 投稿（Status）に関するAPI
+  /// Statuses API.
   StatusesApi get statuses => StatusesApi(_http);
 
-  /// フォロー候補（サジェスション）に関するAPI
+  /// Follow suggestions API.
   SuggestionsApi get suggestions => SuggestionsApi(_http);
 
-  /// ハッシュタグ情報の取得・フォロー操作に関するAPI
+  /// Hashtag information retrieval and follow operations API.
   TagsApi get tags => TagsApi(_http);
 
-  /// タイムライン取得に関するAPI
+  /// Timelines API.
   TimelinesApi get timelines => TimelinesApi(_http);
 
-  /// トレンド（タグ・投稿・リンク）に関するAPI
+  /// Trends (tags, statuses, and links) API.
   TrendsApi get trends => TrendsApi(_http);
 }

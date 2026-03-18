@@ -3,21 +3,21 @@ import '../../internal/link_header_parser.dart';
 import '../../models/admin/mastodon_admin_domain_allow.dart';
 import '../../models/mastodon_page.dart';
 
-/// 管理者向けドメイン許可管理 API
+/// Admin domain allow management API.
 ///
-/// フェデレーション許可ドメインの一覧取得・追加・削除を行う。
-/// すべてのエンドポイントに `admin:read:domain_allows` または
-/// `admin:write:domain_allows` の OAuth スコープが必要。
+/// Manages the list of domains allowed for federation.
+/// All endpoints require `admin:read:domain_allows` or
+/// `admin:write:domain_allows` OAuth scopes.
 class AdminDomainAllowsApi {
   const AdminDomainAllowsApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// すべての許可ドメインを取得する
+  /// Fetches all allowed domains.
   ///
   /// `GET /api/v1/admin/domain_allows`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonAdminDomainAllow>> fetch({
     String? maxId,
     String? sinceId,
@@ -45,11 +45,11 @@ class AdminDomainAllowsApi {
     );
   }
 
-  /// ID を指定して許可ドメインの詳細を取得する
+  /// Fetches an allowed domain by its ID.
   ///
   /// `GET /api/v1/admin/domain_allows/{id}`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminDomainAllow> fetchById(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/domain_allows/$id',
@@ -57,13 +57,11 @@ class AdminDomainAllowsApi {
     return MastodonAdminDomainAllow.fromJson(data!);
   }
 
-  /// ドメインを許可リストに追加する
+  /// Adds a domain to the allow list.
   ///
   /// `POST /api/v1/admin/domain_allows`
   ///
-  /// - [domain]: 許可するドメイン（必須）
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminDomainAllow> create({required String domain}) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/domain_allows',
@@ -73,11 +71,11 @@ class AdminDomainAllowsApi {
     return MastodonAdminDomainAllow.fromJson(data!);
   }
 
-  /// 許可ドメインを削除する
+  /// Removes an allowed domain.
   ///
   /// `DELETE /api/v1/admin/domain_allows/{id}`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminDomainAllow> delete(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/domain_allows/$id',

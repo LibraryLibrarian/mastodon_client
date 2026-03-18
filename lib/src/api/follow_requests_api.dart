@@ -4,25 +4,24 @@ import '../models/mastodon_account.dart';
 import '../models/mastodon_page.dart';
 import '../models/mastodon_relationship.dart';
 
-/// フォローリクエストの管理に関する API クライアント
+/// API client for managing follow requests.
 class FollowRequestsApi {
-  /// [MastodonHttpClient] を受け取り、フォローリクエスト API へのアクセスを提供する
+  /// Creates a [FollowRequestsApi] instance with the given
+  /// [MastodonHttpClient].
   const FollowRequestsApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 保留中のフォローリクエスト一覧を取得する
+  /// Fetches the list of pending follow requests.
   ///
   /// `GET /api/v1/follow_requests`
   ///
-  /// - [limit]: 最大取得件数（デフォルト: 40、上限: 80）
-  /// - [maxId]: このIDより古い結果を返す（ページネーション用カーソル）
-  /// - [sinceId]: このIDより新しい結果を返す
+  /// [limit] controls the maximum number of results (default: 40, max: 80).
+  /// Use [maxId] to return results older than that ID and [sinceId] for
+  /// newer results. Pagination cursors are parsed from the `Link` response
+  /// header and stored in [MastodonPage].
   ///
-  /// レスポンスの `Link` ヘッダーから次ページの `max_id` および前ページの
-  /// `min_id` を解析し、[MastodonPage] に格納する。
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonAccount>> fetch({
     int? limit,
     String? maxId,
@@ -48,13 +47,11 @@ class FollowRequestsApi {
     );
   }
 
-  /// フォローリクエストを承認する
+  /// Authorizes a follow request.
   ///
   /// `POST /api/v1/follow_requests/{accountId}/authorize`
   ///
-  /// - [accountId]: 承認するフォローリクエスト元のアカウント ID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonRelationship> authorize(String accountId) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/follow_requests/$accountId/authorize',
@@ -63,13 +60,11 @@ class FollowRequestsApi {
     return MastodonRelationship.fromJson(data!);
   }
 
-  /// フォローリクエストを拒否する
+  /// Rejects a follow request.
   ///
   /// `POST /api/v1/follow_requests/{accountId}/reject`
   ///
-  /// - [accountId]: 拒否するフォローリクエスト元のアカウント ID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonRelationship> reject(String accountId) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/follow_requests/$accountId/reject',

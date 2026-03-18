@@ -7,10 +7,11 @@ import 'mastodon_admin_account.dart';
 
 part 'mastodon_admin_report.g.dart';
 
-/// 管理者向け通報情報
+/// Admin-level report information.
 ///
-/// Admin API で返される通報の詳細情報。
-/// 通常の通報情報に加え、担当モデレーターや対応状況などの管理情報を含む。
+/// Detailed report information returned by the Admin API.
+/// Includes admin-specific details such as the assigned moderator and
+/// resolution status, in addition to standard report information.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminReport {
   const MastodonAdminReport({
@@ -33,57 +34,57 @@ class MastodonAdminReport {
   factory MastodonAdminReport.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminReportFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAdminReportToJson(this);
 
-  /// 通報のデータベース内 ID
+  /// Database ID of the report.
   final String id;
 
-  /// 対応が完了したかどうか
+  /// Whether action has been taken.
   @JsonKey(defaultValue: false)
   final bool actionTaken;
 
-  /// 対応が完了した日時
+  /// Timestamp when action was taken.
   @SafeDateTimeConverter()
   final DateTime? actionTakenAt;
 
-  /// 通報のカテゴリ（`spam` / `legal` / `violation` / `other`）
+  /// Category of the report (`spam` / `legal` / `violation` / `other`).
   @JsonKey(defaultValue: 'other')
   final String category;
 
-  /// 通報者が付記したコメント
+  /// Comment added by the reporter.
   @JsonKey(defaultValue: '')
   final String comment;
 
-  /// リモートインスタンスに転送されたかどうか
+  /// Whether the report was forwarded to a remote instance.
   @JsonKey(defaultValue: false)
   final bool forwarded;
 
-  /// 通報の作成日時
+  /// Timestamp when the report was created.
   @SafeDateTimeConverter()
   final DateTime? createdAt;
 
-  /// 通報の最終更新日時
+  /// Timestamp when the report was last updated.
   @SafeDateTimeConverter()
   final DateTime? updatedAt;
 
-  /// 通報者のアカウント（管理者向け情報）
+  /// Account of the reporter (admin-level information).
   final MastodonAdminAccount? account;
 
-  /// 通報対象のアカウント（管理者向け情報）
+  /// Target account of the report (admin-level information).
   final MastodonAdminAccount? targetAccount;
 
-  /// 調査を担当しているモデレーター
+  /// Moderator assigned to investigate.
   final MastodonAdminAccount? assignedAccount;
 
-  /// 通報を処理したモデレーター
+  /// Moderator who handled the report.
   final MastodonAdminAccount? actionTakenByAccount;
 
-  /// 通報に関連する投稿のリスト
+  /// List of statuses associated with the report.
   @JsonKey(defaultValue: <MastodonStatus>[])
   final List<MastodonStatus> statuses;
 
-  /// 違反したルールのリスト
+  /// List of rules that were violated.
   @JsonKey(defaultValue: <MastodonInstanceRule>[])
   final List<MastodonInstanceRule> rules;
 }

@@ -2,11 +2,11 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_status_source.g.dart';
 
-/// 投稿のソース情報
+/// Source information of a status.
 ///
 /// `GET /api/v1/statuses/:id/source`
 ///
-/// 編集画面で使用するプレーンテキストの投稿内容を保持
+/// Holds plain text content of the status for use in the editing UI.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonStatusSource {
   const MastodonStatusSource({
@@ -18,16 +18,16 @@ class MastodonStatusSource {
   factory MastodonStatusSource.fromJson(Map<String, dynamic> json) =>
       _$MastodonStatusSourceFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonStatusSourceToJson(this);
 
-  /// 投稿の内部ID
+  /// Internal ID of the status.
   final String id;
 
-  /// 投稿本文のプレーンテキスト
+  /// Plain text of the status body.
   final String text;
 
-  /// コンテンツ警告（CW）のプレーンテキスト
+  /// Plain text of the content warning (CW).
   @JsonKey(defaultValue: '')
   final String spoilerText;
 }

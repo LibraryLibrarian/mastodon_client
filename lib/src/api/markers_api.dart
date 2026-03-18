@@ -1,24 +1,23 @@
 import '../client/mastodon_http_client.dart';
 import '../models/mastodon_marker.dart';
 
-/// タイムラインの既読位置マーカーに関するAPI
+/// API for timeline read position markers.
 class MarkersApi {
-  /// [MastodonHttpClient] を受け取り、マーカーAPIへのアクセスを提供する
+  /// Creates a [MarkersApi] instance with the given [MastodonHttpClient].
   const MarkersApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 保存済みのタイムライン既読位置を取得する
+  /// Fetches the saved timeline read positions.
   ///
   /// `GET /api/v1/markers`
   ///
-  /// - [timelines]: マーカーを取得するタイムラインのリスト。
-  ///   指定可能な値: `home`、`notifications`。
-  ///   未指定の場合は空のマップが返る。
+  /// [timelines] is a list of timeline names to fetch markers for; valid
+  /// values are `home` and `notifications`. Returns an empty map if
+  /// unspecified. The result is a map with timeline names as keys and
+  /// [MastodonMarker] as values.
   ///
-  /// 返り値はタイムライン名をキー、[MastodonMarker] を値とするマップ。
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<Map<String, MastodonMarker>> fetch(List<String> timelines) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/markers',
@@ -33,20 +32,15 @@ class MarkersApi {
     );
   }
 
-  /// タイムラインの既読位置を保存する
+  /// Saves timeline read positions.
   ///
   /// `POST /api/v1/markers`
   ///
-  /// - [homeLastReadId]: ホームタイムラインで最後に既読にしたステータスの ID
-  /// - [notificationsLastReadId]: 最後に既読にした通知の ID
+  /// At least one of [homeLastReadId] or [notificationsLastReadId] must be
+  /// specified. Returns a map containing the updated markers. Retry if the
+  /// server responds with `409 Conflict`, which indicates a write conflict.
   ///
-  /// いずれか1つ以上を指定する。
-  ///
-  /// 返り値は更新されたマーカーを含むマップ。
-  ///
-  /// `409 Conflict` が返る場合は書き込み競合が発生しているため再試行が必要。
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<Map<String, MastodonMarker>> save({
     String? homeLastReadId,
     String? notificationsLastReadId,

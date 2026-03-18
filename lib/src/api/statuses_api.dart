@@ -13,33 +13,29 @@ import '../models/mastodon_status_edit_request.dart';
 import '../models/mastodon_status_source.dart';
 import '../models/mastodon_translation.dart';
 
-/// 投稿（Status）に関するAPI
+/// Statuses API.
 class StatusesApi {
   const StatusesApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 投稿を単体取得する
+  /// Fetches a single status.
   ///
   /// `GET /api/v1/statuses/{id}`
   ///
-  /// - [id]: 取得する投稿のID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonStatus> fetch(String id) async {
     final data = await _http.send<Map<String, dynamic>>('/api/v1/statuses/$id');
     return MastodonStatus.fromJson(data!);
   }
 
-  /// 複数の投稿をまとめて取得する
+  /// Fetches multiple statuses at once.
   ///
   /// `GET /api/v1/statuses`
   ///
-  /// 存在しないIDやアクセスできないIDは返却リストから除外される。
+  /// Non-existent or inaccessible IDs are excluded from the results.
   ///
-  /// - [ids]: 取得する投稿のIDリスト
-  ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonStatus>> fetchMultiple(List<String> ids) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/statuses',
@@ -51,13 +47,11 @@ class StatusesApi {
         .toList();
   }
 
-  /// 投稿のコンテキスト（祖先・子孫）を取得する
+  /// Fetches the context (ancestors and descendants) of a status.
   ///
   /// `GET /api/v1/statuses/{id}/context`
   ///
-  /// - [id]: 対象投稿のID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonStatusContext> fetchContext(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/context',
@@ -65,15 +59,13 @@ class StatusesApi {
     return MastodonStatusContext.fromJson(data!);
   }
 
-  /// 投稿のソース情報を取得する
+  /// Fetches the source information of a status.
   ///
   /// `GET /api/v1/statuses/{id}/source`
   ///
-  /// 編集画面で使用するプレーンテキストの投稿内容を返す。
+  /// Returns the plain text content for use in editing screens.
   ///
-  /// - [id]: 対象投稿のID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonStatusSource> fetchSource(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/source',
@@ -81,15 +73,13 @@ class StatusesApi {
     return MastodonStatusSource.fromJson(data!);
   }
 
-  /// 投稿の編集履歴を取得する
+  /// Fetches the edit history of a status.
   ///
   /// `GET /api/v1/statuses/{id}/history`
   ///
-  /// 初回投稿から現在の状態までの全リビジョンを返す。
+  /// Returns all revisions from the initial post to the current state.
   ///
-  /// - [id]: 対象投稿のID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonStatusEdit>> fetchHistory(String id) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/statuses/$id/history',
@@ -100,13 +90,11 @@ class StatusesApi {
         .toList();
   }
 
-  /// 投稿のプレビューカードを取得する
+  /// Fetches the preview card of a status.
   ///
   /// `GET /api/v1/statuses/{id}/card`
   ///
-  /// - [id]: 対象投稿のID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPreviewCard> fetchCard(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/card',
@@ -114,16 +102,15 @@ class StatusesApi {
     return MastodonPreviewCard.fromJson(data!);
   }
 
-  /// 指定した投稿を引用している投稿の一覧を取得する
+  /// Fetches the statuses that quote the specified status.
   ///
   /// `GET /api/v1/statuses/{id}/quotes`
   ///
-  /// - [id]: 対象投稿のID
-  /// - [limit]: 最大取得件数。省略時はサーバーのデフォルト値が適用される
-  /// - [sinceId]: このIDより新しい投稿のみ取得する
-  /// - [maxId]: このIDより古い投稿のみ取得する
+  /// [limit] controls the maximum number of results (uses server default
+  /// when omitted). Use [sinceId] to return only statuses newer than that
+  /// ID, and [maxId] to return only statuses older than it.
   ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonStatus>> fetchQuotes(
     String id, {
     int? limit,
@@ -150,24 +137,20 @@ class StatusesApi {
     );
   }
 
-  /// 指定した投稿をブーストする
+  /// Boosts the specified status.
   ///
   /// `POST /api/v1/statuses/{id}/reblog`
   ///
-  /// 返り値は**ブースト投稿（Wrapper）**であり、元投稿とは異なる点に注意。
+  /// Returns a **boost wrapper status**, which differs from the original:
+  /// [MastodonStatus.id] is a new ID for the boost itself,
+  /// [MastodonStatus.account] is the boosting user's account,
+  /// [MastodonStatus.content] is an empty string, and
+  /// [MastodonStatus.reblog] contains the original status (the main
+  /// payload), including the updated [MastodonStatus.reblogsCount].
+  /// [MastodonStatus.reblogged] is `true`.
   ///
-  /// - [MastodonStatus.id]: ブースト投稿自体の新しいID（元投稿のIDとは異なる）
-  /// - [MastodonStatus.account]: ブーストした自分のアカウント
-  /// - [MastodonStatus.createdAt]: ブーストした日時
-  /// - [MastodonStatus.content]: 空文字（`""`）
-  /// - [MastodonStatus.reblog]: **元投稿がまるごと格納される**（このフィールドが主役）
-  ///   - [MastodonStatus.reblog]`.id`: 元投稿のID
-  ///   - [MastodonStatus.reblog]`.reblogsCount`: ブースト後の更新済みブースト数
-  /// - [MastodonStatus.reblogged]: `true`
-  /// - [MastodonStatus.visibility]: [visibility] で指定した公開範囲
-  ///
-  /// - [id]: ブーストする投稿のID
-  /// - [visibility]: ブーストの公開範囲（省略時はサーバーのデフォルト）
+  /// [visibility] sets the boost visibility (uses server default when
+  /// omitted).
   Future<MastodonStatus> boost(String id, {String? visibility}) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/reblog',
@@ -177,20 +160,13 @@ class StatusesApi {
     return MastodonStatus.fromJson(data!);
   }
 
-  /// 指定した投稿のブーストを解除する
+  /// Removes a boost from the specified status.
   ///
   /// `POST /api/v1/statuses/{id}/unreblog`
   ///
-  /// 返り値は[boost]とは異なり**元投稿そのもの**であり、Wrapperではない。
-  ///
-  /// - [MastodonStatus.id]: 元投稿のID（ブースト投稿のIDとは異なる）
-  /// - [MastodonStatus.account]: 元投稿者のアカウント
-  /// - [MastodonStatus.content]: 元投稿の本文
-  /// - [MastodonStatus.reblog]: `null`
-  /// - [MastodonStatus.reblogged]: `false`
-  /// - [MastodonStatus.reblogsCount]: ブースト解除後の更新済みブースト数
-  ///
-  /// - [id]: ブーストを解除する投稿のID
+  /// Unlike [boost], returns **the original status itself**, not a wrapper.
+  /// [MastodonStatus.reblog] is `null`, [MastodonStatus.reblogged] is
+  /// `false`, and [MastodonStatus.reblogsCount] reflects the updated count.
   Future<MastodonStatus> unboost(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/unreblog',
@@ -200,16 +176,13 @@ class StatusesApi {
     return MastodonStatus.fromJson(data!);
   }
 
-  /// 指定した投稿をお気に入りに追加する
+  /// Favourites the specified status.
   ///
   /// `POST /api/v1/statuses/{id}/favourite`
   ///
-  /// 返り値は**元投稿そのもの**（お気に入り後の更新済み状態）。
-  ///
-  /// - [MastodonStatus.favourited]: `true`
-  /// - [MastodonStatus.favouritesCount]: お気に入り追加後の更新済みお気に入り数
-  ///
-  /// - [id]: お気に入りに追加する投稿のID
+  /// Returns **the original status** with updated state.
+  /// [MastodonStatus.favourited] is `true` and
+  /// [MastodonStatus.favouritesCount] reflects the updated count.
   Future<MastodonStatus> favourite(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/favourite',
@@ -219,16 +192,13 @@ class StatusesApi {
     return MastodonStatus.fromJson(data!);
   }
 
-  /// 指定した投稿のお気に入りを解除する
+  /// Unfavourites the specified status.
   ///
   /// `POST /api/v1/statuses/{id}/unfavourite`
   ///
-  /// 返り値は**元投稿そのもの**（お気に入り解除後の更新済み状態）。
-  ///
-  /// - [MastodonStatus.favourited]: `false`
-  /// - [MastodonStatus.favouritesCount]: お気に入り解除後の更新済みお気に入り数
-  ///
-  /// - [id]: お気に入りを解除する投稿のID
+  /// Returns **the original status** with updated state.
+  /// [MastodonStatus.favourited] is `false` and
+  /// [MastodonStatus.favouritesCount] reflects the updated count.
   Future<MastodonStatus> unfavourite(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/unfavourite',
@@ -238,15 +208,12 @@ class StatusesApi {
     return MastodonStatus.fromJson(data!);
   }
 
-  /// 指定した投稿をブックマークに追加する
+  /// Bookmarks the specified status.
   ///
   /// `POST /api/v1/statuses/{id}/bookmark`
   ///
-  /// 返り値は**元投稿そのもの**（ブックマーク後の更新済み状態）。
-  ///
-  /// - [MastodonStatus.bookmarked]: `true`
-  ///
-  /// - [id]: ブックマークに追加する投稿のID
+  /// Returns **the original status** with updated state.
+  /// [MastodonStatus.bookmarked] is `true`.
   Future<MastodonStatus> bookmark(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/bookmark',
@@ -256,15 +223,12 @@ class StatusesApi {
     return MastodonStatus.fromJson(data!);
   }
 
-  /// 指定した投稿のブックマークを解除する
+  /// Removes a bookmark from the specified status.
   ///
   /// `POST /api/v1/statuses/{id}/unbookmark`
   ///
-  /// 返り値は**元投稿そのもの**（ブックマーク解除後の更新済み状態）。
-  ///
-  /// - [MastodonStatus.bookmarked]: `false`
-  ///
-  /// - [id]: ブックマークを解除する投稿のID
+  /// Returns **the original status** with updated state.
+  /// [MastodonStatus.bookmarked] is `false`.
   Future<MastodonStatus> unbookmark(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/unbookmark',
@@ -274,17 +238,13 @@ class StatusesApi {
     return MastodonStatus.fromJson(data!);
   }
 
-  /// 指定した投稿のスレッド通知をミュートする
+  /// Mutes conversation notifications for the specified status.
   ///
   /// `POST /api/v1/statuses/{id}/mute`
   ///
-  /// 自分が参加しているスレッドの通知を停止する。
-  ///
-  /// 返り値は**元投稿そのもの**（ミュート後の更新済み状態）。
-  ///
-  /// - [MastodonStatus.muted]: `true`
-  ///
-  /// - [id]: ミュートする投稿のID
+  /// Stops notifications for a thread the user is participating in.
+  /// Returns **the original status** with [MastodonStatus.muted] set to
+  /// `true`.
   Future<MastodonStatus> mute(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/mute',
@@ -294,15 +254,12 @@ class StatusesApi {
     return MastodonStatus.fromJson(data!);
   }
 
-  /// 指定した投稿のスレッド通知ミュートを解除する
+  /// Unmutes conversation notifications for the specified status.
   ///
   /// `POST /api/v1/statuses/{id}/unmute`
   ///
-  /// 返り値は**元投稿そのもの**（ミュート解除後の更新済み状態）。
-  ///
-  /// - [MastodonStatus.muted]: `false`
-  ///
-  /// - [id]: ミュートを解除する投稿のID
+  /// Returns **the original status** with [MastodonStatus.muted] set to
+  /// `false`.
   Future<MastodonStatus> unmute(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/unmute',
@@ -312,17 +269,13 @@ class StatusesApi {
     return MastodonStatus.fromJson(data!);
   }
 
-  /// 指定した投稿をプロフィールにピン留めする
+  /// Pins the specified status to the user's profile.
   ///
   /// `POST /api/v1/statuses/{id}/pin`
   ///
-  /// 自分の投稿のみピン留め可能。ブースト投稿はピン留めできない。
-  ///
-  /// 返り値は**元投稿そのもの**（ピン留め後の更新済み状態）。
-  ///
-  /// - [MastodonStatus.pinned]: `true`
-  ///
-  /// - [id]: ピン留めする投稿のID
+  /// Only the user's own statuses can be pinned. Boosts cannot be pinned.
+  /// Returns **the original status** with [MastodonStatus.pinned] set to
+  /// `true`.
   Future<MastodonStatus> pin(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/pin',
@@ -332,15 +285,12 @@ class StatusesApi {
     return MastodonStatus.fromJson(data!);
   }
 
-  /// 指定した投稿のピン留めを解除する
+  /// Unpins the specified status from the user's profile.
   ///
   /// `POST /api/v1/statuses/{id}/unpin`
   ///
-  /// 返り値は**元投稿そのもの**（ピン留め解除後の更新済み状態）。
-  ///
-  /// - [MastodonStatus.pinned]: `false`
-  ///
-  /// - [id]: ピン留めを解除する投稿のID
+  /// Returns **the original status** with [MastodonStatus.pinned] set to
+  /// `false`.
   Future<MastodonStatus> unpin(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/unpin',
@@ -350,16 +300,15 @@ class StatusesApi {
     return MastodonStatus.fromJson(data!);
   }
 
-  /// 指定した投稿をブーストしたアカウントの一覧を取得する
+  /// Fetches the accounts that boosted the specified status.
   ///
   /// `GET /api/v1/statuses/{id}/reblogged_by`
   ///
-  /// - [id]: 対象投稿のID
-  /// - [maxId]: ページネーション用カーソル。この ID より古い結果を返す
-  /// - [sinceId]: この ID より新しい結果を返す
-  /// - [limit]: 最大取得件数（デフォルト: 40、上限: 80）
+  /// [limit] controls the maximum number of results (default: 40, max: 80).
+  /// Use [maxId] to return results older than that ID and [sinceId] for
+  /// newer results.
   ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonAccount>> fetchRebloggedBy(
     String id, {
     String? maxId,
@@ -386,16 +335,15 @@ class StatusesApi {
     );
   }
 
-  /// 指定した投稿をお気に入りしたアカウントの一覧を取得する
+  /// Fetches the accounts that favourited the specified status.
   ///
   /// `GET /api/v1/statuses/{id}/favourited_by`
   ///
-  /// - [id]: 対象投稿のID
-  /// - [maxId]: ページネーション用カーソル。この ID より古い結果を返す
-  /// - [sinceId]: この ID より新しい結果を返す
-  /// - [limit]: 最大取得件数（デフォルト: 40、上限: 80）
+  /// [limit] controls the maximum number of results (default: 40, max: 80).
+  /// Use [maxId] to return results older than that ID and [sinceId] for
+  /// newer results.
   ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonAccount>> fetchFavouritedBy(
     String id, {
     String? maxId,
@@ -422,18 +370,16 @@ class StatusesApi {
     );
   }
 
-  /// 新しい投稿を作成する
+  /// Creates a new status.
   ///
   /// `POST /api/v1/statuses`
   ///
-  /// - [request]: 投稿内容を表す [MastodonStatusCreateRequest]
-  /// - [idempotencyKey]: 重複投稿防止用の任意の文字列。同じキーで複数回リクエスト
-  ///   した場合、サーバーは最初のリクエストと同じ結果を返す
+  /// [idempotencyKey] is an arbitrary string for duplicate prevention; the
+  /// server returns the same result for repeated requests with the same key.
+  /// Returns [MastodonStatusScheduled] when `scheduled_at` is set in
+  /// [request], or [MastodonStatusCreated] otherwise.
   ///
-  /// `scheduled_at` を指定した場合は [MastodonStatusScheduled] が、
-  /// 指定しない場合は [MastodonStatusCreated] が返る。
-  ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonStatusCreateResult> create(
     MastodonStatusCreateRequest request, {
     String? idempotencyKey,
@@ -454,16 +400,13 @@ class StatusesApi {
     return MastodonStatusCreated(MastodonStatus.fromJson(data!));
   }
 
-  /// 自分の投稿を編集する
+  /// Edits the user's own status.
   ///
   /// `PUT /api/v1/statuses/{id}`
   ///
-  /// 本文・コンテンツ警告・メディア添付・投票を変更できる。
+  /// Can modify the body, content warning, media attachments, and poll.
   ///
-  /// - [id]: 編集する投稿のID
-  /// - [request]: 編集内容を表す [MastodonStatusEditRequest]
-  ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonStatus> edit(
     String id,
     MastodonStatusEditRequest request,
@@ -476,17 +419,15 @@ class StatusesApi {
     return MastodonStatus.fromJson(data!);
   }
 
-  /// 自分の投稿を削除する
+  /// Deletes the user's own status.
   ///
   /// `DELETE /api/v1/statuses/{id}`
   ///
-  /// 返り値は削除された投稿のスナップショット。再投稿（redraft）用に
-  /// `text` や `mediaAttachments` などのソース情報が含まれる。
+  /// Returns a snapshot of the deleted status containing source information
+  /// such as `text` and `mediaAttachments` for redraft purposes. Set
+  /// [deleteMedia] to `true` to immediately delete attached media as well.
   ///
-  /// - [id]: 削除する投稿のID
-  /// - [deleteMedia]: `true` の場合、添付メディアも即座に削除する
-  ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonStatus> delete(String id, {bool? deleteMedia}) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id',
@@ -498,16 +439,15 @@ class StatusesApi {
     return MastodonStatus.fromJson(data!);
   }
 
-  /// 投稿の内容を翻訳する
+  /// Translates the content of a status.
   ///
   /// `POST /api/v1/statuses/{id}/translate`
   ///
-  /// 公開またはリスト未掲載の投稿のみ翻訳可能。
+  /// Only public or unlisted statuses can be translated. [lang] is the
+  /// target language code in ISO 639-1 format; the user locale is used
+  /// when omitted.
   ///
-  /// - [id]: 翻訳する投稿のID
-  /// - [lang]: 翻訳先の言語コード（ISO 639-1形式）。省略時はユーザーのロケール
-  ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonTranslation> translate(String id, {String? lang}) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/translate',
@@ -519,16 +459,14 @@ class StatusesApi {
     return MastodonTranslation.fromJson(data!);
   }
 
-  /// 投稿のインタラクションポリシーを変更する
+  /// Updates the interaction policy of a status.
   ///
   /// `PUT /api/v1/statuses/{id}/interaction_policy`
   ///
-  /// 現時点では引用承認ポリシーの変更に使用される。
+  /// Currently used to change the quote approval policy. [quoteApprovalPolicy]
+  /// must be one of `public`, `followers`, or `nobody`.
   ///
-  /// - [id]: 対象投稿のID
-  /// - [quoteApprovalPolicy]: 引用承認ポリシー（`public`・`followers`・`nobody`）
-  ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonStatus> updateInteractionPolicy(
     String id, {
     required String quoteApprovalPolicy,
@@ -543,16 +481,15 @@ class StatusesApi {
     return MastodonStatus.fromJson(data!);
   }
 
-  /// 指定した投稿への引用を取り消す
+  /// Revokes a quote of the specified status.
   ///
   /// `POST /api/v1/statuses/{id}/quotes/{quotingStatusId}/revoke`
   ///
-  /// 自分の投稿を引用している投稿から引用関係を切り離す。
+  /// Detaches the quoting relationship from a status that quotes the user's
+  /// post. [id] is the user's status being quoted and [quotingStatusId] is
+  /// the status that performs the quote.
   ///
-  /// - [id]: 引用されている自分の投稿のID
-  /// - [quotingStatusId]: 引用している投稿のID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonStatus> revokeQuote(
     String id,
     String quotingStatusId,

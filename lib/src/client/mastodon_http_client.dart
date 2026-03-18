@@ -5,10 +5,12 @@ import '../logging/logger.dart';
 import '../logging/package_logger.dart';
 import 'constants.dart';
 
-/// Mastodon API との HTTP 通信を担う内部クライアント
+/// Internal HTTP client responsible for communication with the Mastodon API.
 ///
-/// コンストラクタの `baseUrl` にはスキームを含むホスト URL（例: `https://mastodon.social`）を指定する。
-/// `accessToken` を指定した場合、全リクエストに `Authorization: Bearer` ヘッダが付与される。
+/// The constructor's `baseUrl` takes a host URL including the scheme
+/// (e.g. `https://mastodon.social`).
+/// When `accessToken` is provided, an `Authorization: Bearer` header is added
+/// to all requests.
 class MastodonHttpClient {
   MastodonHttpClient({
     required String baseUrl,
@@ -39,13 +41,13 @@ class MastodonHttpClient {
   final Dio dio;
   final Logger logger;
 
-  /// HTTP リクエストを実行しレスポンスボディを返す
+  /// Executes an HTTP request and returns the response body.
   ///
-  /// `DioException` は自動的に `MastodonException` に変換される。
-  /// レスポンスヘッダーやステータスコードが必要な場合は [sendRaw] を使用する。
+  /// `DioException` is automatically converted to `MastodonException`.
+  /// Use [sendRaw] when access to response headers or status codes is needed.
   ///
-  /// [contentType] を指定すると、Dio のデフォルト推論を上書きして
-  /// リクエストの Content-Type を明示的に設定できる。
+  /// When [contentType] is specified, it overrides Dio's default inference
+  /// and explicitly sets the request's Content-Type.
   Future<T?> send<T>(
     String path, {
     String method = 'GET',
@@ -71,13 +73,13 @@ class MastodonHttpClient {
     }
   }
 
-  /// HTTP リクエストを実行し `Response` をそのまま返す
+  /// Executes an HTTP request and returns the raw `Response`.
   ///
-  /// レスポンスヘッダーやステータスコードへのアクセスが必要な場合に使用する。
-  /// `DioException` は自動的に `MastodonException` に変換される。
+  /// Use this when access to response headers or status codes is needed.
+  /// `DioException` is automatically converted to `MastodonException`.
   ///
-  /// [contentType] を指定すると、Dio のデフォルト推論を上書きして
-  /// リクエストの Content-Type を明示的に設定できる。
+  /// When [contentType] is specified, it overrides Dio's default inference
+  /// and explicitly sets the request's Content-Type.
   Future<Response<T>> sendRaw<T>(
     String path, {
     String method = 'GET',

@@ -1,35 +1,35 @@
 import 'mastodon_scheduled_status.dart';
 import 'mastodon_status.dart';
 
-/// ステータス作成APIのレスポンスを表す sealed class
+/// Sealed class representing the response from the status creation API.
 ///
-/// 即時投稿の場合は [MastodonStatusCreated]（[MastodonStatus] を保持）、
-/// 予約投稿（`scheduled_at` 指定時）の場合は [MastodonStatusScheduled]
-/// （[MastodonScheduledStatus] を保持）が返る。
+/// Returns [MastodonStatusCreated] (holding a [MastodonStatus]) for immediate
+/// posts, or [MastodonStatusScheduled] (holding a [MastodonScheduledStatus])
+/// for scheduled posts (when `scheduled_at` is specified).
 sealed class MastodonStatusCreateResult {
-  /// sealed class の基底コンストラクタ
+  /// Base constructor for the sealed class.
   const MastodonStatusCreateResult();
 }
 
-/// 即時投稿の結果
+/// Result of an immediate post.
 ///
-/// サーバーがステータスを即座に公開した場合のレスポンス。
+/// Response when the server publishes the status immediately.
 class MastodonStatusCreated extends MastodonStatusCreateResult {
-  /// [status] に公開されたステータスを指定して生成する
+  /// Creates with the published [status].
   const MastodonStatusCreated(this.status);
 
-  /// 公開されたステータス
+  /// Published status.
   final MastodonStatus status;
 }
 
-/// 予約投稿の結果
+/// Result of a scheduled post.
 ///
-/// `scheduled_at` を指定した場合のレスポンス。
-/// サーバーは [MastodonScheduledStatus] を返す。
+/// Response when `scheduled_at` is specified.
+/// The server returns a [MastodonScheduledStatus].
 class MastodonStatusScheduled extends MastodonStatusCreateResult {
-  /// [scheduledStatus] に予約投稿情報を指定して生成する
+  /// Creates with the [scheduledStatus] information.
   const MastodonStatusScheduled(this.scheduledStatus);
 
-  /// 予約投稿情報
+  /// Scheduled status information.
   final MastodonScheduledStatus scheduledStatus;
 }

@@ -6,11 +6,11 @@ import 'mastodon_status.dart';
 
 part 'mastodon_notification_request.g.dart';
 
-/// フィルタリングされた通知のリクエスト（Mastodon 4.3+）
+/// Filtered notification request (Mastodon 4.3+).
 ///
 /// `/api/v1/notifications/requests`
 ///
-/// 特定のアカウントからフィルタリングされた通知をまとめて保持
+/// Holds filtered notifications from a specific account.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonNotificationRequest {
   const MastodonNotificationRequest({
@@ -25,29 +25,30 @@ class MastodonNotificationRequest {
   factory MastodonNotificationRequest.fromJson(Map<String, dynamic> json) =>
       _$MastodonNotificationRequestFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonNotificationRequestToJson(this);
 
-  /// 通知リクエストの内部 ID
+  /// Internal ID of the notification request.
   final String id;
 
-  /// 通知リクエストの作成日時（最初のフィルタリング通知が作成された時刻）
+  /// Timestamp when the notification request was created (when the first
+  /// filtered notification was created).
   @SafeDateTimeConverter()
   final DateTime? createdAt;
 
-  /// 通知リクエストの最終更新日時
+  /// Timestamp when the notification request was last updated.
   @SafeDateTimeConverter()
   final DateTime? updatedAt;
 
-  /// フィルタリングされた通知の件数
+  /// Number of filtered notifications.
   ///
-  /// API では文字列として返されるため、整数に変換する。
+  /// Returned as a string by the API, so it is converted to an integer.
   @JsonKey(fromJson: parseIntFromString)
   final int notificationsCount;
 
-  /// 通知を発生させたアカウント
+  /// Account that triggered the notifications.
   final MastodonAccount account;
 
-  /// 最新のフィルタリング済み通知に関連する投稿
+  /// Status associated with the most recent filtered notification.
   final MastodonStatus? lastStatus;
 }

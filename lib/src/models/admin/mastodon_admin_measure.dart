@@ -2,9 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_admin_measure.g.dart';
 
-/// 管理者向けメジャー（定量）データ
+/// Admin-level measure (quantitative) data.
 ///
-/// サーバーの定量的な統計情報を表す。
+/// Represents quantitative statistical information about the server.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminMeasure {
   const MastodonAdminMeasure({
@@ -19,30 +19,30 @@ class MastodonAdminMeasure {
   factory MastodonAdminMeasure.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminMeasureFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAdminMeasureToJson(this);
 
-  /// メジャーの識別キー
+  /// Identifier key of the measure.
   final String key;
 
-  /// 値の単位
+  /// Unit of the value.
   final String? unit;
 
-  /// 期間内の合計値（整数の文字列表現）
+  /// Total value for the period (string representation of an integer).
   final String total;
 
-  /// 人間が読める形式の値
+  /// Human-readable representation of the value.
   final String? humanValue;
 
-  /// 前期間の合計値（整数の文字列表現）
+  /// Total value for the previous period (string representation of an integer).
   final String? previousTotal;
 
-  /// 日別のデータバケットリスト
+  /// List of daily data buckets.
   @JsonKey(defaultValue: <MastodonAdminMeasureData>[])
   final List<MastodonAdminMeasureData> data;
 }
 
-/// メジャーの日別データ
+/// Daily data entry for a measure.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminMeasureData {
   const MastodonAdminMeasureData({
@@ -53,12 +53,12 @@ class MastodonAdminMeasureData {
   factory MastodonAdminMeasureData.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminMeasureDataFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAdminMeasureDataToJson(this);
 
-  /// 日付（深夜0時のタイムスタンプ）
+  /// Date (midnight timestamp).
   final String date;
 
-  /// その日の値（整数の文字列表現）
+  /// Value for the day (string representation of an integer).
   final String value;
 }

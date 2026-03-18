@@ -2,25 +2,25 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_preview_card.g.dart';
 
-/// プレビューカードの種別
+/// Type of preview card.
 @JsonEnum(fieldRename: FieldRename.snake)
 enum MastodonPreviewCardType {
-  /// リンク型のOEmbed
+  /// Link-type OEmbed.
   link,
 
-  /// 写真型のOEmbed
+  /// Photo-type OEmbed.
   photo,
 
-  /// 動画型のOEmbed
+  /// Video-type OEmbed.
   video,
 
-  /// リッチ型のOEmbed
+  /// Rich-type OEmbed.
   rich,
 }
 
-/// リンク先のプレビューカード
+/// Preview card for a link.
 ///
-/// `GET /api/v1/statuses/:id/card` のレスポンスに対応する
+/// Corresponds to the response from `GET /api/v1/statuses/:id/card`.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPreviewCard {
   const MastodonPreviewCard({
@@ -44,75 +44,75 @@ class MastodonPreviewCard {
   factory MastodonPreviewCard.fromJson(Map<String, dynamic> json) =>
       _$MastodonPreviewCardFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonPreviewCardToJson(this);
 
   static Object? _readType(Map<dynamic, dynamic> json, String key) =>
       json['type'] ?? 'link';
 
-  /// リンク先のURL
+  /// URL of the link target.
   final String url;
 
-  /// リンク先のタイトル
+  /// Title of the link target.
   @JsonKey(defaultValue: '')
   final String title;
 
-  /// プレビューの説明文
+  /// Description of the preview.
   @JsonKey(defaultValue: '')
   final String description;
 
-  /// プレビューカードの種別
+  /// Type of the preview card.
   @JsonKey(readValue: _readType, unknownEnumValue: MastodonPreviewCardType.link)
   final MastodonPreviewCardType type;
 
-  /// コンテンツ作成者の名前
+  /// Name of the content author.
   ///
-  /// Mastodon 4.3.0以降は非推奨。代わりに [authors] を使用する。
+  /// Deprecated since Mastodon 4.3.0. Use [authors] instead.
   @JsonKey(defaultValue: '')
   final String authorName;
 
-  /// コンテンツ作成者のURL
+  /// URL of the content author.
   ///
-  /// Mastodon 4.3.0以降は非推奨。代わりに [authors] を使用する。
+  /// Deprecated since Mastodon 4.3.0. Use [authors] instead.
   @JsonKey(defaultValue: '')
   final String authorUrl;
 
-  /// コンテンツ提供元の名前
+  /// Name of the content provider.
   @JsonKey(defaultValue: '')
   final String providerName;
 
-  /// コンテンツ提供元のURL
+  /// URL of the content provider.
   @JsonKey(defaultValue: '')
   final String providerUrl;
 
-  /// プレビュー生成用のHTML
+  /// HTML for generating the preview.
   @JsonKey(defaultValue: '')
   final String html;
 
-  /// プレビューの幅（ピクセル）
+  /// Width of the preview in pixels.
   @JsonKey(defaultValue: 0)
   final int width;
 
-  /// プレビューの高さ（ピクセル）
+  /// Height of the preview in pixels.
   @JsonKey(defaultValue: 0)
   final int height;
 
-  /// プレビューサムネイルのURL。存在しない場合は `null`
+  /// URL of the preview thumbnail. `null` if not available.
   final String? image;
 
-  /// 写真埋め込み用のURL
+  /// URL for embedding photos.
   @JsonKey(defaultValue: '')
   final String embedUrl;
 
-  /// サムネイル用のBlurhash文字列。存在しない場合は `null`
+  /// Blurhash string for the thumbnail. `null` if not available.
   final String? blurhash;
 
-  /// コンテンツ作成者のリスト（Mastodon 4.3.0+）
+  /// List of content authors (Mastodon 4.3.0+).
   @JsonKey(defaultValue: <MastodonPreviewCardAuthor>[])
   final List<MastodonPreviewCardAuthor> authors;
 }
 
-/// プレビューカードの作成者情報（Mastodon 4.3.0+）
+/// Author information for a preview card (Mastodon 4.3.0+).
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPreviewCardAuthor {
   const MastodonPreviewCardAuthor({required this.name, this.url, this.account});
@@ -120,16 +120,16 @@ class MastodonPreviewCardAuthor {
   factory MastodonPreviewCardAuthor.fromJson(Map<String, dynamic> json) =>
       _$MastodonPreviewCardAuthorFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonPreviewCardAuthorToJson(this);
 
-  /// 作成者の名前
+  /// Name of the author.
   @JsonKey(defaultValue: '')
   final String name;
 
-  /// 作成者のプロフィールURL
+  /// Profile URL of the author.
   final String? url;
 
-  /// 作成者のFediverseアカウントURI
+  /// Fediverse account URI of the author.
   final String? account;
 }

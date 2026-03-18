@@ -5,10 +5,10 @@ import 'mastodon_media_attachment.dart';
 
 part 'mastodon_scheduled_status.g.dart';
 
-/// 予約投稿を表すモデル
+/// Scheduled status model.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonScheduledStatus {
-  /// 各フィールドを指定して [MastodonScheduledStatus] を生成する
+  /// Creates a [MastodonScheduledStatus] with the given fields.
   const MastodonScheduledStatus({
     required this.id,
     this.scheduledAt,
@@ -16,32 +16,32 @@ class MastodonScheduledStatus {
     this.mediaAttachments = const [],
   });
 
-  /// JSON マップから [MastodonScheduledStatus] を生成する
+  /// Creates a [MastodonScheduledStatus] from a JSON map.
   factory MastodonScheduledStatus.fromJson(Map<String, dynamic> json) =>
       _$MastodonScheduledStatusFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonScheduledStatusToJson(this);
 
-  /// 予約投稿のデータベース ID
+  /// Database ID of the scheduled status.
   final String id;
 
-  /// 投稿が公開される予定のタイムスタンプ
+  /// Timestamp when the status is scheduled to be published.
   @SafeDateTimeConverter()
   final DateTime? scheduledAt;
 
-  /// 予約時に指定されたステータスのパラメータ
+  /// Parameters specified when scheduling the status.
   final MastodonScheduledStatusParams? params;
 
-  /// 投稿に添付されるメディア
+  /// Media to be attached to the status.
   @JsonKey(defaultValue: [])
   final List<MastodonMediaAttachment> mediaAttachments;
 }
 
-/// 予約投稿のパラメータ
+/// Parameters of a scheduled status.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonScheduledStatusParams {
-  /// 各フィールドを指定して [MastodonScheduledStatusParams] を生成する
+  /// Creates a [MastodonScheduledStatusParams] with the given fields.
   const MastodonScheduledStatusParams({
     required this.text,
     this.poll,
@@ -54,49 +54,50 @@ class MastodonScheduledStatusParams {
     this.idempotency,
   });
 
-  /// JSON マップから [MastodonScheduledStatusParams] を生成する
+  /// Creates a [MastodonScheduledStatusParams] from a JSON map.
   factory MastodonScheduledStatusParams.fromJson(Map<String, dynamic> json) =>
       _$MastodonScheduledStatusParamsFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonScheduledStatusParamsToJson(this);
 
-  /// ステータスの本文テキスト
+  /// Body text of the status.
   @JsonKey(defaultValue: '')
   final String text;
 
-  /// 投票パラメータ（投票なしの場合は `null`）
+  /// Poll parameters (`null` if no poll).
   final MastodonScheduledStatusPoll? poll;
 
-  /// 添付する MediaAttachment の ID 配列
+  /// Array of MediaAttachment IDs to attach.
   final List<String>? mediaIds;
 
-  /// センシティブ（閲覧注意）としてマークするかどうか
+  /// Whether to mark as sensitive (content warning).
   final bool? sensitive;
 
-  /// コンテンツ警告テキスト
+  /// Content warning text.
   final String? spoilerText;
 
-  /// 公開範囲（`public` / `unlisted` / `private` / `direct`）
+  /// Visibility (`public` / `unlisted` / `private` / `direct`).
   final String? visibility;
 
-  /// 返信先のステータス ID
+  /// ID of the status being replied to.
   ///
-  /// サーバーから整数または文字列のどちらで返されても `String` に正規化する。
+  /// Normalizes to `String` regardless of whether the server returns an
+  /// integer or string.
   @JsonKey(fromJson: flexibleIdFromJson)
   final String? inReplyToId;
 
-  /// 投稿言語（ISO 639-1 コード）
+  /// Posting language (ISO 639-1 code).
   final String? language;
 
-  /// 冪等性キー
+  /// Idempotency key.
   final String? idempotency;
 }
 
-/// 予約投稿の投票パラメータ
+/// Poll parameters of a scheduled status.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonScheduledStatusPoll {
-  /// 各フィールドを指定して [MastodonScheduledStatusPoll] を生成する
+  /// Creates a [MastodonScheduledStatusPoll] with the given fields.
   const MastodonScheduledStatusPoll({
     this.options = const [],
     required this.expiresIn,
@@ -104,23 +105,23 @@ class MastodonScheduledStatusPoll {
     this.hideTotals,
   });
 
-  /// JSON マップから [MastodonScheduledStatusPoll] を生成する
+  /// Creates a [MastodonScheduledStatusPoll] from a JSON map.
   factory MastodonScheduledStatusPoll.fromJson(Map<String, dynamic> json) =>
       _$MastodonScheduledStatusPollFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonScheduledStatusPollToJson(this);
 
-  /// 投票の選択肢
+  /// Poll options.
   @JsonKey(defaultValue: [])
   final List<String> options;
 
-  /// 投票が締め切られるまでの秒数
+  /// Number of seconds until the poll closes.
   final int expiresIn;
 
-  /// 複数選択を許可するかどうか
+  /// Whether to allow multiple choices.
   final bool? multiple;
 
-  /// 投票終了まで合計票数を非表示にするかどうか
+  /// Whether to hide total vote counts until the poll ends.
   final bool? hideTotals;
 }

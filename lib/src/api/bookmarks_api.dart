@@ -3,26 +3,24 @@ import '../internal/link_header_parser.dart';
 import '../models/mastodon_page.dart';
 import '../models/mastodon_status.dart';
 
-/// ブックマークした投稿の一覧取得に関するAPI
+/// API for listing bookmarked statuses.
 class BookmarksApi {
-  /// [MastodonHttpClient] を受け取り、ブックマークAPIへのアクセスを提供する
+  /// Creates a [BookmarksApi] instance with the given [MastodonHttpClient].
   const BookmarksApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 認証済みユーザーがブックマークした投稿の一覧を取得する
+  /// Fetches the authenticated user's bookmarked statuses.
   ///
   /// `GET /api/v1/bookmarks`
   ///
-  /// - [limit]: 最大取得件数（デフォルト: 20、上限: 40）
-  /// - [maxId]: このIDより古い結果を返す（ページネーション用カーソル）
-  /// - [sinceId]: このIDより新しい結果を返す
-  /// - [minId]: このIDより新しい結果を返す（逆順）
+  /// [limit] controls the maximum number of results (default: 20, max: 40).
+  /// Use [maxId] to return results older than that ID, [sinceId] for newer
+  /// results, and [minId] for reverse-order forward pagination. Pagination
+  /// cursors are parsed from the `Link` response header and stored in
+  /// [MastodonPage].
   ///
-  /// レスポンスの `Link` ヘッダーから次ページの `max_id` および前ページの
-  /// `min_id` を解析し、[MastodonPage] に格納する。
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonStatus>> fetch({
     int? limit,
     String? maxId,

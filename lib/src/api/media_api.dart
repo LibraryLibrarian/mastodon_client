@@ -7,7 +7,7 @@ import '../client/mastodon_http_client.dart';
 import '../exception/mastodon_exception.dart';
 import '../models/mastodon_media_attachment.dart';
 
-/// メディアアップロードに関するAPI
+/// Media upload API.
 class MediaApi {
   const MediaApi(this._http);
 
@@ -17,24 +17,24 @@ class MediaApi {
   static const int _maxPollAttempts = 8;
   static const Duration _pollInterval = Duration(milliseconds: 500);
 
-  /// メディアをアップロードして[MastodonMediaAttachment]を返す
+  /// Uploads media and returns a [MastodonMediaAttachment].
   ///
-  /// `POST /api/v2/media`を優先、未対応サーバー（404 / 405 / 501）では
-  /// `POST /api/v1/media`にフォールバックする
+  /// Prefers `POST /api/v2/media` and falls back to `POST /api/v1/media`
+  /// for unsupported servers (404 / 405 / 501).
   ///
-  /// サーバーが非同期処理（HTTP 202）を返した場合は `GET /api/v1/media/{id}` を
-  /// 最大 [_maxPollAttempts] 回ポーリングし、`url` フィールドが非 nullになるまで待機
+  /// When the server returns async processing (HTTP 202), polls
+  /// `GET /api/v1/media/{id}` up to [_maxPollAttempts] times until
+  /// the `url` field becomes non-null.
   ///
-  /// タイムアウト時は[MastodonMediaProcessingTimeoutException]をthrow
+  /// Throws [MastodonMediaProcessingTimeoutException] on timeout.
   ///
-  /// - [bytes]: アップロードするファイルのバイト列
-  /// - [filename]: マルチパートリクエストで使用するファイル名
-  /// - [description]: メディアの代替テキスト（省略可）
-  /// - [thumbnail]: カスタムサムネイル画像のバイト列（省略可）
-  /// - [thumbnailFilename]: サムネイルのファイル名（[thumbnail] 指定時に使用）
-  /// - [focus]: フォーカルポイント（`"x,y"` 形式、各値は -1.0〜1.0）
+  /// [bytes] is the raw file data and [filename] is the multipart filename.
+  /// [description] provides optional alt text. Supply [thumbnail] with
+  /// an optional [thumbnailFilename] to set a custom thumbnail. [focus]
+  /// is a focal point string in `"x,y"` format (each value between
+  /// -1.0 and 1.0).
   ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonMediaAttachment> upload(
     Uint8List bytes,
     String filename, {
@@ -56,7 +56,7 @@ class MediaApi {
     if (data == null) {
       throw const MastodonApiException(
         statusCode: 0,
-        message: 'メディアAPIからのレスポンスが空です',
+        message: 'Empty response from media API',
       );
     }
 
@@ -70,7 +70,7 @@ class MediaApi {
     return _pollUntilReady(attachment.id);
   }
 
-  /// v2を試みて、未対応サーバーならv1にフォールバック
+  /// Tries v2 first, falls back to v1 for unsupported servers.
   Future<Response<Map<String, dynamic>>> _uploadWithFallback({
     required Uint8List bytes,
     required String filename,
@@ -107,16 +107,14 @@ class MediaApi {
     }
   }
 
-  /// 指定されたIDのメディア添付ファイルを取得する
+  /// Fetches a media attachment by its ID.
   ///
   /// `GET /api/v1/media/:id`
   ///
-  /// 非同期アップロードの処理状況を確認する際などに使用する。
-  /// 処理中の場合は `url` フィールドが `null` となる。
+  /// Used to check the processing status of async uploads.
+  /// The `url` field is `null` while processing is in progress.
   ///
-  /// - [id]: 取得するメディアのID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonMediaAttachment> fetchById(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/media/$id',
@@ -124,23 +122,23 @@ class MediaApi {
     if (data == null) {
       throw const MastodonApiException(
         statusCode: 0,
-        message: 'メディアAPIからのレスポンスが空です',
+        message: 'Empty response from media API',
       );
     }
     return MastodonMediaAttachment.fromJson(data);
   }
 
-  /// メディア添付ファイルの属性を更新して[MastodonMediaAttachment]を返す
+  /// Updates the attributes of a media attachment and returns a
+  /// [MastodonMediaAttachment].
   ///
   /// `PUT /api/v1/media/:id`
   ///
-  /// - [id]: 更新対象のメディアID
-  /// - [thumbnail]: カスタムサムネイル画像のバイト列
-  /// - [thumbnailFilename]: サムネイルのファイル名（[thumbnail] 指定時は必須）
-  /// - [description]: 代替テキスト（スクリーンリーダー用）
-  /// - [focus]: フォーカルポイント（`"x,y"` 形式、各値は -1.0〜1.0）
+  /// [thumbnail] replaces the thumbnail image; when provided, supply
+  /// [thumbnailFilename] as the multipart filename. [description] is the
+  /// alt text for screen readers. [focus] is a focal point string in
+  /// `"x,y"` format (each value between -1.0 and 1.0).
   ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonMediaAttachment> update(
     String id, {
     Uint8List? thumbnail,
@@ -174,22 +172,20 @@ class MediaApi {
     if (data == null) {
       throw const MastodonApiException(
         statusCode: 0,
-        message: 'メディアAPIからのレスポンスが空です',
+        message: 'Empty response from media API',
       );
     }
 
     return MastodonMediaAttachment.fromJson(data);
   }
 
-  /// メディア添付ファイルを削除
+  /// Deletes a media attachment.
   ///
   /// `DELETE /api/v1/media/:id`
   ///
-  /// まだステータスに紐づけられていないメディアのみ削除可能
+  /// Only media not yet attached to a status can be deleted.
   ///
-  /// - [id]: 削除対象のメディアID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<void> delete(String id) async {
     await _http.send<void>(
       '/api/v1/media/$id',
@@ -197,7 +193,8 @@ class MediaApi {
     );
   }
 
-  /// `url`フィールドが非nullになるまでポーリングし、完了後の[MastodonMediaAttachment]を返す
+  /// Polls until the `url` field becomes non-null and returns the completed
+  /// [MastodonMediaAttachment].
   Future<MastodonMediaAttachment> _pollUntilReady(String mediaId) async {
     for (var i = 0; i < _maxPollAttempts; i++) {
       if (i > 0) {

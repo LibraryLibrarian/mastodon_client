@@ -1,25 +1,25 @@
-/// 投稿編集時のメディア属性パラメーター
+/// Media attribute parameters for status editing.
 class MastodonMediaAttributeRequest {
-  /// 投稿編集時のメディア属性パラメーターを生成する
+  /// Creates media attribute parameters for status editing.
   const MastodonMediaAttributeRequest({
     required this.id,
     this.description,
     this.focus,
   });
 
-  /// メディアの内部ID
+  /// Internal ID of the media.
   final String id;
 
-  /// 代替テキスト（スクリーンリーダー用）
+  /// Alt text (for screen readers).
   final String? description;
 
-  /// フォーカルポイント（`x,y` 形式、各値は -1.0 から 1.0）
+  /// Focal point (`x,y` format, each value from -1.0 to 1.0).
   final String? focus;
 }
 
-/// 投稿編集時のアンケートパラメーター
+/// Poll parameters for status editing.
 class MastodonPollEditRequest {
-  /// 投稿編集時のアンケートパラメーターを生成する
+  /// Creates poll parameters for status editing.
   const MastodonPollEditRequest({
     required this.options,
     required this.expiresIn,
@@ -27,24 +27,24 @@ class MastodonPollEditRequest {
     this.hideTotals = false,
   });
 
-  /// 選択肢の一覧。
+  /// List of options.
   final List<String> options;
 
-  /// 投票期限（秒）
+  /// Poll duration in seconds.
   final int expiresIn;
 
-  /// 複数選択を許可するか否か
+  /// Whether to allow multiple choices.
   final bool multiple;
 
-  /// 投票結果の総数を非表示にするか否か
+  /// Whether to hide total vote counts.
   final bool hideTotals;
 }
 
-/// 投稿編集リクエストのパラメーター
+/// Parameters for a status edit request.
 ///
-/// `PUT /api/v1/statuses/:id` のリクエストボディに対応する。
+/// Corresponds to the request body for `PUT /api/v1/statuses/:id`.
 class MastodonStatusEditRequest {
-  /// 投稿編集リクエストのパラメーターを生成する
+  /// Creates parameters for a status edit request.
   const MastodonStatusEditRequest({
     this.status,
     this.spoilerText,
@@ -56,31 +56,31 @@ class MastodonStatusEditRequest {
     this.quoteApprovalPolicy,
   });
 
-  /// 投稿本文
+  /// Body text of the status.
   final String? status;
 
-  /// コンテンツ警告（CW）テキスト
+  /// Content warning (CW) text.
   final String? spoilerText;
 
-  /// センシティブコンテンツとしてマークするか否か
+  /// Whether to mark as sensitive content.
   final bool? sensitive;
 
-  /// 投稿言語コード（ISO 639-1形式）
+  /// Posting language code (ISO 639-1 format).
   final String? language;
 
-  /// 添付メディアのIDリスト
+  /// List of attached media IDs.
   final List<String>? mediaIds;
 
-  /// 各メディアの属性（説明文やフォーカルポイント）
+  /// Attributes for each media (description and focal point).
   final List<MastodonMediaAttributeRequest>? mediaAttributes;
 
-  /// アンケートのパラメーター
+  /// Poll parameters.
   final MastodonPollEditRequest? poll;
 
-  /// 引用の承認ポリシー（`public`・`followers`・`nobody`）
+  /// Quote approval policy (`public` / `followers` / `nobody`).
   final String? quoteApprovalPolicy;
 
-  /// リクエストボディ用のJSONマップを返す
+  /// Returns a JSON map for the request body.
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
 

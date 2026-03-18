@@ -4,24 +4,24 @@ import 'json_converters.dart';
 
 part 'mastodon_filter.g.dart';
 
-/// フィルターのアクション種別（v2）
+/// Filter action type (v2).
 @JsonEnum(fieldRename: FieldRename.snake)
 enum MastodonFilterAction {
-  /// マッチしたコンテンツに警告を表示する（デフォルト）
+  /// Shows a warning on matched content (default).
   warn,
 
-  /// マッチしたコンテンツを完全に非表示にする
+  /// Completely hides matched content.
   hide,
 
-  /// マッチしたメディアをぼかす（Mastodon 4.4.0+）
+  /// Blurs matched media (Mastodon 4.4.0+).
   blur,
 }
 
-/// フィルターグループ（v2、Mastodon 4.0+）
+/// Filter group (v2, Mastodon 4.0+).
 ///
-/// `/api/v2/filters` のレスポンスに対応する。
-/// サーバーサイドでフィルタリングを行い、1つのフィルターに複数のキーワードや
-/// ステータスを関連付けることができる。
+/// Corresponds to the response from `/api/v2/filters`.
+/// Performs server-side filtering and allows associating multiple keywords
+/// and statuses with a single filter.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFilter {
   const MastodonFilter({
@@ -37,40 +37,41 @@ class MastodonFilter {
   factory MastodonFilter.fromJson(Map<String, dynamic> json) =>
       _$MastodonFilterFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonFilterToJson(this);
 
-  /// フィルターの内部 ID
+  /// Internal ID of the filter.
   final String id;
 
-  /// フィルターグループの名前
+  /// Name of the filter group.
   @JsonKey(defaultValue: '')
   final String title;
 
-  /// フィルターが適用されるコンテキスト（`home`, `notifications`, `public`, `thread`, `account`）
+  /// Contexts where the filter is applied (`home`, `notifications`, `public`,
+  /// `thread`, `account`).
   @JsonKey(defaultValue: <String>[])
   final List<String> context;
 
-  /// 有効期限。`null` の場合は無期限
+  /// Expiration timestamp. `null` if permanent.
   @SafeDateTimeConverter()
   final DateTime? expiresAt;
 
-  /// マッチ時のアクション
+  /// Action to take on match.
   @JsonKey(unknownEnumValue: MastodonFilterAction.warn)
   final MastodonFilterAction filterAction;
 
-  /// このフィルターに属するキーワード群
+  /// Keywords belonging to this filter.
   @JsonKey(defaultValue: <MastodonFilterKeyword>[])
   final List<MastodonFilterKeyword> keywords;
 
-  /// このフィルターに属するステータスフィルター群
+  /// Status filters belonging to this filter.
   @JsonKey(defaultValue: <MastodonFilterStatus>[])
   final List<MastodonFilterStatus> statuses;
 }
 
-/// フィルターキーワード
+/// Filter keyword.
 ///
-/// `/api/v2/filters/:filter_id/keywords` のレスポンスに対応する
+/// Corresponds to the response from `/api/v2/filters/:filter_id/keywords`.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFilterKeyword {
   const MastodonFilterKeyword({
@@ -82,24 +83,24 @@ class MastodonFilterKeyword {
   factory MastodonFilterKeyword.fromJson(Map<String, dynamic> json) =>
       _$MastodonFilterKeywordFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonFilterKeywordToJson(this);
 
-  /// FilterKeyword の内部 ID
+  /// Internal ID of the FilterKeyword.
   final String id;
 
-  /// フィルター対象のキーワード文字列
+  /// Keyword string to filter.
   @JsonKey(defaultValue: '')
   final String keyword;
 
-  /// 単語境界を考慮するかどうか
+  /// Whether to consider word boundaries.
   @JsonKey(defaultValue: false)
   final bool wholeWord;
 }
 
-/// ステータスフィルター
+/// Status filter.
 ///
-/// `/api/v2/filters/:filter_id/statuses` のレスポンスに対応する
+/// Corresponds to the response from `/api/v2/filters/:filter_id/statuses`.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFilterStatus {
   const MastodonFilterStatus({
@@ -110,25 +111,25 @@ class MastodonFilterStatus {
   factory MastodonFilterStatus.fromJson(Map<String, dynamic> json) =>
       _$MastodonFilterStatusFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonFilterStatusToJson(this);
 
-  /// FilterStatus の内部 ID
+  /// Internal ID of the FilterStatus.
   final String id;
 
-  /// フィルター対象のステータス ID
+  /// ID of the status to filter.
   @JsonKey(defaultValue: '')
   final String statusId;
 }
 
-/// v1 フィルター（非推奨、Mastodon 4.0 で廃止予定）
+/// v1 filter (deprecated, scheduled for removal in Mastodon 4.0).
 ///
-/// `/api/v1/filters` のレスポンスに対応する。
-/// クライアントサイドフィルタリング用で、1フィルター = 1キーワードの構造。
-@Deprecated('Mastodon 4.0.0 で非推奨。代わりに MastodonFilter (v2) を使用してください')
+/// Corresponds to the response from `/api/v1/filters`.
+/// Designed for client-side filtering with a one-filter-per-keyword structure.
+@Deprecated('Deprecated in Mastodon 4.0.0. Use MastodonFilter (v2) instead')
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFilterV1 {
-  @Deprecated('Mastodon 4.0.0 で非推奨。代わりに MastodonFilter (v2) を使用してください')
+  @Deprecated('Deprecated in Mastodon 4.0.0. Use MastodonFilter (v2) instead')
   const MastodonFilterV1({
     required this.id,
     required this.phrase,
@@ -138,33 +139,35 @@ class MastodonFilterV1 {
     this.expiresAt,
   });
 
-  @Deprecated('Mastodon 4.0.0 で非推奨。代わりに MastodonFilter (v2) を使用してください')
+  @Deprecated('Deprecated in Mastodon 4.0.0. Use MastodonFilter (v2) instead')
   factory MastodonFilterV1.fromJson(Map<String, dynamic> json) =>
       _$MastodonFilterV1FromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonFilterV1ToJson(this);
 
-  /// フィルターの内部 ID
+  /// Internal ID of the filter.
   final String id;
 
-  /// フィルター対象のテキスト
+  /// Text to filter.
   @JsonKey(defaultValue: '')
   final String phrase;
 
-  /// フィルターが適用されるコンテキスト（`home`, `notifications`, `public`, `thread`, `account`）
+  /// Contexts where the filter is applied (`home`, `notifications`, `public`,
+  /// `thread`, `account`).
   @JsonKey(defaultValue: <String>[])
   final List<String> context;
 
-  /// 有効期限。`null` の場合は無期限
+  /// Expiration timestamp. `null` if permanent.
   @SafeDateTimeConverter()
   final DateTime? expiresAt;
 
-  /// ホーム・通知で一致するエンティティをサーバー側で不可逆的に除外するか
+  /// Whether to irreversibly drop matching entities on the server side for
+  /// home and notifications.
   @JsonKey(defaultValue: false)
   final bool irreversible;
 
-  /// 単語境界を考慮してマッチングするか
+  /// Whether to match using word boundaries.
   @JsonKey(defaultValue: false)
   final bool wholeWord;
 }

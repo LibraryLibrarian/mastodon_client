@@ -7,37 +7,37 @@ import '../models/mastodon_privacy_policy.dart';
 import '../models/mastodon_terms_of_service.dart';
 import '../models/mastodon_weekly_activity.dart';
 
-/// インスタンス情報に関するAPI
+/// Instance information API.
 class InstanceApi {
   const InstanceApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// インスタンス情報を取得する
+  /// Fetches the instance information.
   ///
   /// `GET /api/v2/instance`
   ///
-  /// 失敗時は `MastodonException` のサブクラスをスローする
+  /// Throws a `MastodonException` on failure.
   Future<MastodonInstance> fetch() async {
     final data = await _http.send<Map<String, dynamic>>('/api/v2/instance');
     return MastodonInstance.fromJson(data!);
   }
 
-  /// インスタンスが認識しているピアドメインの一覧を取得
+  /// Fetches the list of peer domains known to the instance.
   ///
   /// `GET /api/v1/instance/peers`
   ///
-  /// 失敗時は `MastodonException` のサブクラスをthrowする
+  /// Throws a `MastodonException` on failure.
   Future<List<String>> fetchPeers() async {
     final data = await _http.send<List<dynamic>>('/api/v1/instance/peers');
     return (data ?? const <dynamic>[]).cast<String>();
   }
 
-  /// 直近3ヶ月の週間アクティビティ統計を取得
+  /// Fetches weekly activity statistics for the last 3 months.
   ///
   /// `GET /api/v1/instance/activity`
   ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonWeeklyActivity>> fetchActivity() async {
     final data = await _http.send<List<dynamic>>('/api/v1/instance/activity');
     return (data ?? const <dynamic>[])
@@ -46,11 +46,11 @@ class InstanceApi {
         .toList();
   }
 
-  /// インスタンスのルール一覧を取得
+  /// Fetches the instance rules.
   ///
   /// `GET /api/v1/instance/rules`
   ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonInstanceRule>> fetchRules() async {
     final data = await _http.send<List<dynamic>>('/api/v1/instance/rules');
     return (data ?? const <dynamic>[])
@@ -59,11 +59,11 @@ class InstanceApi {
         .toList();
   }
 
-  /// インスタンスがブロックしているドメインの一覧を取得
+  /// Fetches the domains blocked by the instance.
   ///
   /// `GET /api/v1/instance/domain_blocks`
   ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonDomainBlock>> fetchDomainBlocks() async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/instance/domain_blocks',
@@ -74,11 +74,11 @@ class InstanceApi {
         .toList();
   }
 
-  /// インスタンスの詳細な説明文を取得
+  /// Fetches the instance's extended description.
   ///
   /// `GET /api/v1/instance/extended_description`
   ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonExtendedDescription> fetchExtendedDescription() async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/instance/extended_description',
@@ -86,11 +86,11 @@ class InstanceApi {
     return MastodonExtendedDescription.fromJson(data!);
   }
 
-  /// インスタンスのプライバシーポリシーを取得
+  /// Fetches the instance's privacy policy.
   ///
   /// `GET /api/v1/instance/privacy_policy`
   ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPrivacyPolicy> fetchPrivacyPolicy() async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/instance/privacy_policy',
@@ -98,11 +98,11 @@ class InstanceApi {
     return MastodonPrivacyPolicy.fromJson(data!);
   }
 
-  /// インスタンスの利用規約を取得
+  /// Fetches the instance's terms of service.
   ///
   /// `GET /api/v1/instance/terms_of_service`
   ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonTermsOfService> fetchTermsOfService() async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/instance/terms_of_service',
@@ -110,11 +110,11 @@ class InstanceApi {
     return MastodonTermsOfService.fromJson(data!);
   }
 
-  /// 指定した発効日の利用規約を取得
+  /// Fetches the terms of service for the specified effective date.
   ///
   /// `GET /api/v1/instance/terms_of_service/:date`
   ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<MastodonTermsOfService> fetchTermsOfServiceByDate(
     String date,
   ) async {
@@ -124,28 +124,28 @@ class InstanceApi {
     return MastodonTermsOfService.fromJson(data!);
   }
 
-  /// v1 形式のインスタンス情報を取得する
+  /// Fetches instance information in v1 format.
   ///
   /// `GET /api/v1/instance`
   ///
-  /// **非推奨**: Mastodon 4.0.0 で非推奨。代わりに [fetch]（v2）を使用すること。
-  /// v2 未対応の古いサーバーとの互換性のために提供している。
+  /// **Deprecated**: Deprecated in Mastodon 4.0.0. Use [fetch] (v2) instead.
+  /// Provided for compatibility with older servers that do not support v2.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
-  @Deprecated('Mastodon 4.0.0 で非推奨。代わりに fetch() (v2) を使用してください')
+  /// Throws a `MastodonException` on failure.
+  @Deprecated('Deprecated in Mastodon 4.0.0. Use fetch() (v2) instead')
   Future<MastodonInstanceV1> fetchV1() async {
     final data = await _http.send<Map<String, dynamic>>('/api/v1/instance');
     return MastodonInstanceV1.fromJson(data!);
   }
 
-  /// 翻訳エンジンが対応する言語ペアを取得
+  /// Fetches the language pairs supported by the translation engine.
   ///
   /// `GET /api/v1/instance/translation_languages`
   ///
-  /// ソース言語コードをキー、対応するターゲット言語コードのリストを値とする
-  /// マップを返す。
+  /// Returns a map with source language codes as keys and lists of
+  /// supported target language codes as values.
   ///
-  /// 失敗時は `MastodonException` のサブクラスをthrow
+  /// Throws a `MastodonException` on failure.
   Future<Map<String, List<String>>> fetchTranslationLanguages() async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/instance/translation_languages',

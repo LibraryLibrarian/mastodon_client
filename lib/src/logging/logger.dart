@@ -1,27 +1,28 @@
 import 'package_logger.dart';
 
-/// ライブラリ内部で使用するロガーインターフェース
+/// Logger interface used internally by the library.
 ///
-/// デフォルトでは [StdoutLogger] が使用される。
-/// 独自のログ出力先に差し替えたい場合は、このインターフェースを実装して
-/// `MastodonClient` のコンストラクタに渡す。
+/// [StdoutLogger] is used by default.
+/// To redirect log output to a custom destination, implement this interface
+/// and pass it to the `MastodonClient` constructor.
 abstract class Logger {
-  /// デバッグレベルのメッセージを出力する
+  /// Logs a debug-level message.
   void debug(String message);
 
-  /// 情報レベルのメッセージを出力する
+  /// Logs an info-level message.
   void info(String message);
 
-  /// 警告レベルのメッセージを出力する
+  /// Logs a warning-level message.
   void warn(String message);
 
-  /// エラーレベルのメッセージを出力する
+  /// Logs an error-level message.
   ///
-  /// [error] と [stackTrace] を指定すると、エラーの詳細情報も出力される。
+  /// When [error] and [stackTrace] are provided, detailed error information is
+  /// also output.
   void error(String message, [Object? error, StackTrace? stackTrace]);
 }
 
-/// 標準出力にログを出力する [Logger] のデフォルト実装
+/// Default [Logger] implementation that outputs logs to stdout.
 class StdoutLogger implements Logger {
   const StdoutLogger();
 

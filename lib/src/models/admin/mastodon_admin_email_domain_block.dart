@@ -3,9 +3,9 @@ import '../json_converters.dart';
 
 part 'mastodon_admin_email_domain_block.g.dart';
 
-/// 管理者向けメールドメインブロック情報
+/// Admin-level email domain block information.
 ///
-/// サインアップが禁止されているメールドメインの情報。
+/// Information about an email domain that is blocked from signing up.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminEmailDomainBlock {
   const MastodonAdminEmailDomainBlock({
@@ -18,25 +18,25 @@ class MastodonAdminEmailDomainBlock {
   factory MastodonAdminEmailDomainBlock.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminEmailDomainBlockFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAdminEmailDomainBlockToJson(this);
 
-  /// ブロックのデータベース内 ID
+  /// Database ID of the block.
   final String id;
 
-  /// サインアップが禁止されているメールドメイン
+  /// Email domain that is blocked from signing up.
   final String domain;
 
-  /// ドメインがブロックされた日時
+  /// Timestamp when the domain was blocked.
   @SafeDateTimeConverter()
   final DateTime? createdAt;
 
-  /// 直近の日別利用統計
+  /// Recent daily usage statistics.
   @JsonKey(defaultValue: <MastodonAdminEmailDomainBlockHistory>[])
   final List<MastodonAdminEmailDomainBlockHistory> history;
 }
 
-/// メールドメインブロックの日別利用統計
+/// Daily usage statistics for an email domain block.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminEmailDomainBlockHistory {
   const MastodonAdminEmailDomainBlockHistory({
@@ -49,16 +49,16 @@ class MastodonAdminEmailDomainBlockHistory {
     Map<String, dynamic> json,
   ) => _$MastodonAdminEmailDomainBlockHistoryFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() =>
       _$MastodonAdminEmailDomainBlockHistoryToJson(this);
 
-  /// 該当日の深夜0時の UNIX タイムスタンプ（文字列）
+  /// UNIX timestamp at midnight of the day (string).
   final String day;
 
-  /// その日のアカウント登録試行数（文字列）
+  /// Number of account registration attempts on that day (string).
   final String accounts;
 
-  /// その日の IP 登録試行数（文字列）
+  /// Number of IP registration attempts on that day (string).
   final String uses;
 }

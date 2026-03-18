@@ -2,9 +2,10 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_custom_emoji.g.dart';
 
-/// Mastodon のカスタム絵文字
+/// Custom emoji on Mastodon.
 ///
-/// アカウントのプロフィールや投稿テキストに含まれる `:shortcode:` 形式の絵文字を表す
+/// Represents a `:shortcode:` format emoji found in account profiles and
+/// status text.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonCustomEmoji {
   const MastodonCustomEmoji({
@@ -18,22 +19,22 @@ class MastodonCustomEmoji {
   factory MastodonCustomEmoji.fromJson(Map<String, dynamic> json) =>
       _$MastodonCustomEmojiFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonCustomEmojiToJson(this);
 
-  /// `:shortcode:` 形式のショートコード（コロンを除いた部分）
+  /// Shortcode in `:shortcode:` format (without the colons).
   final String shortcode;
 
-  /// アニメーション版の画像 URL
+  /// URL of the animated image.
   final String url;
 
-  /// 静止画版の画像 URL
+  /// URL of the static image.
   final String staticUrl;
 
-  /// 絵文字ピッカーに表示するかどうか
+  /// Whether to show in the emoji picker.
   @JsonKey(defaultValue: true)
   final bool visibleInPicker;
 
-  /// 絵文字が属するカテゴリ名
+  /// Category name the emoji belongs to.
   final String? category;
 }

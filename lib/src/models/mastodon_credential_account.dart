@@ -6,13 +6,15 @@ import 'mastodon_custom_emoji.dart';
 
 part 'mastodon_credential_account.g.dart';
 
-/// 認証済みユーザー自身のアカウント情報を表すモデル
+/// Account information of the authenticated user.
 ///
-/// [MastodonAccount] の全フィールドに加え、`source`（投稿デフォルト設定）や
-/// `role`（ユーザーロール）など、認証済みユーザーにのみ公開される追加情報を含む。
+/// Includes all [MastodonAccount] fields plus additional information
+/// available only to authenticated users, such as `source` (default posting
+/// settings) and `role` (user role).
 ///
-/// `/api/v1/accounts/verify_credentials` や `/api/v1/accounts/update_credentials`、
-/// `DELETE /api/v1/profile/avatar|header` などのレスポンスに対応する。
+/// Corresponds to responses from `/api/v1/accounts/verify_credentials`,
+/// `/api/v1/accounts/update_credentials`,
+/// `DELETE /api/v1/profile/avatar|header`, etc.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonCredentialAccount {
   const MastodonCredentialAccount({
@@ -50,114 +52,115 @@ class MastodonCredentialAccount {
   factory MastodonCredentialAccount.fromJson(Map<String, dynamic> json) =>
       _$MastodonCredentialAccountFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonCredentialAccountToJson(this);
 
-  /// アカウントの内部 ID
+  /// Internal ID of the account.
   final String id;
 
-  /// インスタンス内のユーザー名
+  /// Username within the instance.
   final String username;
 
-  /// 完全修飾アカウント名
+  /// Fully qualified account name.
   final String acct;
 
-  /// 表示名
+  /// Display name.
   @JsonKey(defaultValue: '')
   final String displayName;
 
-  /// プロフィール文（HTML 形式）
+  /// Profile bio (HTML format).
   @JsonKey(defaultValue: '')
   final String note;
 
-  /// プロフィールページ URL
+  /// Profile page URL.
   @JsonKey(defaultValue: '')
   final String url;
 
-  /// アバター画像の URL（アニメーション版）
+  /// URL of the avatar image (animated version).
   @JsonKey(name: 'avatar', defaultValue: '')
   final String avatarUrl;
 
-  /// アバター画像の URL（静止画版）
+  /// URL of the avatar image (static version).
   @JsonKey(name: 'avatar_static', defaultValue: '')
   final String avatarStaticUrl;
 
-  /// ヘッダー画像の URL（アニメーション版）
+  /// URL of the header image (animated version).
   @JsonKey(name: 'header', defaultValue: '')
   final String headerUrl;
 
-  /// ヘッダー画像の URL（静止画版）
+  /// URL of the header image (static version).
   @JsonKey(name: 'header_static', defaultValue: '')
   final String headerStaticUrl;
 
-  /// フォロー承認制かどうか
+  /// Whether follow requests require approval.
   @JsonKey(defaultValue: false)
   final bool locked;
 
-  /// Bot アカウントかどうか
+  /// Whether this is a bot account.
   @JsonKey(defaultValue: false)
   final bool bot;
 
-  /// ディスカバリー機能への掲載を許可するかどうか
+  /// Whether the account opts in to discovery features.
   final bool? discoverable;
 
-  /// 検索エンジンへのインデックスを拒否するかどうか
+  /// Whether the account opts out of search engine indexing.
   final bool? noindex;
 
-  /// フォロワー数
+  /// Number of followers.
   @JsonKey(defaultValue: 0)
   final int followersCount;
 
-  /// フォロー数
+  /// Number of accounts being followed.
   @JsonKey(defaultValue: 0)
   final int followingCount;
 
-  /// 投稿数
+  /// Number of statuses posted.
   @JsonKey(defaultValue: 0)
   final int statusesCount;
 
-  /// アカウント作成日時
+  /// Timestamp when the account was created.
   @SafeDateTimeConverter()
   final DateTime? createdAt;
 
-  /// 最後に投稿した日付
+  /// Date of the last posted status.
   @SafeDateTimeConverter()
   final DateTime? lastStatusAt;
 
-  /// プロフィールフィールドのリスト
+  /// List of profile fields.
   @JsonKey(defaultValue: <MastodonField>[])
   final List<MastodonField> fields;
 
-  /// カスタム絵文字のリスト
+  /// List of custom emojis.
   @JsonKey(defaultValue: <MastodonCustomEmoji>[])
   final List<MastodonCustomEmoji> emojis;
 
-  /// アカウント移行先
+  /// Migration target account.
   final MastodonAccount? moved;
 
-  /// 凍結されているかどうか
+  /// Whether the account has been suspended.
   final bool? suspended;
 
-  /// 制限されているかどうか
+  /// Whether the account has been limited.
   final bool? limited;
 
-  /// フォロー・フォロワー一覧を非公開にしているかどうか
+  /// Whether the follow/followers lists are hidden.
   final bool? hideCollections;
 
-  /// アバター画像の blurhash
+  /// Blurhash of the avatar image.
   final String? avatarBlurhash;
 
-  /// ヘッダー画像の blurhash
+  /// Blurhash of the header image.
   final String? headerBlurhash;
 
-  /// 投稿のデフォルト設定やフォローリクエスト数などの非公開情報
+  /// Private information including default posting settings and follow request
+  /// count.
   final MastodonAccountSource? source;
 
-  /// ユーザーロール情報
+  /// User role information.
   final MastodonRole? role;
 }
 
-/// 認証済みユーザーの投稿デフォルト設定・非公開情報
+/// Default posting settings and private information of the authenticated user.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAccountSource {
   const MastodonAccountSource({
@@ -173,34 +176,34 @@ class MastodonAccountSource {
   factory MastodonAccountSource.fromJson(Map<String, dynamic> json) =>
       _$MastodonAccountSourceFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAccountSourceToJson(this);
 
-  /// デフォルトの投稿公開範囲
+  /// Default posting visibility.
   final String? privacy;
 
-  /// デフォルトでセンシティブフラグを付けるかどうか
+  /// Whether to mark posts as sensitive by default.
   final bool? sensitive;
 
-  /// デフォルトの投稿言語（ISO 639-1 形式）
+  /// Default posting language (ISO 639-1 format).
   final String? language;
 
-  /// プロフィール文（プレーンテキスト形式）
+  /// Profile bio (plain text format).
   final String? note;
 
-  /// プロフィールフィールド（プレーンテキスト形式）
+  /// Profile fields (plain text format).
   @JsonKey(defaultValue: <MastodonField>[])
   final List<MastodonField>? fields;
 
-  /// 未処理のフォローリクエスト数
+  /// Number of pending follow requests.
   @JsonKey(defaultValue: 0)
   final int? followRequestsCount;
 
-  /// デフォルトの引用承認ポリシー
+  /// Default quote approval policy.
   final String? quotePolicy;
 }
 
-/// ユーザーロール情報
+/// User role information.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonRole {
   const MastodonRole({
@@ -216,30 +219,30 @@ class MastodonRole {
   factory MastodonRole.fromJson(Map<String, dynamic> json) =>
       _$MastodonRoleFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonRoleToJson(this);
 
-  /// ロール ID
+  /// Role ID.
   final int id;
 
-  /// ロール名
+  /// Role name.
   final String name;
 
-  /// 権限ビットマスク（文字列形式）
+  /// Permission bitmask (string format).
   final String? permissions;
 
-  /// ロールバッジの色
+  /// Color of the role badge.
   @JsonKey(defaultValue: '')
   final String? color;
 
-  /// ロールバッジを表示するかどうか
+  /// Whether to display the role badge.
   final bool? highlighted;
 
-  /// ロール作成日時
+  /// Timestamp when the role was created.
   @SafeDateTimeConverter()
   final DateTime? createdAt;
 
-  /// ロール更新日時
+  /// Timestamp when the role was updated.
   @SafeDateTimeConverter()
   final DateTime? updatedAt;
 }

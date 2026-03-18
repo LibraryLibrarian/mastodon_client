@@ -1,6 +1,6 @@
-/// 通報作成リクエスト
+/// Request for creating a report.
 class MastodonReportCreateRequest {
-  /// [MastodonReportCreateRequest] を生成する
+  /// Creates a [MastodonReportCreateRequest].
   const MastodonReportCreateRequest({
     required this.accountId,
     this.statusIds,
@@ -10,25 +10,25 @@ class MastodonReportCreateRequest {
     this.ruleIds,
   });
 
-  /// 通報対象のアカウントID
+  /// ID of the account being reported.
   final String accountId;
 
-  /// コンテキストとして添付するステータスID
+  /// Status IDs to attach as context.
   final List<String>? statusIds;
 
-  /// 通報理由（最大1000文字）
+  /// Reason for the report (maximum 1000 characters).
   final String? comment;
 
-  /// リモート管理者にも転送するか
+  /// Whether to forward to the remote administrator.
   final bool? forward;
 
-  /// 通報カテゴリ（spam / legal / violation / other）
+  /// Report category (spam / legal / violation / other).
   final String? category;
 
-  /// violation カテゴリ時の違反ルールID
+  /// Violated rule IDs for the violation category.
   final List<String>? ruleIds;
 
-  /// リクエストボディ用の JSON マップに変換する
+  /// Converts to a JSON map for the request body.
   Map<String, dynamic> toJson() => {
     'account_id': accountId,
     'status_ids': ?statusIds,

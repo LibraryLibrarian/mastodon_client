@@ -4,9 +4,9 @@ import 'mastodon_status.dart';
 
 part 'mastodon_status_context.g.dart';
 
-/// 投稿のコンテキスト（祖先と子孫）
+/// Context of a status (ancestors and descendants).
 ///
-/// `GET /api/v1/statuses/{id}/context` のレスポンスに対応する
+/// Corresponds to the response from `GET /api/v1/statuses/{id}/context`.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonStatusContext {
   const MastodonStatusContext({
@@ -17,14 +17,14 @@ class MastodonStatusContext {
   factory MastodonStatusContext.fromJson(Map<String, dynamic> json) =>
       _$MastodonStatusContextFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonStatusContextToJson(this);
 
-  /// 対象投稿より前の投稿（スレッドの先祖）
+  /// Statuses preceding the target status (thread ancestors).
   @JsonKey(defaultValue: <MastodonStatus>[])
   final List<MastodonStatus> ancestors;
 
-  /// 対象投稿への返信ツリー（子孫）
+  /// Reply tree of the target status (descendants).
   @JsonKey(defaultValue: <MastodonStatus>[])
   final List<MastodonStatus> descendants;
 }

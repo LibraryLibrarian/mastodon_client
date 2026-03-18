@@ -2,17 +2,15 @@ import '../client/mastodon_http_client.dart';
 import '../models/mastodon_push_subscription_request.dart';
 import '../models/mastodon_web_push_subscription.dart';
 
-/// Web Push 通知サブスクリプションに関する API
+/// Web Push notification subscription API.
 class PushApi {
   const PushApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 新しい Web Push サブスクリプションを作成する
+  /// Creates a new Web Push subscription.
   ///
   /// `POST /api/v1/push/subscription`
-  ///
-  /// - [request]: サブスクリプション登録に必要な情報
   Future<MastodonWebPushSubscription> create(
     MastodonPushSubscriptionRequest request,
   ) async {
@@ -24,7 +22,7 @@ class PushApi {
     return MastodonWebPushSubscription.fromJson(data!);
   }
 
-  /// 現在の Web Push サブスクリプションを取得する
+  /// Fetches the current Web Push subscription.
   ///
   /// `GET /api/v1/push/subscription`
   Future<MastodonWebPushSubscription> fetch() async {
@@ -34,13 +32,12 @@ class PushApi {
     return MastodonWebPushSubscription.fromJson(data!);
   }
 
-  /// 現在の Web Push サブスクリプションを更新する
+  /// Updates the current Web Push subscription.
   ///
   /// `PUT /api/v1/push/subscription`
   ///
-  /// サブスクリプションの `data` 部分（アラート設定・ポリシー）のみを更新する。
-  ///
-  /// - [request]: 更新するアラート設定やポリシー
+  /// Updates only the `data` portion of the subscription (alert settings
+  /// and policy).
   Future<MastodonWebPushSubscription> update(
     MastodonPushSubscriptionUpdateRequest request,
   ) async {
@@ -52,7 +49,7 @@ class PushApi {
     return MastodonWebPushSubscription.fromJson(data!);
   }
 
-  /// 現在の Web Push サブスクリプションを削除する
+  /// Deletes the current Web Push subscription.
   ///
   /// `DELETE /api/v1/push/subscription`
   Future<void> delete() async {

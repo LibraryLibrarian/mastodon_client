@@ -4,30 +4,29 @@ import 'mastodon_account.dart';
 
 part 'mastodon_suggestion.g.dart';
 
-/// フォロー候補として提案されたアカウントとその理由
+/// Suggested account to follow and the reason for the suggestion.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonSuggestion {
-  /// 各フィールドを指定して [MastodonSuggestion] を生成する
+  /// Creates a [MastodonSuggestion] with the given fields.
   const MastodonSuggestion({
     required this.source,
     required this.account,
   });
 
-  /// JSON マップから [MastodonSuggestion] を生成する
+  /// Creates a [MastodonSuggestion] from a JSON map.
   factory MastodonSuggestion.fromJson(Map<String, dynamic> json) =>
       _$MastodonSuggestionFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonSuggestionToJson(this);
 
-  /// 提案の理由を示す文字列
+  /// String indicating the reason for the suggestion.
   ///
-  /// 公式で定義されている値:
-  /// - `staff`: スタッフ推薦
-  /// - `past_interactions`: 過去のインタラクションに基づく
-  /// - `global`: グローバルな人気に基づく
+  /// Officially defined values are `staff` (staff recommendation),
+  /// `past_interactions` (based on past interactions), and
+  /// `global` (based on global popularity).
   final String source;
 
-  /// 提案されたアカウント
+  /// Suggested account.
   final MastodonAccount account;
 }

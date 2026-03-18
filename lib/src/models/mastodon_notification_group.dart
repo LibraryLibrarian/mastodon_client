@@ -6,10 +6,10 @@ import 'mastodon_report.dart';
 
 part 'mastodon_notification_group.g.dart';
 
-/// グループ化された通知
+/// Grouped notification.
 ///
-/// `/api/v2/notifications` のレスポンスで返される通知グループを表すモデル。
-/// 同一タイプ・同一対象の通知がグループ化され、効率的に表示できる。
+/// Model representing a notification group returned by `/api/v2/notifications`.
+/// Notifications of the same type and target are grouped for efficient display.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonNotificationGroup {
   const MastodonNotificationGroup({
@@ -30,56 +30,56 @@ class MastodonNotificationGroup {
   factory MastodonNotificationGroup.fromJson(Map<String, dynamic> json) =>
       _$MastodonNotificationGroupFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonNotificationGroupToJson(this);
 
   static Object? _readType(Map<dynamic, dynamic> json, String key) =>
       json['type'] ?? 'unknown';
 
-  /// グループ識別子
+  /// Group identifier.
   final String groupKey;
 
-  /// グループ内の通知数
+  /// Number of notifications in the group.
   @JsonKey(defaultValue: 0)
   final int notificationsCount;
 
-  /// 通知の種別
+  /// Type of the notification.
   @JsonKey(
     readValue: _readType,
     unknownEnumValue: MastodonNotificationType.unknown,
   )
   final MastodonNotificationType type;
 
-  /// グループ内の最新通知ID
+  /// ID of the most recent notification in the group.
   final String mostRecentNotificationId;
 
-  /// 現ページ内の最古通知ID
+  /// ID of the oldest notification in the current page.
   final String? pageMinId;
 
-  /// 現ページ内の最新通知ID
+  /// ID of the newest notification in the current page.
   final String? pageMaxId;
 
-  /// 現ページ内の最新通知の日時
+  /// Timestamp of the newest notification in the current page.
   @SafeDateTimeConverter()
   final DateTime? latestPageNotificationAt;
 
-  /// 通知をトリガーしたアカウントIDのサンプル
+  /// Sample account IDs that triggered the notifications.
   @JsonKey(defaultValue: <String>[])
   final List<String> sampleAccountIds;
 
-  /// 関連する投稿のID（種別によってはnull）
+  /// ID of the associated status (null depending on the type).
   final String? statusId;
 
-  /// 関連する通報（管理者向け通知の場合のみ非null）
+  /// Associated report (non-null only for admin notifications).
   final MastodonReport? report;
 
-  /// フォロー関係強制解除イベントの詳細
+  /// Details of the relationship severance event.
   ///
-  /// [MastodonNotificationType.severedRelationships] の場合のみ非null
+  /// Non-null only for [MastodonNotificationType.severedRelationships].
   final MastodonRelationshipSeveranceEvent? event;
 
-  /// モデレーション警告の詳細
+  /// Details of the moderation warning.
   ///
-  /// [MastodonNotificationType.moderationWarning] の場合のみ非null
+  /// Non-null only for [MastodonNotificationType.moderationWarning].
   final MastodonAccountWarning? moderationWarning;
 }

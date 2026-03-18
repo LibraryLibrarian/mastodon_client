@@ -3,21 +3,21 @@ import '../../internal/link_header_parser.dart';
 import '../../models/admin/mastodon_admin_canonical_email_block.dart';
 import '../../models/mastodon_page.dart';
 
-/// 管理者向け正規化メールブロック管理 API
+/// Admin canonical email block management API.
 ///
-/// 正規化メールアドレスのブロック管理を行う。
-/// すべてのエンドポイントに `admin:read:canonical_email_blocks` または
-/// `admin:write:canonical_email_blocks` の OAuth スコープが必要。
+/// Manages blocks on canonical (normalized) email addresses.
+/// All endpoints require `admin:read:canonical_email_blocks` or
+/// `admin:write:canonical_email_blocks` OAuth scopes.
 class AdminCanonicalEmailBlocksApi {
   const AdminCanonicalEmailBlocksApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// すべての正規化メールブロックを取得する
+  /// Fetches all canonical email blocks.
   ///
   /// `GET /api/v1/admin/canonical_email_blocks`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonAdminCanonicalEmailBlock>> fetch({
     String? maxId,
     String? sinceId,
@@ -45,11 +45,11 @@ class AdminCanonicalEmailBlocksApi {
     );
   }
 
-  /// ID を指定して正規化メールブロックの詳細を取得する
+  /// Fetches a canonical email block by its ID.
   ///
   /// `GET /api/v1/admin/canonical_email_blocks/{id}`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminCanonicalEmailBlock> fetchById(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/canonical_email_blocks/$id',
@@ -57,15 +57,13 @@ class AdminCanonicalEmailBlocksApi {
     return MastodonAdminCanonicalEmailBlock.fromJson(data!);
   }
 
-  /// メールアドレスの正規化・ハッシュ化をテストする
+  /// Tests canonicalization and hashing of an email address.
   ///
   /// `POST /api/v1/admin/canonical_email_blocks/test`
   ///
-  /// 既存のブロックに一致するものがあればそのリストを返す。
+  /// Returns a list of existing blocks that match the email.
   ///
-  /// - [email]: テストするメールアドレス（必須）
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonAdminCanonicalEmailBlock>> test({
     required String email,
   }) async {
@@ -80,14 +78,15 @@ class AdminCanonicalEmailBlocksApi {
         .toList();
   }
 
-  /// 正規化メールブロックを作成する
+  /// Creates a canonical email block.
   ///
   /// `POST /api/v1/admin/canonical_email_blocks`
   ///
-  /// - [email]: ブロックするメールアドレス（指定時は canonicalEmailHash は無視）
-  /// - [canonicalEmailHash]: 直接ハッシュを指定してブロック（email 未指定時に必要）
+  /// Provide either [email] or [canonicalEmailHash]. When [email] is
+  /// specified, [canonicalEmailHash] is ignored; otherwise the hash is
+  /// required.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminCanonicalEmailBlock> create({
     String? email,
     String? canonicalEmailHash,
@@ -103,11 +102,11 @@ class AdminCanonicalEmailBlocksApi {
     return MastodonAdminCanonicalEmailBlock.fromJson(data!);
   }
 
-  /// 正規化メールブロックを削除する
+  /// Deletes a canonical email block.
   ///
   /// `DELETE /api/v1/admin/canonical_email_blocks/{id}`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> delete(String id) async {
     await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/canonical_email_blocks/$id',

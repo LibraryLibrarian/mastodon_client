@@ -1,9 +1,9 @@
-/// 管理者向けドメインブロック作成・更新リクエスト
+/// Request for creating or updating an admin domain block.
 ///
-/// `POST /api/v1/admin/domain_blocks` および
-/// `PUT /api/v1/admin/domain_blocks/:id` のリクエストボディ。
+/// Request body for `POST /api/v1/admin/domain_blocks` and
+/// `PUT /api/v1/admin/domain_blocks/:id`.
 class MastodonAdminDomainBlockRequest {
-  /// [MastodonAdminDomainBlockRequest] を生成する
+  /// Creates a [MastodonAdminDomainBlockRequest].
   const MastodonAdminDomainBlockRequest({
     this.domain,
     this.severity,
@@ -14,28 +14,28 @@ class MastodonAdminDomainBlockRequest {
     this.obfuscate,
   });
 
-  /// ブロック対象のドメイン（作成時は必須）
+  /// Domain to block (required when creating).
   final String? domain;
 
-  /// 制限レベル（`silence` / `suspend` / `noop`）デフォルト: `silence`
+  /// Severity level (`silence` / `suspend` / `noop`). Default: `silence`.
   final String? severity;
 
-  /// メディア添付を拒否するかどうか
+  /// Whether to reject media attachments.
   final bool? rejectMedia;
 
-  /// 通報を拒否するかどうか
+  /// Whether to reject reports.
   final bool? rejectReports;
 
-  /// 管理者向け非公開コメント
+  /// Private comment for administrators.
   final String? privateComment;
 
-  /// 一般公開用コメント
+  /// Public-facing comment.
   final String? publicComment;
 
-  /// 公開表示時にドメイン名を難読化するかどうか
+  /// Whether to obfuscate the domain name in public displays.
   final bool? obfuscate;
 
-  /// リクエストボディ用の JSON マップに変換する
+  /// Converts to a JSON map for the request body.
   Map<String, dynamic> toJson() => {
     'domain': ?domain,
     'severity': ?severity,
