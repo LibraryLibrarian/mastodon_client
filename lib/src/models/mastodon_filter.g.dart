@@ -43,8 +43,8 @@ Map<String, dynamic> _$MastodonFilterToJson(MastodonFilter instance) =>
       'context': instance.context,
       'expires_at': const SafeDateTimeConverter().toJson(instance.expiresAt),
       'filter_action': _$MastodonFilterActionEnumMap[instance.filterAction]!,
-      'keywords': instance.keywords,
-      'statuses': instance.statuses,
+      'keywords': instance.keywords.map((e) => e.toJson()).toList(),
+      'statuses': instance.statuses.map((e) => e.toJson()).toList(),
     };
 
 const _$MastodonFilterActionEnumMap = {

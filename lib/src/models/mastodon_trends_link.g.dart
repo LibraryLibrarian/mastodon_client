@@ -77,8 +77,8 @@ Map<String, dynamic> _$MastodonTrendsLinkToJson(MastodonTrendsLink instance) =>
       'image': instance.image,
       'embed_url': instance.embedUrl,
       'blurhash': instance.blurhash,
-      'authors': instance.authors,
-      'history': instance.history,
+      'authors': instance.authors.map((e) => e.toJson()).toList(),
+      'history': instance.history.map((e) => e.toJson()).toList(),
     };
 
 const _$MastodonPreviewCardTypeEnumMap = {

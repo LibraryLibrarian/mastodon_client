@@ -80,16 +80,16 @@ Map<String, dynamic> _$MastodonCredentialAccountToJson(
   'statuses_count': instance.statusesCount,
   'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
   'last_status_at': const SafeDateTimeConverter().toJson(instance.lastStatusAt),
-  'fields': instance.fields,
-  'emojis': instance.emojis,
-  'moved': instance.moved,
+  'fields': instance.fields.map((e) => e.toJson()).toList(),
+  'emojis': instance.emojis.map((e) => e.toJson()).toList(),
+  'moved': instance.moved?.toJson(),
   'suspended': instance.suspended,
   'limited': instance.limited,
   'hide_collections': instance.hideCollections,
   'avatar_blurhash': instance.avatarBlurhash,
   'header_blurhash': instance.headerBlurhash,
-  'source': instance.source,
-  'role': instance.role,
+  'source': instance.source?.toJson(),
+  'role': instance.role?.toJson(),
 };
 
 MastodonAccountSource _$MastodonAccountSourceFromJson(
@@ -115,7 +115,7 @@ Map<String, dynamic> _$MastodonAccountSourceToJson(
   'sensitive': instance.sensitive,
   'language': instance.language,
   'note': instance.note,
-  'fields': instance.fields,
+  'fields': instance.fields?.map((e) => e.toJson()).toList(),
   'follow_requests_count': instance.followRequestsCount,
   'quote_policy': instance.quotePolicy,
 };

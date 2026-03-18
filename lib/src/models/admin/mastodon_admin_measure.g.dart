@@ -31,7 +31,7 @@ Map<String, dynamic> _$MastodonAdminMeasureToJson(
   'total': instance.total,
   'human_value': instance.humanValue,
   'previous_total': instance.previousTotal,
-  'data': instance.data,
+  'data': instance.data.map((e) => e.toJson()).toList(),
 };
 
 MastodonAdminMeasureData _$MastodonAdminMeasureDataFromJson(

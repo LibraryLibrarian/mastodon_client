@@ -99,14 +99,16 @@ Map<String, dynamic> _$MastodonStatusToJson(MastodonStatus instance) =>
       'bookmarked': instance.bookmarked,
       'muted': instance.muted,
       'pinned': instance.pinned,
-      'account': instance.account,
-      'media_attachments': instance.mediaAttachments,
-      'mentions': instance.mentions,
-      'tags': instance.tags,
-      'emojis': instance.emojis,
-      'reblog': instance.reblog,
-      'poll': instance.poll,
-      'quote': instance.quote,
+      'account': instance.account.toJson(),
+      'media_attachments': instance.mediaAttachments
+          .map((e) => e.toJson())
+          .toList(),
+      'mentions': instance.mentions.map((e) => e.toJson()).toList(),
+      'tags': instance.tags.map((e) => e.toJson()).toList(),
+      'emojis': instance.emojis.map((e) => e.toJson()).toList(),
+      'reblog': instance.reblog?.toJson(),
+      'poll': instance.poll?.toJson(),
+      'quote': instance.quote?.toJson(),
     };
 
 const _$MastodonVisibilityEnumMap = {

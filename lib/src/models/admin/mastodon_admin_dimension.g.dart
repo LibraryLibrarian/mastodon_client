@@ -22,7 +22,10 @@ MastodonAdminDimension _$MastodonAdminDimensionFromJson(
 
 Map<String, dynamic> _$MastodonAdminDimensionToJson(
   MastodonAdminDimension instance,
-) => <String, dynamic>{'key': instance.key, 'data': instance.data};
+) => <String, dynamic>{
+  'key': instance.key,
+  'data': instance.data.map((e) => e.toJson()).toList(),
+};
 
 MastodonAdminDimensionData _$MastodonAdminDimensionDataFromJson(
   Map<String, dynamic> json,

@@ -49,8 +49,8 @@ Map<String, dynamic> _$MastodonPollToJson(MastodonPoll instance) =>
       'multiple': instance.multiple,
       'votes_count': instance.votesCount,
       'voters_count': instance.votersCount,
-      'options': instance.options,
-      'emojis': instance.emojis,
+      'options': instance.options.map((e) => e.toJson()).toList(),
+      'emojis': instance.emojis.map((e) => e.toJson()).toList(),
       'voted': instance.voted,
       'own_votes': instance.ownVotes,
     };
