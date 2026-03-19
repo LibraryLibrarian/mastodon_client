@@ -3,7 +3,10 @@ version: 1.0.0-beta.1
 documentation: https://librarylibrarian.github.io/mastodon_client/
 environment:
   sdk: ^3.8.0
-description: A pure Dart Mastodon API client library.
+description: >-
+  A pure Dart Mastodon API client. Covers accounts, statuses, timelines,
+  notifications, media, filters, and admin APIs with OAuth, pagination,
+  and typed error handling.
 dependencies:
   crypto: ^3.0.7
   dio: ^5.9.2
