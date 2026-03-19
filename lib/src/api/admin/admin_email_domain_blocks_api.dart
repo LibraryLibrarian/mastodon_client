@@ -3,21 +3,21 @@ import '../../internal/link_header_parser.dart';
 import '../../models/admin/mastodon_admin_email_domain_block.dart';
 import '../../models/mastodon_page.dart';
 
-/// 管理者向けメールドメインブロック管理 API
+/// Admin email domain block management API.
 ///
-/// サインアップ禁止メールドメインの管理を行う。
-/// すべてのエンドポイントに `admin:read:email_domain_blocks` または
-/// `admin:write:email_domain_blocks` の OAuth スコープが必要。
+/// Manages email domains that are blocked from sign-up.
+/// All endpoints require `admin:read:email_domain_blocks` or
+/// `admin:write:email_domain_blocks` OAuth scopes.
 class AdminEmailDomainBlocksApi {
   const AdminEmailDomainBlocksApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// すべてのブロック済みメールドメインを取得する
+  /// Fetches all blocked email domains.
   ///
   /// `GET /api/v1/admin/email_domain_blocks`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonAdminEmailDomainBlock>> fetch({
     String? maxId,
     String? sinceId,
@@ -45,11 +45,11 @@ class AdminEmailDomainBlocksApi {
     );
   }
 
-  /// ID を指定してメールドメインブロックの詳細を取得する
+  /// Fetches an email domain block by its ID.
   ///
   /// `GET /api/v1/admin/email_domain_blocks/{id}`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminEmailDomainBlock> fetchById(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/email_domain_blocks/$id',
@@ -57,13 +57,11 @@ class AdminEmailDomainBlocksApi {
     return MastodonAdminEmailDomainBlock.fromJson(data!);
   }
 
-  /// メールドメインをブロックする
+  /// Blocks an email domain.
   ///
   /// `POST /api/v1/admin/email_domain_blocks`
   ///
-  /// - [domain]: ブロックするメールドメイン（必須）
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminEmailDomainBlock> create({
     required String domain,
   }) async {
@@ -75,11 +73,11 @@ class AdminEmailDomainBlocksApi {
     return MastodonAdminEmailDomainBlock.fromJson(data!);
   }
 
-  /// メールドメインブロックを削除する
+  /// Deletes an email domain block.
   ///
   /// `DELETE /api/v1/admin/email_domain_blocks/{id}`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> delete(String id) async {
     await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/email_domain_blocks/$id',

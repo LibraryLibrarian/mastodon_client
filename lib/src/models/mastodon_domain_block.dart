@@ -2,20 +2,20 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_domain_block.g.dart';
 
-/// ドメインブロックの制限レベル
+/// Severity level of a domain block.
 @JsonEnum(fieldRename: FieldRename.snake)
 enum MastodonDomainBlockSeverity {
-  /// ブロック対象ドメインのユーザーをタイムラインや通知から非表示
+  /// Hides users from the blocked domain from timelines and notifications.
   silence,
 
-  /// ブロック対象ドメインからのメッセージをすべて拒否・破棄
+  /// Rejects and discards all messages from the blocked domain.
   suspend,
 
-  /// 未知または将来追加される制限レベル
+  /// Unknown or future severity level.
   unknown,
 }
 
-/// インスタンスがブロックしているドメインの情報
+/// Information about a domain blocked by the instance.
 ///
 /// `GET /api/v1/instance/domain_blocks`
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -30,19 +30,19 @@ class MastodonDomainBlock {
   factory MastodonDomainBlock.fromJson(Map<String, dynamic> json) =>
       _$MastodonDomainBlockFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonDomainBlockToJson(this);
 
-  /// ブロック対象のドメイン名
+  /// Domain name that is blocked.
   final String domain;
 
-  /// ドメイン文字列の SHA256 ハッシュダイジェスト
+  /// SHA256 hash digest of the domain string.
   final String digest;
 
-  /// ブロックの制限レベル
+  /// Severity level of the block.
   @JsonKey(unknownEnumValue: MastodonDomainBlockSeverity.unknown)
   final MastodonDomainBlockSeverity severity;
 
-  /// ドメインブロックの理由（任意）
+  /// Reason for the domain block (optional).
   final String? comment;
 }

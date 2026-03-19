@@ -2,12 +2,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_oauth_server_metadata.g.dart';
 
-/// OAuth 認可サーバーメタデータを表すモデル
+/// OAuth authorization server metadata model.
 ///
-/// `GET /.well-known/oauth-authorization-server` のレスポンスに対応する
+/// Corresponds to the response from `GET /.well-known/oauth-authorization-server`.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonOAuthServerMetadata {
-  /// 各フィールドを指定して [MastodonOAuthServerMetadata] を生成する
+  /// Creates a [MastodonOAuthServerMetadata] with the given fields.
   const MastodonOAuthServerMetadata({
     required this.issuer,
     required this.serviceDocumentation,
@@ -24,54 +24,54 @@ class MastodonOAuthServerMetadata {
     required this.tokenEndpointAuthMethodsSupported,
   });
 
-  /// JSON マップから [MastodonOAuthServerMetadata] を生成する
+  /// Creates a [MastodonOAuthServerMetadata] from a JSON map.
   factory MastodonOAuthServerMetadata.fromJson(Map<String, dynamic> json) =>
       _$MastodonOAuthServerMetadataFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonOAuthServerMetadataToJson(this);
 
-  /// 認可サーバーの識別子 URL
+  /// Identifier URL of the authorization server.
   final String issuer;
 
-  /// サービスドキュメントの URL
+  /// URL of the service documentation.
   final String serviceDocumentation;
 
-  /// 認可エンドポイントの URL
+  /// URL of the authorization endpoint.
   final String authorizationEndpoint;
 
-  /// トークンエンドポイントの URL
+  /// URL of the token endpoint.
   final String tokenEndpoint;
 
-  /// アプリケーション登録エンドポイントの URL
+  /// URL of the application registration endpoint.
   final String appRegistrationEndpoint;
 
-  /// トークン失効エンドポイントの URL
+  /// URL of the token revocation endpoint.
   final String revocationEndpoint;
 
-  /// ユーザー情報エンドポイントの URL
+  /// URL of the userinfo endpoint.
   ///
-  /// Mastodon 4.4.0 で追加されたフィールド。4.3 系サーバーでは `null` になる。
+  /// Added in Mastodon 4.4.0. Will be `null` on 4.3 servers.
   final String? userinfoEndpoint;
 
-  /// サポートされるスコープの一覧
+  /// List of supported scopes.
   final List<String> scopesSupported;
 
-  /// サポートされるレスポンスタイプの一覧
+  /// List of supported response types.
   final List<String> responseTypesSupported;
 
-  /// サポートされるレスポンスモードの一覧
+  /// List of supported response modes.
   final List<String> responseModesSupported;
 
-  /// サポートされるコードチャレンジ方式の一覧
+  /// List of supported code challenge methods.
   ///
-  /// Mastodon 4.3.0 初期リリース後の PKCE 対応で追加されたフィールド。
-  /// 初期の 4.3.0 サーバーでは `null` になる場合がある。
+  /// Added after the initial Mastodon 4.3.0 release with PKCE support.
+  /// May be `null` on early 4.3.0 servers.
   final List<String>? codeChallengeMethodsSupported;
 
-  /// サポートされるグラントタイプの一覧
+  /// List of supported grant types.
   final List<String> grantTypesSupported;
 
-  /// サポートされるトークンエンドポイント認証方式の一覧
+  /// List of supported token endpoint authentication methods.
   final List<String> tokenEndpointAuthMethodsSupported;
 }

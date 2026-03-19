@@ -3,9 +3,9 @@ import '../json_converters.dart';
 
 part 'mastodon_admin_domain_allow.g.dart';
 
-/// 管理者向けドメイン許可情報
+/// Admin-level domain allow information.
 ///
-/// フェデレーションが許可されているドメインを表す。
+/// Represents a domain that is allowed to federate.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminDomainAllow {
   const MastodonAdminDomainAllow({
@@ -17,16 +17,16 @@ class MastodonAdminDomainAllow {
   factory MastodonAdminDomainAllow.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminDomainAllowFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAdminDomainAllowToJson(this);
 
-  /// ドメイン許可のデータベース内 ID
+  /// Database ID of the domain allow entry.
   final String id;
 
-  /// フェデレーションが許可されているドメイン
+  /// Domain that is allowed to federate.
   final String domain;
 
-  /// ドメインが許可された日時
+  /// Timestamp when the domain was allowed.
   @SafeDateTimeConverter()
   final DateTime? createdAt;
 }

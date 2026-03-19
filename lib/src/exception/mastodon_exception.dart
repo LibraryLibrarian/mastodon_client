@@ -1,4 +1,4 @@
-/// Mastodon API クライアントが送出する例外の基底クラス
+/// Base class for exceptions thrown by the Mastodon API client.
 sealed class MastodonException implements Exception {
   const MastodonException(this.message);
 
@@ -8,13 +8,10 @@ sealed class MastodonException implements Exception {
   String toString() => '$runtimeType: $message';
 }
 
-// ---------------------------------------------------------------------------
-// API エラー（HTTP レスポンスエラー）
-// ---------------------------------------------------------------------------
-
-/// HTTP レスポンスエラーを表す例外
+/// Exception representing an HTTP response error.
 ///
-/// [statusCode] に HTTP ステータスコード、[message] にサーバーから返されたメッセージを持つ。
+/// Holds the HTTP status code in [statusCode] and the server-returned message
+/// in [message].
 class MastodonApiException extends MastodonException {
   const MastodonApiException({
     required this.statusCode,
@@ -25,10 +22,10 @@ class MastodonApiException extends MastodonException {
 
   final int statusCode;
 
-  /// エラーが発生したAPIエンドポイント
+  /// API endpoint where the error occurred.
   final String? endpoint;
 
-  /// 元例外やエラーオブジェクト
+  /// Original exception or error object.
   final Object? raw;
 
   @override
@@ -37,9 +34,9 @@ class MastodonApiException extends MastodonException {
       '${endpoint != null ? ' endpoint=$endpoint' : ''}';
 }
 
-/// 認証エラー（HTTP 401）
+/// Authentication error (HTTP 401).
 ///
-/// アクセストークンが無効または期限切れ
+/// The access token is invalid or expired.
 class MastodonUnauthorizedException extends MastodonApiException {
   const MastodonUnauthorizedException({
     super.message = 'Unauthorized',
@@ -48,9 +45,9 @@ class MastodonUnauthorizedException extends MastodonApiException {
   }) : super(statusCode: 401);
 }
 
-/// 権限エラー（HTTP 403）
+/// Permission error (HTTP 403).
 ///
-/// 操作が許可されていない
+/// The operation is not allowed.
 class MastodonForbiddenException extends MastodonApiException {
   const MastodonForbiddenException({
     super.message = 'Forbidden',
@@ -59,7 +56,7 @@ class MastodonForbiddenException extends MastodonApiException {
   }) : super(statusCode: 403);
 }
 
-/// リソースが見つからない（HTTP 404）
+/// Resource not found (HTTP 404).
 class MastodonNotFoundException extends MastodonApiException {
   const MastodonNotFoundException({
     super.message = 'Not found',
@@ -68,9 +65,9 @@ class MastodonNotFoundException extends MastodonApiException {
   }) : super(statusCode: 404);
 }
 
-/// レートリミットエラー（HTTP 429）
+/// Rate limit error (HTTP 429).
 ///
-/// リクエスト頻度が制限を超えた
+/// The request frequency has exceeded the limit.
 class MastodonRateLimitException extends MastodonApiException {
   const MastodonRateLimitException({
     super.message = 'Rate limited',
@@ -79,15 +76,15 @@ class MastodonRateLimitException extends MastodonApiException {
     this.retryAfter,
   }) : super(statusCode: 429);
 
-  /// サーバーが示した推奨待機時間
+  /// Recommended wait duration indicated by the server.
   final Duration? retryAfter;
 }
 
-/// バリデーションエラー（HTTP 422）
+/// Validation error (HTTP 422).
 ///
-/// リクエストの内容が不正
+/// The request content is invalid.
 ///
-/// [serverMessage] にサーバーが返したエラー詳細を保持する
+/// Holds the error details returned by the server in [serverMessage].
 class MastodonValidationException extends MastodonApiException {
   const MastodonValidationException({
     super.message = 'Unprocessable entity',
@@ -96,11 +93,11 @@ class MastodonValidationException extends MastodonApiException {
     this.serverMessage,
   }) : super(statusCode: 422);
 
-  /// サーバーから返された生のエラーメッセージ
+  /// Raw error message returned by the server.
   final String? serverMessage;
 }
 
-/// サーバーエラー（HTTP 5xx）
+/// Server error (HTTP 5xx).
 class MastodonServerException extends MastodonApiException {
   const MastodonServerException({
     required super.statusCode,
@@ -110,11 +107,7 @@ class MastodonServerException extends MastodonApiException {
   });
 }
 
-// ---------------------------------------------------------------------------
-// ネットワークエラー
-// ---------------------------------------------------------------------------
-
-/// ネットワーク接続エラー（タイムアウト・接続不可など）
+/// Network connection error (timeout, connection refused, etc.).
 class MastodonNetworkException extends MastodonException {
   const MastodonNetworkException({
     String message = 'Network error',
@@ -122,63 +115,52 @@ class MastodonNetworkException extends MastodonException {
     this.cause,
   }) : super(message);
 
-  /// エラーが発生したAPIエンドポイント
+  /// API endpoint where the error occurred.
   final String? endpoint;
 
-  /// 元となった例外
+  /// Original cause of the exception.
   final Object? cause;
 }
 
-// ---------------------------------------------------------------------------
-// 認証フローエラー
-// ---------------------------------------------------------------------------
-
-/// OAuth 認証フロー中のエラーの基底クラス
+/// Base class for errors during the OAuth authentication flow.
 sealed class MastodonAuthException extends MastodonException {
   const MastodonAuthException(super.message);
 }
 
-/// ユーザーが認証をキャンセルした
+/// The user cancelled the authentication.
 class MastodonAuthCancelledException extends MastodonAuthException {
   const MastodonAuthCancelledException()
     : super('Authentication was cancelled by the user');
 }
 
-/// OAuth の state パラメーターが一致しなかった（CSRF 検出）
+/// OAuth state parameter mismatch (CSRF detected).
 class MastodonAuthStateMismatchException extends MastodonAuthException {
   const MastodonAuthStateMismatchException()
     : super('OAuth state parameter mismatch');
 }
 
-/// アクセストークンの取得に失敗した
+/// Failed to obtain an access token.
 class MastodonAuthTokenException extends MastodonAuthException {
   const MastodonAuthTokenException(super.message);
 }
 
-// ---------------------------------------------------------------------------
-// 投票エラー
-// ---------------------------------------------------------------------------
-
-/// 投票済みエラー（HTTP 422 — already voted）
+/// Already voted error (HTTP 422 -- already voted).
 ///
-/// 認証済みユーザーがすでに同じ投票に回答済みの場合にthrowされる。
+/// Thrown when the authenticated user has already voted on the same poll.
 class MastodonAlreadyVotedException extends MastodonValidationException {
   const MastodonAlreadyVotedException()
     : super(message: 'Already voted', serverMessage: 'already voted');
 }
 
-// ---------------------------------------------------------------------------
-// メディア処理エラー
-// ---------------------------------------------------------------------------
-
-/// メディアの非同期処理がタイムアウト
+/// Media async processing timeout.
 ///
-/// サーバーがHTTP202を返した後、[MastodonMediaProcessingTimeoutException.mediaId]
-/// のメディアがポーリング制限内に完了しなかった場合にthrowを実施
+/// Thrown when the media with [MastodonMediaProcessingTimeoutException.mediaId]
+/// did not finish processing within the polling limit after the server
+/// returned HTTP 202.
 class MastodonMediaProcessingTimeoutException extends MastodonException {
   MastodonMediaProcessingTimeoutException({required this.mediaId})
-    : super('メディア処理がタイムアウトしました (id: $mediaId)');
+    : super('Media processing timed out (id: $mediaId)');
 
-  /// 処理待ちだったメディアのID
+  /// ID of the media that was awaiting processing.
   final String mediaId;
 }

@@ -4,7 +4,7 @@ import 'json_converters.dart';
 
 part 'mastodon_extended_description.g.dart';
 
-/// インスタンスの詳細な説明文
+/// Extended description of the instance.
 ///
 /// `GET /api/v1/instance/extended_description`
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -17,14 +17,14 @@ class MastodonExtendedDescription {
   factory MastodonExtendedDescription.fromJson(Map<String, dynamic> json) =>
       _$MastodonExtendedDescriptionFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonExtendedDescriptionToJson(this);
 
-  /// 詳細説明の最終更新日時
+  /// Timestamp when the extended description was last updated.
   @SafeDateTimeConverter()
   final DateTime? updatedAt;
 
-  /// 詳細説明の HTML コンテンツ
+  /// HTML content of the extended description.
   @JsonKey(defaultValue: '')
   final String content;
 }

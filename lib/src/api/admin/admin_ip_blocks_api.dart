@@ -4,21 +4,21 @@ import '../../models/admin/mastodon_admin_ip_block.dart';
 import '../../models/admin/mastodon_admin_ip_block_request.dart';
 import '../../models/mastodon_page.dart';
 
-/// 管理者向け IP ブロック管理 API
+/// Admin IP block management API.
 ///
-/// IP アドレス範囲のブロック管理を行う。
-/// すべてのエンドポイントに `admin:read:ip_blocks` または
-/// `admin:write:ip_blocks` の OAuth スコープが必要。
+/// Manages IP address range blocks.
+/// All endpoints require `admin:read:ip_blocks` or
+/// `admin:write:ip_blocks` OAuth scopes.
 class AdminIpBlocksApi {
   const AdminIpBlocksApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// すべての IP ブロックを取得する
+  /// Fetches all IP blocks.
   ///
   /// `GET /api/v1/admin/ip_blocks`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonAdminIpBlock>> fetch({
     String? maxId,
     String? sinceId,
@@ -46,11 +46,11 @@ class AdminIpBlocksApi {
     );
   }
 
-  /// ID を指定して IP ブロックの詳細を取得する
+  /// Fetches an IP block by its ID.
   ///
   /// `GET /api/v1/admin/ip_blocks/{id}`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminIpBlock> fetchById(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/ip_blocks/$id',
@@ -58,11 +58,11 @@ class AdminIpBlocksApi {
     return MastodonAdminIpBlock.fromJson(data!);
   }
 
-  /// IP ブロックを作成する
+  /// Creates an IP block.
   ///
   /// `POST /api/v1/admin/ip_blocks`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminIpBlock> create(
     MastodonAdminIpBlockCreateRequest request,
   ) async {
@@ -74,11 +74,11 @@ class AdminIpBlocksApi {
     return MastodonAdminIpBlock.fromJson(data!);
   }
 
-  /// IP ブロックを更新する
+  /// Updates an IP block.
   ///
   /// `PUT /api/v1/admin/ip_blocks/{id}`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminIpBlock> update(
     String id,
     MastodonAdminIpBlockUpdateRequest request,
@@ -91,11 +91,11 @@ class AdminIpBlocksApi {
     return MastodonAdminIpBlock.fromJson(data!);
   }
 
-  /// IP ブロックを削除する
+  /// Deletes an IP block.
   ///
   /// `DELETE /api/v1/admin/ip_blocks/{id}`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> delete(String id) async {
     await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/ip_blocks/$id',

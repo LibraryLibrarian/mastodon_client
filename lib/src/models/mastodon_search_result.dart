@@ -5,10 +5,10 @@ import 'mastodon_status.dart';
 
 part 'mastodon_search_result.g.dart';
 
-/// v2 検索結果
+/// v2 search result.
 ///
-/// `GET /api/v2/search` のレスポンスに対応する。
-/// [hashtags] は [MastodonTag] オブジェクトの配列として返される。
+/// Corresponds to the response from `GET /api/v2/search`.
+/// [hashtags] is returned as an array of [MastodonTag] objects.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonSearchResult {
   const MastodonSearchResult({
@@ -20,58 +20,65 @@ class MastodonSearchResult {
   factory MastodonSearchResult.fromJson(Map<String, dynamic> json) =>
       _$MastodonSearchResultFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonSearchResultToJson(this);
 
-  /// 検索にマッチしたアカウントの一覧
+  /// List of accounts matching the search.
   @JsonKey(defaultValue: <MastodonAccount>[])
   final List<MastodonAccount> accounts;
 
-  /// 検索にマッチした投稿の一覧
+  /// List of statuses matching the search.
   @JsonKey(defaultValue: <MastodonStatus>[])
   final List<MastodonStatus> statuses;
 
-  /// 検索にマッチしたハッシュタグの一覧（Tag オブジェクト）
+  /// List of hashtags matching the search (Tag objects).
   @JsonKey(defaultValue: <MastodonTag>[])
   final List<MastodonTag> hashtags;
 }
 
-/// v1 検索結果（非推奨）
+/// v1 search result (deprecated).
 ///
-/// `GET /api/v1/search` のレスポンスに対応する。
-/// v2 との主な違いとして、[hashtags] は Tag オブジェクトではなく
-/// 単純な文字列の配列として返される。
+/// Corresponds to the response from `GET /api/v1/search`.
+/// The main difference from v2 is that [hashtags] is returned as a simple
+/// string array rather than Tag objects.
 ///
-/// Mastodon 3.0.0 で v1 search エンドポイントは削除されたため、
-/// 2.x 系以前のインスタンスでのみ使用可能。
-@Deprecated('Mastodon 3.0.0 で削除済み。代わりに MastodonSearchResult (v2) を使用してください')
+/// The v1 search endpoint was removed in Mastodon 3.0.0 and is only
+/// available on 2.x instances.
+// ignore: remove_deprecations_in_breaking_versions
+@Deprecated('Removed in Mastodon 3.0.0. Use MastodonSearchResult (v2) instead')
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonSearchResultV1 {
-  @Deprecated('Mastodon 3.0.0 で削除済み。代わりに MastodonSearchResult (v2) を使用してください')
+  // ignore: remove_deprecations_in_breaking_versions
+  @Deprecated(
+    'Removed in Mastodon 3.0.0. Use MastodonSearchResult (v2) instead',
+  )
   const MastodonSearchResultV1({
     required this.accounts,
     required this.statuses,
     required this.hashtags,
   });
 
-  @Deprecated('Mastodon 3.0.0 で削除済み。代わりに MastodonSearchResult (v2) を使用してください')
+  // ignore: remove_deprecations_in_breaking_versions
+  @Deprecated(
+    'Removed in Mastodon 3.0.0. Use MastodonSearchResult (v2) instead',
+  )
   factory MastodonSearchResultV1.fromJson(Map<String, dynamic> json) =>
       _$MastodonSearchResultV1FromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonSearchResultV1ToJson(this);
 
-  /// 検索にマッチしたアカウントの一覧
+  /// List of accounts matching the search.
   @JsonKey(defaultValue: <MastodonAccount>[])
   final List<MastodonAccount> accounts;
 
-  /// 検索にマッチした投稿の一覧
+  /// List of statuses matching the search.
   @JsonKey(defaultValue: <MastodonStatus>[])
   final List<MastodonStatus> statuses;
 
-  /// 検索にマッチしたハッシュタグ名の一覧（文字列）
+  /// List of hashtag names matching the search (strings).
   ///
-  /// v1 では Tag オブジェクトではなく単純な文字列配列が返される。
+  /// In v1, a simple string array is returned rather than Tag objects.
   @JsonKey(defaultValue: <String>[])
   final List<String> hashtags;
 }

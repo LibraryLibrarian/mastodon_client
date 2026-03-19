@@ -2,10 +2,10 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_partial_account.g.dart';
 
-/// 部分的なアカウント情報
+/// Partial account information.
 ///
-/// グループ化通知APIで返される、必要最低限のアカウント情報を表すモデル。
-/// `expand_accounts=partial_avatars` を指定した場合に使用される。
+/// Model representing minimal account information returned by the grouped
+/// notifications API. Used when `expand_accounts=partial_avatars` is specified.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPartialAccount {
   const MastodonPartialAccount({
@@ -21,29 +21,29 @@ class MastodonPartialAccount {
   factory MastodonPartialAccount.fromJson(Map<String, dynamic> json) =>
       _$MastodonPartialAccountFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonPartialAccountToJson(this);
 
-  /// アカウントID
+  /// Account ID.
   final String id;
 
-  /// アカウントのアドレス（`user@domain` 形式）
+  /// Account address (`user@domain` format).
   final String acct;
 
-  /// アカウントのプロフィールURL
+  /// Profile URL of the account.
   final String url;
 
-  /// アバター画像のURL
+  /// URL of the avatar image.
   final String avatar;
 
-  /// アバター画像の静的URL（GIFアニメーションなしバージョン）
+  /// Static URL of the avatar image (non-animated version).
   final String avatarStatic;
 
-  /// アカウントがロックされているかどうか
+  /// Whether the account is locked.
   @JsonKey(defaultValue: false)
   final bool locked;
 
-  /// アカウントがBotかどうか
+  /// Whether the account is a bot.
   @JsonKey(defaultValue: false)
   final bool bot;
 }

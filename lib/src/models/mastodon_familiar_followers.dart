@@ -4,26 +4,26 @@ import 'mastodon_account.dart';
 
 part 'mastodon_familiar_followers.g.dart';
 
-/// 指定アカウントをフォローしている、自分がフォロー中のアカウントの一覧
+/// List of accounts you follow that also follow the specified account.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFamiliarFollowers {
-  /// 各フィールドを指定して [MastodonFamiliarFollowers] を生成する
+  /// Creates a [MastodonFamiliarFollowers] with the given fields.
   const MastodonFamiliarFollowers({
     required this.id,
     required this.accounts,
   });
 
-  /// JSON マップから [MastodonFamiliarFollowers] を生成する
+  /// Creates a [MastodonFamiliarFollowers] from a JSON map.
   factory MastodonFamiliarFollowers.fromJson(Map<String, dynamic> json) =>
       _$MastodonFamiliarFollowersFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonFamiliarFollowersToJson(this);
 
-  /// 対象アカウントの ID
+  /// ID of the target account.
   final String id;
 
-  /// 自分がフォローしていて、対象アカウントもフォローしているアカウントのリスト
+  /// List of accounts you follow that also follow the target account.
   @JsonKey(defaultValue: <MastodonAccount>[])
   final List<MastodonAccount> accounts;
 }

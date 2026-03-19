@@ -2,10 +2,10 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_relationship.g.dart';
 
-/// 2つのアカウント間のリレーションシップ（フォロー・ブロック・ミュート等の関係）
+/// Relationship between two accounts (follow, block, mute, etc.).
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonRelationship {
-  /// 各フィールドを指定して [MastodonRelationship] を生成する
+  /// Creates a [MastodonRelationship] with the given fields.
   const MastodonRelationship({
     required this.id,
     required this.following,
@@ -24,68 +24,68 @@ class MastodonRelationship {
     this.languages,
   });
 
-  /// JSON マップから [MastodonRelationship] を生成する
+  /// Creates a [MastodonRelationship] from a JSON map.
   factory MastodonRelationship.fromJson(Map<String, dynamic> json) =>
       _$MastodonRelationshipFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonRelationshipToJson(this);
 
-  /// 対象アカウントの ID
+  /// ID of the target account.
   final String id;
 
-  /// このアカウントをフォローしているかどうか
+  /// Whether you are following this account.
   @JsonKey(defaultValue: false)
   final bool following;
 
-  /// このアカウントのブースト投稿をホームタイムラインに表示するかどうか
+  /// Whether boosts from this account are shown in your home timeline.
   @JsonKey(defaultValue: true)
   final bool showingReblogs;
 
-  /// このアカウントの通知を有効にしているかどうか
+  /// Whether notifications from this account are enabled.
   @JsonKey(defaultValue: false)
   final bool notifying;
 
-  /// このアカウントからフォローしている言語のリスト（ISO 639-1）
+  /// List of languages you follow from this account (ISO 639-1).
   final List<String>? languages;
 
-  /// このアカウントにフォローされているかどうか
+  /// Whether this account follows you.
   @JsonKey(defaultValue: false)
   final bool followedBy;
 
-  /// このアカウントをブロックしているかどうか
+  /// Whether you are blocking this account.
   @JsonKey(defaultValue: false)
   final bool blocking;
 
-  /// このアカウントにブロックされているかどうか
+  /// Whether you are blocked by this account.
   @JsonKey(defaultValue: false)
   final bool blockedBy;
 
-  /// このアカウントをミュートしているかどうか
+  /// Whether you are muting this account.
   @JsonKey(defaultValue: false)
   final bool muting;
 
-  /// このアカウントからの通知をミュートしているかどうか
+  /// Whether you are muting notifications from this account.
   @JsonKey(defaultValue: false)
   final bool mutingNotifications;
 
-  /// このアカウントへのフォローリクエストが保留中かどうか
+  /// Whether a follow request to this account is pending.
   @JsonKey(defaultValue: false)
   final bool requested;
 
-  /// このアカウントからのフォローリクエストが保留中かどうか
+  /// Whether a follow request from this account is pending.
   @JsonKey(defaultValue: false)
   final bool requestedBy;
 
-  /// このアカウントのドメインをブロックしているかどうか
+  /// Whether you are blocking this account's domain.
   @JsonKey(defaultValue: false)
   final bool domainBlocking;
 
-  /// このアカウントをプロフィールで紹介しているかどうか
+  /// Whether you are featuring this account on your profile.
   @JsonKey(defaultValue: false)
   final bool endorsed;
 
-  /// このアカウントに設定したプライベートメモ
+  /// Private note set on this account.
   @JsonKey(defaultValue: '')
   final String note;
 }

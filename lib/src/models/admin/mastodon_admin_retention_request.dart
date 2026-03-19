@@ -1,24 +1,24 @@
-/// 管理者向けリテンションデータ取得リクエスト
+/// Request for fetching admin retention data.
 ///
-/// `POST /api/v1/admin/retention` のリクエストボディ。
+/// Request body for `POST /api/v1/admin/retention`.
 class MastodonAdminRetentionRequest {
-  /// [MastodonAdminRetentionRequest] を生成する
+  /// Creates a [MastodonAdminRetentionRequest].
   const MastodonAdminRetentionRequest({
     required this.startAt,
     required this.endAt,
     required this.frequency,
   });
 
-  /// 開始日時（時刻部分は無視される）
+  /// Start date (time portion is ignored).
   final DateTime startAt;
 
-  /// 終了日時（時刻部分は無視される）
+  /// End date (time portion is ignored).
   final DateTime endAt;
 
-  /// データの粒度（`day` または `month`）
+  /// Granularity of the data (`day` or `month`).
   final String frequency;
 
-  /// リクエストボディ用の JSON マップに変換する
+  /// Converts to a JSON map for the request body.
   Map<String, dynamic> toJson() => {
     'start_at': startAt.toIso8601String(),
     'end_at': endAt.toIso8601String(),

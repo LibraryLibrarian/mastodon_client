@@ -1,22 +1,22 @@
-/// `Link` レスポンスヘッダーのパースユーティリティ
+/// Parsing utility for `Link` response headers.
 ///
-/// Mastodon API のページネーションで使用される `Link` ヘッダーから
-/// `max_id`（次ページ）および `min_id` / `since_id`（前ページ）の
-/// カーソル値を取り出す。
+/// Extracts cursor values for `max_id` (next page) and `min_id` / `since_id`
+/// (previous page) from the `Link` header used by Mastodon API pagination.
 library;
 
-/// `Link` ヘッダーから `rel="next"` の `max_id` クエリパラメーターを取り出す
+/// Extracts the `max_id` query parameter from the `rel="next"` `Link` header.
 ///
-/// 次ページが存在しない場合、または解析できない場合は `null` を返す。
+/// Returns `null` if no next page exists or the header cannot be parsed.
 String? parseNextMaxId(String? linkHeader) {
   return _extractQueryParam(linkHeader, 'next', 'max_id');
 }
 
-/// `Link` ヘッダーから `rel="prev"` の前方向カーソル値を取り出す
+/// Extracts the previous-direction cursor value from the `rel="prev"`
+/// `Link` header.
 ///
-/// エンドポイントによって `min_id` または `since_id` が使われるため、
-/// `min_id` を優先的に探し、見つからない場合は `since_id` にフォールバックする。
-/// 前ページが存在しない場合、または解析できない場合は `null` を返す。
+/// Since endpoints may use either `min_id` or `since_id`, this method
+/// looks for `min_id` first and falls back to `since_id` if not found.
+/// Returns `null` if no previous page exists or the header cannot be parsed.
 String? parsePrevMinId(String? linkHeader) {
   return _extractQueryParam(linkHeader, 'prev', 'min_id') ??
       _extractQueryParam(linkHeader, 'prev', 'since_id');

@@ -3,26 +3,24 @@ import '../internal/link_header_parser.dart';
 import '../models/mastodon_page.dart';
 import '../models/mastodon_tag.dart';
 
-/// フォロー中のハッシュタグの一覧取得に関するAPI
+/// API for listing followed hashtags.
 class FollowedTagsApi {
-  /// [MastodonHttpClient] を受け取り、フォロー中タグAPIへのアクセスを提供する
+  /// Creates a [FollowedTagsApi] instance with the given [MastodonHttpClient].
   const FollowedTagsApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 認証済みユーザーがフォローしているハッシュタグの一覧を取得する
+  /// Fetches the hashtags followed by the authenticated user.
   ///
   /// `GET /api/v1/followed_tags`
   ///
-  /// - [limit]: 最大取得件数（デフォルト: 100、上限: 200）
-  /// - [maxId]: このIDより古い結果を返す（ページネーション用カーソル）
-  /// - [sinceId]: このIDより新しい結果を返す
-  /// - [minId]: このIDより新しい結果を返す（逆順）
+  /// [limit] controls the maximum number of results (default: 100, max: 200).
+  /// Use [maxId] to return results older than that ID, [sinceId] for newer
+  /// results, and [minId] for reverse-order forward pagination. Pagination
+  /// is provided via the HTTP `Link` header; cursor IDs are internal
+  /// follow-relationship record IDs, not Tag entity IDs.
   ///
-  /// ページネーションは HTTP `Link` ヘッダーで提供される。
-  /// カーソルIDは Tag エンティティの ID ではなく内部的なフォロー関係レコードの ID。
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonTag>> fetch({
     int? limit,
     String? maxId,

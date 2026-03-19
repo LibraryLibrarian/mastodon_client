@@ -1,8 +1,8 @@
 import 'mastodon_status.dart';
 
-/// 投稿作成時のアンケートパラメーター
+/// Poll parameters for status creation.
 class MastodonPollCreateRequest {
-  /// 投稿作成時のアンケートパラメーターを生成
+  /// Creates poll parameters for status creation.
   const MastodonPollCreateRequest({
     required this.options,
     required this.expiresIn,
@@ -10,22 +10,22 @@ class MastodonPollCreateRequest {
     this.hideTotals = false,
   });
 
-  /// 選択肢の一覧
+  /// List of options.
   final List<String> options;
 
-  /// 投票期限（秒）
+  /// Poll duration in seconds.
   final int expiresIn;
 
-  /// 複数選択を許可するか否か
+  /// Whether to allow multiple choices.
   final bool multiple;
 
-  /// 投票終了まで集計結果を非表示にするか否か
+  /// Whether to hide total vote counts until the poll ends.
   final bool hideTotals;
 }
 
-/// 投稿作成リクエストのパラメーター
+/// Parameters for a status creation request.
 class MastodonStatusCreateRequest {
-  /// 投稿作成リクエストのパラメーターを生成
+  /// Creates parameters for a status creation request.
   const MastodonStatusCreateRequest({
     this.status,
     this.mediaIds,
@@ -40,47 +40,47 @@ class MastodonStatusCreateRequest {
     this.scheduledAt,
   });
 
-  /// 投稿本文
+  /// Body text of the status.
   final String? status;
 
-  /// 添付メディアのIDリスト
+  /// List of attached media IDs.
   final List<String>? mediaIds;
 
-  /// 返信先の投稿ID
+  /// ID of the status being replied to.
   final String? inReplyToId;
 
-  /// 投稿の公開範囲
+  /// Visibility of the status.
   final MastodonVisibility visibility;
 
-  /// センシティブコンテンツとしてマークするか否か
+  /// Whether to mark as sensitive content.
   final bool sensitive;
 
-  /// コンテンツ警告（CW）テキスト
+  /// Content warning (CW) text.
   final String? spoilerText;
 
-  /// アンケートのパラメーター
+  /// Poll parameters.
   final MastodonPollCreateRequest? poll;
 
-  /// 引用する投稿のID（標準Mastodon FEP-044f）
+  /// ID of the status being quoted (standard Mastodon FEP-044f).
   ///
-  /// `quoted_status_id` としてリクエストに含まれる。
+  /// Included as `quoted_status_id` in the request.
   final String? quotedStatusId;
 
-  /// 引用の承認ポリシー（標準Mastodon FEP-044f）
+  /// Quote approval policy (standard Mastodon FEP-044f).
   ///
-  /// `quote_approval_policy` としてリクエストに含まれる。
+  /// Included as `quote_approval_policy` in the request.
   final String? quoteApprovalPolicy;
 
-  /// 投稿言語コード（ISO 639-1形式）
+  /// Posting language code (ISO 639-1 format).
   final String? language;
 
-  /// 予約投稿の公開日時（ISO 8601 形式）
+  /// Scheduled publication timestamp (ISO 8601 format).
   ///
-  /// 指定した場合、投稿は即座に公開されずに予約される。
-  /// 現在時刻から少なくとも5分以上先を指定する必要がある。
+  /// When specified, the status is scheduled instead of posted immediately.
+  /// Must be at least 5 minutes in the future.
   final String? scheduledAt;
 
-  /// リクエストボディ用のJSONマップを返す
+  /// Returns a JSON map for the request body.
   Map<String, dynamic> toJson() {
     final visibilityString = switch (visibility) {
       MastodonVisibility.public => 'public',

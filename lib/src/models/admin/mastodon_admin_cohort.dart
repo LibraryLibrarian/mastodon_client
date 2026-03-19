@@ -3,9 +3,10 @@ import '../json_converters.dart';
 
 part 'mastodon_admin_cohort.g.dart';
 
-/// 管理者向けリテンションコホートデータ
+/// Admin-level retention cohort data.
 ///
-/// 特定の期間に登録したユーザーのリテンション率を表す。
+/// Represents the retention rate of users who registered during a specific
+/// period.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminCohort {
   const MastodonAdminCohort({
@@ -17,22 +18,22 @@ class MastodonAdminCohort {
   factory MastodonAdminCohort.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminCohortFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAdminCohortToJson(this);
 
-  /// コホート期間の開始日時（深夜0時）
+  /// Start timestamp of the cohort period (midnight).
   @SafeDateTimeConverter()
   final DateTime? period;
 
-  /// データの粒度（`day` または `month`）
+  /// Granularity of the data (`day` or `month`).
   final String frequency;
 
-  /// リテンションデータのリスト
+  /// List of retention data entries.
   @JsonKey(defaultValue: <MastodonAdminCohortData>[])
   final List<MastodonAdminCohortData> data;
 }
 
-/// コホートの個別リテンションデータ
+/// Individual retention data entry for a cohort.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminCohortData {
   const MastodonAdminCohortData({
@@ -44,16 +45,16 @@ class MastodonAdminCohortData {
   factory MastodonAdminCohortData.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminCohortDataFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAdminCohortDataToJson(this);
 
-  /// バケット開始日時（深夜0時）
+  /// Start timestamp of the bucket (midnight).
   @SafeDateTimeConverter()
   final DateTime? date;
 
-  /// リテンション率（小数のパーセンテージ）
+  /// Retention rate (as a decimal percentage).
   final double rate;
 
-  /// アクティブユーザー数（整数の文字列表現）
+  /// Number of active users (string representation of an integer).
   final String value;
 }

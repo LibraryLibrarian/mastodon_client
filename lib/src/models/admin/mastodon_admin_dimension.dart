@@ -2,9 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_admin_dimension.g.dart';
 
-/// 管理者向けディメンション（次元）データ
+/// Admin-level dimension (qualitative) data.
 ///
-/// サーバーの定性的な統計情報を表す。
+/// Represents qualitative statistical information about the server.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminDimension {
   const MastodonAdminDimension({
@@ -15,18 +15,18 @@ class MastodonAdminDimension {
   factory MastodonAdminDimension.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminDimensionFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAdminDimensionToJson(this);
 
-  /// ディメンションの識別キー
+  /// Identifier key of the dimension.
   final String key;
 
-  /// ディメンションのデータ項目リスト
+  /// List of data entries for the dimension.
   @JsonKey(defaultValue: <MastodonAdminDimensionData>[])
   final List<MastodonAdminDimensionData> data;
 }
 
-/// ディメンションの個別データ項目
+/// Individual data entry for a dimension.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminDimensionData {
   const MastodonAdminDimensionData({
@@ -40,21 +40,21 @@ class MastodonAdminDimensionData {
   factory MastodonAdminDimensionData.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminDimensionDataFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAdminDimensionDataToJson(this);
 
-  /// データ項目の識別キー
+  /// Identifier key of the data entry.
   final String key;
 
-  /// 人間が読めるキー名
+  /// Human-readable key name.
   final String humanKey;
 
-  /// 値
+  /// Value.
   final String value;
 
-  /// 値の単位（例: `bytes`）
+  /// Unit of the value (e.g. `bytes`).
   final String? unit;
 
-  /// 人間が読める形式の値
+  /// Human-readable representation of the value.
   final String? humanValue;
 }

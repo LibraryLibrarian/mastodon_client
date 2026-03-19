@@ -4,7 +4,7 @@ import 'json_converters.dart';
 
 part 'mastodon_privacy_policy.g.dart';
 
-/// インスタンスのプライバシーポリシー
+/// Privacy policy of the instance.
 ///
 /// `GET /api/v1/instance/privacy_policy`
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -17,14 +17,14 @@ class MastodonPrivacyPolicy {
   factory MastodonPrivacyPolicy.fromJson(Map<String, dynamic> json) =>
       _$MastodonPrivacyPolicyFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonPrivacyPolicyToJson(this);
 
-  /// プライバシーポリシーの最終更新日時
+  /// Timestamp when the privacy policy was last updated.
   @SafeDateTimeConverter()
   final DateTime? updatedAt;
 
-  /// プライバシーポリシーの HTML コンテンツ
+  /// HTML content of the privacy policy.
   @JsonKey(defaultValue: '')
   final String content;
 }

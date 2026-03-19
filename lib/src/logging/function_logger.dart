@@ -1,6 +1,7 @@
 import 'logger.dart';
 
-/// 関数ベースのロガーを `Logger` IF へアダプトする軽量ラッパー
+/// Lightweight wrapper that adapts a function-based logger to the [Logger]
+/// interface.
 class FunctionLogger implements Logger {
   const FunctionLogger(this._fn);
   final void Function(String level, String message) _fn;

@@ -4,10 +4,10 @@ import 'json_converters.dart';
 
 part 'mastodon_featured_tag.g.dart';
 
-/// アカウントのプロフィールで紹介されているハッシュタグ
+/// Hashtag featured on an account's profile.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFeaturedTag {
-  /// 各フィールドを指定して [MastodonFeaturedTag] を生成する
+  /// Creates a [MastodonFeaturedTag] with the given fields.
   const MastodonFeaturedTag({
     required this.id,
     required this.name,
@@ -16,28 +16,28 @@ class MastodonFeaturedTag {
     this.lastStatusAt,
   });
 
-  /// JSON マップから [MastodonFeaturedTag] を生成する
+  /// Creates a [MastodonFeaturedTag] from a JSON map.
   factory MastodonFeaturedTag.fromJson(Map<String, dynamic> json) =>
       _$MastodonFeaturedTagFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonFeaturedTagToJson(this);
 
-  /// 紹介タグの内部 ID
+  /// Internal ID of the featured tag.
   final String id;
 
-  /// 紹介されているハッシュタグの名前
+  /// Name of the featured hashtag.
   final String name;
 
-  /// このハッシュタグを含む投稿一覧への URL
+  /// URL to the list of statuses containing this hashtag.
   @JsonKey(defaultValue: '')
   final String url;
 
-  /// このハッシュタグを含む投稿の件数
+  /// Number of statuses containing this hashtag.
   @JsonKey(fromJson: parseIntFromString)
   final int statusesCount;
 
-  /// このハッシュタグを含む最新投稿の日付
+  /// Date of the most recent status containing this hashtag.
   @SafeDateTimeConverter()
   final DateTime? lastStatusAt;
 }

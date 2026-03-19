@@ -3,32 +3,30 @@ import '../models/mastodon_oauth_server_metadata.dart';
 import '../models/mastodon_oauth_user_info.dart';
 import '../models/mastodon_token.dart';
 
-/// OAuth トークン操作に関する API クライアント
+/// API client for OAuth token operations.
 ///
-/// ブラウザリダイレクトを伴う認可フロー（`GET /oauth/authorize`）は
-/// プラットフォーム依存のため本ライブラリのスコープ外とする。
-/// 認可コードの取得後に [obtainToken] でアクセストークンを取得する。
+/// The authorization flow involving browser redirects (`GET /oauth/authorize`)
+/// is platform-dependent and outside the scope of this library.
+/// Use [obtainToken] to obtain an access token after acquiring an
+/// authorization code.
 class OAuthApi {
-  /// [MastodonHttpClient] を受け取り、OAuth API へのアクセスを提供する
+  /// Creates an [OAuthApi] instance with the given [MastodonHttpClient].
   const OAuthApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 認可コードまたはクライアント資格情報を使用してアクセストークンを取得する
+  /// Obtains an access token using an authorization code or client credentials.
   ///
   /// `POST /oauth/token`
   ///
-  /// - [grantType]: グラントタイプ（必須）。
-  ///   `authorization_code` または `client_credentials`
-  /// - [clientId]: アプリケーションのクライアント ID（必須）
-  /// - [clientSecret]: アプリケーションのクライアントシークレット（必須）
-  /// - [redirectUri]: 認可時に使用したリダイレクト URI（必須）
-  /// - [code]: 認可コード。`authorization_code` グラントタイプの場合に必須
-  /// - [codeVerifier]: PKCE コード検証値。認可時に `code_challenge` を
-  ///   指定した場合に必須
-  /// - [scope]: スコープ（`client_credentials` グラントタイプの場合のみ有効）
+  /// [grantType], [clientId], [clientSecret], and [redirectUri] are required.
+  /// [grantType] must be `authorization_code` or `client_credentials`.
+  /// For the `authorization_code` grant, [code] is also required. Provide
+  /// [codeVerifier] when a PKCE `code_challenge` was used during
+  /// authorization. [scope] is only effective for the `client_credentials`
+  /// grant type.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonToken> obtainToken({
     required String grantType,
     required String clientId,
@@ -55,15 +53,13 @@ class OAuthApi {
     return MastodonToken.fromJson(data!);
   }
 
-  /// アクセストークンを失効させる
+  /// Revokes an access token.
   ///
   /// `POST /oauth/revoke`
   ///
-  /// - [clientId]: アプリケーションのクライアント ID（必須）
-  /// - [clientSecret]: アプリケーションのクライアントシークレット（必須）
-  /// - [token]: 失効させるトークン文字列（必須）
+  /// [clientId], [clientSecret], and [token] are all required.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> revokeToken({
     required String clientId,
     required String clientSecret,
@@ -81,13 +77,13 @@ class OAuthApi {
     );
   }
 
-  /// 認証済みユーザーの OpenID Connect ユーザー情報を取得する
+  /// Fetches the OpenID Connect user info of the authenticated user.
   ///
   /// `GET /oauth/userinfo`
   ///
-  /// `profile` スコープを持つユーザートークンが必要。
+  /// Requires a user token with the `profile` scope.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonOAuthUserInfo> fetchUserInfo() async {
     final data = await _http.send<Map<String, dynamic>>(
       '/oauth/userinfo',
@@ -95,13 +91,14 @@ class OAuthApi {
     return MastodonOAuthUserInfo.fromJson(data!);
   }
 
-  /// OAuth 認可サーバーメタデータを取得する
+  /// Fetches the OAuth authorization server metadata.
   ///
   /// `GET /.well-known/oauth-authorization-server`
   ///
-  /// 認証不要。サーバーがサポートするエンドポイントやスコープの情報を返す。
+  /// No authentication required. Returns information about the endpoints
+  /// and scopes supported by the server.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonOAuthServerMetadata> fetchServerMetadata() async {
     final data = await _http.send<Map<String, dynamic>>(
       '/.well-known/oauth-authorization-server',

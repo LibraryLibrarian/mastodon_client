@@ -5,9 +5,9 @@ import 'mastodon_status.dart';
 
 part 'mastodon_conversation.g.dart';
 
-/// ダイレクトメッセージの会話
+/// Direct message conversation.
 ///
-/// `/api/v1/conversations` のレスポンスに対応する
+/// Corresponds to the response from `/api/v1/conversations`.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonConversation {
   const MastodonConversation({
@@ -20,20 +20,20 @@ class MastodonConversation {
   factory MastodonConversation.fromJson(Map<String, dynamic> json) =>
       _$MastodonConversationFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonConversationToJson(this);
 
-  /// 会話の内部 ID
+  /// Internal ID of the conversation.
   final String id;
 
-  /// 未読かどうか
+  /// Whether the conversation is unread.
   @JsonKey(defaultValue: false)
   final bool unread;
 
-  /// 会話に参加しているアカウントの一覧
+  /// List of accounts participating in the conversation.
   @JsonKey(defaultValue: <MastodonAccount>[])
   final List<MastodonAccount> accounts;
 
-  /// 会話内の最新の投稿。存在しない場合は `null`
+  /// Most recent status in the conversation. `null` if none exists.
   final MastodonStatus? lastStatus;
 }

@@ -3,23 +3,23 @@ import '../internal/link_header_parser.dart';
 import '../models/mastodon_conversation.dart';
 import '../models/mastodon_page.dart';
 
-/// ダイレクトメッセージの会話に関するAPI
+/// API for direct message conversations.
 class ConversationsApi {
-  /// [MastodonHttpClient] を受け取り、会話 API へのアクセスを提供する
+  /// Creates a [ConversationsApi] instance with the given [MastodonHttpClient].
   const ConversationsApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 会話一覧を取得する
+  /// Fetches a list of conversations.
   ///
   /// `GET /api/v1/conversations`
   ///
-  /// - [limit]: 最大取得件数（デフォルト: 20、上限: 40）
-  /// - [maxId]: このIDより古い会話を取得する（ページネーション用カーソル）
-  /// - [sinceId]: このID以降の会話を取得する
-  /// - [minId]: このID直後の会話を取得する
+  /// [limit] controls the maximum number of results (default: 20, max: 40).
+  /// Use [maxId] to return conversations older than that ID, [sinceId] for
+  /// conversations after that ID, and [minId] for immediate forward
+  /// pagination.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonConversation>> fetch({
     int? limit,
     String? maxId,
@@ -47,13 +47,11 @@ class ConversationsApi {
     );
   }
 
-  /// 会話を削除する
+  /// Deletes a conversation.
   ///
   /// `DELETE /api/v1/conversations/{id}`
   ///
-  /// - [id]: 削除する会話の ID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> delete(String id) async {
     await _http.send<void>(
       '/api/v1/conversations/$id',
@@ -61,13 +59,11 @@ class ConversationsApi {
     );
   }
 
-  /// 会話を既読にする
+  /// Marks a conversation as read.
   ///
   /// `POST /api/v1/conversations/{id}/read`
   ///
-  /// - [id]: 既読にする会話の ID
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonConversation> markAsRead(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/conversations/$id/read',

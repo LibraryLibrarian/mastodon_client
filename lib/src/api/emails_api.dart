@@ -1,22 +1,23 @@
 import '../client/mastodon_http_client.dart';
 
-/// メール確認に関する API クライアント
+/// API client for email confirmation.
 class EmailsApi {
-  /// [MastodonHttpClient] を受け取り、メール API へのアクセスを提供する
+  /// Creates an [EmailsApi] instance with the given [MastodonHttpClient].
   const EmailsApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 確認メールを再送信する
+  /// Resends the confirmation email.
   ///
   /// `POST /api/v1/emails/confirmations`
   ///
-  /// [email] を指定した場合、未確認ユーザーのメールアドレスを更新してから
-  /// 確認メールを再送信する。
+  /// When [email] is specified, updates the unconfirmed user's email address
+  /// before resending the confirmation email.
   ///
-  /// 認証必須（未確認ユーザーを作成したクライアントのトークンが必要）。
+  /// Requires authentication (token from the client that created
+  /// the unconfirmed user).
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> resendConfirmation({String? email}) async {
     await _http.send<dynamic>(
       '/api/v1/emails/confirmations',
@@ -27,6 +28,14 @@ class EmailsApi {
     );
   }
 
+  /// Checks whether the email address has been confirmed.
+  ///
+  /// `GET /api/v1/emails/check_confirmation`
+  ///
+  /// Requires authentication (token from the client that created
+  /// the unconfirmed user).
+  ///
+  /// Throws a `MastodonException` on failure.
   Future<void> checkConfirmation() async {
     await _http.send<dynamic>(
       '/api/v1/emails/check_confirmation',

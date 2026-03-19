@@ -3,25 +3,23 @@ import '../internal/link_header_parser.dart';
 import '../models/mastodon_account.dart';
 import '../models/mastodon_page.dart';
 
-/// フィーチャー中アカウント（エンドースメント）の一覧取得に関する API クライアント
+/// API client for listing endorsed (featured) accounts.
 class EndorsementsApi {
-  /// [MastodonHttpClient] を受け取り、エンドースメント API へのアクセスを提供する
+  /// Creates an [EndorsementsApi] instance with the given [MastodonHttpClient].
   const EndorsementsApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 自分がプロフィールでフィーチャーしているアカウントの一覧を取得する
+  /// Fetches the accounts the user has featured on their profile.
   ///
   /// `GET /api/v1/endorsements`
   ///
-  /// - [limit]: 最大取得件数（デフォルト: 40、上限: 80）
-  /// - [maxId]: このIDより古い結果を返す（ページネーション用カーソル）
-  /// - [sinceId]: このIDより新しい結果を返す
+  /// [limit] controls the maximum number of results (default: 40, max: 80).
+  /// Use [maxId] to return results older than that ID and [sinceId] for
+  /// newer results. Pagination cursors are parsed from the `Link` response
+  /// header and stored in [MastodonPage].
   ///
-  /// レスポンスの `Link` ヘッダーから次ページの `max_id` および前ページの
-  /// `min_id` を解析し、[MastodonPage] に格納する。
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonAccount>> fetch({
     int? limit,
     String? maxId,

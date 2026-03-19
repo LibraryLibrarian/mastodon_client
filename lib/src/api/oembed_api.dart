@@ -1,24 +1,23 @@
 import '../client/mastodon_http_client.dart';
 import '../models/mastodon_oembed.dart';
 
-/// OEmbed 情報の取得に関する API クライアント
+/// API client for OEmbed information.
 class OEmbedApi {
-  /// [MastodonHttpClient] を受け取り、OEmbed API へのアクセスを提供する
+  /// Creates an [OEmbedApi] instance with the given [MastodonHttpClient].
   const OEmbedApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 投稿の OEmbed メタデータを取得する
+  /// Fetches OEmbed metadata for a status.
   ///
   /// `GET /api/oembed`
   ///
-  /// 認証不要。
+  /// No authentication required.
   ///
-  /// - [url]: OEmbed 情報を取得する投稿の URL（必須）
-  /// - [maxwidth]: 生成される iframe の幅（ピクセル）。デフォルト: 400
-  /// - [maxheight]: 生成される iframe の高さ（ピクセル）
+  /// [url] is required. [maxwidth] sets the iframe width in pixels
+  /// (default: 400) and [maxheight] sets the height.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonOEmbed> fetch(
     String url, {
     int? maxwidth,

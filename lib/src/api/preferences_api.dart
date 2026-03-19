@@ -2,23 +2,23 @@ import '../client/mastodon_http_client.dart';
 import '../models/mastodon_preferences.dart';
 import 'accounts_api.dart' show AccountsApi;
 
-/// ユーザー設定の取得に関するAPI
+/// API for retrieving user preferences.
 ///
-/// 設定の変更は [AccountsApi.updateCredentials] を通じて行う。
+/// Use [AccountsApi.updateCredentials] to change preferences.
 class PreferencesApi {
-  /// [MastodonHttpClient] を受け取り、プリファレンスAPIへのアクセスを提供する
+  /// Creates a [PreferencesApi] instance with the given [MastodonHttpClient].
   const PreferencesApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// ユーザーのアカウント設定を取得する
+  /// Fetches the user's account preferences.
   ///
   /// `GET /api/v1/preferences`
   ///
-  /// 投稿のデフォルト公開範囲・言語・閲覧注意設定や、
-  /// メディア展開設定・CW展開設定などを含む。
+  /// Includes default posting visibility, language, content warning settings,
+  /// media expansion settings, and CW expansion settings.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPreferences> fetch() async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/preferences',

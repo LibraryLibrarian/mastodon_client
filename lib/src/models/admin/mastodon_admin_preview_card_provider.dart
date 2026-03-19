@@ -4,9 +4,9 @@ import '../json_converters.dart';
 
 part 'mastodon_admin_preview_card_provider.g.dart';
 
-/// 管理者向けプレビューカード発行元
+/// Admin-level preview card provider.
 ///
-/// トレンドリンクの発行元ドメインの管理情報を表す。
+/// Represents admin information for a trending link provider domain.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminPreviewCardProvider {
   const MastodonAdminPreviewCardProvider({
@@ -22,27 +22,27 @@ class MastodonAdminPreviewCardProvider {
     Map<String, dynamic> json,
   ) => _$MastodonAdminPreviewCardProviderFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() =>
       _$MastodonAdminPreviewCardProviderToJson(this);
 
-  /// 発行元のデータベース ID
+  /// Database ID of the provider.
   final String id;
 
-  /// 発行元のドメイン名
+  /// Domain name of the provider.
   final String domain;
 
-  /// トレンドとして表示が承認されているかどうか
+  /// Whether the provider is approved to appear as a trend.
   final bool? trendable;
 
-  /// モデレーターがレビューした日時
+  /// Timestamp when a moderator reviewed the provider.
   @SafeDateTimeConverter()
   final DateTime? reviewedAt;
 
-  /// レビューが要求された日時
+  /// Timestamp when a review was requested.
   @SafeDateTimeConverter()
   final DateTime? requestedReviewAt;
 
-  /// モデレーターによるレビューが必要かどうか
+  /// Whether moderator review is required.
   final bool? requiresReview;
 }

@@ -1,22 +1,21 @@
 import '../client/mastodon_http_client.dart';
 import '../models/mastodon_tag.dart';
 
-/// ハッシュタグ情報の取得・フォロー操作に関するAPI
+/// API for retrieving hashtag info and follow/feature operations.
 class TagsApi {
-  /// [MastodonHttpClient] を受け取り、タグAPIへのアクセスを提供する
+  /// Creates a [TagsApi] instance with the given [MastodonHttpClient].
   const TagsApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 指定したハッシュタグの情報を取得する
+  /// Fetches information about the specified hashtag.
   ///
   /// `GET /api/v1/tags/:name`
   ///
-  /// - [name]: ハッシュタグ名（大文字小文字を区別しない）
+  /// [name] is case-insensitive. When using an authenticated token, the
+  /// follow status (`following`) is also included.
   ///
-  /// 認証済みトークンを使用するとフォロー状態（`following`）も返される。
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonTag> fetch(String name) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/tags/$name',
@@ -24,15 +23,13 @@ class TagsApi {
     return MastodonTag.fromJson(data!);
   }
 
-  /// ハッシュタグをフォローする
+  /// Follows a hashtag.
   ///
   /// `POST /api/v1/tags/:name/follow`
   ///
-  /// フォローしたタグを含む投稿がホームタイムラインに表示されるようになる。
+  /// Posts containing the followed tag will appear on the home timeline.
   ///
-  /// - [name]: フォローするハッシュタグ名
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonTag> follow(String name) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/tags/$name/follow',
@@ -41,13 +38,11 @@ class TagsApi {
     return MastodonTag.fromJson(data!);
   }
 
-  /// ハッシュタグのフォローを解除する
+  /// Unfollows a hashtag.
   ///
   /// `POST /api/v1/tags/:name/unfollow`
   ///
-  /// - [name]: フォロー解除するハッシュタグ名
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonTag> unfollow(String name) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/tags/$name/unfollow',
@@ -56,15 +51,13 @@ class TagsApi {
     return MastodonTag.fromJson(data!);
   }
 
-  /// ハッシュタグをプロフィールにフィーチャー（注目表示）する
+  /// Features a hashtag on the user's profile.
   ///
   /// `POST /api/v1/tags/:id/feature`
   ///
-  /// - [name]: フィーチャーするハッシュタグ名
+  /// Available since Mastodon 4.4.0.
   ///
-  /// Mastodon 4.4.0 以降で利用可能。
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonTag> feature(String name) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/tags/$name/feature',
@@ -73,15 +66,13 @@ class TagsApi {
     return MastodonTag.fromJson(data!);
   }
 
-  /// ハッシュタグのプロフィールフィーチャー（注目表示）を解除する
+  /// Removes a featured hashtag from the user's profile.
   ///
   /// `POST /api/v1/tags/:id/unfeature`
   ///
-  /// - [name]: フィーチャー解除するハッシュタグ名
+  /// Available since Mastodon 4.4.0.
   ///
-  /// Mastodon 4.4.0 以降で利用可能。
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonTag> unfeature(String name) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/tags/$name/unfeature',

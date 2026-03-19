@@ -2,10 +2,10 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_tag.g.dart';
 
-/// ハッシュタグ情報を表すモデル
+/// Hashtag information model.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTag {
-  /// 各フィールドを指定して [MastodonTag] を生成する
+  /// Creates a [MastodonTag] with the given fields.
   const MastodonTag({
     required this.id,
     required this.name,
@@ -15,58 +15,59 @@ class MastodonTag {
     this.featuring,
   });
 
-  /// JSON マップから [MastodonTag] を生成する
+  /// Creates a [MastodonTag] from a JSON map.
   factory MastodonTag.fromJson(Map<String, dynamic> json) =>
       _$MastodonTagFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonTagToJson(this);
 
-  /// タグのデータベース ID
+  /// Database ID of the tag.
   @JsonKey(defaultValue: '')
   final String id;
 
-  /// `#` 記号を除いたハッシュタグの名前
+  /// Name of the hashtag without the `#` symbol.
   final String name;
 
-  /// インスタンス上のハッシュタグへの URL
+  /// URL to the hashtag on the instance.
   @JsonKey(defaultValue: '')
   final String url;
 
-  /// 直近の日別利用統計
+  /// Recent daily usage statistics.
   @JsonKey(defaultValue: [])
   final List<MastodonTagHistory> history;
 
-  /// 認証済みユーザーがこのタグをフォローしているか（認証時のみ）
+  /// Whether the authenticated user is following this tag (authenticated only).
   final bool? following;
 
-  /// 認証済みユーザーがこのタグをプロフィールにフィーチャーしているか（認証時のみ）
+  /// Whether the authenticated user is featuring this tag on their profile
+  /// (authenticated only).
   final bool? featuring;
 }
 
-/// ハッシュタグの日別利用統計
+/// Daily usage statistics for a hashtag.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTagHistory {
-  /// 各フィールドを指定して [MastodonTagHistory] を生成する
+  /// Creates a [MastodonTagHistory] with the given fields.
   const MastodonTagHistory({
     required this.day,
     required this.uses,
     required this.accounts,
   });
 
-  /// JSON マップから [MastodonTagHistory] を生成する
+  /// Creates a [MastodonTagHistory] from a JSON map.
   factory MastodonTagHistory.fromJson(Map<String, dynamic> json) =>
       _$MastodonTagHistoryFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonTagHistoryToJson(this);
 
-  /// 該当日の深夜0時の UNIX タイムスタンプ（文字列）
+  /// UNIX timestamp at midnight of the day (string).
   final String day;
 
-  /// その日のタグ使用回数（文字列）
+  /// Number of times the tag was used on that day (string).
   final String uses;
 
-  /// その日にタグを使用したアカウント数（文字列）
+  /// Number of accounts that used the tag on that day (string).
   final String accounts;
 }

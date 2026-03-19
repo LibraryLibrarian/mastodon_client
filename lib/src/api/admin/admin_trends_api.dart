@@ -4,23 +4,25 @@ import '../../models/admin/mastodon_admin_tag.dart';
 import '../../models/admin/mastodon_admin_trends_link.dart';
 import '../../models/mastodon_status.dart';
 
-/// 管理者向けトレンド API
+/// Admin trends API.
 ///
-/// 未承認・未レビューを含むトレンド情報の取得およびモデレーションを行う。
-/// 読み取りには `admin:read` 、書き込みには `admin:write` の OAuth スコープが必要。
+/// Retrieves and moderates trend information including unapproved/unreviewed items.
+/// Read endpoints require `admin:read`, write endpoints require `admin:write`
+/// OAuth scopes.
 ///
-/// approve / reject 系のエンドポイントは公式ドキュメント未掲載だが
-/// Mastodon サーバーに実装されており、Web UI のトレンドモデレーションで使用されている。
+/// The approve/reject endpoints are not listed in the official documentation
+/// but are implemented in the Mastodon server and used by the Web UI
+/// for trend moderation.
 class AdminTrendsApi {
   const AdminTrendsApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// トレンドリンクを取得する（未承認含む）
+  /// Fetches trending links (including unapproved).
   ///
   /// `GET /api/v1/admin/trends/links`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonAdminTrendsLink>> fetchLinks() async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/admin/trends/links',
@@ -31,11 +33,11 @@ class AdminTrendsApi {
         .toList();
   }
 
-  /// トレンドリンクを承認する
+  /// Approves a trending link.
   ///
   /// `POST /api/v1/admin/trends/links/:id/approve`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminTrendsLink> approveLink({required String id}) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/trends/links/$id/approve',
@@ -44,11 +46,11 @@ class AdminTrendsApi {
     return MastodonAdminTrendsLink.fromJson(data!);
   }
 
-  /// トレンドリンクを拒否する
+  /// Rejects a trending link.
   ///
   /// `POST /api/v1/admin/trends/links/:id/reject`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminTrendsLink> rejectLink({required String id}) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/trends/links/$id/reject',
@@ -57,11 +59,11 @@ class AdminTrendsApi {
     return MastodonAdminTrendsLink.fromJson(data!);
   }
 
-  /// トレンドステータスを取得する（未承認含む）
+  /// Fetches trending statuses (including unapproved).
   ///
   /// `GET /api/v1/admin/trends/statuses`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonStatus>> fetchStatuses() async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/admin/trends/statuses',
@@ -72,11 +74,11 @@ class AdminTrendsApi {
         .toList();
   }
 
-  /// トレンドステータスを承認する
+  /// Approves a trending status.
   ///
   /// `POST /api/v1/admin/trends/statuses/:id/approve`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonStatus> approveStatus({required String id}) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/trends/statuses/$id/approve',
@@ -85,11 +87,11 @@ class AdminTrendsApi {
     return MastodonStatus.fromJson(data!);
   }
 
-  /// トレンドステータスを拒否する
+  /// Rejects a trending status.
   ///
   /// `POST /api/v1/admin/trends/statuses/:id/reject`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonStatus> rejectStatus({required String id}) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/trends/statuses/$id/reject',
@@ -98,11 +100,11 @@ class AdminTrendsApi {
     return MastodonStatus.fromJson(data!);
   }
 
-  /// トレンドタグを取得する（未レビュー含む）
+  /// Fetches trending tags (including unreviewed).
   ///
   /// `GET /api/v1/admin/trends/tags`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonAdminTag>> fetchTags() async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/admin/trends/tags',
@@ -113,11 +115,11 @@ class AdminTrendsApi {
         .toList();
   }
 
-  /// トレンドタグを承認する
+  /// Approves a trending tag.
   ///
   /// `POST /api/v1/admin/trends/tags/:id/approve`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminTag> approveTag({required String id}) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/trends/tags/$id/approve',
@@ -126,11 +128,11 @@ class AdminTrendsApi {
     return MastodonAdminTag.fromJson(data!);
   }
 
-  /// トレンドタグを拒否する
+  /// Rejects a trending tag.
   ///
   /// `POST /api/v1/admin/trends/tags/:id/reject`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminTag> rejectTag({required String id}) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/trends/tags/$id/reject',
@@ -139,11 +141,11 @@ class AdminTrendsApi {
     return MastodonAdminTag.fromJson(data!);
   }
 
-  /// トレンドリンクの発行元一覧を取得する
+  /// Fetches the list of trending link publishers.
   ///
   /// `GET /api/v1/admin/trends/links/publishers`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<List<MastodonAdminPreviewCardProvider>> fetchPublishers() async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/admin/trends/links/publishers',
@@ -154,11 +156,11 @@ class AdminTrendsApi {
         .toList();
   }
 
-  /// トレンドリンクの発行元を承認する
+  /// Approves a trending link publisher.
   ///
   /// `POST /api/v1/admin/trends/links/publishers/:id/approve`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminPreviewCardProvider> approvePublisher({
     required String id,
   }) async {
@@ -169,11 +171,11 @@ class AdminTrendsApi {
     return MastodonAdminPreviewCardProvider.fromJson(data!);
   }
 
-  /// トレンドリンクの発行元を拒否する
+  /// Rejects a trending link publisher.
   ///
   /// `POST /api/v1/admin/trends/links/publishers/:id/reject`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminPreviewCardProvider> rejectPublisher({
     required String id,
   }) async {

@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_terms_of_service.g.dart';
 
-/// インスタンスの利用規約
+/// Terms of service of the instance.
 ///
 /// `GET /api/v1/instance/terms_of_service`
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -17,20 +17,20 @@ class MastodonTermsOfService {
   factory MastodonTermsOfService.fromJson(Map<String, dynamic> json) =>
       _$MastodonTermsOfServiceFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonTermsOfServiceToJson(this);
 
-  /// 利用規約の発効日
+  /// Effective date of the terms of service.
   final String effectiveDate;
 
-  /// 現在有効な利用規約かどうか
+  /// Whether this is the currently effective terms of service.
   @JsonKey(defaultValue: false)
   final bool effective;
 
-  /// 利用規約の HTML コンテンツ
+  /// HTML content of the terms of service.
   @JsonKey(defaultValue: '')
   final String content;
 
-  /// より新しい利用規約が存在する場合、その発効日
+  /// Effective date of a newer terms of service, if one exists.
   final String? succeededBy;
 }

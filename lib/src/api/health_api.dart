@@ -1,21 +1,22 @@
 import '../client/mastodon_http_client.dart';
 
-/// サーバーヘルスチェックに関する API クライアント
+/// API client for server health checks.
 class HealthApi {
-  /// [MastodonHttpClient] を受け取り、ヘルス API へのアクセスを提供する
+  /// Creates a [HealthApi] instance with the given [MastodonHttpClient].
   const HealthApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// インスタンスの稼働状態を確認する
+  /// Checks whether the instance is healthy.
   ///
   /// `GET /health`
   ///
-  /// 認証不要。
-  /// ウェブプロセス・データベース・キャッシュの接続が正常であれば `true` を返す。
-  /// サーバーが異常応答を返した場合は例外を throw する。
+  /// No authentication required.
+  /// Returns `true` if the web process, database, and cache connections
+  /// are all healthy. Throws an exception if the server returns an
+  /// unhealthy response.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<bool> check() async {
     await _http.send<dynamic>('/health');
     return true;

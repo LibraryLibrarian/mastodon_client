@@ -6,7 +6,7 @@ import 'mastodon_status.dart';
 
 part 'mastodon_announcement.g.dart';
 
-/// お知らせに対するリアクション
+/// Reaction to an announcement.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAnnouncementReaction {
   const MastodonAnnouncementReaction({
@@ -20,28 +20,28 @@ class MastodonAnnouncementReaction {
   factory MastodonAnnouncementReaction.fromJson(Map<String, dynamic> json) =>
       _$MastodonAnnouncementReactionFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAnnouncementReactionToJson(this);
 
-  /// 絵文字名（Unicode絵文字またはカスタム絵文字ショートコード）
+  /// Emoji name (Unicode emoji or custom emoji shortcode).
   final String name;
 
-  /// このリアクションの総数
+  /// Total count of this reaction.
   @JsonKey(defaultValue: 0)
   final int count;
 
-  /// 自分がこのリアクションを付けたかどうか
+  /// Whether the authenticated user has added this reaction.
   @JsonKey(defaultValue: false)
   final bool me;
 
-  /// カスタム絵文字の場合の画像 URL
+  /// Image URL if this is a custom emoji.
   final String? url;
 
-  /// カスタム絵文字の場合の静止画 URL
+  /// Static image URL if this is a custom emoji.
   final String? staticUrl;
 }
 
-/// サーバーのお知らせ
+/// Server announcement.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAnnouncement {
   const MastodonAnnouncement({
@@ -63,62 +63,62 @@ class MastodonAnnouncement {
   factory MastodonAnnouncement.fromJson(Map<String, dynamic> json) =>
       _$MastodonAnnouncementFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAnnouncementToJson(this);
 
-  /// お知らせの内部ID
+  /// Internal ID of the announcement.
   final String id;
 
-  /// お知らせの本文（HTML）
+  /// Body of the announcement (HTML).
   @JsonKey(defaultValue: '')
   final String content;
 
-  /// 開始日時
+  /// Start timestamp.
   @SafeDateTimeConverter()
   final DateTime? startsAt;
 
-  /// 終了日時
+  /// End timestamp.
   @SafeDateTimeConverter()
   final DateTime? endsAt;
 
-  /// 終日イベントかどうか
+  /// Whether this is an all-day event.
   @JsonKey(defaultValue: false)
   final bool allDay;
 
-  /// 公開日時
+  /// Timestamp when published.
   @SafeDateTimeConverter()
   final DateTime? publishedAt;
 
-  /// 最終更新日時
+  /// Timestamp when last updated.
   @SafeDateTimeConverter()
   final DateTime? updatedAt;
 
-  /// 既読かどうか
+  /// Whether the announcement has been read.
   @JsonKey(defaultValue: false)
   final bool read;
 
-  /// 本文中のカスタム絵文字
+  /// Custom emojis in the body.
   @JsonKey(defaultValue: [])
   final List<MastodonCustomEmoji> emojis;
 
-  /// リアクション一覧
+  /// List of reactions.
   @JsonKey(defaultValue: [])
   final List<MastodonAnnouncementReaction> reactions;
 
-  /// 本文中のハッシュタグ
+  /// Hashtags in the body.
   @JsonKey(defaultValue: [])
   final List<MastodonTag> tags;
 
-  /// 本文中のメンション
+  /// Mentions in the body.
   @JsonKey(defaultValue: [])
   final List<MastodonMention> mentions;
 
-  /// 本文中で言及されたステータス
+  /// Statuses referenced in the body.
   @JsonKey(defaultValue: [])
   final List<MastodonAnnouncementStatus> statuses;
 }
 
-/// お知らせ本文中で参照されるステータス
+/// Status referenced in an announcement body.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAnnouncementStatus {
   const MastodonAnnouncementStatus({
@@ -129,13 +129,13 @@ class MastodonAnnouncementStatus {
   factory MastodonAnnouncementStatus.fromJson(Map<String, dynamic> json) =>
       _$MastodonAnnouncementStatusFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAnnouncementStatusToJson(this);
 
-  /// ステータスID
+  /// Status ID.
   final String id;
 
-  /// ステータスURL
+  /// Status URL.
   @JsonKey(defaultValue: '')
   final String url;
 }

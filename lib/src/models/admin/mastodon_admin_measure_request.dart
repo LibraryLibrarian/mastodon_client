@@ -1,8 +1,8 @@
-/// 管理者向けメジャーデータ取得リクエスト
+/// Request for fetching admin measure data.
 ///
-/// `POST /api/v1/admin/measures` のリクエストボディ。
+/// Request body for `POST /api/v1/admin/measures`.
 class MastodonAdminMeasureRequest {
-  /// [MastodonAdminMeasureRequest] を生成する
+  /// Creates a [MastodonAdminMeasureRequest].
   const MastodonAdminMeasureRequest({
     required this.keys,
     required this.startAt,
@@ -18,49 +18,49 @@ class MastodonAdminMeasureRequest {
     this.instanceFollowersDomain,
   });
 
-  /// 取得するメジャーのキーリスト
+  /// List of measure keys to fetch.
   ///
-  /// 有効な値: `active_users`, `new_users`, `interactions`,
+  /// Valid values: `active_users`, `new_users`, `interactions`,
   /// `opened_reports`, `resolved_reports`, `tag_accounts`, `tag_uses`,
   /// `tag_servers`, `instance_accounts`, `instance_media_attachments`,
   /// `instance_reports`, `instance_statuses`, `instance_follows`,
   /// `instance_followers`
   final List<String> keys;
 
-  /// 開始日時（時刻部分は無視される）
+  /// Start date (time portion is ignored).
   final DateTime startAt;
 
-  /// 終了日時（時刻部分は無視される）
+  /// End date (time portion is ignored).
   final DateTime endAt;
 
-  /// `tag_accounts` キーに必要なタグ ID
+  /// Tag ID required for the `tag_accounts` key.
   final String? tagAccountsId;
 
-  /// `tag_uses` キーに必要なタグ ID
+  /// Tag ID required for the `tag_uses` key.
   final String? tagUsesId;
 
-  /// `tag_servers` キーに必要なタグ ID
+  /// Tag ID required for the `tag_servers` key.
   final String? tagServersId;
 
-  /// `instance_accounts` キーに必要なドメイン
+  /// Domain required for the `instance_accounts` key.
   final String? instanceAccountsDomain;
 
-  /// `instance_media_attachments` キーに必要なドメイン
+  /// Domain required for the `instance_media_attachments` key.
   final String? instanceMediaAttachmentsDomain;
 
-  /// `instance_reports` キーに必要なドメイン
+  /// Domain required for the `instance_reports` key.
   final String? instanceReportsDomain;
 
-  /// `instance_statuses` キーに必要なドメイン
+  /// Domain required for the `instance_statuses` key.
   final String? instanceStatusesDomain;
 
-  /// `instance_follows` キーに必要なドメイン
+  /// Domain required for the `instance_follows` key.
   final String? instanceFollowsDomain;
 
-  /// `instance_followers` キーに必要なドメイン
+  /// Domain required for the `instance_followers` key.
   final String? instanceFollowersDomain;
 
-  /// リクエストボディ用の JSON マップに変換する
+  /// Converts to a JSON map for the request body.
   Map<String, dynamic> toJson() => {
     'keys': keys,
     'start_at': startAt.toIso8601String(),

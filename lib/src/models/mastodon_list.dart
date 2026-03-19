@@ -2,10 +2,10 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_list.g.dart';
 
-/// ユーザー定義のリスト
+/// User-defined list.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonList {
-  /// 各フィールドを指定して [MastodonList] を生成する
+  /// Creates a [MastodonList] with the given fields.
   const MastodonList({
     required this.id,
     required this.title,
@@ -13,24 +13,24 @@ class MastodonList {
     required this.exclusive,
   });
 
-  /// JSON マップから [MastodonList] を生成する
+  /// Creates a [MastodonList] from a JSON map.
   factory MastodonList.fromJson(Map<String, dynamic> json) =>
       _$MastodonListFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonListToJson(this);
 
-  /// リストの内部 ID
+  /// Internal ID of the list.
   final String id;
 
-  /// リストのタイトル
+  /// Title of the list.
   final String title;
 
-  /// リスト内に表示するリプライのポリシー（`followed`・`list`・`none`）
+  /// Reply display policy within the list (`followed` / `list` / `none`).
   @JsonKey(defaultValue: 'list')
   final String repliesPolicy;
 
-  /// リストメンバーの投稿をホームタイムラインから除外するかどうか
+  /// Whether to exclude list member posts from the home timeline.
   @JsonKey(defaultValue: false)
   final bool exclusive;
 }

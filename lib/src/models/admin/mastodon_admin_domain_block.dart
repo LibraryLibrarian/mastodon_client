@@ -3,22 +3,22 @@ import '../json_converters.dart';
 
 part 'mastodon_admin_domain_block.g.dart';
 
-/// 管理者向けドメインブロックの制限レベル
+/// Severity level of an admin domain block.
 @JsonEnum(fieldRename: FieldRename.snake)
 enum MastodonAdminDomainBlockSeverity {
-  /// サイレンス（タイムラインや通知から非表示）
+  /// Silence (hide from timelines and notifications).
   silence,
 
-  /// 凍結（全通信を拒否）
+  /// Suspend (reject all communications).
   suspend,
 
-  /// 操作なし
+  /// No operation.
   noop,
 }
 
-/// 管理者向けドメインブロック情報
+/// Admin-level domain block information.
 ///
-/// フェデレーションがブロックされているドメインの詳細情報。
+/// Detailed information about a domain that is blocked from federation.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminDomainBlock {
   const MastodonAdminDomainBlock({
@@ -37,41 +37,41 @@ class MastodonAdminDomainBlock {
   factory MastodonAdminDomainBlock.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminDomainBlockFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAdminDomainBlockToJson(this);
 
-  /// ドメインブロックのデータベース内 ID
+  /// Database ID of the domain block.
   final String id;
 
-  /// ブロック対象のドメイン
+  /// Blocked domain.
   final String domain;
 
-  /// ドメインの SHA256 ダイジェスト
+  /// SHA256 digest of the domain.
   final String digest;
 
-  /// ブロックの制限レベル
+  /// Severity level of the block.
   @JsonKey(unknownEnumValue: MastodonAdminDomainBlockSeverity.silence)
   final MastodonAdminDomainBlockSeverity severity;
 
-  /// メディア添付を拒否するかどうか
+  /// Whether to reject media attachments.
   @JsonKey(defaultValue: false)
   final bool rejectMedia;
 
-  /// 通報を拒否するかどうか
+  /// Whether to reject reports.
   @JsonKey(defaultValue: false)
   final bool rejectReports;
 
-  /// 管理者向けの非公開コメント
+  /// Private comment for administrators.
   final String? privateComment;
 
-  /// 一般公開用のコメント
+  /// Public-facing comment.
   final String? publicComment;
 
-  /// 公開表示時にドメイン名を難読化するかどうか
+  /// Whether to obfuscate the domain name in public displays.
   @JsonKey(defaultValue: false)
   final bool obfuscate;
 
-  /// ドメインがブロックされた日時
+  /// Timestamp when the domain was blocked.
   @SafeDateTimeConverter()
   final DateTime? createdAt;
 }

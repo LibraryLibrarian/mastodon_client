@@ -2,13 +2,13 @@ import '../client/mastodon_http_client.dart';
 import '../exception/mastodon_exception.dart';
 import '../models/mastodon_poll.dart';
 
-/// アンケートに関するAPIクライアント
+/// API client for polls.
 class PollsApi {
   const PollsApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// 指定されたIDのアンケートを取得
+  /// Fetches a poll by its ID.
   ///
   /// `GET /api/v1/polls/{id}`
   Future<MastodonPoll> fetch(String id) async {
@@ -16,13 +16,13 @@ class PollsApi {
     return MastodonPoll.fromJson(data!);
   }
 
-  /// アンケートに投票
+  /// Votes on a poll.
   ///
-  /// `choices` には0始まりの選択肢インデックスを指定
+  /// [choices] contains zero-based option indices.
   ///
-  /// `POST /api/v1/polls/{pollId}/votes` に送信
+  /// `POST /api/v1/polls/{pollId}/votes`
   ///
-  /// すでに投票済みの場合は[MastodonAlreadyVotedException]をthrow
+  /// Throws [MastodonAlreadyVotedException] if already voted.
   Future<MastodonPoll> vote(String pollId, List<int> choices) async {
     try {
       final data = await _http.send<Map<String, dynamic>>(

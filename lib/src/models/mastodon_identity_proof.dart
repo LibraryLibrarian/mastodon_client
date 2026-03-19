@@ -2,9 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_identity_proof.g.dart';
 
-/// アカウントの本人確認証明情報
+/// Identity proof information for an account.
 ///
-/// **非推奨**: Mastodon 3.5.0 以降は常に空配列を返す。
+/// **Deprecated**: Always returns an empty array since Mastodon 3.5.0.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonIdentityProof {
   const MastodonIdentityProof({
@@ -18,21 +18,21 @@ class MastodonIdentityProof {
   factory MastodonIdentityProof.fromJson(Map<String, dynamic> json) =>
       _$MastodonIdentityProofFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonIdentityProofToJson(this);
 
-  /// 証明プロバイダー名（例: Keybase）
+  /// Name of the proof provider (e.g. Keybase).
   final String provider;
 
-  /// プロバイダー上のユーザー名
+  /// Username on the provider.
   final String providerUsername;
 
-  /// 最終更新日時
+  /// Timestamp of the last update.
   final String updatedAt;
 
-  /// 証明のURL
+  /// URL of the proof.
   final String proofUrl;
 
-  /// プロバイダー上のプロフィールURL
+  /// URL of the profile on the provider.
   final String profileUrl;
 }

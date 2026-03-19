@@ -1,8 +1,8 @@
-/// アカウント登録リクエストのパラメーター
+/// Parameters for an account registration request.
 ///
-/// `POST /api/v1/accounts` のリクエストボディに対応する。
+/// Corresponds to the request body for `POST /api/v1/accounts`.
 class MastodonAccountCreateRequest {
-  /// アカウント登録リクエストのパラメーターを生成する
+  /// Creates parameters for an account registration request.
   const MastodonAccountCreateRequest({
     required this.username,
     required this.email,
@@ -13,28 +13,28 @@ class MastodonAccountCreateRequest {
     this.dateOfBirth,
   });
 
-  /// 希望するユーザー名
+  /// Desired username.
   final String username;
 
-  /// メールアドレス
+  /// Email address.
   final String email;
 
-  /// パスワード
+  /// Password.
   final String password;
 
-  /// サーバー利用規約への同意
+  /// Agreement to the server's terms of service.
   final bool agreement;
 
-  /// ユーザーのロケール（ISO 639-1 形式）
+  /// Locale of the user (ISO 639-1 format).
   final String locale;
 
-  /// 登録理由（承認制インスタンスで要求される場合がある）
+  /// Reason for registration (may be required on approval-based instances).
   final String? reason;
 
-  /// 生年月日（`YYYY-MM-DD` 形式）
+  /// Date of birth (`YYYY-MM-DD` format).
   final String? dateOfBirth;
 
-  /// リクエストボディ用の JSON マップを返す
+  /// Returns a JSON map for the request body.
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'username': username,

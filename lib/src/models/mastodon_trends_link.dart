@@ -4,7 +4,7 @@ import 'mastodon_preview_card.dart';
 
 part 'mastodon_trends_link.g.dart';
 
-/// トレンドリンクの利用履歴（日別統計）
+/// Daily usage statistics for a trending link.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTrendsLinkHistory {
   const MastodonTrendsLinkHistory({
@@ -16,26 +16,26 @@ class MastodonTrendsLinkHistory {
   factory MastodonTrendsLinkHistory.fromJson(Map<String, dynamic> json) =>
       _$MastodonTrendsLinkHistoryFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonTrendsLinkHistoryToJson(this);
 
-  /// UNIX タイムスタンプ（秒）を文字列で表した日付
+  /// Date as a UNIX timestamp in seconds (string).
   @JsonKey(defaultValue: '0')
   final String day;
 
-  /// この日にリンクを共有したアカウント数（文字列）
+  /// Number of accounts that shared the link on that day (string).
   @JsonKey(defaultValue: '0')
   final String accounts;
 
-  /// この日のリンク共有回数（文字列）
+  /// Number of times the link was shared on that day (string).
   @JsonKey(defaultValue: '0')
   final String uses;
 }
 
-/// トレンドリンク
+/// Trending link.
 ///
-/// `GET /api/v1/trends/links` のレスポンスに対応する。
-/// [MastodonPreviewCard] の全フィールドに加え、トレンド固有の [history] を持つ。
+/// Corresponds to the response from `GET /api/v1/trends/links`.
+/// Includes all [MastodonPreviewCard] fields plus trend-specific [history].
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTrendsLink {
   const MastodonTrendsLink({
@@ -60,73 +60,73 @@ class MastodonTrendsLink {
   factory MastodonTrendsLink.fromJson(Map<String, dynamic> json) =>
       _$MastodonTrendsLinkFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonTrendsLinkToJson(this);
 
   static Object? _readType(Map<dynamic, dynamic> json, String key) =>
       json['type'] ?? 'link';
 
-  /// リンク先のURL
+  /// URL of the link target.
   final String url;
 
-  /// リンク先のタイトル
+  /// Title of the link target.
   @JsonKey(defaultValue: '')
   final String title;
 
-  /// プレビューの説明文
+  /// Description of the preview.
   @JsonKey(defaultValue: '')
   final String description;
 
-  /// プレビューカードの種別
+  /// Type of the preview card.
   @JsonKey(
     readValue: _readType,
     unknownEnumValue: MastodonPreviewCardType.link,
   )
   final MastodonPreviewCardType type;
 
-  /// コンテンツ作成者の名前
+  /// Name of the content author.
   @JsonKey(defaultValue: '')
   final String authorName;
 
-  /// コンテンツ作成者のURL
+  /// URL of the content author.
   @JsonKey(defaultValue: '')
   final String authorUrl;
 
-  /// コンテンツ提供元の名前
+  /// Name of the content provider.
   @JsonKey(defaultValue: '')
   final String providerName;
 
-  /// コンテンツ提供元のURL
+  /// URL of the content provider.
   @JsonKey(defaultValue: '')
   final String providerUrl;
 
-  /// プレビュー生成用のHTML
+  /// HTML for generating the preview.
   @JsonKey(defaultValue: '')
   final String html;
 
-  /// プレビューの幅（ピクセル）
+  /// Width of the preview in pixels.
   @JsonKey(defaultValue: 0)
   final int width;
 
-  /// プレビューの高さ（ピクセル）
+  /// Height of the preview in pixels.
   @JsonKey(defaultValue: 0)
   final int height;
 
-  /// プレビューサムネイルのURL
+  /// URL of the preview thumbnail.
   final String? image;
 
-  /// 写真埋め込み用のURL
+  /// URL for embedding photos.
   @JsonKey(defaultValue: '')
   final String embedUrl;
 
-  /// サムネイル用のBlurhash文字列
+  /// Blurhash string for the thumbnail.
   final String? blurhash;
 
-  /// コンテンツ作成者のリスト（Mastodon 4.3.0+）
+  /// List of content authors (Mastodon 4.3.0+).
   @JsonKey(defaultValue: <MastodonPreviewCardAuthor>[])
   final List<MastodonPreviewCardAuthor> authors;
 
-  /// 日別利用統計の履歴
+  /// History of daily usage statistics.
   @JsonKey(defaultValue: <MastodonTrendsLinkHistory>[])
   final List<MastodonTrendsLinkHistory> history;
 }

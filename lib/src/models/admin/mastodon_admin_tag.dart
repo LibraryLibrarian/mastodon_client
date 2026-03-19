@@ -3,9 +3,10 @@ import '../mastodon_tag.dart';
 
 part 'mastodon_admin_tag.g.dart';
 
-/// 管理者向けハッシュタグ情報
+/// Admin-level hashtag information.
 ///
-/// 通常の [MastodonTag] に管理者向けのトレンド管理フィールドを追加したもの。
+/// Extends the standard [MastodonTag] with admin-specific trend management
+/// fields.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminTag {
   const MastodonAdminTag({
@@ -22,33 +23,33 @@ class MastodonAdminTag {
   factory MastodonAdminTag.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminTagFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAdminTagToJson(this);
 
-  /// タグのデータベース ID
+  /// Database ID of the tag.
   @JsonKey(defaultValue: '')
   final String id;
 
-  /// `#` 記号を除いたハッシュタグの名前
+  /// Name of the hashtag without the `#` symbol.
   final String name;
 
-  /// インスタンス上のハッシュタグへの URL
+  /// URL to the hashtag on the instance.
   @JsonKey(defaultValue: '')
   final String url;
 
-  /// 直近の日別利用統計
+  /// Recent daily usage statistics.
   @JsonKey(defaultValue: [])
   final List<MastodonTagHistory> history;
 
-  /// トレンドとして表示が承認されているかどうか
+  /// Whether the tag is approved to appear as a trend.
   final bool? trendable;
 
-  /// 自動リンクが有効かどうか
+  /// Whether automatic linking is enabled.
   final bool? usable;
 
-  /// レビューが必要かどうか
+  /// Whether review is required.
   final bool? requiresReview;
 
-  /// リスト表示が可能かどうか
+  /// Whether the tag can be listed.
   final bool? listable;
 }

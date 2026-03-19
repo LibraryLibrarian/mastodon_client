@@ -4,41 +4,31 @@ import '../../models/admin/mastodon_admin_account.dart';
 import '../../models/admin/mastodon_admin_account_action_request.dart';
 import '../../models/mastodon_page.dart';
 
-/// 管理者向けアカウント管理 API
+/// Admin account management API.
 ///
-/// アカウントの一覧取得・承認・拒否・モデレーションアクションなどを行う。
-/// すべてのエンドポイントに `admin:read:accounts` または
-/// `admin:write:accounts` の OAuth スコープが必要。
+/// Provides account listing, approval, rejection, and moderation actions.
+/// All endpoints require `admin:read:accounts` or `admin:write:accounts`
+/// OAuth scopes.
 class AdminAccountsApi {
-  /// [MastodonHttpClient] を受け取り、管理者アカウント API へのアクセスを提供する
+  /// Creates an [AdminAccountsApi] instance with the given
+  /// [MastodonHttpClient].
   const AdminAccountsApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// すべてのアカウントを取得する（v1）
+  /// Fetches all accounts (v1).
   ///
   /// `GET /api/v1/admin/accounts`
   ///
-  /// - [local]: ローカルアカウントのみに絞り込む
-  /// - [remote]: リモートアカウントのみに絞り込む
-  /// - [active]: アクティブなアカウントのみに絞り込む
-  /// - [pending]: 承認待ちのアカウントのみに絞り込む
-  /// - [disabled]: 無効化されたアカウントのみに絞り込む
-  /// - [silenced]: サイレンスされたアカウントのみに絞り込む
-  /// - [suspended]: 凍結されたアカウントのみに絞り込む
-  /// - [sensitized]: センシティブ指定されたアカウントのみに絞り込む
-  /// - [username]: ユーザー名で検索
-  /// - [displayName]: 表示名で検索
-  /// - [byDomain]: ドメインで絞り込む
-  /// - [email]: メールアドレスで検索
-  /// - [ip]: IP アドレスで検索
-  /// - [staff]: スタッフアカウントのみに絞り込む
-  /// - [maxId]: ページネーション上限 ID
-  /// - [sinceId]: ページネーション下限 ID
-  /// - [minId]: 前方ページネーション用 ID
-  /// - [limit]: 最大取得件数（デフォルト: 100、最大: 200）
+  /// Set [local] or [remote] to restrict to local or remote accounts.
+  /// Use [active], [pending], [disabled], [silenced], [suspended], or
+  /// [sensitized] to filter by account status. Search within the results
+  /// using [username], [displayName], [email], or [ip]. [byDomain] filters
+  /// by domain and [staff] restricts to staff accounts. Use [maxId],
+  /// [sinceId], and [minId] for pagination. [limit] controls the maximum
+  /// number of results (default: 100, max: 200).
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonAdminAccount>> fetch({
     bool? local,
     bool? remote,
@@ -94,29 +84,21 @@ class AdminAccountsApi {
     );
   }
 
-  /// すべてのアカウントを取得する（v2）
+  /// Fetches all accounts (v2).
   ///
   /// `GET /api/v2/admin/accounts`
   ///
-  /// v1 と異なり、`origin` / `status` / `permissions` / `role_ids` で
-  /// フィルタリングする。
+  /// Unlike v1, filters by `origin` / `status` / `permissions` /
+  /// `role_ids`. [origin] is `local` or `remote`. [status] is one of
+  /// `active`, `pending`, `disabled`, `silenced`, or `suspended`.
+  /// Pass `staff` as [permissions] to filter to staff accounts. [roleIds]
+  /// restricts to accounts with those role IDs, and [invitedBy] filters
+  /// by inviter account ID. Search within results using [username],
+  /// [displayName], [email], [ip], or [byDomain]. Use [maxId], [sinceId],
+  /// and [minId] for pagination. [limit] controls the maximum number of
+  /// results (default: 100, max: 200).
   ///
-  /// - [origin]: `local` または `remote`
-  /// - [status]: `active` / `pending` / `disabled` / `silenced` / `suspended`
-  /// - [permissions]: `staff` でスタッフアカウントに絞り込む
-  /// - [roleIds]: 指定ロール ID のアカウントに絞り込む
-  /// - [invitedBy]: 招待者のアカウント ID で絞り込む
-  /// - [username]: ユーザー名で検索
-  /// - [displayName]: 表示名で検索
-  /// - [byDomain]: ドメインで絞り込む
-  /// - [email]: メールアドレスで検索
-  /// - [ip]: IP アドレスで検索
-  /// - [maxId]: ページネーション上限 ID
-  /// - [sinceId]: ページネーション下限 ID
-  /// - [minId]: 前方ページネーション用 ID
-  /// - [limit]: 最大取得件数（デフォルト: 100、最大: 200）
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonAdminAccount>> fetchV2({
     String? origin,
     String? status,
@@ -164,11 +146,11 @@ class AdminAccountsApi {
     );
   }
 
-  /// ID を指定してアカウントの管理者向け詳細情報を取得する
+  /// Fetches admin-level account details by ID.
   ///
   /// `GET /api/v1/admin/accounts/{id}`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminAccount> fetchById(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/accounts/$id',
@@ -176,11 +158,11 @@ class AdminAccountsApi {
     return MastodonAdminAccount.fromJson(data!);
   }
 
-  /// 保留中のアカウントを承認する
+  /// Approves a pending account.
   ///
   /// `POST /api/v1/admin/accounts/{id}/approve`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminAccount> approve(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/accounts/$id/approve',
@@ -189,11 +171,11 @@ class AdminAccountsApi {
     return MastodonAdminAccount.fromJson(data!);
   }
 
-  /// 保留中のアカウントを拒否する
+  /// Rejects a pending account.
   ///
   /// `POST /api/v1/admin/accounts/{id}/reject`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminAccount> reject(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/accounts/$id/reject',
@@ -202,13 +184,13 @@ class AdminAccountsApi {
     return MastodonAdminAccount.fromJson(data!);
   }
 
-  /// 凍結済みアカウントのデータを完全に削除する
+  /// Permanently deletes the data of a suspended account.
   ///
   /// `DELETE /api/v1/admin/accounts/{id}`
   ///
-  /// 「ユーザーデータ削除」権限が必要。
+  /// Requires "Delete user data" permission.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminAccount> delete(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/accounts/$id',
@@ -217,14 +199,14 @@ class AdminAccountsApi {
     return MastodonAdminAccount.fromJson(data!);
   }
 
-  /// アカウントに対してモデレーションアクションを実行する
+  /// Performs a moderation action on an account.
   ///
   /// `POST /api/v1/admin/accounts/{id}/action`
   ///
-  /// 関連する未解決の通報も自動的に解決される。
-  /// 「ユーザー管理」および「通報管理」権限が必要。
+  /// Related unresolved reports are automatically resolved.
+  /// Requires "Manage Users" and "Manage Reports" permissions.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> performAction(
     String id,
     MastodonAdminAccountActionRequest request,
@@ -236,11 +218,11 @@ class AdminAccountsApi {
     );
   }
 
-  /// 無効化されたアカウントを再有効化する
+  /// Re-enables a disabled account.
   ///
   /// `POST /api/v1/admin/accounts/{id}/enable`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminAccount> enable(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/accounts/$id/enable',
@@ -249,11 +231,11 @@ class AdminAccountsApi {
     return MastodonAdminAccount.fromJson(data!);
   }
 
-  /// アカウントのサイレンスを解除する
+  /// Removes the silence from an account.
   ///
   /// `POST /api/v1/admin/accounts/{id}/unsilence`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminAccount> unsilence(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/accounts/$id/unsilence',
@@ -262,11 +244,11 @@ class AdminAccountsApi {
     return MastodonAdminAccount.fromJson(data!);
   }
 
-  /// アカウントの凍結を解除する
+  /// Unsuspends an account.
   ///
   /// `POST /api/v1/admin/accounts/{id}/unsuspend`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminAccount> unsuspend(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/accounts/$id/unsuspend',
@@ -275,11 +257,11 @@ class AdminAccountsApi {
     return MastodonAdminAccount.fromJson(data!);
   }
 
-  /// アカウントのセンシティブ指定を解除する
+  /// Removes the sensitive flag from an account.
   ///
   /// `POST /api/v1/admin/accounts/{id}/unsensitive`
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminAccount> unsensitive(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/accounts/$id/unsensitive',

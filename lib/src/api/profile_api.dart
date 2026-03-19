@@ -1,21 +1,21 @@
 import '../client/mastodon_http_client.dart';
 import '../models/mastodon_credential_account.dart';
 
-/// プロフィール画像の管理に関する API クライアント
+/// API client for profile image management.
 class ProfileApi {
-  /// [MastodonHttpClient] を受け取り、プロフィール API へのアクセスを提供する
+  /// Creates a [ProfileApi] instance with the given [MastodonHttpClient].
   const ProfileApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// プロフィールのアバター画像を削除する
+  /// Deletes the profile avatar image.
   ///
   /// `DELETE /api/v1/profile/avatar`
   ///
-  /// アバターが設定されていない場合でも操作は成功する。
-  /// 認証必須（`write:accounts` スコープ）。
+  /// Succeeds even if no avatar is set.
+  /// Requires authentication (`write:accounts` scope).
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonCredentialAccount> deleteAvatar() async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/profile/avatar',
@@ -24,14 +24,14 @@ class ProfileApi {
     return MastodonCredentialAccount.fromJson(data!);
   }
 
-  /// プロフィールのヘッダー画像を削除する
+  /// Deletes the profile header image.
   ///
   /// `DELETE /api/v1/profile/header`
   ///
-  /// ヘッダーが設定されていない場合でも操作は成功する。
-  /// 認証必須（`write:accounts` スコープ）。
+  /// Succeeds even if no header is set.
+  /// Requires authentication (`write:accounts` scope).
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonCredentialAccount> deleteHeader() async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/profile/header',

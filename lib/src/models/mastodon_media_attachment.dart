@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'mastodon_media_attachment.g.dart';
 
-/// メディアの種別
+/// Type of media.
 @JsonEnum(fieldRename: FieldRename.snake)
 enum MastodonMediaType {
   unknown,
@@ -12,7 +12,7 @@ enum MastodonMediaType {
   audio,
 }
 
-/// Mastodon のメディア添付ファイル
+/// Media attachment on Mastodon.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonMediaAttachment {
   const MastodonMediaAttachment({
@@ -28,31 +28,31 @@ class MastodonMediaAttachment {
   factory MastodonMediaAttachment.fromJson(Map<String, dynamic> json) =>
       _$MastodonMediaAttachmentFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonMediaAttachmentToJson(this);
 
   static Object? _readType(Map<dynamic, dynamic> json, String key) =>
       json['type'] ?? 'unknown';
 
-  /// メディアの内部ID
+  /// Internal ID of the media.
   final String id;
 
-  /// メディアの種別
+  /// Type of the media.
   @JsonKey(readValue: _readType, unknownEnumValue: MastodonMediaType.unknown)
   final MastodonMediaType type;
 
-  /// メディアのURL 非同期処理中の場合はnullになることがある
+  /// URL of the media. May be null during asynchronous processing.
   final String? url;
 
-  /// サムネイル画像のURL
+  /// URL of the thumbnail image.
   final String? previewUrl;
 
-  /// リモートインスタンスの元URL
+  /// Original URL on the remote instance.
   final String? remoteUrl;
 
-  /// 代替テキスト（スクリーンリーダー用）
+  /// Alt text (for screen readers).
   final String? description;
 
-  /// blurhash文字列
+  /// Blurhash string.
   final String? blurhash;
 }

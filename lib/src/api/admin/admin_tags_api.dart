@@ -3,12 +3,22 @@ import '../../internal/link_header_parser.dart';
 import '../../models/admin/mastodon_admin_tag.dart';
 import '../../models/mastodon_page.dart';
 
-/// 管理者向けタグ API
+/// Admin tags API.
 class AdminTagsApi {
   const AdminTagsApi(this._http);
 
   final MastodonHttpClient _http;
 
+  /// Fetches a list of admin tags.
+  ///
+  /// `GET /api/v1/admin/tags`
+  ///
+  /// Use [maxId] to return results older than that ID, [sinceId] for
+  /// newer results, and [minId] for immediate forward pagination. [limit]
+  /// controls the maximum number of results (uses server default when
+  /// omitted).
+  ///
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<MastodonAdminTag>> fetch({
     String? maxId,
     String? sinceId,
@@ -36,6 +46,11 @@ class AdminTagsApi {
     );
   }
 
+  /// Fetches a tag by its ID.
+  ///
+  /// `GET /api/v1/admin/tags/:id`
+  ///
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminTag> fetchById(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/tags/$id',
@@ -43,6 +58,16 @@ class AdminTagsApi {
     return MastodonAdminTag.fromJson(data!);
   }
 
+  /// Updates a tag by its ID.
+  ///
+  /// `PUT /api/v1/admin/tags/:id`
+  ///
+  /// All parameters are optional; only provided fields are updated.
+  /// [displayName] sets the display name, [listable] controls whether
+  /// the tag appears in listings, [trendable] whether it is allowed in
+  /// trends, and [usable] whether it may be used in posts.
+  ///
+  /// Throws a `MastodonException` on failure.
   Future<MastodonAdminTag> update(
     String id, {
     String? displayName,

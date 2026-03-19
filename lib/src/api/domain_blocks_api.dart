@@ -2,23 +2,22 @@ import '../client/mastodon_http_client.dart';
 import '../internal/link_header_parser.dart';
 import '../models/mastodon_page.dart';
 
-/// ユーザーレベルのドメインブロック管理に関する API クライアント
+/// API client for user-level domain block management.
 class DomainBlocksApi {
-  /// [MastodonHttpClient] を受け取り、ドメインブロック API へのアクセスを提供する
+  /// Creates a [DomainBlocksApi] instance with the given [MastodonHttpClient].
   const DomainBlocksApi(this._http);
 
   final MastodonHttpClient _http;
 
-  /// ブロック済みドメインの一覧を取得する
+  /// Fetches the list of blocked domains.
   ///
   /// `GET /api/v1/domain_blocks`
   ///
-  /// - [limit]: 最大取得件数（デフォルト: 100、上限: 200）
-  /// - [maxId]: このIDより古い結果を返す（ページネーション用カーソル）
-  /// - [sinceId]: このIDより新しい結果を返す
-  /// - [minId]: このIDより新しい結果を返す（逆順）
+  /// [limit] controls the maximum number of results (default: 100, max: 200).
+  /// Use [maxId] to return results older than that ID, [sinceId] for newer
+  /// results, and [minId] for reverse-order forward pagination.
   ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<MastodonPage<String>> fetch({
     int? limit,
     String? maxId,
@@ -43,19 +42,15 @@ class DomainBlocksApi {
     );
   }
 
-  /// ドメインをブロックする
+  /// Blocks a domain.
   ///
   /// `POST /api/v1/domain_blocks`
   ///
-  /// ブロックすると以下の効果が発生する:
-  /// - そのドメインの全公開投稿を非表示にする
-  /// - そのドメインからの全通知を非表示にする
-  /// - そのドメインのフォロワーを削除する
-  /// - そのドメインのユーザーへの新規フォローを防止する
+  /// Blocking a domain hides all public posts and notifications from that
+  /// domain, removes existing followers from that domain, and prevents new
+  /// follows to accounts on that domain.
   ///
-  /// - [domain]: ブロック対象のドメイン名
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> block(String domain) async {
     await _http.send<void>(
       '/api/v1/domain_blocks',
@@ -64,13 +59,11 @@ class DomainBlocksApi {
     );
   }
 
-  /// ドメインブロックを解除する
+  /// Unblocks a domain.
   ///
   /// `DELETE /api/v1/domain_blocks`
   ///
-  /// - [domain]: ブロック解除対象のドメイン名
-  ///
-  /// 失敗時は `MastodonException` のサブクラスを throw する。
+  /// Throws a `MastodonException` on failure.
   Future<void> unblock(String domain) async {
     await _http.send<void>(
       '/api/v1/domain_blocks',

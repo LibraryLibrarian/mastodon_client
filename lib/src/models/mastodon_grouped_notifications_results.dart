@@ -7,10 +7,11 @@ import 'mastodon_status.dart';
 
 part 'mastodon_grouped_notifications_results.g.dart';
 
-/// グループ化通知APIのレスポンス
+/// Response from the grouped notifications API.
 ///
-/// `/api/v2/notifications` のレスポンスに対応するモデル。
-/// 通知グループ・関連アカウント・関連投稿を一括で返す。
+/// Model corresponding to the response from `/api/v2/notifications`.
+/// Returns notification groups, related accounts, and related statuses
+/// together.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonGroupedNotificationsResults {
   const MastodonGroupedNotificationsResults({
@@ -24,25 +25,25 @@ class MastodonGroupedNotificationsResults {
     Map<String, dynamic> json,
   ) => _$MastodonGroupedNotificationsResultsFromJson(json);
 
-  /// JSON シリアライズ
+  /// Serializes to JSON.
   Map<String, dynamic> toJson() =>
       _$MastodonGroupedNotificationsResultsToJson(this);
 
-  /// 通知に関連するアカウントの一覧
+  /// List of accounts related to the notifications.
   @JsonKey(defaultValue: <MastodonAccount>[])
   final List<MastodonAccount> accounts;
 
-  /// 部分的なアカウント情報の一覧
+  /// List of partial account information.
   ///
-  /// `expand_accounts=partial_avatars` を指定した場合に使用される
+  /// Used when `expand_accounts=partial_avatars` is specified.
   @JsonKey(defaultValue: <MastodonPartialAccount>[])
   final List<MastodonPartialAccount> partialAccounts;
 
-  /// 通知に関連する投稿の一覧
+  /// List of statuses related to the notifications.
   @JsonKey(defaultValue: <MastodonStatus>[])
   final List<MastodonStatus> statuses;
 
-  /// 通知グループの一覧
+  /// List of notification groups.
   @JsonKey(defaultValue: <MastodonNotificationGroup>[])
   final List<MastodonNotificationGroup> notificationGroups;
 }
