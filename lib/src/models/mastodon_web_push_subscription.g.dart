@@ -57,7 +57,7 @@ Map<String, dynamic> _$MastodonWebPushSubscriptionToJson(
   'id': instance.id,
   'endpoint': instance.endpoint,
   'server_key': instance.serverKey,
-  'alerts': instance.alerts,
+  'alerts': instance.alerts.toJson(),
   'policy': instance.policy,
   'standard': instance.standard,
 };

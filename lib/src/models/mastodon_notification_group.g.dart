@@ -59,9 +59,9 @@ Map<String, dynamic> _$MastodonNotificationGroupToJson(
   ),
   'sample_account_ids': instance.sampleAccountIds,
   'status_id': instance.statusId,
-  'report': instance.report,
-  'event': instance.event,
-  'moderation_warning': instance.moderationWarning,
+  'report': instance.report?.toJson(),
+  'event': instance.event?.toJson(),
+  'moderation_warning': instance.moderationWarning?.toJson(),
 };
 
 const _$MastodonNotificationTypeEnumMap = {

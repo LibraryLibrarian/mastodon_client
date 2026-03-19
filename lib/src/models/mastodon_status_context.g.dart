@@ -26,6 +26,6 @@ MastodonStatusContext _$MastodonStatusContextFromJson(
 Map<String, dynamic> _$MastodonStatusContextToJson(
   MastodonStatusContext instance,
 ) => <String, dynamic>{
-  'ancestors': instance.ancestors,
-  'descendants': instance.descendants,
+  'ancestors': instance.ancestors.map((e) => e.toJson()).toList(),
+  'descendants': instance.descendants.map((e) => e.toJson()).toList(),
 };

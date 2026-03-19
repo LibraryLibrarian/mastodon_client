@@ -71,7 +71,7 @@ Map<String, dynamic> _$MastodonNotificationPolicyToJson(
       _$NotificationFilterActionEnumMap[instance.forPrivateMentions]!,
   'for_limited_accounts':
       _$NotificationFilterActionEnumMap[instance.forLimitedAccounts]!,
-  'summary': instance.summary,
+  'summary': instance.summary?.toJson(),
 };
 
 const _$NotificationFilterActionEnumMap = {

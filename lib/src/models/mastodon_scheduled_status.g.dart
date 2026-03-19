@@ -34,8 +34,10 @@ Map<String, dynamic> _$MastodonScheduledStatusToJson(
 ) => <String, dynamic>{
   'id': instance.id,
   'scheduled_at': const SafeDateTimeConverter().toJson(instance.scheduledAt),
-  'params': instance.params,
-  'media_attachments': instance.mediaAttachments,
+  'params': instance.params?.toJson(),
+  'media_attachments': instance.mediaAttachments
+      .map((e) => e.toJson())
+      .toList(),
 };
 
 MastodonScheduledStatusParams _$MastodonScheduledStatusParamsFromJson(
@@ -62,7 +64,7 @@ Map<String, dynamic> _$MastodonScheduledStatusParamsToJson(
   MastodonScheduledStatusParams instance,
 ) => <String, dynamic>{
   'text': instance.text,
-  'poll': instance.poll,
+  'poll': instance.poll?.toJson(),
   'media_ids': instance.mediaIds,
   'sensitive': instance.sensitive,
   'spoiler_text': instance.spoilerText,

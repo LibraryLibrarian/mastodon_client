@@ -43,8 +43,10 @@ _$MastodonGroupedNotificationsResultsFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$MastodonGroupedNotificationsResultsToJson(
   MastodonGroupedNotificationsResults instance,
 ) => <String, dynamic>{
-  'accounts': instance.accounts,
-  'partial_accounts': instance.partialAccounts,
-  'statuses': instance.statuses,
-  'notification_groups': instance.notificationGroups,
+  'accounts': instance.accounts.map((e) => e.toJson()).toList(),
+  'partial_accounts': instance.partialAccounts.map((e) => e.toJson()).toList(),
+  'statuses': instance.statuses.map((e) => e.toJson()).toList(),
+  'notification_groups': instance.notificationGroups
+      .map((e) => e.toJson())
+      .toList(),
 };

@@ -17,4 +17,7 @@ MastodonSuggestion _$MastodonSuggestionFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$MastodonSuggestionToJson(MastodonSuggestion instance) =>
-    <String, dynamic>{'source': instance.source, 'account': instance.account};
+    <String, dynamic>{
+      'source': instance.source,
+      'account': instance.account.toJson(),
+    };

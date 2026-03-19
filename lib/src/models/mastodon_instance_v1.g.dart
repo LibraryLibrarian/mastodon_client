@@ -55,9 +55,9 @@ MastodonInstanceV1Configuration _$MastodonInstanceV1ConfigurationFromJson(
 Map<String, dynamic> _$MastodonInstanceV1ConfigurationToJson(
   MastodonInstanceV1Configuration instance,
 ) => <String, dynamic>{
-  'statuses': instance.statuses,
-  'media_attachments': instance.mediaAttachments,
-  'polls': instance.polls,
+  'statuses': instance.statuses?.toJson(),
+  'media_attachments': instance.mediaAttachments?.toJson(),
+  'polls': instance.polls?.toJson(),
 };
 
 MastodonInstanceV1 _$MastodonInstanceV1FromJson(
@@ -107,14 +107,14 @@ Map<String, dynamic> _$MastodonInstanceV1ToJson(MastodonInstanceV1 instance) =>
       'description': instance.description,
       'email': instance.email,
       'version': instance.version,
-      'urls': instance.urls,
-      'stats': instance.stats,
+      'urls': instance.urls?.toJson(),
+      'stats': instance.stats?.toJson(),
       'thumbnail': instance.thumbnail,
       'languages': instance.languages,
       'registrations': instance.registrations,
       'approval_required': instance.approvalRequired,
       'invites_enabled': instance.invitesEnabled,
-      'configuration': instance.configuration,
-      'contact_account': instance.contactAccount,
-      'rules': instance.rules,
+      'configuration': instance.configuration?.toJson(),
+      'contact_account': instance.contactAccount?.toJson(),
+      'rules': instance.rules.map((e) => e.toJson()).toList(),
     };

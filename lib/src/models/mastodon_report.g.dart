@@ -47,5 +47,5 @@ Map<String, dynamic> _$MastodonReportToJson(MastodonReport instance) =>
       'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
       'status_ids': instance.statusIds,
       'rule_ids': instance.ruleIds,
-      'target_account': instance.targetAccount,
+      'target_account': instance.targetAccount?.toJson(),
     };

@@ -24,7 +24,7 @@ MastodonProof _$MastodonProofFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$MastodonProofToJson(MastodonProof instance) =>
     <String, dynamic>{
       'avatar': instance.avatar,
-      'signatures': instance.signatures,
+      'signatures': instance.signatures.map((e) => e.toJson()).toList(),
     };
 
 MastodonProofSignature _$MastodonProofSignatureFromJson(

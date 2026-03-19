@@ -28,6 +28,6 @@ Map<String, dynamic> _$MastodonConversationToJson(
 ) => <String, dynamic>{
   'id': instance.id,
   'unread': instance.unread,
-  'accounts': instance.accounts,
-  'last_status': instance.lastStatus,
+  'accounts': instance.accounts.map((e) => e.toJson()).toList(),
+  'last_status': instance.lastStatus?.toJson(),
 };

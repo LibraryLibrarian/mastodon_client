@@ -56,7 +56,7 @@ Map<String, dynamic> _$MastodonPreviewCardToJson(
   'image': instance.image,
   'embed_url': instance.embedUrl,
   'blurhash': instance.blurhash,
-  'authors': instance.authors,
+  'authors': instance.authors.map((e) => e.toJson()).toList(),
 };
 
 const _$MastodonPreviewCardTypeEnumMap = {

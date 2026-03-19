@@ -81,9 +81,9 @@ MastodonTimelinesAccess _$MastodonTimelinesAccessFromJson(
 Map<String, dynamic> _$MastodonTimelinesAccessToJson(
   MastodonTimelinesAccess instance,
 ) => <String, dynamic>{
-  'live_feeds': instance.liveFeeds,
-  'hashtag_feeds': instance.hashtagFeeds,
-  'trending_link_feeds': instance.trendingLinkFeeds,
+  'live_feeds': instance.liveFeeds?.toJson(),
+  'hashtag_feeds': instance.hashtagFeeds?.toJson(),
+  'trending_link_feeds': instance.trendingLinkFeeds?.toJson(),
 };
 
 MastodonInstanceUrls _$MastodonInstanceUrlsFromJson(
@@ -242,12 +242,12 @@ MastodonInstanceConfiguration _$MastodonInstanceConfigurationFromJson(
 Map<String, dynamic> _$MastodonInstanceConfigurationToJson(
   MastodonInstanceConfiguration instance,
 ) => <String, dynamic>{
-  'urls': instance.urls,
-  'statuses': instance.statuses,
-  'media_attachments': instance.mediaAttachments,
-  'polls': instance.polls,
-  'accounts': instance.accounts,
-  'timelines_access': instance.timelinesAccess,
+  'urls': instance.urls.toJson(),
+  'statuses': instance.statuses?.toJson(),
+  'media_attachments': instance.mediaAttachments?.toJson(),
+  'polls': instance.polls?.toJson(),
+  'accounts': instance.accounts?.toJson(),
+  'timelines_access': instance.timelinesAccess?.toJson(),
   'translation_enabled': instance.translationEnabled,
   'limited_federation': instance.limitedFederation,
   'vapid_public_key': instance.vapidPublicKey,
@@ -270,7 +270,7 @@ Map<String, dynamic> _$MastodonInstanceThumbnailToJson(
 ) => <String, dynamic>{
   'url': instance.url,
   'blurhash': instance.blurhash,
-  'versions': instance.versions,
+  'versions': instance.versions?.toJson(),
 };
 
 MastodonInstanceThumbnailVersions _$MastodonInstanceThumbnailVersionsFromJson(
@@ -330,7 +330,10 @@ MastodonInstanceContact _$MastodonInstanceContactFromJson(
 
 Map<String, dynamic> _$MastodonInstanceContactToJson(
   MastodonInstanceContact instance,
-) => <String, dynamic>{'email': instance.email, 'account': instance.account};
+) => <String, dynamic>{
+  'email': instance.email,
+  'account': instance.account?.toJson(),
+};
 
 MastodonInstanceRule _$MastodonInstanceRuleFromJson(
   Map<String, dynamic> json,
@@ -352,7 +355,7 @@ Map<String, dynamic> _$MastodonInstanceRuleToJson(
   'id': instance.id,
   'text': instance.text,
   'hint': instance.hint,
-  'translations': instance.translations,
+  'translations': instance.translations?.map((k, e) => MapEntry(k, e.toJson())),
 };
 
 MastodonInstanceRuleTranslation _$MastodonInstanceRuleTranslationFromJson(
@@ -420,14 +423,14 @@ Map<String, dynamic> _$MastodonInstanceToJson(MastodonInstance instance) =>
       'version': instance.version,
       'source_url': instance.sourceUrl,
       'description': instance.description,
-      'icon': instance.icon,
-      'thumbnail': instance.thumbnail,
-      'usage': instance.usage,
-      'configuration': instance.configuration,
-      'contact': instance.contact,
-      'registrations': instance.registrations,
+      'icon': instance.icon?.map((e) => e.toJson()).toList(),
+      'thumbnail': instance.thumbnail?.toJson(),
+      'usage': instance.usage?.toJson(),
+      'configuration': instance.configuration.toJson(),
+      'contact': instance.contact?.toJson(),
+      'registrations': instance.registrations?.toJson(),
       'languages': instance.languages,
-      'rules': instance.rules,
+      'rules': instance.rules.map((e) => e.toJson()).toList(),
       'api_version_mastodon': instance.apiVersionMastodon,
     };
 

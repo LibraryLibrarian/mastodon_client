@@ -27,7 +27,7 @@ Map<String, dynamic> _$MastodonAdminCohortToJson(
 ) => <String, dynamic>{
   'period': const SafeDateTimeConverter().toJson(instance.period),
   'frequency': instance.frequency,
-  'data': instance.data,
+  'data': instance.data.map((e) => e.toJson()).toList(),
 };
 
 MastodonAdminCohortData _$MastodonAdminCohortDataFromJson(
