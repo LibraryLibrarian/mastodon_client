@@ -207,7 +207,7 @@ class MastodonAccountSource {
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonRole {
   const MastodonRole({
-    required this.id,
+    this.id,
     required this.name,
     this.permissions,
     this.color,
@@ -223,7 +223,8 @@ class MastodonRole {
   Map<String, dynamic> toJson() => _$MastodonRoleToJson(this);
 
   /// Role ID.
-  final int id;
+  @JsonKey(fromJson: flexibleIdFromJson)
+  final String? id;
 
   /// Role name.
   final String name;

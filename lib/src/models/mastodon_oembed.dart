@@ -10,11 +10,11 @@ class MastodonOEmbed {
   const MastodonOEmbed({
     required this.type,
     required this.version,
-    required this.title,
-    required this.authorName,
-    required this.authorUrl,
-    required this.providerName,
-    required this.providerUrl,
+    this.title,
+    this.authorName,
+    this.authorUrl,
+    this.providerName,
+    this.providerUrl,
     required this.cacheAge,
     required this.html,
     required this.width,
@@ -34,19 +34,19 @@ class MastodonOEmbed {
   final String version;
 
   /// Description title of the status.
-  final String title;
+  final String? title;
 
   /// Display name of the author.
-  final String authorName;
+  final String? authorName;
 
   /// Profile URL of the author.
-  final String authorUrl;
+  final String? authorUrl;
 
   /// Domain name of the instance.
-  final String providerName;
+  final String? providerName;
 
   /// Base URL of the instance.
-  final String providerUrl;
+  final String? providerUrl;
 
   /// Recommended cache duration in seconds.
   final int cacheAge;

@@ -1,0 +1,9 @@
+[
+    {
+        "id": "1",
+        "name": "mastodon",
+        "url": "https://localhost:3001/@testadmin/tagged/mastodon",
+        "statuses_count": "1",
+        "last_status_at": "2026-03-21"
+    }
+]

@@ -1,0 +1,25 @@
+{
+    "id": "1",
+    "expires_at": "2026-03-22T10:52:24.198Z",
+    "expired": false,
+    "multiple": false,
+    "votes_count": 0,
+    "voters_count": 0,
+    "voted": true,
+    "own_votes": [],
+    "options": [
+        {
+            "title": "Dart",
+            "votes_count": 0
+        },
+        {
+            "title": "Kotlin",
+            "votes_count": 0
+        },
+        {
+            "title": "Swift",
+            "votes_count": 0
+        }
+    ],
+    "emojis": []
+}

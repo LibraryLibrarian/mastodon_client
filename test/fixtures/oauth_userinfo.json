@@ -1,0 +1,8 @@
+{
+    "iss": "https://localhost:3001/",
+    "sub": "https://localhost:3001/ap/users/116266741324121431",
+    "name": "",
+    "preferred_username": "testadmin",
+    "profile": "https://localhost:3001/@testadmin",
+    "picture": "https://localhost:3001/avatars/original/missing.png"
+}

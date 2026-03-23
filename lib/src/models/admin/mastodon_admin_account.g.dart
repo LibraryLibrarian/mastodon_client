@@ -82,7 +82,7 @@ Map<String, dynamic> _$MastodonAdminIpToJson(MastodonAdminIp instance) =>
 
 MastodonAdminRole _$MastodonAdminRoleFromJson(Map<String, dynamic> json) =>
     MastodonAdminRole(
-      id: (json['id'] as num).toInt(),
+      id: flexibleIdFromJson(json['id']),
       name: json['name'] as String,
       color: json['color'] as String? ?? '',
       position: (json['position'] as num?)?.toInt(),

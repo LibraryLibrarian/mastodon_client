@@ -1,0 +1,24 @@
+[
+    {
+        "id": "1",
+        "scheduled_at": "2026-03-25T12:00:00.000Z",
+        "params": {
+            "poll": null,
+            "text": "This is a scheduled post",
+            "language": null,
+            "media_ids": null,
+            "sensitive": null,
+            "visibility": "public",
+            "idempotency": null,
+            "scheduled_at": null,
+            "spoiler_text": null,
+            "application_id": 2,
+            "in_reply_to_id": null,
+            "with_rate_limit": false,
+            "allowed_mentions": null,
+            "quoted_status_id": null,
+            "quote_approval_policy": "public"
+        },
+        "media_attachments": []
+    }
+]

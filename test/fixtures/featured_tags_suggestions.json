@@ -1,0 +1,90 @@
+[
+    {
+        "id": "2",
+        "name": "dart",
+        "url": "https://localhost:3001/tags/dart",
+        "history": [
+            {
+                "day": "1774051200",
+                "accounts": "1",
+                "uses": "1"
+            },
+            {
+                "day": "1773964800",
+                "accounts": "0",
+                "uses": "0"
+            },
+            {
+                "day": "1773878400",
+                "accounts": "0",
+                "uses": "0"
+            },
+            {
+                "day": "1773792000",
+                "accounts": "0",
+                "uses": "0"
+            },
+            {
+                "day": "1773705600",
+                "accounts": "0",
+                "uses": "0"
+            },
+            {
+                "day": "1773619200",
+                "accounts": "0",
+                "uses": "0"
+            },
+            {
+                "day": "1773532800",
+                "accounts": "0",
+                "uses": "0"
+            }
+        ],
+        "following": false,
+        "featuring": false
+    },
+    {
+        "id": "3",
+        "name": "flutter",
+        "url": "https://localhost:3001/tags/flutter",
+        "history": [
+            {
+                "day": "1774051200",
+                "accounts": "1",
+                "uses": "1"
+            },
+            {
+                "day": "1773964800",
+                "accounts": "0",
+                "uses": "0"
+            },
+            {
+                "day": "1773878400",
+                "accounts": "0",
+                "uses": "0"
+            },
+            {
+                "day": "1773792000",
+                "accounts": "0",
+                "uses": "0"
+            },
+            {
+                "day": "1773705600",
+                "accounts": "0",
+                "uses": "0"
+            },
+            {
+                "day": "1773619200",
+                "accounts": "0",
+                "uses": "0"
+            },
+            {
+                "day": "1773532800",
+                "accounts": "0",
+                "uses": "0"
+            }
+        ],
+        "following": false,
+        "featuring": false
+    }
+]

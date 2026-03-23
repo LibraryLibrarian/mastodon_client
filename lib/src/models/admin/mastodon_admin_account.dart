@@ -132,7 +132,7 @@ class MastodonAdminIp {
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminRole {
   const MastodonAdminRole({
-    required this.id,
+    this.id,
     required this.name,
     this.color,
     this.position,
@@ -149,7 +149,8 @@ class MastodonAdminRole {
   Map<String, dynamic> toJson() => _$MastodonAdminRoleToJson(this);
 
   /// ID of the role.
-  final int id;
+  @JsonKey(fromJson: flexibleIdFromJson)
+  final String? id;
 
   /// Name of the role.
   final String name;

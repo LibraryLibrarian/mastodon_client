@@ -1,0 +1,18 @@
+{
+    "id": "1",
+    "title": "Test Filter",
+    "context": [
+        "home",
+        "public"
+    ],
+    "expires_at": null,
+    "filter_action": "warn",
+    "keywords": [
+        {
+            "id": "1",
+            "keyword": "badword",
+            "whole_word": true
+        }
+    ],
+    "statuses": []
+}
