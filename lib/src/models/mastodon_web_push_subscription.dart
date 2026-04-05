@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'json_converters.dart';
+
 part 'mastodon_web_push_subscription.g.dart';
 
 /// Alert settings per Web Push notification type.
@@ -85,7 +87,7 @@ class MastodonPushAlerts {
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonWebPushSubscription {
   const MastodonWebPushSubscription({
-    required this.id,
+    this.id,
     required this.endpoint,
     required this.serverKey,
     required this.alerts,
@@ -100,7 +102,8 @@ class MastodonWebPushSubscription {
   Map<String, dynamic> toJson() => _$MastodonWebPushSubscriptionToJson(this);
 
   /// Subscription ID.
-  final String id;
+  @JsonKey(fromJson: flexibleIdFromJson)
+  final String? id;
 
   /// URL for sending notifications.
   final String endpoint;

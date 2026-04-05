@@ -18,7 +18,9 @@ MastodonNotificationGroup _$MastodonNotificationGroupFromJson(
     MastodonNotificationGroup._readType(json, 'type'),
     unknownValue: MastodonNotificationType.unknown,
   ),
-  mostRecentNotificationId: json['most_recent_notification_id'] as String,
+  mostRecentNotificationId: flexibleIdFromJson(
+    json['most_recent_notification_id'],
+  ),
   pageMinId: json['page_min_id'] as String?,
   pageMaxId: json['page_max_id'] as String?,
   latestPageNotificationAt: const SafeDateTimeConverter().fromJson(

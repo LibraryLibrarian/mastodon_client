@@ -43,7 +43,7 @@ Map<String, dynamic> _$MastodonPushAlertsToJson(MastodonPushAlerts instance) =>
 MastodonWebPushSubscription _$MastodonWebPushSubscriptionFromJson(
   Map<String, dynamic> json,
 ) => MastodonWebPushSubscription(
-  id: json['id'] as String,
+  id: flexibleIdFromJson(json['id']),
   endpoint: json['endpoint'] as String,
   serverKey: json['server_key'] as String,
   alerts: MastodonPushAlerts.fromJson(json['alerts'] as Map<String, dynamic>),
