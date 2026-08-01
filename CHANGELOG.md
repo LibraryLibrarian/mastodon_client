@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `httpClientAdapter` parameter on `MastodonClient` / `MastodonHttpClient` to customize the HTTP transport (private CA trust, proxying)
+- E2E test layer (`test/e2e/`) targeting the local closed-federation environment (`fediverse_e2e`); enabled via `RUN_E2E=1`, auto-skipped otherwise
+
 ## [1.0.0-beta.1] - 2026-03-18
 
 ### Added

@@ -20,6 +20,7 @@ class MastodonHttpClient {
     Duration sendTimeout = const Duration(seconds: 10),
     bool enableLog = true,
     Logger? logger,
+    HttpClientAdapter? httpClientAdapter,
   }) : logger = logger ?? const StdoutLogger(),
        dio = Dio(
          BaseOptions(
@@ -33,6 +34,9 @@ class MastodonHttpClient {
            },
          ),
        ) {
+    if (httpClientAdapter != null) {
+      dio.httpClientAdapter = httpClientAdapter;
+    }
     dio.interceptors.add(
       _MastodonInterceptor(enableLog: enableLog, logger: this.logger),
     );
