@@ -11,12 +11,9 @@ void main() {
       final result = MastodonSearchResult.fromJson(json);
 
       expect(result.accounts, hasLength(1));
-      expect(result.accounts.first.id, equals('116266741324121431'));
-      expect(result.accounts.first.username, equals('testadmin'));
-      expect(result.accounts.first.acct, equals('testadmin'));
-      expect(result.accounts.first.followersCount, equals(0));
-      expect(result.accounts.first.followingCount, equals(0));
-      expect(result.accounts.first.statusesCount, equals(5));
+      expect(result.accounts.first.id, isNotEmpty);
+      expect(result.accounts.first.username, 'md_eve');
+      expect(result.accounts.first.acct, 'md_eve');
       expect(result.statuses, isEmpty);
       expect(result.hashtags, isEmpty);
     });

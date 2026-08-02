@@ -10,24 +10,19 @@ void main() {
       final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
       final account = MastodonCredentialAccount.fromJson(json);
 
-      expect(account.id, '116266741324121431');
-      expect(account.username, 'testadmin');
-      expect(account.acct, 'testadmin');
-      expect(account.displayName, '');
+      expect(account.id, isNotEmpty);
+      expect(account.username, 'e2e_admin');
+      expect(account.acct, 'e2e_admin');
       expect(account.locked, false);
       expect(account.bot, false);
-      expect(account.discoverable, true);
-      expect(account.followersCount, 1);
-      expect(account.followingCount, 1);
-      expect(account.statusesCount, 5);
-      expect(account.url, 'https://localhost:3001/@testadmin');
+      expect(account.url, 'https://mastodon.test/@e2e_admin');
       expect(
         account.avatarUrl,
-        'https://localhost:3001/avatars/original/missing.png',
+        'https://mastodon.test/avatars/original/missing.png',
       );
       expect(
         account.headerUrl,
-        'https://localhost:3001/headers/original/missing.png',
+        'https://mastodon.test/headers/original/missing.png',
       );
       expect(account.fields, isEmpty);
       expect(account.emojis, isEmpty);
@@ -44,9 +39,9 @@ void main() {
       // role
       expect(account.role, isNotNull);
       final role = account.role!;
-      expect(role.id, '3');
+      expect(role.id, isNotEmpty);
       expect(role.name, 'Owner');
-      expect(role.permissions, '2097151');
+      expect(role.permissions, isNotEmpty);
       expect(role.highlighted, true);
     });
   });

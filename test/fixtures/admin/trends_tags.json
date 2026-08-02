@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "id": "2",
+    "name": "e2elife",
+    "url": "https://mastodon.test/tags/e2elife",
+    "history": [
+      {
+        "day": "1785628800",
+        "accounts": "8",
+        "uses": "29"
+      },
+      {
+        "day": "1785542400",
+        "accounts": "0",
+        "uses": "0"
+      },
+      {
+        "day": "1785456000",
+        "accounts": "0",
+        "uses": "0"
+      },
+      {
+        "day": "1785369600",
+        "accounts": "0",
+        "uses": "0"
+      },
+      {
+        "day": "1785283200",
+        "accounts": "0",
+        "uses": "0"
+      },
+      {
+        "day": "1785196800",
+        "accounts": "0",
+        "uses": "0"
+      },
+      {
+        "day": "1785110400",
+        "accounts": "0",
+        "uses": "0"
+      }
+    ],
+    "following": false,
+    "featuring": false,
+    "trendable": true,
+    "usable": true,
+    "requires_review": false,
+    "listable": true
+  }
+]
