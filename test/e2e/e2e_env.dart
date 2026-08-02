@@ -18,12 +18,20 @@ class E2eEnv {
     required this.mastodonUserToken,
     required this.misskeyBaseUrl,
     required this.rootCaPath,
+    this.fedibirdBaseUrl,
+    this.fedibirdAdminToken,
+    this.fedibirdUserToken,
   });
 
   /// Skip reason shown when the E2E environment is not available.
   static const skipReason =
       'E2E environment not available (set RUN_E2E=1 and run '
       'fediverse_e2e: make init)';
+
+  /// Skip reason shown when Fedibird is not part of the running environment.
+  static const fedibirdSkipReason =
+      'fedibird.test is not seeded (run fediverse_e2e: make build-fedibird '
+      '&& make init)';
 
   final String mastodonBaseUrl;
   final String mastodonAdminToken;
@@ -32,6 +40,16 @@ class E2eEnv {
 
   /// Path to the self-signed root CA that the E2E servers use.
   final String rootCaPath;
+
+  /// Fedibird settings, `null` when Fedibird is not part of the environment.
+  final String? fedibirdBaseUrl;
+  final String? fedibirdAdminToken;
+  final String? fedibirdUserToken;
+
+  /// Whether Fedibird is available in the running environment.
+  bool get hasFedibird =>
+      (fedibirdBaseUrl?.isNotEmpty ?? false) &&
+      (fedibirdUserToken?.isNotEmpty ?? false);
 
   /// Loads the E2E environment, or returns `null` when unavailable.
   static E2eEnv? tryLoad() {
@@ -76,6 +94,9 @@ class E2eEnv {
       mastodonUserToken: mastodonUserToken,
       misskeyBaseUrl: misskeyBaseUrl,
       rootCaPath: caPath,
+      fedibirdBaseUrl: map['FEDIBIRD_BASE_URL'],
+      fedibirdAdminToken: map['FEDIBIRD_ADMIN_TOKEN'],
+      fedibirdUserToken: map['FEDIBIRD_USER_TOKEN'],
     );
   }
 
@@ -95,6 +116,16 @@ class E2eEnv {
   MastodonClient createMastodonClient({bool admin = false}) => MastodonClient(
         baseUrl: mastodonBaseUrl,
         accessToken: admin ? mastodonAdminToken : mastodonUserToken,
+        httpClientAdapter: createHttpClientAdapter(),
+      );
+
+  /// Creates a [MastodonClient] connected to `fedibird.test`.
+  ///
+  /// Fedibird is a Mastodon 3.4 fork, so the same client is used; call
+  /// only when [hasFedibird] is `true`.
+  MastodonClient createFedibirdClient({bool admin = false}) => MastodonClient(
+        baseUrl: fedibirdBaseUrl!,
+        accessToken: admin ? fedibirdAdminToken : fedibirdUserToken,
         httpClientAdapter: createHttpClientAdapter(),
       );
 }

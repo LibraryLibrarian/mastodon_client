@@ -26,9 +26,7 @@ MastodonAdminAccount _$MastodonAdminAccountFromJson(
       [],
   locale: json['locale'] as String?,
   inviteRequest: json['invite_request'] as String?,
-  role: json['role'] == null
-      ? null
-      : MastodonAdminRole.fromJson(json['role'] as Map<String, dynamic>),
+  role: adminRoleFromJson(json['role']),
   confirmed: json['confirmed'] as bool? ?? false,
   approved: json['approved'] as bool? ?? false,
   disabled: json['disabled'] as bool? ?? false,

@@ -70,6 +70,7 @@ class MastodonAdminAccount {
   final String? inviteRequest;
 
   /// Current role of the account.
+  @JsonKey(fromJson: adminRoleFromJson)
   final MastodonAdminRole? role;
 
   /// Whether the email address has been confirmed.
@@ -177,3 +178,15 @@ class MastodonAdminRole {
   @SafeDateTimeConverter()
   final DateTime? updatedAt;
 }
+
+/// Deserializes the `role` field of an admin account.
+///
+/// Mastodon 4.0+ returns a role object, whereas Mastodon 3.x and forks such
+/// as Fedibird return a plain string (`user`, `moderator`, `admin`). The
+/// string form is mapped to a [MastodonAdminRole] carrying only its name.
+MastodonAdminRole? adminRoleFromJson(Object? value) => switch (value) {
+  null => null,
+  final String name => MastodonAdminRole(name: name),
+  final Map<String, dynamic> json => MastodonAdminRole.fromJson(json),
+  _ => null,
+};

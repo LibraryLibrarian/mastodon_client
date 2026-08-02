@@ -49,6 +49,27 @@ void main() {
       expect(obj.role!.highlighted, isTrue);
     });
 
+    test('deserializes legacy string role (Mastodon 3.x / Fedibird)', () {
+      // 3.x系は role をオブジェクトではなく文字列で返すため、
+      // オブジェクト前提のキャストではデシリアライズに失敗していた
+      final file = File('test/fixtures/admin/account_v3_legacy_role.json');
+      final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+      final obj = MastodonAdminAccount.fromJson(json);
+
+      expect(obj.role, isNotNull);
+      expect(obj.role!.name, 'user');
+      expect(obj.role!.id, isNull);
+      expect(obj.username, 'e2e_carol');
+    });
+
+    test('role is null when the field is absent', () {
+      final obj = MastodonAdminAccount.fromJson(const {
+        'id': '1',
+        'username': 'nobody',
+      });
+      expect(obj.role, isNull);
+    });
+
     test('deserializes list of accounts from fixture', () {
       final file = File('test/fixtures/admin/accounts.json');
       final list = jsonDecode(file.readAsStringSync()) as List<dynamic>;

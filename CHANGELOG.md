@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `httpClientAdapter` parameter on `MastodonClient` / `MastodonHttpClient` to customize the HTTP transport (private CA trust, proxying)
 - E2E test layer (`test/e2e/`) targeting the local closed-federation environment (`fediverse_e2e`); enabled via `RUN_E2E=1`, auto-skipped otherwise
+- Compatibility E2E suite against Fedibird 3.4.1, pinning which endpoints are available on Mastodon 3.x-era servers and which are not (`/api/v2/instance`, `/api/v2/filters`, `/api/v1/trends/{tags,statuses,links}`, `/api/v1/followed_tags`, `/api/v1/instance/domain_blocks`, and most admin APIs beyond accounts/reports return 404 there)
+
+### Fixed
+
+- `MastodonAdminAccount.role` failed to deserialize with a type cast error against Mastodon 3.x servers and forks such as Fedibird, which return `role` as a plain string (`user` / `moderator` / `admin`) instead of an object. The string form is now accepted and mapped to a `MastodonAdminRole` carrying its name
 
 ## [1.0.0-beta.1] - 2026-03-18
 
