@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Tests for the HTTP error conversion logic (`convertDioException`): all status-code branches (401/403/404/422/429/5xx/unmapped), error body parsing (`{"error": "..."}` extraction and fallbacks), retry-after header parsing, and network-level errors (connection/timeout/cancel)
+
 ### Changed
 
 - Refreshed fixtures against a live, federated world (multi-account, cross-server posts/reactions/follows) via the fixture collection tool in `fediverse_e2e`, replacing the single-server March snapshot. Corresponding model tests were updated to assert on structural properties rather than hardcoded IDs/counts where the underlying data is inherently dynamic (timestamps, counters, federated content). Notably `MastodonCredentialAccount`'s `role: Owner` fixture now comes from an actual admin-scoped account rather than a stub
