@@ -51,5 +51,17 @@ void main() {
       expect(first.obfuscate, isFalse);
       expect(first.createdAt, DateTime.utc(2026, 3, 21, 10, 56, 4, 927));
     });
+
+    test('severity falls back to silence for a value not yet known to '
+        'this client', () {
+      final file = File('test/fixtures/admin/domain_block.json');
+      final json =
+          (jsonDecode(file.readAsStringSync()) as Map<String, dynamic>)
+            ..['severity'] = 'someFutureSeverityNotInEnum';
+
+      final block = MastodonAdminDomainBlock.fromJson(json);
+
+      expect(block.severity, MastodonAdminDomainBlockSeverity.silence);
+    });
   });
 }

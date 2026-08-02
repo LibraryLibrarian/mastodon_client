@@ -39,6 +39,18 @@ void main() {
       expect(filter.keywords, hasLength(1));
       expect(filter.statuses, isEmpty);
     });
+
+    test('filterAction falls back to warn for a value not yet known to '
+        'this client', () {
+      final file = File('test/fixtures/filter.json');
+      final json =
+          (jsonDecode(file.readAsStringSync()) as Map<String, dynamic>)
+            ..['filter_action'] = 'someFutureActionNotInEnum';
+
+      final filter = MastodonFilter.fromJson(json);
+
+      expect(filter.filterAction, MastodonFilterAction.warn);
+    });
   });
 
   group('MastodonFilterKeyword.fromJson', () {

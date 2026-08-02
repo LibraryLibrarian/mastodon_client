@@ -128,4 +128,17 @@ void main() {
       expect(instance.configuration!.polls!.maxOptions, 4);
     });
   });
+
+  group('MastodonTimelineLiveFeeds.fromJson - unknown access level', () {
+    test('local/remote fall back to public for a value not yet known to '
+        'this client', () {
+      final feeds = MastodonTimelineLiveFeeds.fromJson(const {
+        'local': 'someFutureLevelNotInEnum',
+        'remote': 'someFutureLevelNotInEnum',
+      });
+
+      expect(feeds.local, MastodonTimelineAccessLevel.public);
+      expect(feeds.remote, MastodonTimelineAccessLevel.public);
+    });
+  });
 }

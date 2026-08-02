@@ -31,5 +31,17 @@ void main() {
       expect(first.createdAt, DateTime.utc(2026, 3, 21, 10, 56, 5, 439));
       expect(first.expiresAt, isNull);
     });
+
+    test('severity falls back to signUpBlock for a value not yet known '
+        'to this client', () {
+      final file = File('test/fixtures/admin/ip_blocks.json');
+      final list = jsonDecode(file.readAsStringSync()) as List<dynamic>;
+      final json = Map<String, dynamic>.from(list.first as Map)
+        ..['severity'] = 'someFutureSeverityNotInEnum';
+
+      final block = MastodonAdminIpBlock.fromJson(json);
+
+      expect(block.severity, MastodonAdminIpBlockSeverity.signUpBlock);
+    });
   });
 }

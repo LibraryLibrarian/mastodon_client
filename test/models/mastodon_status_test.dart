@@ -93,4 +93,18 @@ void main() {
       expect(descendant.account.acct, contains('@'));
     });
   });
+
+  group('MastodonStatus.fromJson - unknown visibility', () {
+    test('visibility falls back to public for a value not yet known to '
+        'this client', () {
+      final file = File('test/fixtures/status.json');
+      final json =
+          (jsonDecode(file.readAsStringSync()) as Map<String, dynamic>)
+            ..['visibility'] = 'someFutureVisibilityNotInEnum';
+
+      final status = MastodonStatus.fromJson(json);
+
+      expect(status.visibility, MastodonVisibility.public);
+    });
+  });
 }

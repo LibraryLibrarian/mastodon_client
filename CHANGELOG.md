@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Tests covering the `unknownEnumValue` fallback for `MastodonFilterAction`, `MastodonTimelineAccessLevel`, `MastodonPreviewCardType`, `MastodonMediaType`, `MastodonVisibility`, `MastodonAdminIpBlockSeverity`, and `MastodonAdminDomainBlockSeverity` when the server returns a value not yet known to this client
 - Tests for the HTTP error conversion logic (`convertDioException`): all status-code branches (401/403/404/422/429/5xx/unmapped), error body parsing (`{"error": "..."}` extraction and fallbacks), retry-after header parsing, and network-level errors (connection/timeout/cancel)
 
 ### Changed

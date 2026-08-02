@@ -34,5 +34,17 @@ void main() {
         equals('U2TI:j|cfQ|c|cjtfQjtfQfQfQfQ|cjtfQjt'),
       );
     });
+
+    test('type falls back to unknown for a value not yet known to this '
+        'client', () {
+      final file = File('test/fixtures/media_attachment.json');
+      final json =
+          (jsonDecode(file.readAsStringSync()) as Map<String, dynamic>)
+            ..['type'] = 'someFutureTypeNotInEnum';
+
+      final attachment = MastodonMediaAttachment.fromJson(json);
+
+      expect(attachment.type, MastodonMediaType.unknown);
+    });
   });
 }
