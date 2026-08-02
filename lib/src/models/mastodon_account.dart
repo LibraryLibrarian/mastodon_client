@@ -39,6 +39,12 @@ class MastodonAccount {
     this.hideCollections,
     this.avatarBlurhash,
     this.headerBlurhash,
+    this.avatarDescription,
+    this.headerDescription,
+    this.featureApproval,
+    this.showFeatured,
+    this.showMedia,
+    this.showMediaReplies,
   });
 
   factory MastodonAccount.fromJson(Map<String, dynamic> json) =>
@@ -146,6 +152,72 @@ class MastodonAccount {
 
   /// Blurhash of the header image.
   final String? headerBlurhash;
+
+  /// Alt text describing the avatar image, for accessibility.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final String? avatarDescription;
+
+  /// Alt text describing the header image, for accessibility.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final String? headerDescription;
+
+  /// This account's approval policy for being tagged into collections.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final MastodonFeatureApproval? featureApproval;
+
+  /// Whether this account's featured collections are shown on its profile.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final bool? showFeatured;
+
+  /// Whether media attachments are shown on this account's profile.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final bool? showMedia;
+
+  /// Whether media attachments from replies are shown on this account's
+  /// profile.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final bool? showMediaReplies;
+}
+
+/// An account's approval policy for being tagged into collections
+/// (Mastodon 4.6.0+).
+///
+/// [automatic] and [manual] each list the visibility scopes (e.g.
+/// `public`, `followers`) for which tagging requests are automatically
+/// accepted or require manual approval, respectively.
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MastodonFeatureApproval {
+  const MastodonFeatureApproval({
+    required this.automatic,
+    required this.manual,
+    this.currentUser,
+  });
+
+  factory MastodonFeatureApproval.fromJson(Map<String, dynamic> json) =>
+      _$MastodonFeatureApprovalFromJson(json);
+
+  /// Serializes to JSON.
+  Map<String, dynamic> toJson() => _$MastodonFeatureApprovalToJson(this);
+
+  /// Visibility scopes for which tagging requests are automatically
+  /// accepted.
+  @JsonKey(defaultValue: <String>[])
+  final List<String> automatic;
+
+  /// Visibility scopes for which tagging requests require manual
+  /// approval.
+  @JsonKey(defaultValue: <String>[])
+  final List<String> manual;
+
+  /// The approval status for the currently authenticated user
+  /// (e.g. `automatic`, `manual`, `denied`), if applicable.
+  final String? currentUser;
 }
 
 /// Profile field of a Mastodon account.

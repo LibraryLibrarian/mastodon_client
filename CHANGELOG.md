@@ -7,11 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Refreshed fixtures against a live, federated world (multi-account, cross-server posts/reactions/follows) via the fixture collection tool in `fediverse_e2e`, replacing the single-server March snapshot. Corresponding model tests were updated to assert on structural properties rather than hardcoded IDs/counts where the underlying data is inherently dynamic (timestamps, counters, federated content). Notably `MastodonCredentialAccount`'s `role: Owner` fixture now comes from an actual admin-scoped account rather than a stub
+
+### Fixed
+
+- `MastodonAdminAccount.role` deserialization is exercised against a live server response including the newly-added Mastodon 4.6.0 fields, catching drift from the API documentation earlier than before
+
 ### Added
 
 - `httpClientAdapter` parameter on `MastodonClient` / `MastodonHttpClient` to customize the HTTP transport (private CA trust, proxying)
 - E2E test layer (`test/e2e/`) targeting the local closed-federation environment (`fediverse_e2e`); enabled via `RUN_E2E=1`, auto-skipped otherwise
 - Compatibility E2E suite against Fedibird 3.4.1, pinning which endpoints are available on Mastodon 3.x-era servers and which are not (`/api/v2/instance`, `/api/v2/filters`, `/api/v1/trends/{tags,statuses,links}`, `/api/v1/followed_tags`, `/api/v1/instance/domain_blocks`, and most admin APIs beyond accounts/reports return 404 there)
+- `MastodonAccount` fields added in Mastodon 4.6.0: `avatarDescription`, `headerDescription`, `featureApproval` (as `MastodonFeatureApproval`), `showFeatured`, `showMedia`, `showMediaReplies`
+- `MastodonStatus.taggedCollections` (Mastodon 4.6.0), listing the `MastodonCollection`s a status has been tagged into
+- `MastodonAdminRole.collectionLimit` (Mastodon 4.6.0)
+- `MastodonCollection` model, corresponding to `/api/v1/collections` responses
 
 ### Fixed
 

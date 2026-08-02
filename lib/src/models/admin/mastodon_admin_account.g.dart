@@ -92,6 +92,7 @@ MastodonAdminRole _$MastodonAdminRoleFromJson(Map<String, dynamic> json) =>
       updatedAt: const SafeDateTimeConverter().fromJson(
         json['updated_at'] as String?,
       ),
+      collectionLimit: (json['collection_limit'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$MastodonAdminRoleToJson(MastodonAdminRole instance) =>
@@ -104,4 +105,5 @@ Map<String, dynamic> _$MastodonAdminRoleToJson(MastodonAdminRole instance) =>
       'highlighted': instance.highlighted,
       'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
       'updated_at': const SafeDateTimeConverter().toJson(instance.updatedAt),
+      'collection_limit': instance.collectionLimit,
     };

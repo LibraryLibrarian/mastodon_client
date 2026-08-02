@@ -141,6 +141,7 @@ class MastodonAdminRole {
     this.highlighted = false,
     this.createdAt,
     this.updatedAt,
+    this.collectionLimit,
   });
 
   factory MastodonAdminRole.fromJson(Map<String, dynamic> json) =>
@@ -177,6 +178,11 @@ class MastodonAdminRole {
   /// Timestamp when the role was last updated.
   @SafeDateTimeConverter()
   final DateTime? updatedAt;
+
+  /// Maximum number of collections an account with this role may create.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final int? collectionLimit;
 }
 
 /// Deserializes the `role` field of an admin account.
