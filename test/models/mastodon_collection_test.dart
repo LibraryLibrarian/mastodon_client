@@ -26,8 +26,8 @@ void main() {
   group('MastodonFeatureApproval.fromJson', () {
     test('deserializes visibility scope lists', () {
       final approval = MastodonFeatureApproval.fromJson(const {
-        'automatic': ['public'],
-        'manual': [],
+        'automatic': <String>['public'],
+        'manual': <String>[],
         'current_user': 'automatic',
       });
 
@@ -38,8 +38,8 @@ void main() {
 
     test('handles empty scopes and null current_user', () {
       final approval = MastodonFeatureApproval.fromJson(const {
-        'automatic': [],
-        'manual': [],
+        'automatic': <String>[],
+        'manual': <String>[],
       });
 
       expect(approval.automatic, isEmpty);
