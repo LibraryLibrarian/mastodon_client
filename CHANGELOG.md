@@ -7,29 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-
-- Tests for `Link` response header parsing (`parseNextMaxId`/`parsePrevMinId`, used by `MastodonPage` cursor pagination): next/prev-only headers, malformed segments, missing query parameters, and the `min_id`-over-`since_id` precedence for the previous-page cursor
-- Tests covering the `unknownEnumValue` fallback for `MastodonFilterAction`, `MastodonTimelineAccessLevel`, `MastodonPreviewCardType`, `MastodonMediaType`, `MastodonVisibility`, `MastodonAdminIpBlockSeverity`, and `MastodonAdminDomainBlockSeverity` when the server returns a value not yet known to this client
-- Tests for the HTTP error conversion logic (`convertDioException`): all status-code branches (401/403/404/422/429/5xx/unmapped), error body parsing (`{"error": "..."}` extraction and fallbacks), retry-after header parsing, and network-level errors (connection/timeout/cancel)
-
 ### Changed
 
+- **Breaking:** ID fields that some instances return as numbers are now typed `String?` and coerced from either representation, instead of being typed `int` or non-nullable `String`. Code that reads these fields as `int`, or that relies on them being non-null, needs updating:
+  - `MastodonRole.id`: `int` (required) → `String?`
+  - `MastodonAdminRole.id`: `int` (required) → `String?`
+  - `MastodonWebPushSubscription.id`: `String` → `String?`
+  - `MastodonNotificationGroup.mostRecentNotificationId`: `String` → `String?`
+- **Breaking:** `MastodonOEmbed.title`, `.authorName`, `.authorUrl`, `.providerName`, and `.providerUrl` are now `String?`. Real responses omit them for some providers, so the previous non-nullable typing could not represent them
 - Refreshed fixtures against a live, federated world (multi-account, cross-server posts/reactions/follows) via the fixture collection tool in `fediverse_e2e`, replacing the single-server March snapshot. Corresponding model tests were updated to assert on structural properties rather than hardcoded IDs/counts where the underlying data is inherently dynamic (timestamps, counters, federated content). Notably `MastodonCredentialAccount`'s `role: Owner` fixture now comes from an actual admin-scoped account rather than a stub
-
-### Fixed
-
-- `MastodonAdminAccount.role` deserialization is exercised against a live server response including the newly-added Mastodon 4.6.0 fields, catching drift from the API documentation earlier than before
 
 ### Added
 
+- `MastodonAccount` fields added in Mastodon 4.6.0: `avatarDescription`, `headerDescription`, `featureApproval` (as `MastodonFeatureApproval`), `showFeatured`, `showMedia`, `showMediaReplies`
+- `MastodonStatus.taggedCollections` (Mastodon 4.6.0), listing the `MastodonCollection`s a status has been tagged into. Defaults to an empty list, so servers older than 4.6.0 and existing constructor calls are unaffected
+- `MastodonAdminRole.collectionLimit` (Mastodon 4.6.0)
+- `MastodonCollection` model, corresponding to `/api/v1/collections` responses
 - `httpClientAdapter` parameter on `MastodonClient` / `MastodonHttpClient` to customize the HTTP transport (private CA trust, proxying)
 - E2E test layer (`test/e2e/`) targeting the local closed-federation environment (`fediverse_e2e`); enabled via `RUN_E2E=1`, auto-skipped otherwise
 - Compatibility E2E suite against Fedibird 3.4.1, pinning which endpoints are available on Mastodon 3.x-era servers and which are not (`/api/v2/instance`, `/api/v2/filters`, `/api/v1/trends/{tags,statuses,links}`, `/api/v1/followed_tags`, `/api/v1/instance/domain_blocks`, and most admin APIs beyond accounts/reports return 404 there)
-- `MastodonAccount` fields added in Mastodon 4.6.0: `avatarDescription`, `headerDescription`, `featureApproval` (as `MastodonFeatureApproval`), `showFeatured`, `showMedia`, `showMediaReplies`
-- `MastodonStatus.taggedCollections` (Mastodon 4.6.0), listing the `MastodonCollection`s a status has been tagged into
-- `MastodonAdminRole.collectionLimit` (Mastodon 4.6.0)
-- `MastodonCollection` model, corresponding to `/api/v1/collections` responses
+- Tests for `Link` response header parsing (`parseNextMaxId`/`parsePrevMinId`, used by `MastodonPage` cursor pagination): next/prev-only headers, malformed segments, missing query parameters, and the `min_id`-over-`since_id` precedence for the previous-page cursor
+- Tests covering the `unknownEnumValue` fallback for `MastodonFilterAction`, `MastodonTimelineAccessLevel`, `MastodonPreviewCardType`, `MastodonMediaType`, `MastodonVisibility`, `MastodonAdminIpBlockSeverity`, and `MastodonAdminDomainBlockSeverity` when the server returns a value not yet known to this client
+- Tests for the HTTP error conversion logic (`convertDioException`): all status-code branches (401/403/404/422/429/5xx/unmapped), error body parsing (`{"error": "..."}` extraction and fallbacks), retry-after header parsing, and network-level errors (connection/timeout/cancel)
+- Tests pinning the `int` → `String` coercion of `MastodonRole.id` and `MastodonAdminRole.id`, and the deserialization of every Mastodon 4.6.0 field from a live server response
 
 ### Fixed
 

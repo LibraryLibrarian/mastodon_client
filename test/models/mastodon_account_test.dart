@@ -10,32 +10,57 @@ void main() {
       final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
       final account = MastodonAccount.fromJson(json);
 
-      expect(account.id, '116266741324121431');
-      expect(account.username, 'testadmin');
-      expect(account.acct, 'testadmin');
-      expect(account.displayName, '');
+      expect(account.id, isNotEmpty);
+      expect(account.username, 'md_eve');
+      expect(account.acct, 'md_eve');
       expect(account.locked, false);
       expect(account.bot, false);
-      expect(account.followersCount, 0);
-      expect(account.followingCount, 0);
-      expect(account.statusesCount, 5);
-      expect(account.url, 'https://localhost:3001/@testadmin');
-      expect(
-        account.avatarUrl,
-        'https://localhost:3001/avatars/original/missing.png',
-      );
-      expect(
-        account.avatarStaticUrl,
-        'https://localhost:3001/avatars/original/missing.png',
-      );
-      expect(
-        account.headerUrl,
-        'https://localhost:3001/headers/original/missing.png',
-      );
-      expect(account.fields, isEmpty);
+      expect(account.followersCount, isNonNegative);
+      expect(account.followingCount, isNonNegative);
+      expect(account.statusesCount, isPositive);
+      expect(account.url, 'https://mastodon.test/@md_eve');
+      expect(account.avatarUrl, startsWith('https://mastodon.test/'));
+      expect(account.avatarStaticUrl, startsWith('https://mastodon.test/'));
+      expect(account.headerUrl, startsWith('https://mastodon.test/'));
       expect(account.emojis, isEmpty);
       expect(account.noindex, false);
-      expect(account.discoverable, isNull);
+      expect(account.discoverable, true);
+    });
+
+    test('deserializes fields added in Mastodon 4.6.0', () {
+      final file = File('test/fixtures/account.json');
+      final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+      final account = MastodonAccount.fromJson(json);
+
+      // 4.6.0 で追加されたフィールドが実応答から結線されていることを確認する。
+      // 空文字列やfalseだとデフォルト値と区別が付かないため、値が入る
+      // feature_approval / show_* を明示的に検証している
+      expect(account.avatarDescription, isNotNull);
+      expect(account.headerDescription, isNotNull);
+      expect(account.showFeatured, isTrue);
+      expect(account.showMedia, isTrue);
+      expect(account.showMediaReplies, isTrue);
+
+      final approval = account.featureApproval;
+      expect(approval, isNotNull);
+      // automatic/manual は Collection の配列ではなく可視性スコープ名の
+      // 文字列配列（実データ採取で判明した実装詳細）
+      expect(approval!.automatic, contains('public'));
+      expect(approval.manual, isEmpty);
+      expect(approval.currentUser, 'automatic');
+    });
+
+    test('featureApproval is null on servers older than 4.6.0', () {
+      final account = MastodonAccount.fromJson(const {
+        'id': '1',
+        'username': 'legacy',
+        'acct': 'legacy',
+        'url': 'https://legacy.test/@legacy',
+      });
+
+      expect(account.featureApproval, isNull);
+      expect(account.avatarDescription, isNull);
+      expect(account.showMedia, isNull);
     });
   });
 

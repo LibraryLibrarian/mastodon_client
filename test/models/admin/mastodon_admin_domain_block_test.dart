@@ -55,9 +55,8 @@ void main() {
     test('severity falls back to silence for a value not yet known to '
         'this client', () {
       final file = File('test/fixtures/admin/domain_block.json');
-      final json =
-          (jsonDecode(file.readAsStringSync()) as Map<String, dynamic>)
-            ..['severity'] = 'someFutureSeverityNotInEnum';
+      final json = (jsonDecode(file.readAsStringSync()) as Map<String, dynamic>)
+        ..['severity'] = 'someFutureSeverityNotInEnum';
 
       final block = MastodonAdminDomainBlock.fromJson(json);
 

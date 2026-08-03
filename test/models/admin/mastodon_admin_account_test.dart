@@ -10,10 +10,11 @@ void main() {
       final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
       final obj = MastodonAdminAccount.fromJson(json);
 
-      expect(obj.id, '116266741324121431');
-      expect(obj.username, 'testadmin');
+      expect(obj.id, isNotEmpty);
+      expect(obj.username, 'e2e_admin');
       expect(obj.domain, isNull);
-      expect(obj.email, 'admin@localhost');
+      // メールアドレスは採取時に redact.py がマスクする
+      expect(obj.email, 'redacted@example.test');
       expect(obj.ip, isNull);
       expect(obj.confirmed, isTrue);
       expect(obj.approved, isTrue);
@@ -22,7 +23,7 @@ void main() {
       expect(obj.disabled, isFalse);
       expect(obj.sensitized, isFalse);
       expect(obj.ips, isEmpty);
-      expect(obj.createdAt, DateTime.utc(2026, 3, 21, 10, 41, 21, 51));
+      expect(obj.createdAt, isA<DateTime>());
     });
 
     test('deserializes nested account field', () {
@@ -31,9 +32,9 @@ void main() {
       final obj = MastodonAdminAccount.fromJson(json);
 
       expect(obj.account, isNotNull);
-      expect(obj.account!.id, '116266741324121431');
-      expect(obj.account!.username, 'testadmin');
-      expect(obj.account!.acct, 'testadmin');
+      expect(obj.account!.id, obj.id);
+      expect(obj.account!.username, 'e2e_admin');
+      expect(obj.account!.acct, 'e2e_admin');
     });
 
     test('deserializes role field', () {
@@ -44,9 +45,24 @@ void main() {
       expect(obj.role, isNotNull);
       expect(obj.role!.id, '3');
       expect(obj.role!.name, 'Owner');
-      expect(obj.role!.permissions, '2097151');
+      expect(obj.role!.permissions, isNotEmpty);
       expect(obj.role!.color, '');
       expect(obj.role!.highlighted, isTrue);
+      // Mastodon 4.6.0 で追加。ロールごとのコレクション作成上限
+      expect(obj.role!.collectionLimit, 10);
+    });
+
+    test('role id is coerced from int (instances returning numeric ids)', () {
+      // flexibleIdFromJson の導入理由そのものの検証。実サーバーは文字列で
+      // 返すため fixture では通らない経路
+      final obj = MastodonAdminAccount.fromJson(const {
+        'id': '1',
+        'username': 'numeric_role',
+        'role': {'id': 3, 'name': 'Owner'},
+      });
+
+      expect(obj.role!.id, '3');
+      expect(obj.role!.name, 'Owner');
     });
 
     test('deserializes legacy string role (Mastodon 3.x / Fedibird)', () {

@@ -53,7 +53,14 @@ void main() {
 
     test('home timeline returns statuses', () async {
       final page = await client.timelines.fetchHome(limit: 5);
-      expect(page.items, isA<List<MastodonStatus>>());
+
+      // 世界構築で e2e_bob のホームTLには投稿が存在する
+      expect(page.items, isNotEmpty);
+      expect(page.items.length, lessThanOrEqualTo(5));
+      for (final status in page.items) {
+        expect(status.id, isNotEmpty);
+        expect(status.account.acct, isNotEmpty);
+      }
     });
   });
 

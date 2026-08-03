@@ -52,8 +52,9 @@ void main() {
     test('peers and rules work', () async {
       final peers = await client.instance.fetchPeers();
       expect(peers, contains('mastodon.test'));
-      final rules = await client.instance.fetchRules();
-      expect(rules, isA<List<MastodonInstanceRule>>());
+      // 3.x系でも /api/v1/instance/rules は存在する。ルールはWeb管理画面
+      // からしか作れないため閉域環境では常に空になる
+      expect(await client.instance.fetchRules(), isEmpty);
     });
 
     test('domain_blocks is NOT available', () async {
@@ -84,33 +85,36 @@ void main() {
       await client.statuses.delete(created.id);
     });
 
+    // 以降は「3.x系でもエンドポイントが存在し、現行モデルでデシリアライズ
+    // できる」ことの確認。呼び出しが例外を投げないこと自体が検証内容で、
+    // 件数は世界の状態に依存するため limit の遵守のみを固定する
     test('home timeline, notifications, custom emojis', () async {
       final timeline = await client.timelines.fetchHome(limit: 5);
-      expect(timeline.items, isA<List<MastodonStatus>>());
+      expect(timeline.items.length, lessThanOrEqualTo(5));
 
       final notifications = await client.notifications.fetch(limit: 5);
-      expect(notifications.items, isNotNull);
+      expect(notifications.items.length, lessThanOrEqualTo(5));
 
-      final emojis = await client.customEmojis.fetch();
-      expect(emojis, isA<List<MastodonCustomEmoji>>());
+      await client.customEmojis.fetch();
     });
 
     test('markers, preferences, lists, bookmarks', () async {
       expect(await client.preferences.fetch(), isNotNull);
-      expect(await client.lists.fetch(), isA<List<MastodonList>>());
-      final bookmarks = await client.bookmarks.fetch();
-      expect(bookmarks.items, isA<List<MastodonStatus>>());
+      await client.lists.fetch();
+      await client.bookmarks.fetch();
     });
   });
 
   group('APIs that are NOT available on 3.4', () {
-    test('v2 filters are NOT available (v1 filters exist on the server)',
-        () async {
-      await expectLater(
-        client.filters.fetch(),
-        throwsA(isA<MastodonNotFoundException>()),
-      );
-    });
+    test(
+      'v2 filters are NOT available (v1 filters exist on the server)',
+      () async {
+        await expectLater(
+          client.filters.fetch(),
+          throwsA(isA<MastodonNotFoundException>()),
+        );
+      },
+    );
 
     test('all trends endpoints are NOT available', () async {
       // 3.4 は旧来の `/api/v1/trends` (タグを返す) のみを持ち、
@@ -148,8 +152,7 @@ void main() {
       expect(reports.items, isNotNull);
     });
 
-    test('admin v2 accounts and later admin APIs are NOT available',
-        () async {
+    test('admin v2 accounts and later admin APIs are NOT available', () async {
       await expectLater(
         adminClient.adminAccounts.fetchV2(),
         throwsA(isA<MastodonNotFoundException>()),

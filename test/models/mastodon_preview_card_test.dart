@@ -44,9 +44,8 @@ void main() {
     test('type falls back to link for a value not yet known to this '
         'client', () {
       final file = File('test/fixtures/preview_card.json');
-      final json =
-          (jsonDecode(file.readAsStringSync()) as Map<String, dynamic>)
-            ..['type'] = 'someFutureTypeNotInEnum';
+      final json = (jsonDecode(file.readAsStringSync()) as Map<String, dynamic>)
+        ..['type'] = 'someFutureTypeNotInEnum';
 
       final card = MastodonPreviewCard.fromJson(json);
 

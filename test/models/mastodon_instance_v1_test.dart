@@ -72,8 +72,8 @@ void main() {
 
       // rules
       // (サーバールールはWeb管理画面のみで設定可能でREST APIが無いため、
-      // 閉域E2E環境では空になる。型として正しく扱えることのみ確認する)
-      expect(instance.rules, isA<List<MastodonInstanceRule>>());
+      // 閉域E2E環境では常に空になる)
+      expect(instance.rules, isEmpty);
     });
   });
 }

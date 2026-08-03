@@ -43,9 +43,8 @@ void main() {
     test('filterAction falls back to warn for a value not yet known to '
         'this client', () {
       final file = File('test/fixtures/filter.json');
-      final json =
-          (jsonDecode(file.readAsStringSync()) as Map<String, dynamic>)
-            ..['filter_action'] = 'someFutureActionNotInEnum';
+      final json = (jsonDecode(file.readAsStringSync()) as Map<String, dynamic>)
+        ..['filter_action'] = 'someFutureActionNotInEnum';
 
       final filter = MastodonFilter.fromJson(json);
 

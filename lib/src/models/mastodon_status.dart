@@ -78,7 +78,7 @@ class MastodonStatus {
     this.reblog,
     this.poll,
     this.quote,
-    required this.taggedCollections,
+    this.taggedCollections = const <MastodonCollection>[],
   });
 
   factory MastodonStatus.fromJson(Map<String, dynamic> json) =>

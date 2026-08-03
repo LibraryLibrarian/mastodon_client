@@ -38,9 +38,8 @@ void main() {
     test('type falls back to unknown for a value not yet known to this '
         'client', () {
       final file = File('test/fixtures/media_attachment.json');
-      final json =
-          (jsonDecode(file.readAsStringSync()) as Map<String, dynamic>)
-            ..['type'] = 'someFutureTypeNotInEnum';
+      final json = (jsonDecode(file.readAsStringSync()) as Map<String, dynamic>)
+        ..['type'] = 'someFutureTypeNotInEnum';
 
       final attachment = MastodonMediaAttachment.fromJson(json);
 

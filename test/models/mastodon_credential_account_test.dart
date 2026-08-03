@@ -44,5 +44,21 @@ void main() {
       expect(role.permissions, isNotEmpty);
       expect(role.highlighted, true);
     });
+
+    test('role id is coerced from int (instances returning numeric ids)', () {
+      // flexibleIdFromJson の導入理由そのものの検証。実サーバーは文字列で
+      // 返すため fixture では通らない経路
+      final role = MastodonRole.fromJson(const {'id': 3, 'name': 'Owner'});
+
+      expect(role.id, '3');
+      expect(role.name, 'Owner');
+    });
+
+    test('role id is null when the server omits it', () {
+      final role = MastodonRole.fromJson(const {'name': 'Owner'});
+
+      expect(role.id, isNull);
+      expect(role.name, 'Owner');
+    });
   });
 }

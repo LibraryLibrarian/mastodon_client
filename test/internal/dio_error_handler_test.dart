@@ -85,17 +85,21 @@ void main() {
       final result = convertDioException(
         _errorWithStatus(401, data: {'error': 'The access token is invalid'}),
       );
-      expect((result as MastodonApiException).message,
-          'The access token is invalid');
+      expect(
+        (result as MastodonApiException).message,
+        'The access token is invalid',
+      );
     });
 
     test('422 carries the raw server message in serverMessage', () {
-      final result = convertDioException(
-        _errorWithStatus(
-          422,
-          data: {'error': 'Validation failed: Text is too long'},
-        ),
-      ) as MastodonValidationException;
+      final result =
+          convertDioException(
+                _errorWithStatus(
+                  422,
+                  data: {'error': 'Validation failed: Text is too long'},
+                ),
+              )
+              as MastodonValidationException;
       expect(result.serverMessage, 'Validation failed: Text is too long');
     });
 

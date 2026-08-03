@@ -47,9 +47,14 @@ class E2eEnv {
   final String? fedibirdUserToken;
 
   /// Whether Fedibird is available in the running environment.
+  ///
+  /// Admin token included: [createFedibirdClient] can be asked for an
+  /// admin-scoped client, and a missing token there would surface as an
+  /// opaque 401 instead of a skip.
   bool get hasFedibird =>
       (fedibirdBaseUrl?.isNotEmpty ?? false) &&
-      (fedibirdUserToken?.isNotEmpty ?? false);
+      (fedibirdUserToken?.isNotEmpty ?? false) &&
+      (fedibirdAdminToken?.isNotEmpty ?? false);
 
   /// Loads the E2E environment, or returns `null` when unavailable.
   static E2eEnv? tryLoad() {
@@ -102,32 +107,32 @@ class E2eEnv {
 
   /// Creates a dio adapter that trusts the E2E root CA.
   HttpClientAdapter createHttpClientAdapter() => IOHttpClientAdapter(
-        createHttpClient: () {
-          final context = SecurityContext(withTrustedRoots: true)
-            ..setTrustedCertificates(rootCaPath);
-          return HttpClient(context: context);
-        },
-      );
+    createHttpClient: () {
+      final context = SecurityContext(withTrustedRoots: true)
+        ..setTrustedCertificates(rootCaPath);
+      return HttpClient(context: context);
+    },
+  );
 
   /// Creates a [MastodonClient] connected to `mastodon.test`.
   ///
   /// Uses the admin token when [admin] is `true`, the regular user token
   /// otherwise.
   MastodonClient createMastodonClient({bool admin = false}) => MastodonClient(
-        baseUrl: mastodonBaseUrl,
-        accessToken: admin ? mastodonAdminToken : mastodonUserToken,
-        httpClientAdapter: createHttpClientAdapter(),
-      );
+    baseUrl: mastodonBaseUrl,
+    accessToken: admin ? mastodonAdminToken : mastodonUserToken,
+    httpClientAdapter: createHttpClientAdapter(),
+  );
 
   /// Creates a [MastodonClient] connected to `fedibird.test`.
   ///
   /// Fedibird is a Mastodon 3.4 fork, so the same client is used; call
   /// only when [hasFedibird] is `true`.
   MastodonClient createFedibirdClient({bool admin = false}) => MastodonClient(
-        baseUrl: fedibirdBaseUrl!,
-        accessToken: admin ? fedibirdAdminToken : fedibirdUserToken,
-        httpClientAdapter: createHttpClientAdapter(),
-      );
+    baseUrl: fedibirdBaseUrl!,
+    accessToken: admin ? fedibirdAdminToken : fedibirdUserToken,
+    httpClientAdapter: createHttpClientAdapter(),
+  );
 }
 
 /// Polls [probe] until it returns non-null, or fails after [timeout].

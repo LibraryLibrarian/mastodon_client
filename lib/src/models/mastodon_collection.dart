@@ -7,8 +7,7 @@ part 'mastodon_collection.g.dart';
 /// A collection of tagged statuses (Mastodon 4.6.0+).
 ///
 /// Corresponds to responses from `/api/v1/collections` and appears in
-/// `MastodonStatus.taggedCollections` and
-/// `MastodonFeatureApproval.automatic` / `.manual`.
+/// `MastodonStatus.taggedCollections`.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonCollection {
   const MastodonCollection({

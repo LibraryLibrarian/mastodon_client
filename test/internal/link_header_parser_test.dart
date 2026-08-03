@@ -42,7 +42,8 @@ void main() {
 
     test('returns null when the segment is malformed (missing angle '
         'brackets)', () {
-      const header = 'https://mastodon.test/api/v1/timelines/home?max_id=1, '
+      const header =
+          'https://mastodon.test/api/v1/timelines/home?max_id=1, '
           'rel="next"';
       expect(parseNextMaxId(header), isNull);
     });

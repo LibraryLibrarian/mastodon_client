@@ -31,6 +31,45 @@ void main() {
       expect(status.account.id, isNotEmpty);
       expect(status.account.username, 'md_eve');
     });
+
+    test('taggedCollections is present in the response and parses empty', () {
+      final file = File('test/fixtures/status.json');
+      final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+
+      // 閉域環境ではコレクションにタグ付けされた投稿を作れないため、
+      // ここではフィールドが実応答に存在することと空配列になることを固定する
+      expect(json.containsKey('tagged_collections'), isTrue);
+      expect(MastodonStatus.fromJson(json).taggedCollections, isEmpty);
+    });
+  });
+
+  group('MastodonStatus.taggedCollections (Mastodon 4.6.0)', () {
+    test('deserializes tagged collections', () {
+      final file = File('test/fixtures/status.json');
+      final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+      final collection =
+          jsonDecode(
+                File('test/fixtures/collection.json').readAsStringSync(),
+              )
+              as Map<String, dynamic>;
+
+      final status = MastodonStatus.fromJson({
+        ...json,
+        'tagged_collections': <Map<String, dynamic>>[collection],
+      });
+
+      expect(status.taggedCollections, hasLength(1));
+      expect(status.taggedCollections.first.id, collection['id']);
+      expect(status.taggedCollections.first.name, collection['name']);
+    });
+
+    test('defaults to an empty list on servers older than 4.6.0', () {
+      final file = File('test/fixtures/status.json');
+      final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>
+        ..remove('tagged_collections');
+
+      expect(MastodonStatus.fromJson(json).taggedCollections, isEmpty);
+    });
   });
 
   group('MastodonStatus.fromJson - status_with_poll.json', () {
@@ -98,9 +137,8 @@ void main() {
     test('visibility falls back to public for a value not yet known to '
         'this client', () {
       final file = File('test/fixtures/status.json');
-      final json =
-          (jsonDecode(file.readAsStringSync()) as Map<String, dynamic>)
-            ..['visibility'] = 'someFutureVisibilityNotInEnum';
+      final json = (jsonDecode(file.readAsStringSync()) as Map<String, dynamic>)
+        ..['visibility'] = 'someFutureVisibilityNotInEnum';
 
       final status = MastodonStatus.fromJson(json);
 
