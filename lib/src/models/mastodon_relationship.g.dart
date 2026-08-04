@@ -28,6 +28,9 @@ MastodonRelationship _$MastodonRelationshipFromJson(
   languages: (json['languages'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList(),
+  mutingExpiresAt: const SafeDateTimeConverter().fromJson(
+    json['muting_expires_at'] as String?,
+  ),
 );
 
 Map<String, dynamic> _$MastodonRelationshipToJson(
@@ -42,6 +45,9 @@ Map<String, dynamic> _$MastodonRelationshipToJson(
   'blocking': instance.blocking,
   'blocked_by': instance.blockedBy,
   'muting': instance.muting,
+  'muting_expires_at': const SafeDateTimeConverter().toJson(
+    instance.mutingExpiresAt,
+  ),
   'muting_notifications': instance.mutingNotifications,
   'requested': instance.requested,
   'requested_by': instance.requestedBy,

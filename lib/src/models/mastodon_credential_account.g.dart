@@ -36,7 +36,10 @@ MastodonCredentialAccount _$MastodonCredentialAccountFromJson(
           ?.map((e) => MastodonCustomEmoji.fromJson(e as Map<String, dynamic>))
           .toList() ??
       [],
+  uri: json['uri'] as String?,
   discoverable: json['discoverable'] as bool?,
+  indexable: json['indexable'] as bool?,
+  group: json['group'] as bool?,
   noindex: json['noindex'] as bool?,
   createdAt: const SafeDateTimeConverter().fromJson(
     json['created_at'] as String?,
@@ -52,6 +55,21 @@ MastodonCredentialAccount _$MastodonCredentialAccountFromJson(
   hideCollections: json['hide_collections'] as bool?,
   avatarBlurhash: json['avatar_blurhash'] as String?,
   headerBlurhash: json['header_blurhash'] as String?,
+  avatarDescription: json['avatar_description'] as String?,
+  headerDescription: json['header_description'] as String?,
+  featureApproval: json['feature_approval'] == null
+      ? null
+      : MastodonFeatureApproval.fromJson(
+          json['feature_approval'] as Map<String, dynamic>,
+        ),
+  showFeatured: json['show_featured'] as bool?,
+  showMedia: json['show_media'] as bool?,
+  showMediaReplies: json['show_media_replies'] as bool?,
+  roles:
+      (json['roles'] as List<dynamic>?)
+          ?.map((e) => MastodonRole.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      [],
   source: json['source'] == null
       ? null
       : MastodonAccountSource.fromJson(json['source'] as Map<String, dynamic>),
@@ -69,6 +87,7 @@ Map<String, dynamic> _$MastodonCredentialAccountToJson(
   'display_name': instance.displayName,
   'note': instance.note,
   'url': instance.url,
+  'uri': instance.uri,
   'avatar': instance.avatarUrl,
   'avatar_static': instance.avatarStaticUrl,
   'header': instance.headerUrl,
@@ -76,6 +95,8 @@ Map<String, dynamic> _$MastodonCredentialAccountToJson(
   'locked': instance.locked,
   'bot': instance.bot,
   'discoverable': instance.discoverable,
+  'indexable': instance.indexable,
+  'group': instance.group,
   'noindex': instance.noindex,
   'followers_count': instance.followersCount,
   'following_count': instance.followingCount,
@@ -90,6 +111,13 @@ Map<String, dynamic> _$MastodonCredentialAccountToJson(
   'hide_collections': instance.hideCollections,
   'avatar_blurhash': instance.avatarBlurhash,
   'header_blurhash': instance.headerBlurhash,
+  'avatar_description': instance.avatarDescription,
+  'header_description': instance.headerDescription,
+  'feature_approval': instance.featureApproval?.toJson(),
+  'show_featured': instance.showFeatured,
+  'show_media': instance.showMedia,
+  'show_media_replies': instance.showMediaReplies,
+  'roles': instance.roles.map((e) => e.toJson()).toList(),
   'source': instance.source?.toJson(),
   'role': instance.role?.toJson(),
 };
@@ -121,28 +149,3 @@ Map<String, dynamic> _$MastodonAccountSourceToJson(
   'follow_requests_count': instance.followRequestsCount,
   'quote_policy': instance.quotePolicy,
 };
-
-MastodonRole _$MastodonRoleFromJson(Map<String, dynamic> json) => MastodonRole(
-  id: flexibleIdFromJson(json['id']),
-  name: json['name'] as String,
-  permissions: json['permissions'] as String?,
-  color: json['color'] as String? ?? '',
-  highlighted: json['highlighted'] as bool?,
-  createdAt: const SafeDateTimeConverter().fromJson(
-    json['created_at'] as String?,
-  ),
-  updatedAt: const SafeDateTimeConverter().fromJson(
-    json['updated_at'] as String?,
-  ),
-);
-
-Map<String, dynamic> _$MastodonRoleToJson(MastodonRole instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'permissions': instance.permissions,
-      'color': instance.color,
-      'highlighted': instance.highlighted,
-      'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
-      'updated_at': const SafeDateTimeConverter().toJson(instance.updatedAt),
-    };

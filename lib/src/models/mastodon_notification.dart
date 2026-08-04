@@ -153,6 +153,7 @@ class MastodonNotification {
     required this.type,
     required this.createdAt,
     required this.account,
+    this.groupKey,
     this.status,
     this.relationshipSeveranceEvent,
     this.moderationWarning,
@@ -182,6 +183,15 @@ class MastodonNotification {
 
   /// Account that triggered the notification.
   final MastodonAccount account;
+
+  /// Key identifying the group this notification belongs to.
+  ///
+  /// Matches `MastodonNotificationGroup.groupKey`, so it can be used to
+  /// correlate a v1 notification with its v2 group. Notifications that were
+  /// not grouped receive a synthetic `ungrouped-<id>` key.
+  ///
+  /// Added in Mastodon 4.3.0.
+  final String? groupKey;
 
   /// Associated status. Null depending on the notification type.
   final MastodonStatus? status;

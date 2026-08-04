@@ -18,6 +18,10 @@ void main() {
       expect(instance.languages, ['en']);
       expect(instance.apiVersionMastodon, isPositive);
 
+      // wrapstodon は Annual reports のキャンペーン年。キャンペーン期間外
+      // (12月10〜31日以外) は常に null で返る
+      expect(instance.wrapstodon, isNull);
+
       // rules
       // (サーバールールはWeb管理画面のみで設定可能でREST APIが無いため、
       // 閉域E2E環境では常に空になる)
@@ -81,6 +85,22 @@ void main() {
       expect(instance.contact, isNotNull);
       expect(instance.contact!.email, '');
       expect(instance.contact!.account, isNull);
+    });
+
+    test('wrapstodon carries the campaign year while one is running', () {
+      final file = File('test/fixtures/instance_v2.json');
+      final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>
+        ..['wrapstodon'] = 2026;
+
+      expect(MastodonInstance.fromJson(json).wrapstodon, 2026);
+    });
+
+    test('wrapstodon is null on servers older than 4.6.0', () {
+      final file = File('test/fixtures/instance_v2.json');
+      final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>
+        ..remove('wrapstodon');
+
+      expect(MastodonInstance.fromJson(json).wrapstodon, isNull);
     });
   });
 

@@ -8,16 +8,19 @@ part of 'mastodon_suggestion.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-MastodonSuggestion _$MastodonSuggestionFromJson(Map<String, dynamic> json) =>
-    MastodonSuggestion(
-      source: json['source'] as String,
-      account: MastodonAccount.fromJson(
-        json['account'] as Map<String, dynamic>,
-      ),
-    );
+MastodonSuggestion _$MastodonSuggestionFromJson(
+  Map<String, dynamic> json,
+) => MastodonSuggestion(
+  source: json['source'] as String,
+  account: MastodonAccount.fromJson(json['account'] as Map<String, dynamic>),
+  sources:
+      (json['sources'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      [],
+);
 
 Map<String, dynamic> _$MastodonSuggestionToJson(MastodonSuggestion instance) =>
     <String, dynamic>{
       'source': instance.source,
       'account': instance.account.toJson(),
+      'sources': instance.sources,
     };

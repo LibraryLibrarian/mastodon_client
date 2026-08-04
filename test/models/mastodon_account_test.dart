@@ -86,6 +86,49 @@ void main() {
     });
   });
 
+  group('MastodonAccount - fields the client had been dropping', () {
+    Map<String, dynamic> loadAccount() =>
+        jsonDecode(File('test/fixtures/account.json').readAsStringSync())
+            as Map<String, dynamic>;
+
+    test('deserializes uri, indexable and group', () {
+      final account = MastodonAccount.fromJson(loadAccount());
+
+      // uri は ActivityPub 識別子で、プロフィールページの url とは別物
+      expect(account.uri, startsWith('https://mastodon.test/ap/users/'));
+      expect(account.uri, isNot(account.url));
+      expect(account.indexable, false);
+      expect(account.group, false);
+    });
+
+    test('roles defaults to an empty list', () {
+      final account = MastodonAccount.fromJson(loadAccount());
+
+      expect(account.roles, isEmpty);
+    });
+
+    test('roles is empty when the key is absent (remote accounts)', () {
+      final json = loadAccount()..remove('roles');
+
+      expect(MastodonAccount.fromJson(json).roles, isEmpty);
+    });
+
+    test('deserializes publicly visible roles', () {
+      // roles は local? 条件付きで、id / name / color のみを含む縮約形
+      final json = loadAccount()
+        ..['roles'] = <Map<String, dynamic>>[
+          <String, dynamic>{'id': '3', 'name': 'Owner', 'color': '#ff0000'},
+        ];
+      final account = MastodonAccount.fromJson(json);
+
+      expect(account.roles, hasLength(1));
+      expect(account.roles.first.id, '3');
+      expect(account.roles.first.name, 'Owner');
+      expect(account.roles.first.color, '#ff0000');
+      expect(account.roles.first.permissions, isNull);
+    });
+  });
+
   group('MastodonAccount.fromJson (list) - account_search.json', () {
     test('deserializes list from fixture', () {
       final file = File('test/fixtures/account_search.json');

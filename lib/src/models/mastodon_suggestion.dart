@@ -11,6 +11,7 @@ class MastodonSuggestion {
   const MastodonSuggestion({
     required this.source,
     required this.account,
+    this.sources = const <String>[],
   });
 
   /// Creates a [MastodonSuggestion] from a JSON map.
@@ -29,4 +30,13 @@ class MastodonSuggestion {
 
   /// Suggested account.
   final MastodonAccount account;
+
+  /// Reasons for the suggestion, in the current (non-legacy) vocabulary.
+  ///
+  /// Values include `featured`, `most_followed`, `most_interactions`,
+  /// `similar_to_recently_followed` and `friends_of_friends`. [source] is a
+  /// lossy mapping of the first entry onto the legacy three-value vocabulary,
+  /// so prefer this field when distinguishing suggestion reasons.
+  @JsonKey(defaultValue: <String>[])
+  final List<String> sources;
 }
