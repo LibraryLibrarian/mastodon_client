@@ -1,0 +1,9 @@
+{
+    "posting:default:visibility": "public",
+    "posting:default:sensitive": false,
+    "posting:default:language": "en",
+    "posting:default:quote_policy": "public",
+    "reading:expand:media": "default",
+    "reading:expand:spoilers": false,
+    "reading:autoplay:gifs": false
+}

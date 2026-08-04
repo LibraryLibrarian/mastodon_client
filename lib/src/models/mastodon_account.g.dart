@@ -53,6 +53,16 @@ MastodonAccount _$MastodonAccountFromJson(Map<String, dynamic> json) =>
       hideCollections: json['hide_collections'] as bool?,
       avatarBlurhash: json['avatar_blurhash'] as String?,
       headerBlurhash: json['header_blurhash'] as String?,
+      avatarDescription: json['avatar_description'] as String?,
+      headerDescription: json['header_description'] as String?,
+      featureApproval: json['feature_approval'] == null
+          ? null
+          : MastodonFeatureApproval.fromJson(
+              json['feature_approval'] as Map<String, dynamic>,
+            ),
+      showFeatured: json['show_featured'] as bool?,
+      showMedia: json['show_media'] as bool?,
+      showMediaReplies: json['show_media_replies'] as bool?,
     );
 
 Map<String, dynamic> _$MastodonAccountToJson(
@@ -85,6 +95,32 @@ Map<String, dynamic> _$MastodonAccountToJson(
   'hide_collections': instance.hideCollections,
   'avatar_blurhash': instance.avatarBlurhash,
   'header_blurhash': instance.headerBlurhash,
+  'avatar_description': instance.avatarDescription,
+  'header_description': instance.headerDescription,
+  'feature_approval': instance.featureApproval?.toJson(),
+  'show_featured': instance.showFeatured,
+  'show_media': instance.showMedia,
+  'show_media_replies': instance.showMediaReplies,
+};
+
+MastodonFeatureApproval _$MastodonFeatureApprovalFromJson(
+  Map<String, dynamic> json,
+) => MastodonFeatureApproval(
+  automatic:
+      (json['automatic'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      [],
+  manual:
+      (json['manual'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      [],
+  currentUser: json['current_user'] as String?,
+);
+
+Map<String, dynamic> _$MastodonFeatureApprovalToJson(
+  MastodonFeatureApproval instance,
+) => <String, dynamic>{
+  'automatic': instance.automatic,
+  'manual': instance.manual,
+  'current_user': instance.currentUser,
 };
 
 MastodonField _$MastodonFieldFromJson(Map<String, dynamic> json) =>

@@ -70,6 +70,7 @@ class MastodonAdminAccount {
   final String? inviteRequest;
 
   /// Current role of the account.
+  @JsonKey(fromJson: adminRoleFromJson)
   final MastodonAdminRole? role;
 
   /// Whether the email address has been confirmed.
@@ -132,7 +133,7 @@ class MastodonAdminIp {
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminRole {
   const MastodonAdminRole({
-    required this.id,
+    this.id,
     required this.name,
     this.color,
     this.position,
@@ -140,6 +141,7 @@ class MastodonAdminRole {
     this.highlighted = false,
     this.createdAt,
     this.updatedAt,
+    this.collectionLimit,
   });
 
   factory MastodonAdminRole.fromJson(Map<String, dynamic> json) =>
@@ -149,7 +151,8 @@ class MastodonAdminRole {
   Map<String, dynamic> toJson() => _$MastodonAdminRoleToJson(this);
 
   /// ID of the role.
-  final int id;
+  @JsonKey(fromJson: flexibleIdFromJson)
+  final String? id;
 
   /// Name of the role.
   final String name;
@@ -175,4 +178,21 @@ class MastodonAdminRole {
   /// Timestamp when the role was last updated.
   @SafeDateTimeConverter()
   final DateTime? updatedAt;
+
+  /// Maximum number of collections an account with this role may create.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final int? collectionLimit;
 }
+
+/// Deserializes the `role` field of an admin account.
+///
+/// Mastodon 4.0+ returns a role object, whereas Mastodon 3.x and forks such
+/// as Fedibird return a plain string (`user`, `moderator`, `admin`). The
+/// string form is mapped to a [MastodonAdminRole] carrying only its name.
+MastodonAdminRole? adminRoleFromJson(Object? value) => switch (value) {
+  null => null,
+  final String name => MastodonAdminRole(name: name),
+  final Map<String, dynamic> json => MastodonAdminRole.fromJson(json),
+  _ => null,
+};

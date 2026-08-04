@@ -123,7 +123,7 @@ Map<String, dynamic> _$MastodonAccountSourceToJson(
 };
 
 MastodonRole _$MastodonRoleFromJson(Map<String, dynamic> json) => MastodonRole(
-  id: (json['id'] as num).toInt(),
+  id: flexibleIdFromJson(json['id']),
   name: json['name'] as String,
   permissions: json['permissions'] as String?,
   color: json['color'] as String? ?? '',

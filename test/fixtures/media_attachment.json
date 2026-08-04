@@ -1,0 +1,25 @@
+{
+    "id": "116278608326522926",
+    "type": "image",
+    "url": "https://localhost:3001/system/media_attachments/files/116/278/608/326/522/926/original/12c78247380f1a10.png",
+    "preview_url": "https://localhost:3001/system/media_attachments/files/116/278/608/326/522/926/small/12c78247380f1a10.png",
+    "remote_url": null,
+    "preview_remote_url": null,
+    "text_url": null,
+    "meta": {
+        "original": {
+            "width": 16,
+            "height": 16,
+            "size": "16x16",
+            "aspect": 1.0
+        },
+        "small": {
+            "width": 16,
+            "height": 16,
+            "size": "16x16",
+            "aspect": 1.0
+        }
+    },
+    "description": "Test image for fixture collection",
+    "blurhash": "U2TI:j|cfQ|c|cjtfQjtfQfQfQfQ|cjtfQjt"
+}

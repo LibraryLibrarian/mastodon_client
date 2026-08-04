@@ -1,0 +1,17 @@
+{
+  "id": "117025882373732363",
+  "uri": "https://mastodon.test/ap/users/117020186592997460/collections/117025882373732363",
+  "name": "parsetest2",
+  "description": null,
+  "language": null,
+  "account_id": "117020186592997460",
+  "local": true,
+  "sensitive": false,
+  "discoverable": true,
+  "url": "https://mastodon.test/collections/117025882373732363",
+  "item_count": 0,
+  "created_at": "2026-08-02T12:20:53.993Z",
+  "updated_at": "2026-08-02T12:20:53.993Z",
+  "tag": null,
+  "items": []
+}

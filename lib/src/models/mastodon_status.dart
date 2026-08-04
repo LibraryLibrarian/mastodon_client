@@ -2,6 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'json_converters.dart';
 import 'mastodon_account.dart';
+import 'mastodon_collection.dart';
 import 'mastodon_custom_emoji.dart';
 import 'mastodon_media_attachment.dart';
 import 'mastodon_poll.dart';
@@ -77,6 +78,7 @@ class MastodonStatus {
     this.reblog,
     this.poll,
     this.quote,
+    this.taggedCollections = const <MastodonCollection>[],
   });
 
   factory MastodonStatus.fromJson(Map<String, dynamic> json) =>
@@ -186,4 +188,10 @@ class MastodonStatus {
 
   /// Quoted status (Mastodon 4.5+ / FEP-044f). Null if not a quote.
   final MastodonStatus? quote;
+
+  /// Collections this status has been tagged into.
+  ///
+  /// Added in Mastodon 4.6.0.
+  @JsonKey(defaultValue: <MastodonCollection>[])
+  final List<MastodonCollection> taggedCollections;
 }

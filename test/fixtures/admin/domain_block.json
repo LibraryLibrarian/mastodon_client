@@ -1,0 +1,12 @@
+{
+    "id": "1",
+    "domain": "spam.example.com",
+    "digest": "6d2c4ec71792d50d6e19f3a20e35865232e75bc87478fceb8384d901dd7283d5",
+    "created_at": "2026-03-21T10:56:04.927Z",
+    "severity": "suspend",
+    "reject_media": false,
+    "reject_reports": false,
+    "private_comment": null,
+    "public_comment": null,
+    "obfuscate": false
+}

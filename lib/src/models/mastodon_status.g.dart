@@ -76,6 +76,11 @@ MastodonStatus _$MastodonStatusFromJson(
   quote: json['quote'] == null
       ? null
       : MastodonStatus.fromJson(json['quote'] as Map<String, dynamic>),
+  taggedCollections:
+      (json['tagged_collections'] as List<dynamic>?)
+          ?.map((e) => MastodonCollection.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      [],
 );
 
 Map<String, dynamic> _$MastodonStatusToJson(MastodonStatus instance) =>
@@ -111,6 +116,9 @@ Map<String, dynamic> _$MastodonStatusToJson(MastodonStatus instance) =>
       'reblog': instance.reblog?.toJson(),
       'poll': instance.poll?.toJson(),
       'quote': instance.quote?.toJson(),
+      'tagged_collections': instance.taggedCollections
+          .map((e) => e.toJson())
+          .toList(),
     };
 
 const _$MastodonVisibilityEnumMap = {

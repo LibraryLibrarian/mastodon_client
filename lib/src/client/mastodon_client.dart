@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 import '../api/accounts_api.dart';
 import '../api/admin/admin_accounts_api.dart';
 import '../api/admin/admin_canonical_email_blocks_api.dart';
@@ -73,16 +75,20 @@ class MastodonClient {
   /// only using endpoints that do not require authentication. Set
   /// [enableLog] to `false` to disable HTTP log output, or pass a custom
   /// [logger] to redirect log output to a different destination.
+  /// Pass [httpClientAdapter] to customize the underlying HTTP transport
+  /// (e.g. trusting a private CA in test environments, or proxying).
   MastodonClient({
     required String baseUrl,
     String? accessToken,
     bool enableLog = true,
     Logger? logger,
+    HttpClientAdapter? httpClientAdapter,
   }) : _http = MastodonHttpClient(
          baseUrl: baseUrl,
          accessToken: accessToken,
          enableLog: enableLog,
          logger: logger,
+         httpClientAdapter: httpClientAdapter,
        );
 
   final MastodonHttpClient _http;

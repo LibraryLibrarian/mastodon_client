@@ -16,7 +16,7 @@ class MastodonNotificationGroup {
     required this.groupKey,
     required this.notificationsCount,
     required this.type,
-    required this.mostRecentNotificationId,
+    this.mostRecentNotificationId,
     this.pageMinId,
     this.pageMaxId,
     this.latestPageNotificationAt,
@@ -51,7 +51,8 @@ class MastodonNotificationGroup {
   final MastodonNotificationType type;
 
   /// ID of the most recent notification in the group.
-  final String mostRecentNotificationId;
+  @JsonKey(fromJson: flexibleIdFromJson)
+  final String? mostRecentNotificationId;
 
   /// ID of the oldest notification in the current page.
   final String? pageMinId;

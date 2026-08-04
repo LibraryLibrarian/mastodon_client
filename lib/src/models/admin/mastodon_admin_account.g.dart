@@ -26,9 +26,7 @@ MastodonAdminAccount _$MastodonAdminAccountFromJson(
       [],
   locale: json['locale'] as String?,
   inviteRequest: json['invite_request'] as String?,
-  role: json['role'] == null
-      ? null
-      : MastodonAdminRole.fromJson(json['role'] as Map<String, dynamic>),
+  role: adminRoleFromJson(json['role']),
   confirmed: json['confirmed'] as bool? ?? false,
   approved: json['approved'] as bool? ?? false,
   disabled: json['disabled'] as bool? ?? false,
@@ -82,7 +80,7 @@ Map<String, dynamic> _$MastodonAdminIpToJson(MastodonAdminIp instance) =>
 
 MastodonAdminRole _$MastodonAdminRoleFromJson(Map<String, dynamic> json) =>
     MastodonAdminRole(
-      id: (json['id'] as num).toInt(),
+      id: flexibleIdFromJson(json['id']),
       name: json['name'] as String,
       color: json['color'] as String? ?? '',
       position: (json['position'] as num?)?.toInt(),
@@ -94,6 +92,7 @@ MastodonAdminRole _$MastodonAdminRoleFromJson(Map<String, dynamic> json) =>
       updatedAt: const SafeDateTimeConverter().fromJson(
         json['updated_at'] as String?,
       ),
+      collectionLimit: (json['collection_limit'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$MastodonAdminRoleToJson(MastodonAdminRole instance) =>
@@ -106,4 +105,5 @@ Map<String, dynamic> _$MastodonAdminRoleToJson(MastodonAdminRole instance) =>
       'highlighted': instance.highlighted,
       'created_at': const SafeDateTimeConverter().toJson(instance.createdAt),
       'updated_at': const SafeDateTimeConverter().toJson(instance.updatedAt),
+      'collection_limit': instance.collectionLimit,
     };

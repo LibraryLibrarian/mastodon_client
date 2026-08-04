@@ -1,0 +1,14 @@
+{
+    "id": 1,
+    "endpoint": "https://example.com/push",
+    "standard": false,
+    "alerts": {
+        "mention": true,
+        "reblog": true,
+        "follow": true,
+        "favourite": true,
+        "poll": true
+    },
+    "server_key": "BElU32nVl4v6dZV8NfneXy7KeWCl8wX-mJX5b4n7pY10bCf7QsmARTctqTax9_nEknkoMyfBwQ56hwZk_4PJ72o=",
+    "policy": "all"
+}
