@@ -61,4 +61,74 @@ void main() {
       expect(role.name, 'Owner');
     });
   });
+
+  group('MastodonCredentialAccount - parity with MastodonAccount', () {
+    Map<String, dynamic> loadCredentials() =>
+        jsonDecode(
+              File('test/fixtures/verify_credentials.json').readAsStringSync(),
+            )
+            as Map<String, dynamic>;
+
+    test('deserializes uri, indexable and group', () {
+      final account = MastodonCredentialAccount.fromJson(loadCredentials());
+
+      expect(account.uri, startsWith('https://mastodon.test/ap/users/'));
+      expect(account.uri, isNot(account.url));
+      expect(account.indexable, false);
+      expect(account.group, false);
+    });
+
+    test('deserializes the 4.6.0 fields that were added to '
+        'MastodonAccount only', () {
+      final account = MastodonCredentialAccount.fromJson(loadCredentials());
+
+      expect(account.avatarDescription, '');
+      expect(account.headerDescription, '');
+      expect(account.showFeatured, true);
+      expect(account.showMedia, true);
+      expect(account.showMediaReplies, true);
+
+      expect(account.featureApproval, isNotNull);
+      expect(account.featureApproval!.automatic, isEmpty);
+      expect(account.featureApproval!.manual, isEmpty);
+      expect(account.featureApproval!.currentUser, 'denied');
+    });
+
+    test('deserializes roles alongside the full role', () {
+      final account = MastodonCredentialAccount.fromJson(loadCredentials());
+
+      // roles は縮約形（id/name/color）、role は権限まで含む完全形
+      expect(account.roles, hasLength(1));
+      expect(account.roles.first.name, 'Owner');
+      expect(account.roles.first.permissions, isNull);
+      expect(account.role!.name, 'Owner');
+      expect(account.role!.permissions, isNotEmpty);
+    });
+
+    test('every key MastodonAccount reads is also read here', () {
+      final json = loadCredentials();
+      final asAccount = MastodonAccount.fromJson(json);
+      final asCredentials = MastodonCredentialAccount.fromJson(json);
+
+      // PR #9 で片側にだけフィールドを足したことによるドリフトの再発防止
+      expect(asCredentials.uri, asAccount.uri);
+      expect(asCredentials.indexable, asAccount.indexable);
+      expect(asCredentials.group, asAccount.group);
+      expect(asCredentials.avatarDescription, asAccount.avatarDescription);
+      expect(asCredentials.headerDescription, asAccount.headerDescription);
+      expect(asCredentials.showFeatured, asAccount.showFeatured);
+      expect(asCredentials.showMedia, asAccount.showMedia);
+      expect(asCredentials.showMediaReplies, asAccount.showMediaReplies);
+      expect(asCredentials.hideCollections, asAccount.hideCollections);
+      expect(asCredentials.noindex, asAccount.noindex);
+      expect(
+        asCredentials.roles.map((r) => r.name),
+        asAccount.roles.map((r) => r.name),
+      );
+      expect(
+        asCredentials.featureApproval!.currentUser,
+        asAccount.featureApproval!.currentUser,
+      );
+    });
+  });
 }

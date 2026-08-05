@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:mastodon_client/mastodon_client.dart';
 import 'package:test/test.dart';
 
@@ -79,6 +81,42 @@ void main() {
       final suggestion = MastodonSuggestion.fromJson(json);
 
       expect(suggestion.account.note, '<p>A great person to follow.</p>');
+    });
+  });
+
+  group('MastodonSuggestion.sources', () {
+    test('deserializes sources from fixture', () {
+      final file = File('test/fixtures/suggestions.json');
+      final list = jsonDecode(file.readAsStringSync()) as List<dynamic>;
+      final suggestions = list
+          .map((e) => MastodonSuggestion.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      expect(suggestions, isNotEmpty);
+      expect(suggestions.first.sources, contains('featured'));
+    });
+
+    test('sources carries values that source flattens away', () {
+      // source は sources.first を旧3値へ写像した劣化版。
+      // most_followed と most_interactions はどちらも global に潰れる
+      final json = <String, dynamic>{
+        'source': 'global',
+        'sources': <String>['most_interactions'],
+        'account': _minimalAccountJson(),
+      };
+      final suggestion = MastodonSuggestion.fromJson(json);
+
+      expect(suggestion.source, 'global');
+      expect(suggestion.sources, <String>['most_interactions']);
+    });
+
+    test('sources defaults to an empty list when the key is absent', () {
+      final json = <String, dynamic>{
+        'source': 'staff',
+        'account': _minimalAccountJson(),
+      };
+
+      expect(MastodonSuggestion.fromJson(json).sources, isEmpty);
     });
   });
 }

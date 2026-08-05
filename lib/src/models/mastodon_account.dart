@@ -29,7 +29,10 @@ class MastodonAccount {
     required this.statusesCount,
     required this.fields,
     required this.emojis,
+    this.uri,
     this.discoverable,
+    this.indexable,
+    this.group,
     this.noindex,
     this.createdAt,
     this.lastStatusAt,
@@ -45,6 +48,7 @@ class MastodonAccount {
     this.showFeatured,
     this.showMedia,
     this.showMediaReplies,
+    this.roles = const <MastodonRole>[],
   });
 
   factory MastodonAccount.fromJson(Map<String, dynamic> json) =>
@@ -75,6 +79,11 @@ class MastodonAccount {
   @JsonKey(defaultValue: '')
   final String url;
 
+  /// ActivityPub URI identifying the account.
+  ///
+  /// Differs from [url], which points at the human-readable profile page.
+  final String? uri;
+
   /// URL of the avatar image (animated version).
   @JsonKey(name: 'avatar', defaultValue: '')
   final String avatarUrl;
@@ -102,7 +111,16 @@ class MastodonAccount {
   /// Whether the account opts in to discovery features.
   final bool? discoverable;
 
+  /// Whether the account allows its public statuses to be indexed by the
+  /// instance's full-text search.
+  final bool? indexable;
+
+  /// Whether this is a group actor rather than a person.
+  final bool? group;
+
   /// Whether the account opts out of search engine indexing.
+  ///
+  /// Returned for local accounts only.
   final bool? noindex;
 
   /// Number of followers.
@@ -183,6 +201,60 @@ class MastodonAccount {
   ///
   /// Added in Mastodon 4.6.0.
   final bool? showMediaReplies;
+
+  /// Publicly visible roles assigned to the account, for badge display.
+  ///
+  /// Only roles flagged as highlighted are exposed, and only for local
+  /// accounts; remote accounts omit the key entirely, yielding an empty list.
+  /// Elements carry only [MastodonRole.id], [MastodonRole.name] and
+  /// [MastodonRole.color]; the remaining fields are null.
+  @JsonKey(defaultValue: <MastodonRole>[])
+  final List<MastodonRole> roles;
+}
+
+/// User role information.
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MastodonRole {
+  const MastodonRole({
+    this.id,
+    required this.name,
+    this.permissions,
+    this.color,
+    this.highlighted,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory MastodonRole.fromJson(Map<String, dynamic> json) =>
+      _$MastodonRoleFromJson(json);
+
+  /// Serializes to JSON.
+  Map<String, dynamic> toJson() => _$MastodonRoleToJson(this);
+
+  /// Role ID.
+  @JsonKey(fromJson: flexibleIdFromJson)
+  final String? id;
+
+  /// Role name.
+  final String name;
+
+  /// Permission bitmask (string format).
+  final String? permissions;
+
+  /// Color of the role badge.
+  @JsonKey(defaultValue: '')
+  final String? color;
+
+  /// Whether to display the role badge.
+  final bool? highlighted;
+
+  /// Timestamp when the role was created.
+  @SafeDateTimeConverter()
+  final DateTime? createdAt;
+
+  /// Timestamp when the role was updated.
+  @SafeDateTimeConverter()
+  final DateTime? updatedAt;
 }
 
 /// An account's approval policy for being tagged into collections

@@ -32,6 +32,30 @@ void main() {
       expect(rel.endorsed, isFalse);
       expect(rel.note, equals(''));
       expect(rel.languages, isNull);
+      expect(rel.mutingExpiresAt, isNull);
+    });
+
+    test('mutingExpiresAt deserializes a timed mute', () {
+      final file = File('test/fixtures/relationships.json');
+      final list = jsonDecode(file.readAsStringSync()) as List<dynamic>;
+      final json = list.first as Map<String, dynamic>
+        ..['muting'] = true
+        ..['muting_expires_at'] = '2026-08-05T12:00:00.000Z';
+
+      final rel = MastodonRelationship.fromJson(json);
+
+      expect(rel.muting, isTrue);
+      expect(rel.mutingExpiresAt, DateTime.utc(2026, 8, 5, 12));
+    });
+
+    test('mutingExpiresAt is null for an indefinite mute', () {
+      final file = File('test/fixtures/relationships.json');
+      final list = jsonDecode(file.readAsStringSync()) as List<dynamic>;
+      final json = list.first as Map<String, dynamic>
+        ..['muting'] = true
+        ..['muting_expires_at'] = null;
+
+      expect(MastodonRelationship.fromJson(json).mutingExpiresAt, isNull);
     });
   });
 }

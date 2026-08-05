@@ -72,6 +72,120 @@ void main() {
     });
   });
 
+  group('MastodonStatus.application', () {
+    test('deserializes the reduced application entity', () {
+      final file = File('test/fixtures/status.json');
+      final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+      final status = MastodonStatus.fromJson(json);
+
+      // 投稿APIが返す application は {name, website} のみで、
+      // MastodonApplication のような id / scopes / redirect_uris は含まない
+      expect(status.application, isNotNull);
+      expect(status.application!.name, isNotEmpty);
+      expect(status.application!.website, isNull);
+    });
+
+    test('is null when the author does not disclose it', () {
+      final file = File('test/fixtures/timelines_public.json');
+      final list = jsonDecode(file.readAsStringSync()) as List<dynamic>;
+      final json = list.first as Map<String, dynamic>;
+
+      expect(json.containsKey('application'), isFalse);
+      expect(MastodonStatus.fromJson(json).application, isNull);
+    });
+  });
+
+  group('MastodonStatus.card', () {
+    test('deserializes a link preview card embedded in the status', () {
+      final json =
+          jsonDecode(File('test/fixtures/status.json').readAsStringSync())
+              as Map<String, dynamic>;
+      final card =
+          jsonDecode(File('test/fixtures/preview_card.json').readAsStringSync())
+              as Map<String, dynamic>;
+
+      final status = MastodonStatus.fromJson({...json, 'card': card});
+
+      expect(status.card, isNotNull);
+      expect(status.card!.url, card['url']);
+      expect(status.card!.title, card['title']);
+      expect(status.card!.type, MastodonPreviewCardType.link);
+    });
+
+    test('is null for a status without a link', () {
+      final json =
+          jsonDecode(File('test/fixtures/status.json').readAsStringSync())
+              as Map<String, dynamic>;
+
+      expect(json['card'], isNull);
+      expect(MastodonStatus.fromJson(json).card, isNull);
+    });
+  });
+
+  group('MastodonStatus.filtered', () {
+    test('deserializes filter results from a live filtered response', () {
+      final file = File('test/fixtures/status_filtered.json');
+      final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+      final status = MastodonStatus.fromJson(json);
+
+      expect(status.filtered, hasLength(1));
+
+      final result = status.filtered.first;
+      expect(result.filter.id, isNotEmpty);
+      expect(result.filter.title, isNotEmpty);
+      expect(result.filter.context, contains('public'));
+      expect(result.filter.filterAction, MastodonFilterAction.warn);
+      expect(result.keywordMatches, isNotEmpty);
+
+      // サーバーは status_matches を null で返す（空配列ではない）
+      final rawFiltered = json['filtered'] as List<dynamic>;
+      expect(
+        (rawFiltered.first as Map<String, dynamic>)['status_matches'],
+        isNull,
+      );
+      expect(result.statusMatches, isEmpty);
+
+      // FilterResult 内の filter はルールを含まない形で返る
+      expect(result.filter.keywords, isEmpty);
+      expect(result.filter.statuses, isEmpty);
+    });
+
+    test('is empty for unauthenticated responses that omit the key', () {
+      final json =
+          jsonDecode(File('test/fixtures/status.json').readAsStringSync())
+                as Map<String, dynamic>
+            ..remove('filtered');
+
+      expect(MastodonStatus.fromJson(json).filtered, isEmpty);
+    });
+  });
+
+  group('MastodonStatus quote fields (Mastodon 4.5.0)', () {
+    test('deserializes quoteApproval and quotesCount', () {
+      final file = File('test/fixtures/status.json');
+      final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+      final status = MastodonStatus.fromJson(json);
+
+      expect(status.quotesCount, 0);
+      expect(status.quoteApproval, isNotNull);
+      expect(status.quoteApproval!.automatic, contains('public'));
+      expect(status.quoteApproval!.manual, isEmpty);
+      expect(status.quoteApproval!.currentUser, 'automatic');
+    });
+
+    test('falls back on servers older than 4.5.0', () {
+      final json =
+          jsonDecode(File('test/fixtures/status.json').readAsStringSync())
+                as Map<String, dynamic>
+            ..remove('quote_approval')
+            ..remove('quotes_count');
+      final status = MastodonStatus.fromJson(json);
+
+      expect(status.quoteApproval, isNull);
+      expect(status.quotesCount, 0);
+    });
+  });
+
   group('MastodonStatus.fromJson - status_with_poll.json', () {
     test('deserializes poll from fixture', () {
       final file = File('test/fixtures/status_with_poll.json');

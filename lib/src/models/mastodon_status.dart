@@ -4,8 +4,10 @@ import 'json_converters.dart';
 import 'mastodon_account.dart';
 import 'mastodon_collection.dart';
 import 'mastodon_custom_emoji.dart';
+import 'mastodon_filter.dart';
 import 'mastodon_media_attachment.dart';
 import 'mastodon_poll.dart';
+import 'mastodon_preview_card.dart';
 import 'mastodon_tag.dart';
 
 export 'mastodon_tag.dart';
@@ -78,6 +80,11 @@ class MastodonStatus {
     this.reblog,
     this.poll,
     this.quote,
+    this.card,
+    this.application,
+    this.quoteApproval,
+    this.quotesCount = 0,
+    this.filtered = const <MastodonFilterResult>[],
     this.taggedCollections = const <MastodonCollection>[],
   });
 
@@ -150,6 +157,12 @@ class MastodonStatus {
   @JsonKey(defaultValue: 0)
   final int repliesCount;
 
+  /// Number of quotes of this status.
+  ///
+  /// Added in Mastodon 4.5.0.
+  @JsonKey(defaultValue: 0)
+  final int quotesCount;
+
   /// Whether the authenticated user has favourited this status.
   final bool? favourited;
 
@@ -189,9 +202,94 @@ class MastodonStatus {
   /// Quoted status (Mastodon 4.5+ / FEP-044f). Null if not a quote.
   final MastodonStatus? quote;
 
+  /// Link preview card for the first link in the status.
+  ///
+  /// Null when the status contains no link, or when the card has not been
+  /// fetched yet. From Mastodon 4.6.0 this is the only way to obtain a
+  /// status's preview card; the dedicated `GET /api/v1/statuses/:id/card`
+  /// endpoint was removed.
+  final MastodonPreviewCard? card;
+
+  /// Application used to post the status.
+  ///
+  /// Returned only when the author has opted in to disclosing it, or when
+  /// the status belongs to the authenticated user.
+  final MastodonStatusApplication? application;
+
+  /// Filters the status matched for the authenticated user.
+  ///
+  /// Empty for unauthenticated requests. Clients are expected to honour these
+  /// results rather than applying filter rules themselves.
+  @JsonKey(defaultValue: <MastodonFilterResult>[])
+  final List<MastodonFilterResult> filtered;
+
+  /// Quote approval policy of the status.
+  ///
+  /// Added in Mastodon 4.5.0.
+  final MastodonQuoteApproval? quoteApproval;
+
   /// Collections this status has been tagged into.
   ///
   /// Added in Mastodon 4.6.0.
   @JsonKey(defaultValue: <MastodonCollection>[])
   final List<MastodonCollection> taggedCollections;
+}
+
+/// Application that published a status.
+///
+/// A reduced form of `MastodonApplication` carrying only the fields the
+/// status API exposes; client credentials and registration details are not
+/// disclosed for other users' statuses.
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MastodonStatusApplication {
+  const MastodonStatusApplication({
+    required this.name,
+    this.website,
+  });
+
+  factory MastodonStatusApplication.fromJson(Map<String, dynamic> json) =>
+      _$MastodonStatusApplicationFromJson(json);
+
+  /// Serializes to JSON.
+  Map<String, dynamic> toJson() => _$MastodonStatusApplicationToJson(this);
+
+  /// Name of the application.
+  @JsonKey(defaultValue: '')
+  final String name;
+
+  /// Website URL of the application. Null if the application declared none.
+  final String? website;
+}
+
+/// Quote approval policy of a status (Mastodon 4.5.0+).
+///
+/// [automatic] and [manual] each list the visibility scopes (e.g. `public`,
+/// `followers`) whose members may quote the status without approval or with
+/// manual approval, respectively.
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MastodonQuoteApproval {
+  const MastodonQuoteApproval({
+    this.automatic = const <String>[],
+    this.manual = const <String>[],
+    this.currentUser,
+  });
+
+  factory MastodonQuoteApproval.fromJson(Map<String, dynamic> json) =>
+      _$MastodonQuoteApprovalFromJson(json);
+
+  /// Serializes to JSON.
+  Map<String, dynamic> toJson() => _$MastodonQuoteApprovalToJson(this);
+
+  /// Visibility scopes whose members may quote without approval.
+  @JsonKey(defaultValue: <String>[])
+  final List<String> automatic;
+
+  /// Visibility scopes whose members may quote with manual approval.
+  @JsonKey(defaultValue: <String>[])
+  final List<String> manual;
+
+  /// Whether the authenticated user may quote this status
+  /// (e.g. `automatic`, `manual`, `denied`). Null for unauthenticated
+  /// requests.
+  final String? currentUser;
 }

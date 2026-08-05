@@ -35,7 +35,10 @@ class MastodonCredentialAccount {
     required this.statusesCount,
     required this.fields,
     required this.emojis,
+    this.uri,
     this.discoverable,
+    this.indexable,
+    this.group,
     this.noindex,
     this.createdAt,
     this.lastStatusAt,
@@ -45,6 +48,13 @@ class MastodonCredentialAccount {
     this.hideCollections,
     this.avatarBlurhash,
     this.headerBlurhash,
+    this.avatarDescription,
+    this.headerDescription,
+    this.featureApproval,
+    this.showFeatured,
+    this.showMedia,
+    this.showMediaReplies,
+    this.roles = const <MastodonRole>[],
     this.source,
     this.role,
   });
@@ -76,6 +86,11 @@ class MastodonCredentialAccount {
   @JsonKey(defaultValue: '')
   final String url;
 
+  /// ActivityPub URI identifying the account.
+  ///
+  /// Differs from [url], which points at the human-readable profile page.
+  final String? uri;
+
   /// URL of the avatar image (animated version).
   @JsonKey(name: 'avatar', defaultValue: '')
   final String avatarUrl;
@@ -102,6 +117,13 @@ class MastodonCredentialAccount {
 
   /// Whether the account opts in to discovery features.
   final bool? discoverable;
+
+  /// Whether the account allows its public statuses to be indexed by the
+  /// instance's full-text search.
+  final bool? indexable;
+
+  /// Whether this is a group actor rather than a person.
+  final bool? group;
 
   /// Whether the account opts out of search engine indexing.
   final bool? noindex;
@@ -152,11 +174,54 @@ class MastodonCredentialAccount {
   /// Blurhash of the header image.
   final String? headerBlurhash;
 
+  /// Alt text describing the avatar image, for accessibility.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final String? avatarDescription;
+
+  /// Alt text describing the header image, for accessibility.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final String? headerDescription;
+
+  /// This account's approval policy for being tagged into collections.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final MastodonFeatureApproval? featureApproval;
+
+  /// Whether this account's featured collections are shown on its profile.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final bool? showFeatured;
+
+  /// Whether media attachments are shown on this account's profile.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final bool? showMedia;
+
+  /// Whether media attachments from replies are shown on this account's
+  /// profile.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final bool? showMediaReplies;
+
+  /// Publicly visible roles assigned to the account, for badge display.
+  ///
+  /// Only roles flagged as highlighted are exposed. Elements carry only
+  /// [MastodonRole.id], [MastodonRole.name] and [MastodonRole.color]; the
+  /// remaining fields are null. Use [role] for the authenticated user's own
+  /// role, which is returned in full.
+  @JsonKey(defaultValue: <MastodonRole>[])
+  final List<MastodonRole> roles;
+
   /// Private information including default posting settings and follow request
   /// count.
   final MastodonAccountSource? source;
 
-  /// User role information.
+  /// The authenticated user's own role, including permissions.
+  ///
+  /// Unlike the entries in [roles], this is returned in full regardless of
+  /// whether the role is flagged as highlighted.
   final MastodonRole? role;
 }
 
@@ -201,49 +266,4 @@ class MastodonAccountSource {
 
   /// Default quote approval policy.
   final String? quotePolicy;
-}
-
-/// User role information.
-@JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonRole {
-  const MastodonRole({
-    this.id,
-    required this.name,
-    this.permissions,
-    this.color,
-    this.highlighted,
-    this.createdAt,
-    this.updatedAt,
-  });
-
-  factory MastodonRole.fromJson(Map<String, dynamic> json) =>
-      _$MastodonRoleFromJson(json);
-
-  /// Serializes to JSON.
-  Map<String, dynamic> toJson() => _$MastodonRoleToJson(this);
-
-  /// Role ID.
-  @JsonKey(fromJson: flexibleIdFromJson)
-  final String? id;
-
-  /// Role name.
-  final String name;
-
-  /// Permission bitmask (string format).
-  final String? permissions;
-
-  /// Color of the role badge.
-  @JsonKey(defaultValue: '')
-  final String? color;
-
-  /// Whether to display the role badge.
-  final bool? highlighted;
-
-  /// Timestamp when the role was created.
-  @SafeDateTimeConverter()
-  final DateTime? createdAt;
-
-  /// Timestamp when the role was updated.
-  @SafeDateTimeConverter()
-  final DateTime? updatedAt;
 }

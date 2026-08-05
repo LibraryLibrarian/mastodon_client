@@ -547,6 +547,7 @@ class MastodonInstance {
     this.registrations,
     this.languages,
     this.apiVersionMastodon,
+    this.wrapstodon,
   });
 
   factory MastodonInstance.fromJson(Map<String, dynamic> json) =>
@@ -609,6 +610,15 @@ class MastodonInstance {
   /// Mastodon API version number (`api_versions.mastodon`).
   @JsonKey(readValue: _readApiVersionMastodon)
   final int? apiVersionMastodon;
+
+  /// Year of the annual report campaign currently being offered, or null
+  /// when no campaign is running.
+  ///
+  /// The instance only advertises a campaign while the feature is enabled and
+  /// the campaign window is open, so this is null for most of the year.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final int? wrapstodon;
 }
 
 /// Instance icon image (`icon`, Mastodon 4.3+).

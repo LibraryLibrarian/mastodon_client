@@ -414,6 +414,7 @@ MastodonInstance _$MastodonInstanceFromJson(
       (MastodonInstance._readApiVersionMastodon(json, 'api_version_mastodon')
               as num?)
           ?.toInt(),
+  wrapstodon: (json['wrapstodon'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$MastodonInstanceToJson(MastodonInstance instance) =>
@@ -432,6 +433,7 @@ Map<String, dynamic> _$MastodonInstanceToJson(MastodonInstance instance) =>
       'languages': instance.languages,
       'rules': instance.rules.map((e) => e.toJson()).toList(),
       'api_version_mastodon': instance.apiVersionMastodon,
+      'wrapstodon': instance.wrapstodon,
     };
 
 MastodonInstanceIcon _$MastodonInstanceIconFromJson(
