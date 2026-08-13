@@ -20,6 +20,7 @@ class MastodonHttpClient {
     Duration sendTimeout = const Duration(seconds: 10),
     bool enableLog = true,
     Logger? logger,
+    HttpClientAdapter? httpClientAdapter,
   }) : logger = logger ?? const StdoutLogger(),
        dio = Dio(
          BaseOptions(
@@ -33,6 +34,9 @@ class MastodonHttpClient {
            },
          ),
        ) {
+    if (httpClientAdapter != null) {
+      dio.httpClientAdapter = httpClientAdapter;
+    }
     dio.interceptors.add(
       _MastodonInterceptor(enableLog: enableLog, logger: this.logger),
     );
@@ -106,10 +110,7 @@ class MastodonHttpClient {
 }
 
 class _MastodonInterceptor extends Interceptor {
-  _MastodonInterceptor({
-    required this.enableLog,
-    required this.logger,
-  });
+  _MastodonInterceptor({required this.enableLog, required this.logger});
 
   final bool enableLog;
   final Logger logger;
@@ -117,9 +118,7 @@ class _MastodonInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     if (enableLog && kDebugMode) {
-      clientLog.d(
-        '[HTTP REQ] ${options.method} ${options.uri}',
-      );
+      clientLog.d('[HTTP REQ] ${options.method} ${options.uri}');
     }
     super.onRequest(options, handler);
   }

@@ -107,3 +107,27 @@ Map<String, dynamic> _$MastodonFilterV1ToJson(MastodonFilterV1 instance) =>
       'irreversible': instance.irreversible,
       'whole_word': instance.wholeWord,
     };
+
+MastodonFilterResult _$MastodonFilterResultFromJson(
+  Map<String, dynamic> json,
+) => MastodonFilterResult(
+  filter: MastodonFilter.fromJson(json['filter'] as Map<String, dynamic>),
+  keywordMatches:
+      (json['keyword_matches'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      [],
+  statusMatches:
+      (json['status_matches'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      [],
+);
+
+Map<String, dynamic> _$MastodonFilterResultToJson(
+  MastodonFilterResult instance,
+) => <String, dynamic>{
+  'filter': instance.filter.toJson(),
+  'keyword_matches': instance.keywordMatches,
+  'status_matches': instance.statusMatches,
+};

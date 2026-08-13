@@ -45,10 +45,7 @@ class MastodonAdminMeasure {
 /// Daily data entry for a measure.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminMeasureData {
-  const MastodonAdminMeasureData({
-    required this.date,
-    required this.value,
-  });
+  const MastodonAdminMeasureData({required this.date, required this.value});
 
   factory MastodonAdminMeasureData.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminMeasureDataFromJson(json);

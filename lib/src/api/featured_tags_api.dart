@@ -15,9 +15,7 @@ class FeaturedTagsApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<List<MastodonFeaturedTag>> fetch() async {
-    final data = await _http.send<List<dynamic>>(
-      '/api/v1/featured_tags',
-    );
+    final data = await _http.send<List<dynamic>>('/api/v1/featured_tags');
     return (data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonFeaturedTag.fromJson)
@@ -46,10 +44,7 @@ class FeaturedTagsApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<void> delete(String id) async {
-    await _http.send<void>(
-      '/api/v1/featured_tags/$id',
-      method: 'DELETE',
-    );
+    await _http.send<void>('/api/v1/featured_tags/$id', method: 'DELETE');
   }
 
   /// Fetches up to 10 recently used hashtags as feature candidates.

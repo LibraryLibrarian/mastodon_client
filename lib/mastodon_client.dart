@@ -32,6 +32,7 @@ export 'src/models/mastodon_account_create_request.dart';
 export 'src/models/mastodon_announcement.dart';
 export 'src/models/mastodon_application.dart';
 export 'src/models/mastodon_async_refresh.dart';
+export 'src/models/mastodon_collection.dart';
 export 'src/models/mastodon_conversation.dart';
 export 'src/models/mastodon_credential_account.dart';
 export 'src/models/mastodon_credential_account_update_request.dart';

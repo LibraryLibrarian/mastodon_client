@@ -76,6 +76,30 @@ MastodonStatus _$MastodonStatusFromJson(
   quote: json['quote'] == null
       ? null
       : MastodonStatus.fromJson(json['quote'] as Map<String, dynamic>),
+  card: json['card'] == null
+      ? null
+      : MastodonPreviewCard.fromJson(json['card'] as Map<String, dynamic>),
+  application: json['application'] == null
+      ? null
+      : MastodonStatusApplication.fromJson(
+          json['application'] as Map<String, dynamic>,
+        ),
+  quoteApproval: json['quote_approval'] == null
+      ? null
+      : MastodonQuoteApproval.fromJson(
+          json['quote_approval'] as Map<String, dynamic>,
+        ),
+  quotesCount: (json['quotes_count'] as num?)?.toInt() ?? 0,
+  filtered:
+      (json['filtered'] as List<dynamic>?)
+          ?.map((e) => MastodonFilterResult.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      [],
+  taggedCollections:
+      (json['tagged_collections'] as List<dynamic>?)
+          ?.map((e) => MastodonCollection.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      [],
 );
 
 Map<String, dynamic> _$MastodonStatusToJson(MastodonStatus instance) =>
@@ -96,6 +120,7 @@ Map<String, dynamic> _$MastodonStatusToJson(MastodonStatus instance) =>
       'reblogs_count': instance.reblogsCount,
       'favourites_count': instance.favouritesCount,
       'replies_count': instance.repliesCount,
+      'quotes_count': instance.quotesCount,
       'favourited': instance.favourited,
       'reblogged': instance.reblogged,
       'bookmarked': instance.bookmarked,
@@ -111,6 +136,13 @@ Map<String, dynamic> _$MastodonStatusToJson(MastodonStatus instance) =>
       'reblog': instance.reblog?.toJson(),
       'poll': instance.poll?.toJson(),
       'quote': instance.quote?.toJson(),
+      'card': instance.card?.toJson(),
+      'application': instance.application?.toJson(),
+      'filtered': instance.filtered.map((e) => e.toJson()).toList(),
+      'quote_approval': instance.quoteApproval?.toJson(),
+      'tagged_collections': instance.taggedCollections
+          .map((e) => e.toJson())
+          .toList(),
     };
 
 const _$MastodonVisibilityEnumMap = {
@@ -118,4 +150,35 @@ const _$MastodonVisibilityEnumMap = {
   MastodonVisibility.unlisted: 'unlisted',
   MastodonVisibility.private: 'private',
   MastodonVisibility.direct: 'direct',
+};
+
+MastodonStatusApplication _$MastodonStatusApplicationFromJson(
+  Map<String, dynamic> json,
+) => MastodonStatusApplication(
+  name: json['name'] as String? ?? '',
+  website: json['website'] as String?,
+);
+
+Map<String, dynamic> _$MastodonStatusApplicationToJson(
+  MastodonStatusApplication instance,
+) => <String, dynamic>{'name': instance.name, 'website': instance.website};
+
+MastodonQuoteApproval _$MastodonQuoteApprovalFromJson(
+  Map<String, dynamic> json,
+) => MastodonQuoteApproval(
+  automatic:
+      (json['automatic'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      [],
+  manual:
+      (json['manual'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      [],
+  currentUser: json['current_user'] as String?,
+);
+
+Map<String, dynamic> _$MastodonQuoteApprovalToJson(
+  MastodonQuoteApproval instance,
+) => <String, dynamic>{
+  'automatic': instance.automatic,
+  'manual': instance.manual,
+  'current_user': instance.currentUser,
 };

@@ -9,9 +9,8 @@ part 'mastodon_unread_notification_count.g.dart';
 class MastodonUnreadNotificationCount {
   const MastodonUnreadNotificationCount({required this.count});
 
-  factory MastodonUnreadNotificationCount.fromJson(
-    Map<String, dynamic> json,
-  ) => _$MastodonUnreadNotificationCountFromJson(json);
+  factory MastodonUnreadNotificationCount.fromJson(Map<String, dynamic> json) =>
+      _$MastodonUnreadNotificationCountFromJson(json);
 
   /// Serializes to JSON.
   Map<String, dynamic> toJson() =>

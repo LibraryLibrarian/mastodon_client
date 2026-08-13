@@ -22,7 +22,7 @@
 
 ```yaml
 dependencies:
-  mastodon_client: ^1.0.0-beta.1
+  mastodon_client: ^1.0.0-beta.2
 ```
 
 그런 다음 실행하세요:

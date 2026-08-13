@@ -18,6 +18,7 @@ MastodonPreferences _$MastodonPreferencesFromJson(
   postingDefaultQuotePolicy: json['posting:default:quote_policy'] as String?,
   readingExpandMedia: json['reading:expand:media'] as String? ?? 'default',
   readingExpandSpoilers: json['reading:expand:spoilers'] as bool? ?? false,
+  readingAutoplayGifs: json['reading:autoplay:gifs'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$MastodonPreferencesToJson(
@@ -29,4 +30,5 @@ Map<String, dynamic> _$MastodonPreferencesToJson(
   'posting:default:quote_policy': instance.postingDefaultQuotePolicy,
   'reading:expand:media': instance.readingExpandMedia,
   'reading:expand:spoilers': instance.readingExpandSpoilers,
+  'reading:autoplay:gifs': instance.readingAutoplayGifs,
 };

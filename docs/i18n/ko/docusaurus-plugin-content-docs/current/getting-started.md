@@ -22,7 +22,7 @@ Flutter, 서버사이드 Dart, CLI 도구 등 Dart가 실행되는 모든 환경
 
 ```yaml
 dependencies:
-  mastodon_client: ^1.0.0-beta.1
+  mastodon_client: ^1.0.0-beta.2
 ```
 
 그런 다음 패키지를 가져옵니다:

@@ -20,9 +20,7 @@ class PreferencesApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<MastodonPreferences> fetch() async {
-    final data = await _http.send<Map<String, dynamic>>(
-      '/api/v1/preferences',
-    );
+    final data = await _http.send<Map<String, dynamic>>('/api/v1/preferences');
     return MastodonPreferences.fromJson(data!);
   }
 }

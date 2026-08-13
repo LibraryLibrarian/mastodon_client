@@ -103,10 +103,7 @@ class MastodonFilterKeyword {
 /// Corresponds to the response from `/api/v2/filters/:filter_id/statuses`.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFilterStatus {
-  const MastodonFilterStatus({
-    required this.id,
-    required this.statusId,
-  });
+  const MastodonFilterStatus({required this.id, required this.statusId});
 
   factory MastodonFilterStatus.fromJson(Map<String, dynamic> json) =>
       _$MastodonFilterStatusFromJson(json);
@@ -173,4 +170,40 @@ class MastodonFilterV1 {
   /// Whether to match using word boundaries.
   @JsonKey(defaultValue: false)
   final bool wholeWord;
+}
+
+/// Result of a filter matching a status.
+///
+/// Returned in `MastodonStatus.filtered` for authenticated requests, one
+/// element per filter the status matched. Clients are expected to honour
+/// [MastodonFilter.filterAction] of the matched [filter] rather than
+/// re-evaluating the filter rules themselves.
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MastodonFilterResult {
+  const MastodonFilterResult({
+    required this.filter,
+    this.keywordMatches = const <String>[],
+    this.statusMatches = const <String>[],
+  });
+
+  factory MastodonFilterResult.fromJson(Map<String, dynamic> json) =>
+      _$MastodonFilterResultFromJson(json);
+
+  /// Serializes to JSON.
+  Map<String, dynamic> toJson() => _$MastodonFilterResultToJson(this);
+
+  /// The filter that was matched.
+  ///
+  /// The server omits the filter's rules here, so
+  /// [MastodonFilter.keywords] and [MastodonFilter.statuses] are always
+  /// empty. Fetch the filter via the v2 filters API to obtain its rules.
+  final MastodonFilter filter;
+
+  /// Keywords within the filter that matched.
+  @JsonKey(defaultValue: <String>[])
+  final List<String> keywordMatches;
+
+  /// IDs of statuses within the filter that matched.
+  @JsonKey(defaultValue: <String>[])
+  final List<String> statusMatches;
 }

@@ -29,7 +29,10 @@ class MastodonAccount {
     required this.statusesCount,
     required this.fields,
     required this.emojis,
+    this.uri,
     this.discoverable,
+    this.indexable,
+    this.group,
     this.noindex,
     this.createdAt,
     this.lastStatusAt,
@@ -39,6 +42,13 @@ class MastodonAccount {
     this.hideCollections,
     this.avatarBlurhash,
     this.headerBlurhash,
+    this.avatarDescription,
+    this.headerDescription,
+    this.featureApproval,
+    this.showFeatured,
+    this.showMedia,
+    this.showMediaReplies,
+    this.roles = const <MastodonRole>[],
   });
 
   factory MastodonAccount.fromJson(Map<String, dynamic> json) =>
@@ -69,6 +79,11 @@ class MastodonAccount {
   @JsonKey(defaultValue: '')
   final String url;
 
+  /// ActivityPub URI identifying the account.
+  ///
+  /// Differs from [url], which points at the human-readable profile page.
+  final String? uri;
+
   /// URL of the avatar image (animated version).
   @JsonKey(name: 'avatar', defaultValue: '')
   final String avatarUrl;
@@ -96,7 +111,16 @@ class MastodonAccount {
   /// Whether the account opts in to discovery features.
   final bool? discoverable;
 
+  /// Whether the account allows its public statuses to be indexed by the
+  /// instance's full-text search.
+  final bool? indexable;
+
+  /// Whether this is a group actor rather than a person.
+  final bool? group;
+
   /// Whether the account opts out of search engine indexing.
+  ///
+  /// Returned for local accounts only.
   final bool? noindex;
 
   /// Number of followers.
@@ -146,6 +170,126 @@ class MastodonAccount {
 
   /// Blurhash of the header image.
   final String? headerBlurhash;
+
+  /// Alt text describing the avatar image, for accessibility.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final String? avatarDescription;
+
+  /// Alt text describing the header image, for accessibility.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final String? headerDescription;
+
+  /// This account's approval policy for being tagged into collections.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final MastodonFeatureApproval? featureApproval;
+
+  /// Whether this account's featured collections are shown on its profile.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final bool? showFeatured;
+
+  /// Whether media attachments are shown on this account's profile.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final bool? showMedia;
+
+  /// Whether media attachments from replies are shown on this account's
+  /// profile.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final bool? showMediaReplies;
+
+  /// Publicly visible roles assigned to the account, for badge display.
+  ///
+  /// Only roles flagged as highlighted are exposed, and only for local
+  /// accounts; remote accounts omit the key entirely, yielding an empty list.
+  /// Elements carry only [MastodonRole.id], [MastodonRole.name] and
+  /// [MastodonRole.color]; the remaining fields are null.
+  @JsonKey(defaultValue: <MastodonRole>[])
+  final List<MastodonRole> roles;
+}
+
+/// User role information.
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MastodonRole {
+  const MastodonRole({
+    this.id,
+    required this.name,
+    this.permissions,
+    this.color,
+    this.highlighted,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory MastodonRole.fromJson(Map<String, dynamic> json) =>
+      _$MastodonRoleFromJson(json);
+
+  /// Serializes to JSON.
+  Map<String, dynamic> toJson() => _$MastodonRoleToJson(this);
+
+  /// Role ID.
+  @JsonKey(fromJson: flexibleIdFromJson)
+  final String? id;
+
+  /// Role name.
+  final String name;
+
+  /// Permission bitmask (string format).
+  final String? permissions;
+
+  /// Color of the role badge.
+  @JsonKey(defaultValue: '')
+  final String? color;
+
+  /// Whether to display the role badge.
+  final bool? highlighted;
+
+  /// Timestamp when the role was created.
+  @SafeDateTimeConverter()
+  final DateTime? createdAt;
+
+  /// Timestamp when the role was updated.
+  @SafeDateTimeConverter()
+  final DateTime? updatedAt;
+}
+
+/// An account's approval policy for being tagged into collections
+/// (Mastodon 4.6.0+).
+///
+/// [automatic] and [manual] each list the visibility scopes (e.g.
+/// `public`, `followers`) for which tagging requests are automatically
+/// accepted or require manual approval, respectively.
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MastodonFeatureApproval {
+  const MastodonFeatureApproval({
+    required this.automatic,
+    required this.manual,
+    this.currentUser,
+  });
+
+  factory MastodonFeatureApproval.fromJson(Map<String, dynamic> json) =>
+      _$MastodonFeatureApprovalFromJson(json);
+
+  /// Serializes to JSON.
+  Map<String, dynamic> toJson() => _$MastodonFeatureApprovalToJson(this);
+
+  /// Visibility scopes for which tagging requests are automatically
+  /// accepted.
+  @JsonKey(defaultValue: <String>[])
+  final List<String> automatic;
+
+  /// Visibility scopes for which tagging requests require manual
+  /// approval.
+  @JsonKey(defaultValue: <String>[])
+  final List<String> manual;
+
+  /// The approval status for the currently authenticated user
+  /// (e.g. `automatic`, `manual`, `denied`), if applicable.
+  final String? currentUser;
 }
 
 /// Profile field of a Mastodon account.

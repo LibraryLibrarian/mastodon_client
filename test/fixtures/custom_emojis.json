@@ -1,0 +1,8 @@
+[
+    {
+        "shortcode": "test_emoji",
+        "url": "https://localhost:3001/system/custom_emojis/images/000/000/001/original/81f156882693b7ac.png",
+        "static_url": "https://localhost:3001/system/custom_emojis/images/000/000/001/static/81f156882693b7ac.png",
+        "visible_in_picker": true
+    }
+]

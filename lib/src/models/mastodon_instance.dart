@@ -20,10 +20,7 @@ enum MastodonTimelineAccessLevel {
 /// Access settings for live feeds (real-time timelines).
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTimelineLiveFeeds {
-  const MastodonTimelineLiveFeeds({
-    required this.local,
-    required this.remote,
-  });
+  const MastodonTimelineLiveFeeds({required this.local, required this.remote});
 
   factory MastodonTimelineLiveFeeds.fromJson(Map<String, dynamic> json) =>
       _$MastodonTimelineLiveFeedsFromJson(json);
@@ -315,10 +312,8 @@ class MastodonInstanceConfiguration {
     String key,
   ) => (json['translation'] as Map<dynamic, dynamic>?)?['enabled'];
 
-  static Object? _readVapidPublicKey(
-    Map<dynamic, dynamic> json,
-    String key,
-  ) => (json['vapid'] as Map<dynamic, dynamic>?)?['public_key'];
+  static Object? _readVapidPublicKey(Map<dynamic, dynamic> json, String key) =>
+      (json['vapid'] as Map<dynamic, dynamic>?)?['public_key'];
 
   /// URL settings (including streaming URL).
   @JsonKey(readValue: _readUrls)
@@ -507,14 +502,10 @@ class MastodonInstanceRule {
 /// Translation of an instance rule (`rules[].translations`).
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceRuleTranslation {
-  const MastodonInstanceRuleTranslation({
-    required this.text,
-    this.hint,
-  });
+  const MastodonInstanceRuleTranslation({required this.text, this.hint});
 
-  factory MastodonInstanceRuleTranslation.fromJson(
-    Map<String, dynamic> json,
-  ) => _$MastodonInstanceRuleTranslationFromJson(json);
+  factory MastodonInstanceRuleTranslation.fromJson(Map<String, dynamic> json) =>
+      _$MastodonInstanceRuleTranslationFromJson(json);
 
   /// Serializes to JSON.
   Map<String, dynamic> toJson() =>
@@ -547,6 +538,7 @@ class MastodonInstance {
     this.registrations,
     this.languages,
     this.apiVersionMastodon,
+    this.wrapstodon,
   });
 
   factory MastodonInstance.fromJson(Map<String, dynamic> json) =>
@@ -609,15 +601,21 @@ class MastodonInstance {
   /// Mastodon API version number (`api_versions.mastodon`).
   @JsonKey(readValue: _readApiVersionMastodon)
   final int? apiVersionMastodon;
+
+  /// Year of the annual report campaign currently being offered, or null
+  /// when no campaign is running.
+  ///
+  /// The instance only advertises a campaign while the feature is enabled and
+  /// the campaign window is open, so this is null for most of the year.
+  ///
+  /// Added in Mastodon 4.6.0.
+  final int? wrapstodon;
 }
 
 /// Instance icon image (`icon`, Mastodon 4.3+).
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceIcon {
-  const MastodonInstanceIcon({
-    required this.src,
-    required this.size,
-  });
+  const MastodonInstanceIcon({required this.src, required this.size});
 
   factory MastodonInstanceIcon.fromJson(Map<String, dynamic> json) =>
       _$MastodonInstanceIconFromJson(json);

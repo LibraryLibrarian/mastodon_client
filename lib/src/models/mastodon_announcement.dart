@@ -121,10 +121,7 @@ class MastodonAnnouncement {
 /// Status referenced in an announcement body.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAnnouncementStatus {
-  const MastodonAnnouncementStatus({
-    required this.id,
-    required this.url,
-  });
+  const MastodonAnnouncementStatus({required this.id, required this.url});
 
   factory MastodonAnnouncementStatus.fromJson(Map<String, dynamic> json) =>
       _$MastodonAnnouncementStatusFromJson(json);

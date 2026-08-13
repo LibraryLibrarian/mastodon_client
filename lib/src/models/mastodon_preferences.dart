@@ -16,6 +16,7 @@ class MastodonPreferences {
     this.postingDefaultQuotePolicy,
     required this.readingExpandMedia,
     required this.readingExpandSpoilers,
+    this.readingAutoplayGifs = false,
   });
 
   /// Creates a [MastodonPreferences] from a JSON map.
@@ -48,4 +49,8 @@ class MastodonPreferences {
   /// Whether to expand content warnings (CW) by default.
   @JsonKey(name: 'reading:expand:spoilers', defaultValue: false)
   final bool readingExpandSpoilers;
+
+  /// Whether to autoplay animated GIFs.
+  @JsonKey(name: 'reading:autoplay:gifs', defaultValue: false)
+  final bool readingAutoplayGifs;
 }

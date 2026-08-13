@@ -17,9 +17,7 @@ class TagsApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<MastodonTag> fetch(String name) async {
-    final data = await _http.send<Map<String, dynamic>>(
-      '/api/v1/tags/$name',
-    );
+    final data = await _http.send<Map<String, dynamic>>('/api/v1/tags/$name');
     return MastodonTag.fromJson(data!);
   }
 

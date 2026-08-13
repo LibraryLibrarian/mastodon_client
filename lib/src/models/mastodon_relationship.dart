@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'json_converters.dart';
+
 part 'mastodon_relationship.g.dart';
 
 /// Relationship between two accounts (follow, block, mute, etc.).
@@ -22,6 +24,7 @@ class MastodonRelationship {
     required this.endorsed,
     required this.note,
     this.languages,
+    this.mutingExpiresAt,
   });
 
   /// Creates a [MastodonRelationship] from a JSON map.
@@ -64,6 +67,11 @@ class MastodonRelationship {
   /// Whether you are muting this account.
   @JsonKey(defaultValue: false)
   final bool muting;
+
+  /// Expiry of a timed mute. Null when the mute is indefinite or when you are
+  /// not muting this account.
+  @SafeDateTimeConverter()
+  final DateTime? mutingExpiresAt;
 
   /// Whether you are muting notifications from this account.
   @JsonKey(defaultValue: false)

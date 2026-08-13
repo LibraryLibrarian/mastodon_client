@@ -1,0 +1,19 @@
+[
+    {
+        "id": "116266789448809503",
+        "following": true,
+        "showing_reblogs": true,
+        "notifying": false,
+        "languages": null,
+        "followed_by": true,
+        "blocking": false,
+        "blocked_by": false,
+        "muting": false,
+        "muting_notifications": false,
+        "requested": false,
+        "requested_by": false,
+        "domain_blocking": false,
+        "endorsed": false,
+        "note": ""
+    }
+]

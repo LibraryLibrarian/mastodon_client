@@ -67,6 +67,7 @@ MastodonNotification _$MastodonNotificationFromJson(
   ),
   createdAt: DateTime.parse(json['created_at'] as String),
   account: MastodonAccount.fromJson(json['account'] as Map<String, dynamic>),
+  groupKey: json['group_key'] as String?,
   status: json['status'] == null
       ? null
       : MastodonStatus.fromJson(json['status'] as Map<String, dynamic>),
@@ -89,6 +90,7 @@ Map<String, dynamic> _$MastodonNotificationToJson(
   'type': _$MastodonNotificationTypeEnumMap[instance.type]!,
   'created_at': instance.createdAt.toIso8601String(),
   'account': instance.account.toJson(),
+  'group_key': instance.groupKey,
   'status': instance.status?.toJson(),
   'relationship_severance_event': instance.relationshipSeveranceEvent?.toJson(),
   'moderation_warning': instance.moderationWarning?.toJson(),

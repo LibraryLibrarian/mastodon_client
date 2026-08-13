@@ -1,0 +1,17 @@
+[
+    {
+        "id": "1",
+        "content": "<p>Welcome to our test Mastodon instance!</p>",
+        "starts_at": "2026-03-21T10:58:16.306Z",
+        "ends_at": "2026-03-28T10:58:16.306Z",
+        "all_day": false,
+        "published_at": "2026-03-21T10:58:16.340Z",
+        "updated_at": "2026-03-21T10:58:16.340Z",
+        "read": false,
+        "mentions": [],
+        "statuses": [],
+        "tags": [],
+        "emojis": [],
+        "reactions": []
+    }
+]

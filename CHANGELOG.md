@@ -5,6 +5,64 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [1.0.0-beta.2] - 2026-08-13
+
+### Added
+
+- Added CI checks for formatting, static analysis, generated code, unit tests, and package validation on the minimum and stable Dart SDKs (issue #20)
+- Added OIDC-based automated publishing to pub.dev for version tags (issue #20)
+- Added release version update and verification tooling for pubspec, documentation, CHANGELOG, and release tags (issue #20)
+- Added automatic GitHub Release creation from the matching CHANGELOG section after a successful pub.dev publication (issue #20)
+
+### Changed
+
+- **Breaking:** The minimum supported Dart SDK version is now 3.9.0
+- Updated runtime and development dependencies, including Dio, json_annotation, logger, build_runner, json_serializable, lints, and test
+- Replaced the Flutter-dependent `pedantic_mono` lint configuration with the official Dart `lints/recommended` ruleset, and removed the unused Flutter-dependent `pubspec_dependency_sorter`
+- Excluded tests, local build outputs, generated API documentation, and development-only configuration files from published package archives
+- **Breaking:** ID fields that some instances return as numbers are now typed `String?` and coerced from either representation, instead of being typed `int` or non-nullable `String`. Code that reads these fields as `int`, or that relies on them being non-null, needs updating:
+  - `MastodonRole.id`: `int` (required) → `String?`
+  - `MastodonAdminRole.id`: `int` (required) → `String?`
+  - `MastodonWebPushSubscription.id`: `String` → `String?`
+  - `MastodonNotificationGroup.mostRecentNotificationId`: `String` → `String?`
+- **Breaking:** `MastodonOEmbed.title`, `.authorName`, `.authorUrl`, `.providerName`, and `.providerUrl` are now `String?`. Real responses omit them for some providers, so the previous non-nullable typing could not represent them
+- `MastodonRole` now lives in `mastodon_account.dart` instead of `mastodon_credential_account.dart`, so that both `MastodonAccount.roles` and `MastodonCredentialAccount.role` can reference it without a circular import. The class itself is unchanged and is still exported from `package:mastodon_client/mastodon_client.dart`
+- Refreshed fixtures against a live, federated world (multi-account, cross-server posts/reactions/follows) via the fixture collection tool in `fediverse_e2e`, replacing the single-server March snapshot. Corresponding model tests were updated to assert on structural properties rather than hardcoded IDs/counts where the underlying data is inherently dynamic (timestamps, counters, federated content). Notably `MastodonCredentialAccount`'s `role: Owner` fixture now comes from an actual admin-scoped account rather than a stub
+
+### Added
+
+- `MastodonAccount` fields added in Mastodon 4.6.0: `avatarDescription`, `headerDescription`, `featureApproval` (as `MastodonFeatureApproval`), `showFeatured`, `showMedia`, `showMediaReplies`
+- `MastodonStatus.taggedCollections` (Mastodon 4.6.0), listing the `MastodonCollection`s a status has been tagged into. Defaults to an empty list, so servers older than 4.6.0 and existing constructor calls are unaffected
+- `MastodonAdminRole.collectionLimit` (Mastodon 4.6.0)
+- `MastodonCollection` model, corresponding to `/api/v1/collections` responses
+- `httpClientAdapter` parameter on `MastodonClient` / `MastodonHttpClient` to customize the HTTP transport (private CA trust, proxying)
+- E2E test layer (`test/e2e/`) targeting the local closed-federation environment (`fediverse_e2e`); enabled via `RUN_E2E=1`, auto-skipped otherwise
+- Compatibility E2E suite against Fedibird 3.4.1, pinning which endpoints are available on Mastodon 3.x-era servers and which are not (`/api/v2/instance`, `/api/v2/filters`, `/api/v1/trends/{tags,statuses,links}`, `/api/v1/followed_tags`, `/api/v1/instance/domain_blocks`, and most admin APIs beyond accounts/reports return 404 there)
+- Tests for `Link` response header parsing (`parseNextMaxId`/`parsePrevMinId`, used by `MastodonPage` cursor pagination): next/prev-only headers, malformed segments, missing query parameters, and the `min_id`-over-`since_id` precedence for the previous-page cursor
+- Tests covering the `unknownEnumValue` fallback for `MastodonFilterAction`, `MastodonTimelineAccessLevel`, `MastodonPreviewCardType`, `MastodonMediaType`, `MastodonVisibility`, `MastodonAdminIpBlockSeverity`, and `MastodonAdminDomainBlockSeverity` when the server returns a value not yet known to this client
+- Tests for the HTTP error conversion logic (`convertDioException`): all status-code branches (401/403/404/422/429/5xx/unmapped), error body parsing (`{"error": "..."}` extraction and fallbacks), retry-after header parsing, and network-level errors (connection/timeout/cancel)
+- Tests pinning the `int` → `String` coercion of `MastodonRole.id` and `MastodonAdminRole.id`, and the deserialization of every Mastodon 4.6.0 field from a live server response
+- `MastodonStatus.card`, exposing the link preview as a `MastodonPreviewCard`. From Mastodon 4.6.0 this is the only way to obtain a status's preview card, as `GET /api/v1/statuses/:id/card` was removed
+- `MastodonStatus.filtered`, listing the filters a status matched for the authenticated user as `MastodonFilterResult`s. Without it, the v2 filters already implemented in `FiltersApi` could not be honoured on the timeline side
+- `MastodonStatus.application`, the app a status was posted from, as a `MastodonStatusApplication` (`name` / `website` only — the status API does not disclose client credentials)
+- `MastodonStatus.quoteApproval` (as `MastodonQuoteApproval`) and `MastodonStatus.quotesCount` (Mastodon 4.5.0)
+- `MastodonFilterResult` model, corresponding to the entries of `MastodonStatus.filtered`. Its nested `filter` is serialized without rules, so `MastodonFilter.keywords` and `.statuses` are always empty there
+- `MastodonAccount` fields `uri` (ActivityPub identifier), `roles` (publicly visible role badges), `indexable`, and `group`
+- `MastodonCredentialAccount` fields that had been added to `MastodonAccount` only: `uri`, `roles`, `indexable`, `group`, `avatarDescription`, `headerDescription`, `featureApproval`, `showFeatured`, `showMedia`, `showMediaReplies`
+- `MastodonInstance.wrapstodon` (Mastodon 4.6.0), the year of the annual report campaign currently on offer, or null outside a campaign window
+- `MastodonNotification.groupKey`, correlating a v1 notification with its v2 `MastodonNotificationGroup`
+- `MastodonRelationship.mutingExpiresAt`, the expiry of a timed mute
+- `MastodonSuggestion.sources`, the suggestion reasons in the current vocabulary. `source` is a lossy mapping of the first entry onto the legacy three-value vocabulary
+- `MastodonPreferences.readingAutoplayGifs`
+- Fixture key coverage test (`test/models/fixture_key_coverage_test.dart`), asserting that every top-level key in a fixture is read back by its model. Ordinary fixture tests cannot catch this class of drift, because `json_serializable` discards unknown keys silently. Fields known to be missing but out of scope are listed explicitly in the test rather than being excluded silently
+- `status_filtered.json` fixture, a live response carrying a non-empty `filtered`. It pins that the server returns `status_matches` as `null` rather than an empty array
+
+### Fixed
+
+- `MastodonAdminAccount.role` failed to deserialize with a type cast error against Mastodon 3.x servers and forks such as Fedibird, which return `role` as a plain string (`user` / `moderator` / `admin`) instead of an object. The string form is now accepted and mapped to a `MastodonAdminRole` carrying its name
+
 ## [1.0.0-beta.1] - 2026-03-18
 
 ### Added
@@ -41,4 +99,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions workflow for documentation deployment
 - README in 6 languages
 
+[1.0.0-beta.2]: https://github.com/LibraryLibrarian/mastodon_client/releases/tag/v1.0.0-beta.2
 [1.0.0-beta.1]: https://github.com/LibraryLibrarian/mastodon_client/releases/tag/v1.0.0-beta.1

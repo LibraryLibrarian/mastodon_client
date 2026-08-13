@@ -20,16 +20,10 @@ class TrendsApi {
   /// (default: 10, max: 20) and [offset] skips that many for pagination.
   ///
   /// Throws a `MastodonException` on failure.
-  Future<List<MastodonTag>> fetchTags({
-    int? limit,
-    int? offset,
-  }) async {
+  Future<List<MastodonTag>> fetchTags({int? limit, int? offset}) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/trends/tags',
-      queryParameters: <String, dynamic>{
-        'limit': ?limit,
-        'offset': ?offset,
-      },
+      queryParameters: <String, dynamic>{'limit': ?limit, 'offset': ?offset},
     );
     return (data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
@@ -46,16 +40,10 @@ class TrendsApi {
   /// and [offset] skips that many for pagination.
   ///
   /// Throws a `MastodonException` on failure.
-  Future<List<MastodonStatus>> fetchStatuses({
-    int? limit,
-    int? offset,
-  }) async {
+  Future<List<MastodonStatus>> fetchStatuses({int? limit, int? offset}) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/trends/statuses',
-      queryParameters: <String, dynamic>{
-        'limit': ?limit,
-        'offset': ?offset,
-      },
+      queryParameters: <String, dynamic>{'limit': ?limit, 'offset': ?offset},
     );
     return (data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
@@ -72,16 +60,10 @@ class TrendsApi {
   /// and [offset] skips that many for pagination.
   ///
   /// Throws a `MastodonException` on failure.
-  Future<List<MastodonTrendsLink>> fetchLinks({
-    int? limit,
-    int? offset,
-  }) async {
+  Future<List<MastodonTrendsLink>> fetchLinks({int? limit, int? offset}) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/trends/links',
-      queryParameters: <String, dynamic>{
-        'limit': ?limit,
-        'offset': ?offset,
-      },
+      queryParameters: <String, dynamic>{'limit': ?limit, 'offset': ?offset},
     );
     return (data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()

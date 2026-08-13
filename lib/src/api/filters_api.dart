@@ -30,9 +30,7 @@ class FiltersApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<MastodonFilter> fetchById(String id) async {
-    final data = await _http.send<Map<String, dynamic>>(
-      '/api/v2/filters/$id',
-    );
+    final data = await _http.send<Map<String, dynamic>>('/api/v2/filters/$id');
     return MastodonFilter.fromJson(data!);
   }
 
@@ -129,10 +127,7 @@ class FiltersApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<void> delete(String id) async {
-    await _http.send<void>(
-      '/api/v2/filters/$id',
-      method: 'DELETE',
-    );
+    await _http.send<void>('/api/v2/filters/$id', method: 'DELETE');
   }
 
   /// Fetches the keywords within a filter.
@@ -166,10 +161,7 @@ class FiltersApi {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v2/filters/$filterId/keywords',
       method: 'POST',
-      data: <String, dynamic>{
-        'keyword': keyword,
-        'whole_word': ?wholeWord,
-      },
+      data: <String, dynamic>{'keyword': keyword, 'whole_word': ?wholeWord},
     );
     return MastodonFilterKeyword.fromJson(data!);
   }
@@ -202,10 +194,7 @@ class FiltersApi {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v2/filters/keywords/$id',
       method: 'PUT',
-      data: <String, dynamic>{
-        'keyword': keyword,
-        'whole_word': ?wholeWord,
-      },
+      data: <String, dynamic>{'keyword': keyword, 'whole_word': ?wholeWord},
     );
     return MastodonFilterKeyword.fromJson(data!);
   }
@@ -216,10 +205,7 @@ class FiltersApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<void> deleteKeyword(String id) async {
-    await _http.send<void>(
-      '/api/v2/filters/keywords/$id',
-      method: 'DELETE',
-    );
+    await _http.send<void>('/api/v2/filters/keywords/$id', method: 'DELETE');
   }
 
   /// Fetches the status filters within a filter.
@@ -274,10 +260,7 @@ class FiltersApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<void> deleteStatus(String id) async {
-    await _http.send<void>(
-      '/api/v2/filters/statuses/$id',
-      method: 'DELETE',
-    );
+    await _http.send<void>('/api/v2/filters/statuses/$id', method: 'DELETE');
   }
 
   /// Fetches all filters (v1, deprecated).
@@ -307,9 +290,7 @@ class FiltersApi {
   // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Deprecated in Mastodon 4.0.0. Use fetchById() (v2) instead')
   Future<MastodonFilterV1> fetchByIdV1(String id) async {
-    final data = await _http.send<Map<String, dynamic>>(
-      '/api/v1/filters/$id',
-    );
+    final data = await _http.send<Map<String, dynamic>>('/api/v1/filters/$id');
     return MastodonFilterV1.fromJson(data!);
   }
 
@@ -400,20 +381,14 @@ class FiltersApi {
   // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Deprecated in Mastodon 4.0.0. Use delete() (v2) instead')
   Future<void> deleteV1(String id) async {
-    await _http.send<void>(
-      '/api/v1/filters/$id',
-      method: 'DELETE',
-    );
+    await _http.send<void>('/api/v1/filters/$id', method: 'DELETE');
   }
 }
 
 /// Keyword parameter for filter creation.
 class MastodonFilterKeywordParam {
   /// Creates a keyword parameter with [keyword] and optional [wholeWord] flag.
-  const MastodonFilterKeywordParam({
-    required this.keyword,
-    this.wholeWord,
-  });
+  const MastodonFilterKeywordParam({required this.keyword, this.wholeWord});
 
   /// Keyword string.
   final String keyword;
