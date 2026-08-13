@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added CI checks for formatting, static analysis, generated code, unit tests, and package validation on the minimum and stable Dart SDKs (issue #20)
+
 ### Changed
 
 - **Breaking:** The minimum supported Dart SDK version is now 3.9.0
