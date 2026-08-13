@@ -22,7 +22,7 @@ Füge die Abhängigkeit in deine `pubspec.yaml` ein:
 
 ```yaml
 dependencies:
-  mastodon_client: ^1.0.0-beta.1
+  mastodon_client: ^1.0.0-beta.2
 ```
 
 Anschließend ausführen:

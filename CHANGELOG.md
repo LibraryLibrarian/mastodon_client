@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.2] - 2026-08-13
+
 ### Added
 
 - Added CI checks for formatting, static analysis, generated code, unit tests, and package validation on the minimum and stable Dart SDKs (issue #20)
@@ -97,4 +99,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions workflow for documentation deployment
 - README in 6 languages
 
+[1.0.0-beta.2]: https://github.com/LibraryLibrarian/mastodon_client/releases/tag/v1.0.0-beta.2
 [1.0.0-beta.1]: https://github.com/LibraryLibrarian/mastodon_client/releases/tag/v1.0.0-beta.1
