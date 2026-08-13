@@ -8,10 +8,7 @@ part 'mastodon_familiar_followers.g.dart';
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFamiliarFollowers {
   /// Creates a [MastodonFamiliarFollowers] with the given fields.
-  const MastodonFamiliarFollowers({
-    required this.id,
-    required this.accounts,
-  });
+  const MastodonFamiliarFollowers({required this.id, required this.accounts});
 
   /// Creates a [MastodonFamiliarFollowers] from a JSON map.
   factory MastodonFamiliarFollowers.fromJson(Map<String, dynamic> json) =>

@@ -122,24 +122,18 @@ void main() {
       expect((result as MastodonApiException).message, 'Not found');
     });
 
-    test(
-      'unmapped status codes fall back to the DioException message when '
-      'no server message is present',
-      () {
-        final options = RequestOptions(path: '/api/v1/statuses');
-        final exception = DioException(
-          requestOptions: options,
-          response: Response<dynamic>(
-            requestOptions: options,
-            statusCode: 418,
-          ),
-          type: DioExceptionType.badResponse,
-          message: "I'm a teapot",
-        );
-        final result = convertDioException(exception);
-        expect((result as MastodonApiException).message, "I'm a teapot");
-      },
-    );
+    test('unmapped status codes fall back to the DioException message when '
+        'no server message is present', () {
+      final options = RequestOptions(path: '/api/v1/statuses');
+      final exception = DioException(
+        requestOptions: options,
+        response: Response<dynamic>(requestOptions: options, statusCode: 418),
+        type: DioExceptionType.badResponse,
+        message: "I'm a teapot",
+      );
+      final result = convertDioException(exception);
+      expect((result as MastodonApiException).message, "I'm a teapot");
+    });
   });
 
   group('convertDioException - retry-after header (429)', () {

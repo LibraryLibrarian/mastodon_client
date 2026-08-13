@@ -57,9 +57,7 @@ void main() {
       final file = File('test/fixtures/filter_keywords.json');
       final list = jsonDecode(file.readAsStringSync()) as List<dynamic>;
       final keywords = list
-          .map(
-            (e) => MastodonFilterKeyword.fromJson(e as Map<String, dynamic>),
-          )
+          .map((e) => MastodonFilterKeyword.fromJson(e as Map<String, dynamic>))
           .toList();
 
       expect(keywords, hasLength(1));

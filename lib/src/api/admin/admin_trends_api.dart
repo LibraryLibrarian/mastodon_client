@@ -24,9 +24,7 @@ class AdminTrendsApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<List<MastodonAdminTrendsLink>> fetchLinks() async {
-    final data = await _http.send<List<dynamic>>(
-      '/api/v1/admin/trends/links',
-    );
+    final data = await _http.send<List<dynamic>>('/api/v1/admin/trends/links');
     return (data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonAdminTrendsLink.fromJson)
@@ -106,9 +104,7 @@ class AdminTrendsApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<List<MastodonAdminTag>> fetchTags() async {
-    final data = await _http.send<List<dynamic>>(
-      '/api/v1/admin/trends/tags',
-    );
+    final data = await _http.send<List<dynamic>>('/api/v1/admin/trends/tags');
     return (data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonAdminTag.fromJson)

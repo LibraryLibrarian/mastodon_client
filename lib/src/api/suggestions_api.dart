@@ -21,9 +21,7 @@ class SuggestionsApi {
   Future<List<MastodonSuggestion>> fetch({int? limit}) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v2/suggestions',
-      queryParameters: <String, dynamic>{
-        'limit': ?limit,
-      },
+      queryParameters: <String, dynamic>{'limit': ?limit},
     );
     return (data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
@@ -46,9 +44,7 @@ class SuggestionsApi {
   Future<List<MastodonAccount>> fetchV1({int? limit}) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/suggestions',
-      queryParameters: <String, dynamic>{
-        'limit': ?limit,
-      },
+      queryParameters: <String, dynamic>{'limit': ?limit},
     );
     return (data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
@@ -64,9 +60,6 @@ class SuggestionsApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<void> remove(String accountId) async {
-    await _http.send<void>(
-      '/api/v1/suggestions/$accountId',
-      method: 'DELETE',
-    );
+    await _http.send<void>('/api/v1/suggestions/$accountId', method: 'DELETE');
   }
 }

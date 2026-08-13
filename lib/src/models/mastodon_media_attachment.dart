@@ -4,13 +4,7 @@ part 'mastodon_media_attachment.g.dart';
 
 /// Type of media.
 @JsonEnum(fieldRename: FieldRename.snake)
-enum MastodonMediaType {
-  unknown,
-  image,
-  gifv,
-  video,
-  audio,
-}
+enum MastodonMediaType { unknown, image, gifv, video, audio }
 
 /// Media attachment on Mastodon.
 @JsonSerializable(fieldRename: FieldRename.snake)

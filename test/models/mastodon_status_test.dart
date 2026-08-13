@@ -48,9 +48,7 @@ void main() {
       final file = File('test/fixtures/status.json');
       final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
       final collection =
-          jsonDecode(
-                File('test/fixtures/collection.json').readAsStringSync(),
-              )
+          jsonDecode(File('test/fixtures/collection.json').readAsStringSync())
               as Map<String, dynamic>;
 
       final status = MastodonStatus.fromJson({

@@ -34,10 +34,7 @@ void main() {
         ),
       );
       expect(card.embedUrl, equals(''));
-      expect(
-        card.blurhash,
-        equals('U44UXbj_D~aus^fRayfRD#aw-rj{ajfQoffR'),
-      );
+      expect(card.blurhash, equals('U44UXbj_D~aus^fRayfRD#aw-rj{ajfQoffR'));
       expect(card.authors, isEmpty);
     });
 

@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Breaking:** The minimum supported Dart SDK version is now 3.9.0
+- Updated runtime and development dependencies, including Dio, json_annotation, logger, build_runner, json_serializable, lints, and test
+- Replaced the Flutter-dependent `pedantic_mono` lint configuration with the official Dart `lints/recommended` ruleset, and removed the unused Flutter-dependent `pubspec_dependency_sorter`
+- Excluded tests, local build outputs, generated API documentation, and development-only configuration files from published package archives
 - **Breaking:** ID fields that some instances return as numbers are now typed `String?` and coerced from either representation, instead of being typed `int` or non-nullable `String`. Code that reads these fields as `int`, or that relies on them being non-null, needs updating:
   - `MastodonRole.id`: `int` (required) → `String?`
   - `MastodonAdminRole.id`: `int` (required) → `String?`

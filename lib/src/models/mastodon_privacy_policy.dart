@@ -9,10 +9,7 @@ part 'mastodon_privacy_policy.g.dart';
 /// `GET /api/v1/instance/privacy_policy`
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPrivacyPolicy {
-  const MastodonPrivacyPolicy({
-    this.updatedAt,
-    required this.content,
-  });
+  const MastodonPrivacyPolicy({this.updatedAt, required this.content});
 
   factory MastodonPrivacyPolicy.fromJson(Map<String, dynamic> json) =>
       _$MastodonPrivacyPolicyFromJson(json);

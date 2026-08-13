@@ -78,10 +78,7 @@ class MastodonTrendsLink {
   final String description;
 
   /// Type of the preview card.
-  @JsonKey(
-    readValue: _readType,
-    unknownEnumValue: MastodonPreviewCardType.link,
-  )
+  @JsonKey(readValue: _readType, unknownEnumValue: MastodonPreviewCardType.link)
   final MastodonPreviewCardType type;
 
   /// Name of the content author.

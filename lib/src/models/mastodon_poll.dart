@@ -8,10 +8,7 @@ part 'mastodon_poll.g.dart';
 /// Poll option.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPollOption {
-  const MastodonPollOption({
-    required this.title,
-    this.votesCount,
-  });
+  const MastodonPollOption({required this.title, this.votesCount});
 
   factory MastodonPollOption.fromJson(Map<String, dynamic> json) =>
       _$MastodonPollOptionFromJson(json);

@@ -76,9 +76,7 @@ class SearchApi {
   ///
   /// Throws a `MastodonException` on failure.
   // ignore: remove_deprecations_in_breaking_versions
-  @Deprecated(
-    'Removed in Mastodon 3.0.0. Use search() (v2) instead',
-  )
+  @Deprecated('Removed in Mastodon 3.0.0. Use search() (v2) instead')
   Future<MastodonSearchResultV1> searchV1(
     String query, {
     String? type,

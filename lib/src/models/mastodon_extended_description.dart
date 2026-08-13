@@ -9,10 +9,7 @@ part 'mastodon_extended_description.g.dart';
 /// `GET /api/v1/instance/extended_description`
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonExtendedDescription {
-  const MastodonExtendedDescription({
-    this.updatedAt,
-    required this.content,
-  });
+  const MastodonExtendedDescription({this.updatedAt, required this.content});
 
   factory MastodonExtendedDescription.fromJson(Map<String, dynamic> json) =>
       _$MastodonExtendedDescriptionFromJson(json);

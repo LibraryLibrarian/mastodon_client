@@ -9,9 +9,7 @@ void main() {
       final file = File('test/fixtures/custom_emojis.json');
       final list = jsonDecode(file.readAsStringSync()) as List<dynamic>;
       final emojis = list
-          .map(
-            (e) => MastodonCustomEmoji.fromJson(e as Map<String, dynamic>),
-          )
+          .map((e) => MastodonCustomEmoji.fromJson(e as Map<String, dynamic>))
           .toList();
 
       expect(emojis, hasLength(1));

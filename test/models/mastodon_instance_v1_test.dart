@@ -20,9 +20,7 @@ void main() {
       expect(instance.version, equals('4.6.3'));
       expect(
         instance.thumbnail,
-        equals(
-          'https://mastodon.test/packs/assets/preview-vSUsFXid.png',
-        ),
+        equals('https://mastodon.test/packs/assets/preview-vSUsFXid.png'),
       );
       expect(instance.languages, equals(['en']));
       expect(instance.registrations, isFalse);

@@ -3,10 +3,7 @@
 /// Request body for `PUT /api/v1/admin/reports/:id`.
 class MastodonAdminReportUpdateRequest {
   /// Creates a [MastodonAdminReportUpdateRequest].
-  const MastodonAdminReportUpdateRequest({
-    this.category,
-    this.ruleIds,
-  });
+  const MastodonAdminReportUpdateRequest({this.category, this.ruleIds});
 
   /// Report category (`spam` / `legal` / `violation` / `other`).
   final String? category;

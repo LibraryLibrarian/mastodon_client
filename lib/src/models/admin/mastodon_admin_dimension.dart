@@ -7,10 +7,7 @@ part 'mastodon_admin_dimension.g.dart';
 /// Represents qualitative statistical information about the server.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminDimension {
-  const MastodonAdminDimension({
-    required this.key,
-    this.data = const [],
-  });
+  const MastodonAdminDimension({required this.key, this.data = const []});
 
   factory MastodonAdminDimension.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminDimensionFromJson(json);

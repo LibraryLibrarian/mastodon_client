@@ -10,9 +10,7 @@ void main() {
       final list = jsonDecode(file.readAsStringSync()) as List<dynamic>;
       final dimensions = list
           .map(
-            (e) => MastodonAdminDimension.fromJson(
-              e as Map<String, dynamic>,
-            ),
+            (e) => MastodonAdminDimension.fromJson(e as Map<String, dynamic>),
           )
           .toList();
 
@@ -24,9 +22,7 @@ void main() {
       final list = jsonDecode(file.readAsStringSync()) as List<dynamic>;
       final dimensions = list
           .map(
-            (e) => MastodonAdminDimension.fromJson(
-              e as Map<String, dynamic>,
-            ),
+            (e) => MastodonAdminDimension.fromJson(e as Map<String, dynamic>),
           )
           .toList();
 

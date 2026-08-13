@@ -73,10 +73,7 @@ class NotificationsApi {
   ///
   /// `POST /api/v1/notifications/clear`
   Future<void> clear() async {
-    await _http.send<dynamic>(
-      '/api/v1/notifications/clear',
-      method: 'POST',
-    );
+    await _http.send<dynamic>('/api/v1/notifications/clear', method: 'POST');
   }
 
   /// Dismisses a notification by its ID.
@@ -96,9 +93,7 @@ class NotificationsApi {
   /// **Deprecated**: Deprecated in Mastodon 1.3.0, removed in 3.0.0.
   /// Use [dismiss] (path-based) instead.
   // ignore: remove_deprecations_in_breaking_versions
-  @Deprecated(
-    'Removed in Mastodon 3.0.0. Use dismiss() instead',
-  )
+  @Deprecated('Removed in Mastodon 3.0.0. Use dismiss() instead')
   Future<void> dismissV1(String id) async {
     await _http.send<dynamic>(
       '/api/v1/notifications/dismiss',

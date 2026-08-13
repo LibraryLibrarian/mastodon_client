@@ -479,16 +479,11 @@ class AccountsApi {
   /// remove the note.
   ///
   /// Throws a subclass of [MastodonException] on failure.
-  Future<MastodonRelationship> setNote(
-    String id, {
-    String? comment,
-  }) async {
+  Future<MastodonRelationship> setNote(String id, {String? comment}) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/accounts/$id/note',
       method: 'POST',
-      data: <String, dynamic>{
-        'comment': ?comment,
-      },
+      data: <String, dynamic>{'comment': ?comment},
     );
     return MastodonRelationship.fromJson(data!);
   }
@@ -557,9 +552,7 @@ class AccountsApi {
   ///
   /// Throws a subclass of [MastodonException] on failure.
   Future<List<MastodonList>> fetchLists(String id) async {
-    final data = await _http.send<List<dynamic>>(
-      '/api/v1/accounts/$id/lists',
-    );
+    final data = await _http.send<List<dynamic>>('/api/v1/accounts/$id/lists');
     return (data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
         .map(MastodonList.fromJson)
@@ -588,15 +581,11 @@ class AccountsApi {
   Future<MastodonAccount> _lookupViaSearch(String acct) async {
     final results = await search(acct);
     final target = acct.toLowerCase();
-    final match = results.where(
-      (a) => a.acct.toLowerCase() == target,
-    );
+    final match = results.where((a) => a.acct.toLowerCase() == target);
     if (match.isNotEmpty) {
       return match.first;
     }
-    throw const MastodonNotFoundException(
-      message: 'Account not found',
-    );
+    throw const MastodonNotFoundException(message: 'Account not found');
   }
 
   Future<MastodonPage<MastodonAccount>> _fetchAccountPage(

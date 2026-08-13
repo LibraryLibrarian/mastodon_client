@@ -110,10 +110,7 @@ class MastodonAdminAccount {
 /// Admin-level IP address information.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAdminIp {
-  const MastodonAdminIp({
-    required this.ip,
-    this.usedAt,
-  });
+  const MastodonAdminIp({required this.ip, this.usedAt});
 
   factory MastodonAdminIp.fromJson(Map<String, dynamic> json) =>
       _$MastodonAdminIpFromJson(json);

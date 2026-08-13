@@ -103,10 +103,7 @@ class MastodonFilterKeyword {
 /// Corresponds to the response from `/api/v2/filters/:filter_id/statuses`.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFilterStatus {
-  const MastodonFilterStatus({
-    required this.id,
-    required this.statusId,
-  });
+  const MastodonFilterStatus({required this.id, required this.statusId});
 
   factory MastodonFilterStatus.fromJson(Map<String, dynamic> json) =>
       _$MastodonFilterStatusFromJson(json);

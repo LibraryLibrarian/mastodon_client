@@ -11,10 +11,7 @@ part 'mastodon_proof.g.dart';
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonProof {
   /// Creates a [MastodonProof] with the given fields.
-  const MastodonProof({
-    required this.avatar,
-    required this.signatures,
-  });
+  const MastodonProof({required this.avatar, required this.signatures});
 
   /// Creates a [MastodonProof] from a JSON map.
   factory MastodonProof.fromJson(Map<String, dynamic> json) =>

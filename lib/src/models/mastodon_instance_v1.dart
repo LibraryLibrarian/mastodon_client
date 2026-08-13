@@ -57,9 +57,8 @@ class MastodonInstanceV1Configuration {
     this.polls,
   });
 
-  factory MastodonInstanceV1Configuration.fromJson(
-    Map<String, dynamic> json,
-  ) => _$MastodonInstanceV1ConfigurationFromJson(json);
+  factory MastodonInstanceV1Configuration.fromJson(Map<String, dynamic> json) =>
+      _$MastodonInstanceV1ConfigurationFromJson(json);
 
   /// Serializes to JSON.
   Map<String, dynamic> toJson() =>

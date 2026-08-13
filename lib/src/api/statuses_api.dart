@@ -393,9 +393,7 @@ class StatusesApi {
           : null,
     );
     if (request.scheduledAt != null) {
-      return MastodonStatusScheduled(
-        MastodonScheduledStatus.fromJson(data!),
-      );
+      return MastodonStatusScheduled(MastodonScheduledStatus.fromJson(data!));
     }
     return MastodonStatusCreated(MastodonStatus.fromJson(data!));
   }
@@ -432,9 +430,7 @@ class StatusesApi {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id',
       method: 'DELETE',
-      queryParameters: <String, dynamic>{
-        'delete_media': ?deleteMedia,
-      },
+      queryParameters: <String, dynamic>{'delete_media': ?deleteMedia},
     );
     return MastodonStatus.fromJson(data!);
   }
@@ -452,9 +448,7 @@ class StatusesApi {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/translate',
       method: 'POST',
-      data: <String, dynamic>{
-        'lang': ?lang,
-      },
+      data: <String, dynamic>{'lang': ?lang},
     );
     return MastodonTranslation.fromJson(data!);
   }
@@ -474,9 +468,7 @@ class StatusesApi {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/interaction_policy',
       method: 'PUT',
-      data: <String, dynamic>{
-        'quote_approval_policy': quoteApprovalPolicy,
-      },
+      data: <String, dynamic>{'quote_approval_policy': quoteApprovalPolicy},
     );
     return MastodonStatus.fromJson(data!);
   }
@@ -490,10 +482,7 @@ class StatusesApi {
   /// the status that performs the quote.
   ///
   /// Throws a `MastodonException` on failure.
-  Future<MastodonStatus> revokeQuote(
-    String id,
-    String quotingStatusId,
-  ) async {
+  Future<MastodonStatus> revokeQuote(String id, String quotingStatusId) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/quotes/$quotingStatusId/revoke',
       method: 'POST',

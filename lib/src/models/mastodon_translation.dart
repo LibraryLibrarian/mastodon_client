@@ -76,10 +76,7 @@ class MastodonTranslationAttachment {
 /// Poll information within a translation result.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTranslationPoll {
-  const MastodonTranslationPoll({
-    required this.id,
-    required this.options,
-  });
+  const MastodonTranslationPoll({required this.id, required this.options});
 
   factory MastodonTranslationPoll.fromJson(Map<String, dynamic> json) =>
       _$MastodonTranslationPollFromJson(json);
