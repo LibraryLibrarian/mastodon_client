@@ -116,9 +116,7 @@ class MediaApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<MastodonMediaAttachment> fetchById(String id) async {
-    final data = await _http.send<Map<String, dynamic>>(
-      '/api/v1/media/$id',
-    );
+    final data = await _http.send<Map<String, dynamic>>('/api/v1/media/$id');
     if (data == null) {
       throw const MastodonApiException(
         statusCode: 0,
@@ -157,10 +155,7 @@ class MediaApi {
         'focus': ?focus,
       });
     } else {
-      body = <String, dynamic>{
-        'description': ?description,
-        'focus': ?focus,
-      };
+      body = <String, dynamic>{'description': ?description, 'focus': ?focus};
     }
 
     final data = await _http.send<Map<String, dynamic>>(
@@ -187,10 +182,7 @@ class MediaApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<void> delete(String id) async {
-    await _http.send<void>(
-      '/api/v1/media/$id',
-      method: 'DELETE',
-    );
+    await _http.send<void>('/api/v1/media/$id', method: 'DELETE');
   }
 
   /// Polls until the `url` field becomes non-null and returns the completed

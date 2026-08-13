@@ -22,9 +22,7 @@ class EmailsApi {
     await _http.send<dynamic>(
       '/api/v1/emails/confirmations',
       method: 'POST',
-      data: <String, dynamic>{
-        'email': ?email,
-      },
+      data: <String, dynamic>{'email': ?email},
     );
   }
 
@@ -37,8 +35,6 @@ class EmailsApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<void> checkConfirmation() async {
-    await _http.send<dynamic>(
-      '/api/v1/emails/check_confirmation',
-    );
+    await _http.send<dynamic>('/api/v1/emails/check_confirmation');
   }
 }

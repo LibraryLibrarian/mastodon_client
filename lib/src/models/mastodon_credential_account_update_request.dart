@@ -84,12 +84,7 @@ class MastodonCredentialAccountUpdateRequest {
     }
     if (fieldsAttributes != null) {
       map['fields_attributes'] = fieldsAttributes!
-          .map(
-            (f) => <String, dynamic>{
-              'name': f.name,
-              'value': f.value,
-            },
-          )
+          .map((f) => <String, dynamic>{'name': f.name, 'value': f.value})
           .toList();
     }
     if (sourcePrivacy != null ||
@@ -111,10 +106,7 @@ class MastodonCredentialAccountUpdateRequest {
 /// Custom profile field attribute.
 class MastodonFieldAttribute {
   /// Creates with the given field name and value.
-  const MastodonFieldAttribute({
-    required this.name,
-    required this.value,
-  });
+  const MastodonFieldAttribute({required this.name, required this.value});
 
   /// Label name of the field.
   final String name;

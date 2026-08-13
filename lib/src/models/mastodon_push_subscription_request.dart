@@ -108,19 +108,14 @@ class MastodonPushSubscriptionRequest {
     final json = <String, dynamic>{
       'subscription': <String, dynamic>{
         'endpoint': endpoint,
-        'keys': <String, dynamic>{
-          'p256dh': p256dh,
-          'auth': auth,
-        },
+        'keys': <String, dynamic>{'p256dh': p256dh, 'auth': auth},
       },
     };
     if (standard != null) {
       (json['subscription'] as Map<String, dynamic>)['standard'] = standard;
     }
     if (alerts != null) {
-      json['data'] = <String, dynamic>{
-        'alerts': alerts!.toJson(),
-      };
+      json['data'] = <String, dynamic>{'alerts': alerts!.toJson()};
     }
     if (policy != null) {
       final data = json['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
@@ -137,10 +132,7 @@ class MastodonPushSubscriptionRequest {
 /// Updates only the `data` portion (alert settings and policy) of the
 /// subscription.
 class MastodonPushSubscriptionUpdateRequest {
-  const MastodonPushSubscriptionUpdateRequest({
-    this.alerts,
-    this.policy,
-  });
+  const MastodonPushSubscriptionUpdateRequest({this.alerts, this.policy});
 
   /// Settings per notification type.
   final MastodonPushAlertSettings? alerts;

@@ -21,9 +21,7 @@ class AnnouncementsApi {
   }) async {
     final data = await _http.send<List<dynamic>>(
       '/api/v1/announcements',
-      queryParameters: <String, dynamic>{
-        'with_dismissed': ?withDismissed,
-      },
+      queryParameters: <String, dynamic>{'with_dismissed': ?withDismissed},
     );
     return (data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()

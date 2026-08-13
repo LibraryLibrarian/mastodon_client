@@ -25,10 +25,8 @@ class MarkersApi {
     );
     if (data == null) return const {};
     return data.map(
-      (key, value) => MapEntry(
-        key,
-        MastodonMarker.fromJson(value as Map<String, dynamic>),
-      ),
+      (key, value) =>
+          MapEntry(key, MastodonMarker.fromJson(value as Map<String, dynamic>)),
     );
   }
 
@@ -57,10 +55,8 @@ class MarkersApi {
     );
     if (data == null) return const {};
     return data.map(
-      (key, value) => MapEntry(
-        key,
-        MastodonMarker.fromJson(value as Map<String, dynamic>),
-      ),
+      (key, value) =>
+          MapEntry(key, MastodonMarker.fromJson(value as Map<String, dynamic>)),
     );
   }
 }

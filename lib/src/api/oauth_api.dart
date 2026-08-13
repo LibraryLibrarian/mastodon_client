@@ -85,9 +85,7 @@ class OAuthApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<MastodonOAuthUserInfo> fetchUserInfo() async {
-    final data = await _http.send<Map<String, dynamic>>(
-      '/oauth/userinfo',
-    );
+    final data = await _http.send<Map<String, dynamic>>('/oauth/userinfo');
     return MastodonOAuthUserInfo.fromJson(data!);
   }
 

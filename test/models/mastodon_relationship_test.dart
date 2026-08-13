@@ -9,9 +9,7 @@ void main() {
       final file = File('test/fixtures/relationships.json');
       final list = jsonDecode(file.readAsStringSync()) as List<dynamic>;
       final relationships = list
-          .map(
-            (e) => MastodonRelationship.fromJson(e as Map<String, dynamic>),
-          )
+          .map((e) => MastodonRelationship.fromJson(e as Map<String, dynamic>))
           .toList();
 
       expect(relationships, hasLength(1));

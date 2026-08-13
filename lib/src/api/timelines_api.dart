@@ -49,10 +49,7 @@ class TimelinesApi {
     sinceId: sinceId,
     maxId: maxId,
     minId: minId,
-    extraQuery: {
-      'local': true,
-      'only_media': ?onlyMedia,
-    },
+    extraQuery: {'local': true, 'only_media': ?onlyMedia},
   );
 
   /// Fetches the federated timeline.
@@ -77,10 +74,7 @@ class TimelinesApi {
     sinceId: sinceId,
     maxId: maxId,
     minId: minId,
-    extraQuery: {
-      'only_media': ?onlyMedia,
-      'remote': ?remoteOnly,
-    },
+    extraQuery: {'only_media': ?onlyMedia, 'remote': ?remoteOnly},
   );
 
   /// Fetches the timeline for the specified hashtag.
@@ -177,9 +171,7 @@ class TimelinesApi {
   /// Use [sinceId] for newer statuses, [maxId] for older ones, and [minId]
   /// for forward pagination.
   // ignore: remove_deprecations_in_breaking_versions
-  @Deprecated(
-    'Removed in Mastodon 3.0.0. Use ConversationsApi instead',
-  )
+  @Deprecated('Removed in Mastodon 3.0.0. Use ConversationsApi instead')
   Future<MastodonPage<MastodonStatus>> fetchDirect({
     int? limit,
     String? sinceId,

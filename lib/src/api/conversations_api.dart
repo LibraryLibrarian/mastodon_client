@@ -53,10 +53,7 @@ class ConversationsApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<void> delete(String id) async {
-    await _http.send<void>(
-      '/api/v1/conversations/$id',
-      method: 'DELETE',
-    );
+    await _http.send<void>('/api/v1/conversations/$id', method: 'DELETE');
   }
 
   /// Marks a conversation as read.

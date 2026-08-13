@@ -110,10 +110,7 @@ class MastodonHttpClient {
 }
 
 class _MastodonInterceptor extends Interceptor {
-  _MastodonInterceptor({
-    required this.enableLog,
-    required this.logger,
-  });
+  _MastodonInterceptor({required this.enableLog, required this.logger});
 
   final bool enableLog;
   final Logger logger;
@@ -121,9 +118,7 @@ class _MastodonInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     if (enableLog && kDebugMode) {
-      clientLog.d(
-        '[HTTP REQ] ${options.method} ${options.uri}',
-      );
+      clientLog.d('[HTTP REQ] ${options.method} ${options.uri}');
     }
     super.onRequest(options, handler);
   }

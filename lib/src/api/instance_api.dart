@@ -115,9 +115,7 @@ class InstanceApi {
   /// `GET /api/v1/instance/terms_of_service/:date`
   ///
   /// Throws a `MastodonException` on failure.
-  Future<MastodonTermsOfService> fetchTermsOfServiceByDate(
-    String date,
-  ) async {
+  Future<MastodonTermsOfService> fetchTermsOfServiceByDate(String date) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/instance/terms_of_service/$date',
     );
@@ -152,10 +150,7 @@ class InstanceApi {
       '/api/v1/instance/translation_languages',
     );
     return (data ?? const <String, dynamic>{}).map(
-      (key, value) => MapEntry(
-        key,
-        (value as List<dynamic>).cast<String>(),
-      ),
+      (key, value) => MapEntry(key, (value as List<dynamic>).cast<String>()),
     );
   }
 }

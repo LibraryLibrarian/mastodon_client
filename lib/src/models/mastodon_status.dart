@@ -16,12 +16,7 @@ part 'mastodon_status.g.dart';
 
 /// Visibility of a status.
 @JsonEnum(fieldRename: FieldRename.snake)
-enum MastodonVisibility {
-  public,
-  unlisted,
-  private,
-  direct,
-}
+enum MastodonVisibility { public, unlisted, private, direct }
 
 /// Mention (the `@username` portion within a status).
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -242,10 +237,7 @@ class MastodonStatus {
 /// disclosed for other users' statuses.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonStatusApplication {
-  const MastodonStatusApplication({
-    required this.name,
-    this.website,
-  });
+  const MastodonStatusApplication({required this.name, this.website});
 
   factory MastodonStatusApplication.fromJson(Map<String, dynamic> json) =>
       _$MastodonStatusApplicationFromJson(json);

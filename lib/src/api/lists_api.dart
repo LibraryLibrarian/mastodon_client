@@ -30,9 +30,7 @@ class ListsApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<MastodonList> fetchById(String id) async {
-    final data = await _http.send<Map<String, dynamic>>(
-      '/api/v1/lists/$id',
-    );
+    final data = await _http.send<Map<String, dynamic>>('/api/v1/lists/$id');
     return MastodonList.fromJson(data!);
   }
 
@@ -97,10 +95,7 @@ class ListsApi {
   ///
   /// Throws a `MastodonException` on failure.
   Future<void> delete(String id) async {
-    await _http.send<void>(
-      '/api/v1/lists/$id',
-      method: 'DELETE',
-    );
+    await _http.send<void>('/api/v1/lists/$id', method: 'DELETE');
   }
 
   /// Fetches the accounts belonging to a list.

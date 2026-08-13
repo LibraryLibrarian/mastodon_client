@@ -10,9 +10,7 @@ void main() {
       final list = jsonDecode(file.readAsStringSync()) as List<dynamic>;
       final allows = list
           .map(
-            (e) => MastodonAdminDomainAllow.fromJson(
-              e as Map<String, dynamic>,
-            ),
+            (e) => MastodonAdminDomainAllow.fromJson(e as Map<String, dynamic>),
           )
           .toList();
 
@@ -24,9 +22,7 @@ void main() {
       final list = jsonDecode(file.readAsStringSync()) as List<dynamic>;
       final allows = list
           .map(
-            (e) => MastodonAdminDomainAllow.fromJson(
-              e as Map<String, dynamic>,
-            ),
+            (e) => MastodonAdminDomainAllow.fromJson(e as Map<String, dynamic>),
           )
           .toList();
 

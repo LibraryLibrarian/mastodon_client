@@ -28,9 +28,7 @@ void main() async {
   // 4. Post a status
   // -------------------------------------------------------
   final result = await client.statuses.create(
-    const MastodonStatusCreateRequest(
-      status: 'Hello from mastodon_client!',
-    ),
+    const MastodonStatusCreateRequest(status: 'Hello from mastodon_client!'),
   );
   if (result case MastodonStatusCreated(:final status)) {
     print('Posted: ${status.url}');

@@ -62,9 +62,7 @@ class AdminEmailDomainBlocksApi {
   /// `POST /api/v1/admin/email_domain_blocks`
   ///
   /// Throws a `MastodonException` on failure.
-  Future<MastodonAdminEmailDomainBlock> create({
-    required String domain,
-  }) async {
+  Future<MastodonAdminEmailDomainBlock> create({required String domain}) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/admin/email_domain_blocks',
       method: 'POST',

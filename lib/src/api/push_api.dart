@@ -53,9 +53,6 @@ class PushApi {
   ///
   /// `DELETE /api/v1/push/subscription`
   Future<void> delete() async {
-    await _http.send<dynamic>(
-      '/api/v1/push/subscription',
-      method: 'DELETE',
-    );
+    await _http.send<dynamic>('/api/v1/push/subscription', method: 'DELETE');
   }
 }

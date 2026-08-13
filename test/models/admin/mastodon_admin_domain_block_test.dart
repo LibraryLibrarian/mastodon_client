@@ -30,9 +30,7 @@ void main() {
       final list = jsonDecode(file.readAsStringSync()) as List<dynamic>;
       final blocks = list
           .map(
-            (e) => MastodonAdminDomainBlock.fromJson(
-              e as Map<String, dynamic>,
-            ),
+            (e) => MastodonAdminDomainBlock.fromJson(e as Map<String, dynamic>),
           )
           .toList();
 

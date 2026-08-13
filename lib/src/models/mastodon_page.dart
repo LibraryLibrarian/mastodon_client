@@ -5,11 +5,7 @@
 class MastodonPage<T> {
   /// Creates with [items] as the page contents, and [nextMaxId] and [prevMinId]
   /// as pagination cursors.
-  const MastodonPage({
-    required this.items,
-    this.nextMaxId,
-    this.prevMinId,
-  });
+  const MastodonPage({required this.items, this.nextMaxId, this.prevMinId});
 
   /// List of items in the page.
   final List<T> items;
