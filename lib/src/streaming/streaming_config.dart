@@ -18,6 +18,7 @@ class MastodonStreamingConfig {
     this.enableAuthFallback = true,
     this.pingInterval = const Duration(seconds: 30),
     this.connectTimeout = const Duration(seconds: 15),
+    this.subscriptionErrorWindow = const Duration(milliseconds: 250),
     this.enableAutoReconnect = true,
     this.reconnectInitialDelay = const Duration(seconds: 1),
     this.reconnectMaxDelay = const Duration(seconds: 30),
@@ -26,6 +27,7 @@ class MastodonStreamingConfig {
   }) {
     _requirePositive(pingInterval, 'pingInterval');
     _requirePositive(connectTimeout, 'connectTimeout');
+    _requirePositive(subscriptionErrorWindow, 'subscriptionErrorWindow');
     _requirePositive(reconnectInitialDelay, 'reconnectInitialDelay');
     _requirePositive(reconnectMaxDelay, 'reconnectMaxDelay');
     if (reconnectInitialDelay > reconnectMaxDelay) {
@@ -68,6 +70,12 @@ class MastodonStreamingConfig {
 
   /// Maximum time allowed for the WebSocket handshake.
   final Duration connectTimeout;
+
+  /// Time allowed for an error response after each subscription frame.
+  ///
+  /// Successful Mastodon subscriptions have no acknowledgement, so requests
+  /// are serialized and considered successful after this quiet period.
+  final Duration subscriptionErrorWindow;
 
   /// Whether unexpected disconnections trigger reconnection.
   final bool enableAutoReconnect;

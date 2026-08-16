@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:mastodon_client/mastodon_client.dart';
 import 'package:test/test.dart';
@@ -88,6 +90,25 @@ void main() {
       expect(connector.options, hasLength(1));
       expect(streaming.state, MastodonStreamingConnectionState.disconnected);
 
+      await streaming.dispose();
+    });
+
+    test('uses lazily resolved instance metadata for the endpoint', () async {
+      final connector = _FakeWebSocketConnector([_FakeWebSocketConnection()]);
+      final streaming = MastodonStreaming.withConnector(
+        baseUrl: 'https://rest.example',
+        accessToken: 'secret-token',
+        connector: connector,
+        metadataProvider: () async =>
+            (instance: null, instanceV1: _instanceV1('wss://stream.example')),
+      );
+
+      await streaming.connect();
+
+      expect(
+        connector.options.single.uri,
+        Uri.parse('wss://stream.example/api/v1/streaming'),
+      );
       await streaming.dispose();
     });
   });
@@ -233,6 +254,239 @@ void main() {
 
     await streaming.dispose();
   });
+
+  group('MastodonStreaming subscriptions', () {
+    test('reference counts duplicate subscriptions', () async {
+      final socket = _FakeWebSocketConnection();
+      final streaming = _streaming(_FakeWebSocketConnector([socket]));
+      await streaming.connect();
+
+      final first = await streaming.subscribe(const MastodonStream.user());
+      final second = await streaming.subscribe(const MastodonStream.user());
+
+      expect(_sentFrames(socket, 'subscribe'), hasLength(1));
+      await first.cancel();
+      expect(_sentFrames(socket, 'unsubscribe'), isEmpty);
+      await second.cancel();
+      expect(_sentFrames(socket, 'unsubscribe'), hasLength(1));
+
+      await streaming.dispose();
+    });
+
+    test('normalizes hashtag keys and inbound matching', () async {
+      final socket = _FakeWebSocketConnection();
+      final streaming = _streaming(_FakeWebSocketConnector([socket]));
+      await streaming.connect();
+
+      final upper = await streaming.subscribe(
+        const MastodonStream.hashtag('Dart'),
+      );
+      final lower = await streaming.subscribe(
+        const MastodonStream.hashtag('dart'),
+      );
+      final upperEvent = upper.events.first;
+      final lowerEvent = lower.events.first;
+
+      socket.addFromServer(
+        jsonEncode({
+          'stream': ['hashtag', 'DART'],
+          'event': 'delete',
+          'payload': '999888777',
+        }),
+      );
+
+      expect(_sentFrames(socket, 'subscribe'), hasLength(1));
+      expect(await upperEvent, isA<MastodonDeleteEvent>());
+      expect(await lowerEvent, isA<MastodonDeleteEvent>());
+
+      await upper.cancel();
+      await lower.cancel();
+      await streaming.dispose();
+    });
+
+    test('matches one- and two-element stream arrays', () async {
+      final socket = _FakeWebSocketConnection();
+      final streaming = _streaming(_FakeWebSocketConnector([socket]));
+      await streaming.connect();
+      final user = await streaming.subscribe(const MastodonStream.user());
+      final list = await streaming.subscribe(const MastodonStream.list('42'));
+      final userMessage = user.messages.first;
+      final listMessage = list.messages.first;
+
+      socket
+        ..addFromServer(
+          jsonEncode({
+            'stream': ['user'],
+            'event': 'delete',
+            'payload': '1',
+          }),
+        )
+        ..addFromServer(
+          jsonEncode({
+            'stream': ['list', '42'],
+            'event': 'delete',
+            'payload': '2',
+          }),
+        );
+
+      expect((await userMessage).stream, ['user']);
+      expect((await listMessage).stream, ['list', '42']);
+
+      await user.cancel();
+      await list.cancel();
+      await streaming.dispose();
+    });
+
+    test('restores every active subscription after reconnecting', () async {
+      final firstSocket = _FakeWebSocketConnection();
+      final secondSocket = _FakeWebSocketConnection();
+      final streaming = _streaming(
+        _FakeWebSocketConnector([firstSocket, secondSocket]),
+      );
+      await streaming.connect();
+      final user = await streaming.subscribe(const MastodonStream.user());
+      final list = await streaming.subscribe(const MastodonStream.list('42'));
+
+      await firstSocket.closeFromServer(1011);
+      await _waitUntil(
+        () => _sentFrames(secondSocket, 'subscribe').length == 2,
+      );
+
+      expect(
+        _sentFrames(secondSocket, 'subscribe').map((frame) => frame['stream']),
+        containsAll(['user', 'list']),
+      );
+
+      await user.cancel();
+      await list.cancel();
+      await streaming.dispose();
+    });
+
+    test('associates an immediate server error with subscribe', () async {
+      final socket = _FakeWebSocketConnection();
+      final errorWindow = Completer<void>();
+      final streaming = _streaming(
+        _FakeWebSocketConnector([socket]),
+        subscriptionDelay: (_) => errorWindow.future,
+      );
+      await streaming.connect();
+
+      final subscription = streaming.subscribeRaw('bogus');
+      await _waitUntil(() => socket.sent.isNotEmpty);
+      socket.addFromServer(
+        jsonEncode({'error': 'Unknown stream type', 'status': 400}),
+      );
+
+      await expectLater(
+        subscription,
+        throwsA(
+          isA<MastodonStreamingSubscriptionException>().having(
+            (error) => error.status,
+            'status',
+            400,
+          ),
+        ),
+      );
+
+      await streaming.dispose();
+    });
+
+    test('serializes subscription frames during the error window', () async {
+      final socket = _FakeWebSocketConnection();
+      final firstWindow = Completer<void>();
+      final secondWindow = Completer<void>();
+      final windows = [firstWindow, secondWindow];
+      var nextWindow = 0;
+      final streaming = _streaming(
+        _FakeWebSocketConnector([socket]),
+        subscriptionDelay: (_) => windows[nextWindow++].future,
+      );
+      await streaming.connect();
+
+      final user = streaming.subscribe(const MastodonStream.user());
+      await _waitUntil(() => socket.sent.length == 1);
+      final list = streaming.subscribe(const MastodonStream.list('42'));
+      await Future<void>.delayed(Duration.zero);
+      expect(socket.sent, hasLength(1));
+
+      firstWindow.complete();
+      await user;
+      await _waitUntil(() => socket.sent.length == 2);
+      secondWindow.complete();
+      await list;
+
+      expect(_sentFrames(socket, 'subscribe'), hasLength(2));
+      await streaming.dispose();
+    });
+
+    test('exposes statuses filtered from typed events', () async {
+      final socket = _FakeWebSocketConnection();
+      final streaming = _streaming(_FakeWebSocketConnector([socket]));
+      await streaming.connect();
+      final subscription = await streaming.subscribe(
+        const MastodonStream.public(),
+      );
+      final status =
+          jsonDecode(File('test/fixtures/status.json').readAsStringSync())
+              as Map<String, dynamic>;
+      final received = subscription.statuses.first;
+
+      socket.addFromServer(
+        jsonEncode({
+          'stream': ['public'],
+          'event': 'status.update',
+          'payload': jsonEncode(status),
+        }),
+      );
+
+      expect((await received).id, status['id']);
+      await subscription.cancel();
+      await streaming.dispose();
+    });
+
+    test(
+      'turns malformed payloads into Unknown without ending streams',
+      () async {
+        final socket = _FakeWebSocketConnection();
+        final streaming = _streaming(_FakeWebSocketConnector([socket]));
+        await streaming.connect();
+        final user = await streaming.subscribe(const MastodonStream.user());
+        final events = <MastodonStreamEvent>[];
+        final eventSubscription = user.events.listen(events.add);
+
+        socket
+          ..addFromServer(
+            jsonEncode({
+              'stream': ['user'],
+              'event': 'update',
+              'payload': '{bad json',
+            }),
+          )
+          ..addFromServer(
+            jsonEncode({
+              'stream': ['user'],
+              'event': 'delete',
+              'payload': '999888777',
+            }),
+          );
+        await _waitUntil(() => events.length == 2);
+
+        expect(events[0], isA<MastodonUnknownStreamEvent>());
+        expect(
+          events[1],
+          isA<MastodonDeleteEvent>().having(
+            (event) => event.statusId,
+            'statusId',
+            '999888777',
+          ),
+        );
+
+        await eventSubscription.cancel();
+        await user.cancel();
+        await streaming.dispose();
+      },
+    );
+  });
 }
 
 MastodonStreaming _streaming(
@@ -242,6 +496,7 @@ MastodonStreaming _streaming(
   bool enableLog = false,
   MastodonStreamingReconnectCallback? onReconnect,
   Future<void> Function(Duration duration)? delay,
+  Future<void> Function(Duration duration)? subscriptionDelay,
   double Function()? jitterSource,
 }) => MastodonStreaming.withConnector(
   baseUrl: 'https://mastodon.example',
@@ -252,7 +507,27 @@ MastodonStreaming _streaming(
   enableLog: enableLog,
   onReconnect: onReconnect,
   delay: delay ?? (_) async {},
+  subscriptionDelay: subscriptionDelay ?? (_) async {},
   jitterSource: jitterSource ?? () => 0.5,
+);
+
+List<Map<String, dynamic>> _sentFrames(
+  _FakeWebSocketConnection socket,
+  String type,
+) => socket.sent
+    .map((frame) => jsonDecode(frame) as Map<String, dynamic>)
+    .where((frame) => frame['type'] == type)
+    .toList();
+
+MastodonInstanceV1 _instanceV1(String streamingUrl) => MastodonInstanceV1(
+  uri: 'rest.example',
+  title: 'Test',
+  version: '3.5.0',
+  rules: const [],
+  urls: MastodonInstanceV1Urls(streamingApi: streamingUrl),
+  registrations: false,
+  approvalRequired: false,
+  invitesEnabled: false,
 );
 
 Future<void> _waitUntil(bool Function() condition) async {

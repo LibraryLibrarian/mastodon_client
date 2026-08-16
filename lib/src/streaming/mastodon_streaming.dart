@@ -1,22 +1,36 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import '../exception/mastodon_exception.dart';
 import '../logging/logger.dart';
 import '../models/mastodon_instance.dart';
 import '../models/mastodon_instance_v1.dart';
+import 'internal/streaming_event_decoder.dart';
 import 'streaming_config.dart';
 import 'streaming_connection_state.dart';
+import 'streaming_event.dart';
+import 'streaming_message.dart';
+import 'streaming_stream.dart';
+import 'streaming_subscription.dart';
 import 'streaming_url_resolver.dart';
 import 'websocket_connector.dart';
 
 /// Called immediately after an automatic streaming reconnection succeeds.
 typedef MastodonStreamingReconnectCallback = FutureOr<void> Function();
 
+/// Resolves instance metadata used to discover the streaming endpoint.
+typedef MastodonStreamingMetadataProvider =
+    Future<({MastodonInstance? instance, MastodonInstanceV1? instanceV1})>
+    Function();
+
 /// Maintains a WebSocket connection to the Mastodon Streaming API.
 ///
-/// This transport exposes raw text frames. Subscription management and event
-/// decoding are layered on top of it by the higher-level streaming API.
+/// A single connection multiplexes every active subscription.
+///
+/// Events produced while the socket is disconnected are not replayed after
+/// reconnection. Applications are responsible for filling gaps through REST
+/// endpoints using `since_id` or `min_id`.
 class MastodonStreaming {
   /// Creates a Mastodon Streaming API transport.
   factory MastodonStreaming({
@@ -26,6 +40,7 @@ class MastodonStreaming {
     Logger? logger,
     bool enableLog = false,
     MastodonStreamingReconnectCallback? onReconnect,
+    MastodonStreamingMetadataProvider? metadataProvider,
   }) => MastodonStreaming.withConnector(
     baseUrl: baseUrl,
     accessToken: accessToken,
@@ -34,6 +49,7 @@ class MastodonStreaming {
     logger: logger,
     enableLog: enableLog,
     onReconnect: onReconnect,
+    metadataProvider: metadataProvider,
   );
 
   /// Creates a transport with an injectable WebSocket connector.
@@ -48,7 +64,9 @@ class MastodonStreaming {
     Logger? logger,
     bool enableLog = false,
     this.onReconnect,
+    MastodonStreamingMetadataProvider? metadataProvider,
     Future<void> Function(Duration duration)? delay,
+    Future<void> Function(Duration duration)? subscriptionDelay,
     double Function()? jitterSource,
     StreamingUrlResolver urlResolver = const StreamingUrlResolver(),
   }) : _baseUrl = baseUrl,
@@ -57,7 +75,9 @@ class MastodonStreaming {
        config = config ?? MastodonStreamingConfig(),
        _logger = logger ?? const StdoutLogger(),
        _enableLog = enableLog,
+       _metadataProvider = metadataProvider,
        _delay = delay ?? Future<void>.delayed,
+       _subscriptionDelay = subscriptionDelay ?? Future<void>.delayed,
        _jitterSource = jitterSource ?? Random().nextDouble,
        _urlResolver = urlResolver;
 
@@ -66,7 +86,9 @@ class MastodonStreaming {
   final WebSocketConnector _connector;
   final Logger _logger;
   final bool _enableLog;
+  final MastodonStreamingMetadataProvider? _metadataProvider;
   final Future<void> Function(Duration duration) _delay;
+  final Future<void> Function(Duration duration) _subscriptionDelay;
   final double Function() _jitterSource;
   final StreamingUrlResolver _urlResolver;
 
@@ -85,6 +107,9 @@ class MastodonStreaming {
       StreamController<MastodonStreamingException>.broadcast();
   final StreamController<String> _frameController =
       StreamController<String>.broadcast();
+  final StreamController<MastodonStreamingMessage> _messageController =
+      StreamController<MastodonStreamingMessage>.broadcast();
+  final Map<String, _SubscriptionEntry> _subscriptions = {};
 
   MastodonStreamingConnectionState _state =
       MastodonStreamingConnectionState.disconnected;
@@ -99,6 +124,8 @@ class MastodonStreaming {
   bool _isSuspended = false;
   bool _isDisposed = false;
   bool _reconnectScheduled = false;
+  Future<void> _subscriptionQueue = Future<void>.value();
+  _PendingSubscriptionOperation? _pendingSubscriptionOperation;
 
   /// Current connection state.
   MastodonStreamingConnectionState get state => _state;
@@ -112,6 +139,9 @@ class MastodonStreaming {
 
   /// Raw text frames received from the server.
   Stream<String> get rawFrames => _frameController.stream;
+
+  /// Decoded raw message envelopes from all subscribed channels.
+  Stream<MastodonStreamingMessage> get messages => _messageController.stream;
 
   /// Authentication mode that most recently connected successfully.
   MastodonStreamingAuthMode? get successfulAuthMode => _successfulAuthMode;
@@ -144,7 +174,79 @@ class MastodonStreaming {
     _wantsConnection = true;
     _reconnectAttempts = 0;
     _reconnectScheduled = false;
+    if (instance == null && instanceV1 == null && _metadataProvider != null) {
+      return _resolveMetadataAndConnect();
+    }
     return _beginConnection(reconnecting: false, automaticAttempt: false);
+  }
+
+  Future<void> _resolveMetadataAndConnect() {
+    final generation = ++_generation;
+    _setState(MastodonStreamingConnectionState.connecting);
+    late final Future<void> future;
+    future = _loadMetadataAndConnect(generation).whenComplete(() {
+      if (identical(_connectFuture, future)) {
+        _connectFuture = null;
+      }
+    });
+    _connectFuture = future;
+    return future;
+  }
+
+  Future<void> _loadMetadataAndConnect(int generation) async {
+    try {
+      final metadata = await _metadataProvider!.call();
+      if (!_isCurrentIntent(generation)) {
+        return;
+      }
+      _instance = metadata.instance;
+      _instanceV1 = metadata.instanceV1;
+    } on Object {
+      if (!_isCurrentIntent(generation)) {
+        return;
+      }
+      _logWarn(
+        'Could not discover the Streaming API endpoint; using the REST host',
+      );
+    }
+    if (_isCurrentIntent(generation)) {
+      await _beginConnection(reconnecting: false, automaticAttempt: false);
+    }
+  }
+
+  /// Subscribes to an official Mastodon Streaming API channel.
+  ///
+  /// Repeated subscriptions with the same normalized key share one server
+  /// subscription. Each returned handle receives the routed messages until
+  /// its own [MastodonStreamingSubscription.cancel] method is called.
+  Future<MastodonStreamingSubscription> subscribe(MastodonStream stream) =>
+      _subscribeTarget(
+        _SubscriptionTarget(
+          name: stream.name,
+          params: stream.params,
+          key: stream.key,
+        ),
+      );
+
+  /// Subscribes to an unknown or server-specific streaming channel.
+  Future<MastodonStreamingSubscription> subscribeRaw(
+    String streamName, {
+    Map<String, String> params = const {},
+  }) {
+    final trimmedName = streamName.trim();
+    if (trimmedName.isEmpty) {
+      throw const MastodonStreamingSubscriptionException(
+        message: 'Streaming channel name must not be empty',
+      );
+    }
+    return _subscribeTarget(
+      _SubscriptionTarget(
+        name: trimmedName,
+        params: params,
+        key: _rawSubscriptionKey(trimmedName, params),
+        isRaw: true,
+      ),
+    );
   }
 
   /// Sends one text frame on the active WebSocket.
@@ -214,9 +316,12 @@ class MastodonStreaming {
     _connectFuture = null;
     final connection = _takeConnection();
     _setState(MastodonStreamingConnectionState.disposed);
+    final subscriptionHandles = _takeSubscriptionHandles();
     try {
       await _releaseConnection(connection);
     } finally {
+      await Future.wait(subscriptionHandles.map((handle) => handle.close()));
+      await _messageController.close();
       await _frameController.close();
       await _errorController.close();
       await _stateController.close();
@@ -282,6 +387,7 @@ class MastodonStreaming {
       _reconnectAttempts = 0;
       _setState(MastodonStreamingConnectionState.connected);
       _logInfo('Connected to Mastodon Streaming API');
+      await _restoreSubscriptions();
 
       if (reconnecting) {
         try {
@@ -385,12 +491,295 @@ class MastodonStreaming {
     ),
   };
 
+  Future<MastodonStreamingSubscription> _subscribeTarget(
+    _SubscriptionTarget target,
+  ) async {
+    _ensureNotDisposed();
+    var entry = _subscriptions[target.key];
+    final isNewEntry = entry == null;
+    entry ??= _SubscriptionEntry(target);
+    _subscriptions[target.key] = entry;
+
+    final handle = _createSubscriptionHandle(entry);
+    entry.handles.add(handle);
+
+    final existingSend = entry.initialSendFuture;
+    if (!isNewEntry) {
+      if (existingSend != null) {
+        await existingSend;
+      }
+      return handle.subscription;
+    }
+    if (!isConnected) {
+      return handle.subscription;
+    }
+
+    final send = _sendSubscriptionOperation('subscribe', target);
+    entry.initialSendFuture = send;
+    try {
+      await send;
+      return handle.subscription;
+    } on MastodonStreamingSubscriptionException catch (error) {
+      if (identical(_subscriptions[target.key], entry)) {
+        _subscriptions.remove(target.key);
+      }
+      final handles = List<_SubscriptionHandle>.of(entry.handles);
+      entry.handles.clear();
+      await Future.wait(handles.map((item) => item.close()));
+      _emitError(error);
+      rethrow;
+    } finally {
+      if (identical(entry.initialSendFuture, send)) {
+        entry.initialSendFuture = null;
+      }
+    }
+  }
+
+  _SubscriptionHandle _createSubscriptionHandle(_SubscriptionEntry entry) {
+    late final _SubscriptionHandle handle;
+    handle = _SubscriptionHandle(
+      target: entry.target,
+      onCancel: () => _cancelSubscriptionHandle(entry, handle),
+      onIsActive: () => entry.handles.contains(handle),
+    );
+    return handle;
+  }
+
+  Future<void> _cancelSubscriptionHandle(
+    _SubscriptionEntry entry,
+    _SubscriptionHandle handle,
+  ) async {
+    if (!entry.handles.remove(handle)) {
+      return;
+    }
+    await handle.close();
+    if (entry.handles.isNotEmpty) {
+      return;
+    }
+
+    if (identical(_subscriptions[entry.target.key], entry)) {
+      _subscriptions.remove(entry.target.key);
+    }
+    if (!isConnected) {
+      return;
+    }
+    try {
+      await _sendSubscriptionOperation('unsubscribe', entry.target);
+    } on MastodonStreamingSubscriptionException catch (error) {
+      _emitError(error);
+      rethrow;
+    }
+  }
+
+  Future<void> _restoreSubscriptions() async {
+    for (final entry in List<_SubscriptionEntry>.of(_subscriptions.values)) {
+      if (!identical(_subscriptions[entry.target.key], entry) ||
+          entry.handles.isEmpty) {
+        continue;
+      }
+      try {
+        await _sendSubscriptionOperation('subscribe', entry.target);
+      } on MastodonStreamingSubscriptionException catch (error) {
+        _emitError(error);
+      }
+    }
+  }
+
+  Future<void> _sendSubscriptionOperation(
+    String type,
+    _SubscriptionTarget target,
+  ) {
+    final operation = _subscriptionQueue.then(
+      (_) => _performSubscriptionOperation(type, target),
+    );
+    _subscriptionQueue = operation.catchError((Object _) {});
+    return operation;
+  }
+
+  Future<void> _performSubscriptionOperation(
+    String type,
+    _SubscriptionTarget target,
+  ) async {
+    if (!isConnected) {
+      return;
+    }
+
+    final pending = _PendingSubscriptionOperation(type: type, target: target);
+    _pendingSubscriptionOperation = pending;
+    try {
+      try {
+        sendText(
+          jsonEncode({'type': type, 'stream': target.name, ...target.params}),
+        );
+      } catch (error) {
+        throw MastodonStreamingSubscriptionException(
+          message: 'Could not send Streaming $type request',
+          raw: error,
+        );
+      }
+
+      final error = await Future.any<MastodonStreamingSubscriptionException?>([
+        _subscriptionDelay(
+          config.subscriptionErrorWindow,
+        ).then<MastodonStreamingSubscriptionException?>((_) => null),
+        pending.error.future,
+      ]);
+      if (error != null) {
+        throw error;
+      }
+    } finally {
+      if (identical(_pendingSubscriptionOperation, pending)) {
+        _pendingSubscriptionOperation = null;
+      }
+    }
+  }
+
+  void _handleProtocolFrame(String raw) {
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is Map<String, dynamic> && decoded['error'] is String) {
+        _handleSubscriptionError(decoded);
+        return;
+      }
+
+      final message = MastodonStreamingMessage.fromRaw(raw);
+      _messageController.add(message);
+      _routeMessage(message, decodeMastodonStreamEvent(message));
+    } on Object {
+      _routeMalformedEnvelope(raw);
+    }
+  }
+
+  void _routeMalformedEnvelope(String raw) {
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is! Map<String, dynamic>) {
+        return;
+      }
+      final streamValue = decoded['stream'];
+      final eventValue = decoded['event'];
+      if (streamValue is! List<dynamic> ||
+          streamValue.isEmpty ||
+          streamValue.length > 2 ||
+          streamValue.any((value) => value is! String) ||
+          eventValue is! String ||
+          eventValue.isEmpty) {
+        return;
+      }
+      final payloadValue = decoded['payload'];
+      final rawPayload = payloadValue == null
+          ? null
+          : payloadValue is String
+          ? payloadValue
+          : jsonEncode(payloadValue);
+      final message = MastodonStreamingMessage(
+        stream: streamValue.cast<String>(),
+        event: eventValue,
+        payload: rawPayload,
+        raw: raw,
+      );
+      final event = MastodonUnknownStreamEvent(
+        stream: message.stream,
+        event: message.event,
+        rawPayload: message.payload,
+      );
+      _messageController.add(message);
+      _routeMessage(message, event);
+    } on Object {
+      // ストリームを特定できない不正フレームは次のフレームを待つ。
+    }
+  }
+
+  void _handleSubscriptionError(Map<String, dynamic> decoded) {
+    final pending = _pendingSubscriptionOperation;
+    final error = MastodonStreamingSubscriptionException(
+      message: decoded['error'] as String,
+      status: decoded['status'] is int ? decoded['status'] as int : null,
+      raw: pending == null
+          ? decoded
+          : {
+              ...decoded,
+              'operation': pending.type,
+              'stream': pending.target.name,
+            },
+    );
+    if (pending != null && !pending.error.isCompleted) {
+      pending.error.complete(error);
+    } else {
+      _emitError(error);
+    }
+  }
+
+  void _routeMessage(
+    MastodonStreamingMessage message,
+    MastodonStreamEvent event,
+  ) {
+    for (final entry in List<_SubscriptionEntry>.of(_subscriptions.values)) {
+      if (!_matchesStream(entry.target, message.stream)) {
+        continue;
+      }
+      for (final handle in List<_SubscriptionHandle>.of(entry.handles)) {
+        handle.add(message, event);
+      }
+    }
+  }
+
+  bool _matchesStream(_SubscriptionTarget target, List<String> stream) {
+    if (stream.isEmpty || stream.first != target.name) {
+      return false;
+    }
+    if (target.isRaw && target.params.isEmpty) {
+      return true;
+    }
+    final tag = target.params['tag'];
+    if (tag != null) {
+      return stream.length == 2 && stream[1].toLowerCase() == tag.toLowerCase();
+    }
+    final list = target.params['list'];
+    if (list != null) {
+      return stream.length == 2 && stream[1] == list;
+    }
+    return stream.length == 1;
+  }
+
+  static String _rawSubscriptionKey(
+    String streamName,
+    Map<String, String> params,
+  ) {
+    final tag = params['tag'];
+    if (tag != null) {
+      return '$streamName:${tag.toLowerCase()}';
+    }
+    final list = params['list'];
+    if (list != null) {
+      return '$streamName:$list';
+    }
+    if (params.isEmpty) {
+      return streamName;
+    }
+    final entries = params.entries.toList()
+      ..sort((left, right) => left.key.compareTo(right.key));
+    return '$streamName?${entries.map((entry) => '${entry.key}=${entry.value}').join('&')}';
+  }
+
+  List<_SubscriptionHandle> _takeSubscriptionHandles() {
+    final handles = [
+      for (final entry in _subscriptions.values) ...entry.handles,
+    ];
+    for (final entry in _subscriptions.values) {
+      entry.handles.clear();
+    }
+    _subscriptions.clear();
+    return handles;
+  }
+
   void _handleFrame(_ActiveConnection connection, Object? data) {
     if (!_isCurrentConnection(connection) || connection.terminationHandled) {
       return;
     }
     if (data is String) {
       _frameController.add(data);
+      _handleProtocolFrame(data);
       return;
     }
 
@@ -646,4 +1035,73 @@ final class _ActiveConnection {
   final WebSocketConnection socket;
   StreamSubscription<Object?>? subscription;
   bool terminationHandled = false;
+}
+
+final class _SubscriptionTarget {
+  _SubscriptionTarget({
+    required this.name,
+    required Map<String, String> params,
+    required this.key,
+    this.isRaw = false,
+  }) : params = Map.unmodifiable(params);
+
+  final String name;
+  final Map<String, String> params;
+  final String key;
+  final bool isRaw;
+}
+
+final class _SubscriptionEntry {
+  _SubscriptionEntry(this.target);
+
+  final _SubscriptionTarget target;
+  final Set<_SubscriptionHandle> handles = {};
+  Future<void>? initialSendFuture;
+}
+
+final class _SubscriptionHandle {
+  _SubscriptionHandle({
+    required this.target,
+    required Future<void> Function() onCancel,
+    required bool Function() onIsActive,
+  }) {
+    subscription = MastodonStreamingSubscription.managed(
+      streamName: target.name,
+      params: target.params,
+      messages: _messageController.stream,
+      events: _eventController.stream,
+      onCancel: onCancel,
+      onIsActive: onIsActive,
+    );
+  }
+
+  final _SubscriptionTarget target;
+  final StreamController<MastodonStreamingMessage> _messageController =
+      StreamController<MastodonStreamingMessage>.broadcast();
+  final StreamController<MastodonStreamEvent> _eventController =
+      StreamController<MastodonStreamEvent>.broadcast();
+  late final MastodonStreamingSubscription subscription;
+  Future<void>? _closeFuture;
+
+  void add(MastodonStreamingMessage message, MastodonStreamEvent event) {
+    if (_messageController.isClosed || _eventController.isClosed) {
+      return;
+    }
+    _messageController.add(message);
+    _eventController.add(event);
+  }
+
+  Future<void> close() => _closeFuture ??= Future.wait<void>([
+    _messageController.close(),
+    _eventController.close(),
+  ]);
+}
+
+final class _PendingSubscriptionOperation {
+  _PendingSubscriptionOperation({required this.type, required this.target});
+
+  final String type;
+  final _SubscriptionTarget target;
+  final Completer<MastodonStreamingSubscriptionException?> error =
+      Completer<MastodonStreamingSubscriptionException?>();
 }

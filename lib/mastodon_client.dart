@@ -88,4 +88,8 @@ export 'src/models/mastodon_weekly_activity.dart';
 export 'src/streaming/mastodon_streaming.dart';
 export 'src/streaming/streaming_config.dart';
 export 'src/streaming/streaming_connection_state.dart';
+export 'src/streaming/streaming_event.dart';
+export 'src/streaming/streaming_message.dart';
+export 'src/streaming/streaming_stream.dart';
+export 'src/streaming/streaming_subscription.dart';
 export 'src/streaming/websocket_connector.dart';
