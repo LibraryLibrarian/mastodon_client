@@ -164,3 +164,69 @@ class MastodonMediaProcessingTimeoutException extends MastodonException {
   /// ID of the media that was awaiting processing.
   final String mediaId;
 }
+
+/// Base class for errors from the Mastodon Streaming API.
+sealed class MastodonStreamingException extends MastodonException {
+  const MastodonStreamingException(super.message);
+}
+
+/// A failure while establishing or restoring a streaming connection.
+class MastodonStreamingConnectionException extends MastodonStreamingException {
+  /// Creates a streaming connection failure.
+  const MastodonStreamingConnectionException({
+    String message = 'Streaming connection failed',
+    this.statusCode,
+    this.endpoint,
+    this.raw,
+  }) : super(message);
+
+  /// HTTP status returned by the WebSocket handshake, when available.
+  final int? statusCode;
+
+  /// Credential-free Streaming API endpoint.
+  final String? endpoint;
+
+  /// Original exception or error object, when safe to expose.
+  final Object? raw;
+}
+
+/// A server-reported subscription or unsubscription failure.
+class MastodonStreamingSubscriptionException
+    extends MastodonStreamingException {
+  /// Creates a streaming subscription failure.
+  const MastodonStreamingSubscriptionException({
+    String message = 'Streaming subscription failed',
+    this.status,
+    this.endpoint,
+    this.raw,
+  }) : super(message);
+
+  /// Status value returned by a subscription response, when present.
+  final int? status;
+
+  /// Credential-free Streaming API endpoint.
+  final String? endpoint;
+
+  /// Original response or error object.
+  final Object? raw;
+}
+
+/// An unexpected or non-recoverable streaming connection closure.
+class MastodonStreamingClosedException extends MastodonStreamingException {
+  /// Creates a streaming closure failure.
+  const MastodonStreamingClosedException({
+    required this.closeCode,
+    this.closeReason,
+    this.endpoint,
+    String message = 'Streaming connection closed',
+  }) : super(message);
+
+  /// WebSocket close code. A value of 1005 means no status was received.
+  final int closeCode;
+
+  /// WebSocket close reason, when supplied by the server.
+  final String? closeReason;
+
+  /// Credential-free Streaming API endpoint.
+  final String? endpoint;
+}

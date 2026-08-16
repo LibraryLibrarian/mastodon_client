@@ -85,3 +85,7 @@ export 'src/models/mastodon_trends_link.dart';
 export 'src/models/mastodon_unread_notification_count.dart';
 export 'src/models/mastodon_web_push_subscription.dart';
 export 'src/models/mastodon_weekly_activity.dart';
+export 'src/streaming/mastodon_streaming.dart';
+export 'src/streaming/streaming_config.dart';
+export 'src/streaming/streaming_connection_state.dart';
+export 'src/streaming/websocket_connector.dart';
