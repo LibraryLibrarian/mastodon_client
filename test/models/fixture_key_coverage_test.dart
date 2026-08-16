@@ -50,6 +50,8 @@ void main() {
     'media_attachment.json': (json) =>
         MastodonMediaAttachment.fromJson(json).toJson(),
     'collection.json': (json) => MastodonCollection.fromJson(json).toJson(),
+    'streaming_announcement_reaction.json': (json) =>
+        MastodonStreamingAnnouncementReaction.fromJson(json).toJson(),
   };
 
   group('fixture key coverage', () {
