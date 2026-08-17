@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added the Streaming API over WebSocket, exposed as `client.streaming`, with a single multiplexed connection, reference-counted subscriptions, and typed sealed events (issue #21)
+- Added `MastodonStream` covering all twelve official channels, plus `subscribeRaw` for channels this library does not model (issue #21)
+- Added automatic streaming endpoint discovery from instance metadata, with normalization of scheme, port, and path (issue #21)
+- Added three streaming authentication modes with fallback, close-code-aware reconnection with exponential backoff and jitter, and `suspend()` / `resume()` (issue #21)
+- Added `MastodonClient.dispose()` and `HealthApi.checkStreaming()` (issue #21)
+
+### Changed
+
+- `MastodonHttpClient` now retains and exposes `baseUrl`, `accessToken`, and `enableLog` (issue #21)
+
 ## [1.0.0-beta.2] - 2026-08-13
 
 ### Added

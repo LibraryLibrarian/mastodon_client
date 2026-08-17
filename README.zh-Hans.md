@@ -13,6 +13,7 @@
 - 通过 `MastodonPage<T>` 实现基于游标的分页
 - 用于穷举式错误处理的 sealed 异常层级
 - 支持自动 v2/v1 降级和处理轮询的异步媒体上传
+- 基于 WebSocket 的流式 API，支持多路复用订阅与自动重连
 - 通过可替换的 `Logger` 接口实现可配置的日志记录
 - 纯 Dart 实现 — 不依赖 Flutter
 
@@ -102,6 +103,7 @@ void main() async {
 | `markers` | 时间线已读位置标记 |
 | `scheduledStatuses` | 定时嘟文管理 |
 | `health` | 服务器健康检查 |
+| `streaming` | 基于 WebSocket 的流式 API（参见[流式传输](#流式传输)） |
 | `profile` | 头像/头图管理 |
 | `groupedNotifications` | 分组通知（v2） |
 | `adminAccounts` | 管理员账户管理 |
@@ -170,6 +172,56 @@ try {
   // Timeout, connection refused, etc.
 }
 ```
+
+## 流式传输
+
+通过流式 API（WebSocket）获取实时更新。所有订阅都多路复用到单个连接上，端点会自动从实例元数据中解析。
+
+```dart
+final client = MastodonClient(
+  baseUrl: 'https://mastodon.social',
+  accessToken: 'your_token',
+);
+
+await client.streaming.connect();
+
+final home = await client.streaming.subscribe(const MastodonStream.user());
+home.events.listen((event) {
+  switch (event) {
+    case MastodonUpdateEvent(:final status):
+      print(status.content);
+    case MastodonDeleteEvent(:final statusId):
+      print('已删除: $statusId');
+    case MastodonNotificationEvent(:final notification):
+      print(notification.type);
+    default:
+      break;
+  }
+});
+
+// 仅接收嘟文（`update` 和 `status.update`）
+home.statuses.listen((status) => print(status.id));
+
+final tag = await client.streaming.subscribe(
+  const MastodonStream.hashtag('dart'),
+);
+
+await tag.cancel();
+await client.dispose();
+```
+
+频道通过 `MastodonStream` 描述：`user()`、`userNotification()`、`public()`（可指定 `local`、`remote`、`onlyMedia`）、`hashtag()`（可指定 `local`）、`list()` 和 `direct()`。对于本库未建模的频道，请使用 `subscribeRaw`。
+
+订阅采用引用计数，因此重复订阅同一频道只会发送一次 `subscribe` 帧。重连使用指数退避加抖动自动进行，重连后会重新发送所有活动订阅。请在应用生命周期变化时使用 `suspend()` 和 `resume()`，并通过 `stateChanges` 和 `errors` 监控连接。
+
+### 注意事项
+
+- 包括公共频道在内，流式传输始终需要访问令牌。
+- 仅具有 `read:statuses` 的令牌可以在 `user` 上接收主页嘟文，但不会收到任何通知（也不会报错）。需要通知时请使用 `read` 或 `read:notifications`。
+- `only_media` 在 WebSocket 上会被忽略。请改用频道名指定，例如 `MastodonStream.public(onlyMedia: true)`。
+- 同时订阅 `user` 和 `userNotification` 会导致每条通知收到两次。仅订阅 `user` 即可。
+- 公共和话题标签的更新可能因语言偏好、信息流访问设置、屏蔽或静音而被静默丢弃。没有事件流入未必是错误。
+- 断开期间产生的事件不会被补发。请通过 REST 的 `since_id` 或 `min_id` 补齐缺口。
 
 ## 日志记录
 

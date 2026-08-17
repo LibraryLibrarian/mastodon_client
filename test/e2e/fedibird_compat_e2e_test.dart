@@ -6,12 +6,11 @@ import 'package:test/test.dart';
 
 import 'e2e_env.dart';
 
-/// fediverse_e2e 環境(fedibird.test)に対する互換性テスト。
+/// Compatibility tests against fedibird.test in fediverse_e2e.
 ///
-/// Fedibird は Mastodon 3.4 系のフォークであり、mastodon_client が前提と
-/// している 4.x のエンドポイントには存在しないものがある。
-/// ここでは「動くもの」と「動かないもの」の両方を実サーバーで固定し、
-/// アプリ側が機能判定を行う際の根拠とする。
+/// Fedibird is a Mastodon 3.4-based fork and lacks some 4.x endpoints assumed
+/// by mastodon_client. These tests record both supported and unsupported
+/// behavior on a real server so applications can make capability decisions.
 void main() {
   final env = E2eEnv.tryLoad();
   if (env == null) {

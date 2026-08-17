@@ -13,6 +13,7 @@
 - `MastodonPage<T>`를 통한 커서 기반 페이지네이션
 - 완전한 오류 처리를 위한 sealed 예외 계층
 - 자동 v2/v1 폴백 및 처리 폴링을 지원하는 비동기 미디어 업로드
+- 다중화된 구독과 자동 재연결을 지원하는 WebSocket 기반 스트리밍 API
 - 교체 가능한 `Logger` 인터페이스를 통한 설정 가능한 로깅
 - 순수 Dart — Flutter 의존성 불필요
 
@@ -102,6 +103,7 @@ void main() async {
 | `markers` | 타임라인 읽기 위치 마커 |
 | `scheduledStatuses` | 예약 포스트 관리 |
 | `health` | 서버 상태 확인 |
+| `streaming` | WebSocket 기반 스트리밍 API ([스트리밍](#스트리밍) 참조) |
 | `profile` | 아바타/헤더 이미지 관리 |
 | `groupedNotifications` | 그룹화된 알림 (v2) |
 | `adminAccounts` | 관리자 계정 관리 |
@@ -170,6 +172,56 @@ try {
   // Timeout, connection refused, etc.
 }
 ```
+
+## 스트리밍
+
+스트리밍 API(WebSocket)를 통한 실시간 업데이트입니다. 단일 연결에 모든 구독을 다중화하며, 엔드포인트는 인스턴스 메타데이터에서 자동으로 확인됩니다.
+
+```dart
+final client = MastodonClient(
+  baseUrl: 'https://mastodon.social',
+  accessToken: 'your_token',
+);
+
+await client.streaming.connect();
+
+final home = await client.streaming.subscribe(const MastodonStream.user());
+home.events.listen((event) {
+  switch (event) {
+    case MastodonUpdateEvent(:final status):
+      print(status.content);
+    case MastodonDeleteEvent(:final statusId):
+      print('삭제됨: $statusId');
+    case MastodonNotificationEvent(:final notification):
+      print(notification.type);
+    default:
+      break;
+  }
+});
+
+// 포스트만 수신 (`update` 및 `status.update`)
+home.statuses.listen((status) => print(status.id));
+
+final tag = await client.streaming.subscribe(
+  const MastodonStream.hashtag('dart'),
+);
+
+await tag.cancel();
+await client.dispose();
+```
+
+채널은 `MastodonStream`으로 표현합니다. `user()`, `userNotification()`, `public()`(`local`, `remote`, `onlyMedia` 지정 가능), `hashtag()`(`local` 지정 가능), `list()`, `direct()`를 사용할 수 있습니다. 이 라이브러리가 타입으로 제공하지 않는 채널에는 `subscribeRaw`를 사용하세요.
+
+구독은 참조 카운트로 관리되므로 같은 채널을 두 번 구독해도 `subscribe` 프레임은 한 번만 전송됩니다. 재연결은 지수 백오프와 지터를 사용해 자동으로 이루어지며, 재연결 후에는 활성 구독이 모두 다시 전송됩니다. 애플리케이션 생명주기 변화에 맞춰 `suspend()`와 `resume()`을 사용하고, 연결 상태는 `stateChanges`와 `errors`로 관찰하세요.
+
+### 유의 사항
+
+- 공개 채널을 포함해 스트리밍에는 항상 액세스 토큰이 필요합니다.
+- `read:statuses`만 가진 토큰으로 `user`에 연결하면 홈 타임라인은 수신되지만 알림은 전혀 오지 않습니다(오류도 발생하지 않습니다). 알림이 필요하면 `read` 또는 `read:notifications`를 사용하세요.
+- `only_media`는 WebSocket에서 무시됩니다. `MastodonStream.public(onlyMedia: true)`처럼 채널 이름으로 지정하세요.
+- `user`와 `userNotification`을 함께 구독하면 같은 알림이 두 번 전달됩니다. `user`만으로 충분합니다.
+- 공개 및 해시태그 업데이트는 언어 설정, 피드 공개 설정, 차단, 뮤트에 의해 조용히 삭제될 수 있습니다. 아무것도 흐르지 않는 것이 반드시 오류는 아닙니다.
+- 연결이 끊긴 동안 발생한 이벤트는 다시 전달되지 않습니다. REST의 `since_id` 또는 `min_id`로 공백을 메우세요.
 
 ## 로깅
 

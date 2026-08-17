@@ -13,6 +13,7 @@ Eine reine Dart-Clientbibliothek für die [Mastodon](https://joinmastodon.org/) 
 - Cursorbasierte Paginierung über `MastodonPage<T>`
 - Sealed-Ausnahmehierarchie für erschöpfende Fehlerbehandlung
 - Asynchroner Medien-Upload mit automatischem v2/v1-Fallback und Verarbeitungs-Polling
+- Streaming-API über WebSocket mit gemultiplexten Abonnements und automatischer Wiederverbindung
 - Konfigurierbares Logging über eine austauschbare `Logger`-Schnittstelle
 - Reines Dart — keine Flutter-Abhängigkeit erforderlich
 
@@ -102,6 +103,7 @@ void main() async {
 | `markers` | Timeline-Lesepositionsmarkierungen |
 | `scheduledStatuses` | Verwaltung geplanter Status |
 | `health` | Server-Gesundheitsprüfung |
+| `streaming` | Streaming-API über WebSocket (siehe [Streaming](#streaming)) |
 | `profile` | Avatar-/Header-Bildverwaltung |
 | `groupedNotifications` | Gruppierte Benachrichtigungen (v2) |
 | `adminAccounts` | Admin-Kontoverwaltung |
@@ -170,6 +172,56 @@ try {
   // Timeout, connection refused, etc.
 }
 ```
+
+## Streaming
+
+Echtzeit-Aktualisierungen über die Streaming-API (WebSocket). Eine einzelne Verbindung multiplext alle Abonnements, und der Endpunkt wird automatisch aus den Instanz-Metadaten ermittelt.
+
+```dart
+final client = MastodonClient(
+  baseUrl: 'https://mastodon.social',
+  accessToken: 'your_token',
+);
+
+await client.streaming.connect();
+
+final home = await client.streaming.subscribe(const MastodonStream.user());
+home.events.listen((event) {
+  switch (event) {
+    case MastodonUpdateEvent(:final status):
+      print(status.content);
+    case MastodonDeleteEvent(:final statusId):
+      print('gelöscht: $statusId');
+    case MastodonNotificationEvent(:final notification):
+      print(notification.type);
+    default:
+      break;
+  }
+});
+
+// Nur Status (`update` und `status.update`)
+home.statuses.listen((status) => print(status.id));
+
+final tag = await client.streaming.subscribe(
+  const MastodonStream.hashtag('dart'),
+);
+
+await tag.cancel();
+await client.dispose();
+```
+
+Kanäle werden über `MastodonStream` beschrieben: `user()`, `userNotification()`, `public()` (mit `local`, `remote`, `onlyMedia`), `hashtag()` (mit `local`), `list()` und `direct()`. Für Kanäle, die diese Bibliothek nicht abbildet, steht `subscribeRaw` zur Verfügung.
+
+Abonnements werden referenzgezählt, sodass ein doppeltes Abonnement desselben Kanals nur einen `subscribe`-Frame sendet. Die Wiederverbindung erfolgt automatisch mit exponentiellem Backoff und Jitter, danach wird jedes aktive Abonnement erneut gesendet. Nutze `suspend()` und `resume()` bei Lebenszyklus-Wechseln der Anwendung und beobachte `stateChanges` sowie `errors`, um die Verbindung zu überwachen.
+
+### Wissenswertes
+
+- Streaming erfordert immer ein Zugriffstoken, auch für öffentliche Kanäle.
+- Ein Token mit nur `read:statuses` empfängt Home-Status über `user`, erhält aber stillschweigend keine Benachrichtigungen. Verwende `read` oder `read:notifications`, wenn Benachrichtigungen benötigt werden.
+- `only_media` wird über WebSocket ignoriert. Wähle stattdessen den Kanalnamen, etwa über `MastodonStream.public(onlyMedia: true)`.
+- Wer `user` und `userNotification` gleichzeitig abonniert, erhält jede Benachrichtigung doppelt. `user` allein genügt.
+- Öffentliche und Hashtag-Aktualisierungen können durch Spracheinstellungen, Feed-Zugriffseinstellungen, Blockierungen oder Stummschaltungen stillschweigend verworfen werden. Ein stiller Stream ist nicht zwangsläufig ein Fehler.
+- Während einer Trennung erzeugte Ereignisse werden nicht nachgeliefert. Schließe die Lücke über REST-Endpunkte mit `since_id` oder `min_id`.
 
 ## Logging
 

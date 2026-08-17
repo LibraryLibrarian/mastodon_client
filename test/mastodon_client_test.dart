@@ -14,4 +14,41 @@ void main() {
     final client = MastodonClient(baseUrl: 'https://mastodon.social');
     expect(client, isNotNull);
   });
+
+  test('MastodonClient.streaming is lazy and cached', () async {
+    final client = MastodonClient(
+      baseUrl: 'https://mastodon.social',
+      accessToken: 'test_token',
+      enableLog: false,
+    );
+
+    final first = client.streaming;
+    final second = client.streaming;
+
+    expect(identical(first, second), isTrue);
+    expect(first.state, MastodonStreamingConnectionState.disconnected);
+    await client.dispose();
+  });
+
+  test('dispose does not create streaming when it was never used', () async {
+    final client = MastodonClient(
+      baseUrl: 'https://mastodon.social',
+      accessToken: 'test_token',
+      enableLog: false,
+    );
+
+    await client.dispose();
+
+    expect(() => client.streaming, throwsStateError);
+  });
+
+  test('streaming requires an access token', () async {
+    final client = MastodonClient(
+      baseUrl: 'https://mastodon.social',
+      enableLog: false,
+    );
+
+    expect(() => client.streaming, throwsStateError);
+    await client.dispose();
+  });
 }

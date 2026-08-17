@@ -13,12 +13,12 @@ import 'constants.dart';
 /// to all requests.
 class MastodonHttpClient {
   MastodonHttpClient({
-    required String baseUrl,
-    String? accessToken,
+    required this.baseUrl,
+    this.accessToken,
     Duration connectTimeout = const Duration(seconds: 10),
     Duration receiveTimeout = const Duration(seconds: 10),
     Duration sendTimeout = const Duration(seconds: 10),
-    bool enableLog = true,
+    this.enableLog = true,
     Logger? logger,
     HttpClientAdapter? httpClientAdapter,
   }) : logger = logger ?? const StdoutLogger(),
@@ -44,6 +44,15 @@ class MastodonHttpClient {
 
   final Dio dio;
   final Logger logger;
+
+  /// Base URL used for REST API requests.
+  final String baseUrl;
+
+  /// Access token used to authenticate requests, if provided.
+  final String? accessToken;
+
+  /// Whether client logging is enabled.
+  final bool enableLog;
 
   /// Executes an HTTP request and returns the response body.
   ///
