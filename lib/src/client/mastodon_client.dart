@@ -124,7 +124,17 @@ class MastodonClient {
       logger: _http.logger,
       enableLog: _http.enableLog,
       metadataProvider: _resolveStreamingMetadata,
+      tokenValidator: _validateStreamingToken,
     );
+  }
+
+  Future<bool> _validateStreamingToken() async {
+    try {
+      await AccountsApi(_http).verifyCredentials();
+      return true;
+    } on MastodonUnauthorizedException {
+      return false;
+    }
   }
 
   Future<({MastodonInstance? instance, MastodonInstanceV1? instanceV1})>

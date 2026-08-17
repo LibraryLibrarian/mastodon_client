@@ -18,7 +18,22 @@ void main() {
 
       expect(await api.checkStreaming(), isFalse);
     });
+
+    for (final body in ['OK\n', ' \tOK\r\n']) {
+      test(
+        'accepts surrounding whitespace in ${body.escapeForTestName()}',
+        () async {
+          final api = HealthApi(_FakeMastodonHttpClient(body));
+
+          expect(await api.checkStreaming(), isTrue);
+        },
+      );
+    }
   });
+}
+
+extension on String {
+  String escapeForTestName() => replaceAll('\n', r'\n').replaceAll('\r', r'\r');
 }
 
 class _FakeMastodonHttpClient extends MastodonHttpClient {

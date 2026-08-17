@@ -59,8 +59,25 @@ class MastodonStreamingSubscription {
   /// Releases this handle.
   ///
   /// The server receives `unsubscribe` only when the final handle for the
-  /// normalized stream key is released. Repeated calls are safe.
-  Future<void> cancel() => _cancelFuture ??= _onCancel();
+  /// normalized stream key is released. The first call reports an unsubscribe
+  /// failure, while later calls are safe and complete without repeating it.
+  Future<void> cancel() {
+    final pending = _cancelFuture;
+    if (pending != null) {
+      return pending;
+    }
+    if (!isActive) {
+      return Future<void>.value();
+    }
+
+    final future = _onCancel();
+    _cancelFuture = future;
+    return future.whenComplete(() {
+      if (identical(_cancelFuture, future)) {
+        _cancelFuture = null;
+      }
+    });
+  }
 
   /// Alias for [cancel].
   Future<void> unsubscribe() => cancel();

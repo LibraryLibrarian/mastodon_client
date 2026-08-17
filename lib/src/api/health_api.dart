@@ -32,6 +32,6 @@ class HealthApi {
   /// Throws a `MastodonException` on failure.
   Future<bool> checkStreaming() async {
     final data = await _http.send<String>('/api/v1/streaming/health');
-    return data == 'OK';
+    return data?.trim() == 'OK';
   }
 }

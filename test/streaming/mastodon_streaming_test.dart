@@ -161,6 +161,82 @@ void main() {
         await streaming.dispose();
       });
     }
+
+    test('reconnects after close code 1005 when the token is valid', () async {
+      final socket = _FakeWebSocketConnection();
+      final replacement = _FakeWebSocketConnection();
+      final connector = _FakeWebSocketConnector([socket, replacement]);
+      var validations = 0;
+      final streaming = _streaming(
+        connector,
+        tokenValidator: () async {
+          validations++;
+          return true;
+        },
+      );
+      await streaming.connect();
+
+      await socket.closeFromServer(1005);
+      await _waitUntil(() => connector.options.length == 2);
+
+      expect(validations, 1);
+      expect(streaming.state, MastodonStreamingConnectionState.connected);
+      await streaming.dispose();
+    });
+
+    test(
+      'does not reconnect after close code 1005 when the token is invalid',
+      () async {
+        final socket = _FakeWebSocketConnection();
+        final connector = _FakeWebSocketConnector([
+          socket,
+          _FakeWebSocketConnection(),
+        ]);
+        final errors = <MastodonStreamingException>[];
+        final streaming = _streaming(
+          connector,
+          tokenValidator: () async => false,
+        );
+        final errorSubscription = streaming.errors.listen(errors.add);
+        await streaming.connect();
+
+        await socket.closeFromServer(1005);
+        await _waitUntil(() => errors.isNotEmpty);
+
+        expect(connector.options, hasLength(1));
+        expect(streaming.state, MastodonStreamingConnectionState.disconnected);
+        expect(
+          errors.single,
+          isA<MastodonStreamingClosedException>()
+              .having((error) => error.closeCode, 'closeCode', 1005)
+              .having((error) => error.message, 'message', contains('invalid')),
+        );
+        await errorSubscription.cancel();
+        await streaming.dispose();
+      },
+    );
+
+    test('validates the token only after close code 1005', () async {
+      final socket = _FakeWebSocketConnection();
+      final replacement = _FakeWebSocketConnection();
+      var validations = 0;
+      final streaming = _streaming(
+        _FakeWebSocketConnector([socket, replacement]),
+        tokenValidator: () async {
+          validations++;
+          return true;
+        },
+      );
+      await streaming.connect();
+
+      await socket.closeFromServer(1011);
+      await _waitUntil(
+        () => streaming.state == MastodonStreamingConnectionState.connected,
+      );
+
+      expect(validations, 0);
+      await streaming.dispose();
+    });
   });
 
   test('reconnect backoff grows, includes jitter, and stays capped', () async {
@@ -304,6 +380,45 @@ void main() {
       await streaming.dispose();
     });
 
+    test('keeps typed hashtag and colon-named raw channels separate', () async {
+      final socket = _FakeWebSocketConnection();
+      final streaming = _streaming(_FakeWebSocketConnector([socket]));
+      await streaming.connect();
+
+      final typed = await streaming.subscribe(
+        const MastodonStream.hashtag('dart'),
+      );
+      final raw = await streaming.subscribeRaw('hashtag:dart');
+
+      expect(_sentFrames(socket, 'subscribe'), [
+        {'type': 'subscribe', 'stream': 'hashtag', 'tag': 'dart'},
+        {'type': 'subscribe', 'stream': 'hashtag:dart'},
+      ]);
+
+      await typed.cancel();
+      await raw.cancel();
+      await streaming.dispose();
+    });
+
+    test('shares equivalent typed and raw channel definitions', () async {
+      final socket = _FakeWebSocketConnection();
+      final streaming = _streaming(_FakeWebSocketConnector([socket]));
+      await streaming.connect();
+
+      final typed = await streaming.subscribe(
+        const MastodonStream.public(local: true),
+      );
+      final raw = await streaming.subscribeRaw('public:local');
+
+      expect(_sentFrames(socket, 'subscribe'), hasLength(1));
+      await typed.cancel();
+      expect(_sentFrames(socket, 'unsubscribe'), isEmpty);
+      await raw.cancel();
+      expect(_sentFrames(socket, 'unsubscribe'), hasLength(1));
+
+      await streaming.dispose();
+    });
+
     test('matches one- and two-element stream arrays', () async {
       final socket = _FakeWebSocketConnection();
       final streaming = _streaming(_FakeWebSocketConnector([socket]));
@@ -419,6 +534,54 @@ void main() {
       await streaming.dispose();
     });
 
+    test('dispose rejects a subscribe waiting for the error window', () async {
+      final socket = _FakeWebSocketConnection();
+      final errorWindow = Completer<void>();
+      final streaming = _streaming(
+        _FakeWebSocketConnector([socket]),
+        subscriptionDelay: (_) => errorWindow.future,
+      );
+      await streaming.connect();
+
+      final subscription = streaming.subscribe(const MastodonStream.user());
+      await _waitUntil(() => socket.sent.isNotEmpty);
+      final expectation = expectLater(subscription, throwsStateError);
+      await streaming.dispose();
+
+      await expectation;
+    });
+
+    test('does not cache a failed unsubscribe across cancel calls', () async {
+      final socket = _FakeWebSocketConnection();
+      final unsubscribeWindow = Completer<void>();
+      var operation = 0;
+      final streaming = _streaming(
+        _FakeWebSocketConnector([socket]),
+        subscriptionDelay: (_) {
+          operation++;
+          return operation == 1
+              ? Future<void>.value()
+              : unsubscribeWindow.future;
+        },
+      );
+      await streaming.connect();
+      final subscription = await streaming.subscribe(
+        const MastodonStream.user(),
+      );
+
+      final firstCancel = subscription.cancel();
+      final firstExpectation = expectLater(
+        firstCancel,
+        throwsA(isA<MastodonStreamingSubscriptionException>()),
+      );
+      await _waitUntil(() => _sentFrames(socket, 'unsubscribe').isNotEmpty);
+      socket.addFromServer(jsonEncode({'error': 'Could not unsubscribe'}));
+
+      await firstExpectation;
+      await expectLater(subscription.cancel(), completes);
+      await streaming.dispose();
+    });
+
     test('exposes statuses filtered from typed events', () async {
       final socket = _FakeWebSocketConnection();
       final streaming = _streaming(_FakeWebSocketConnector([socket]));
@@ -495,6 +658,7 @@ MastodonStreaming _streaming(
   Logger? logger,
   bool enableLog = false,
   MastodonStreamingReconnectCallback? onReconnect,
+  MastodonStreamingTokenValidator? tokenValidator,
   Future<void> Function(Duration duration)? delay,
   Future<void> Function(Duration duration)? subscriptionDelay,
   double Function()? jitterSource,
@@ -506,6 +670,7 @@ MastodonStreaming _streaming(
   logger: logger,
   enableLog: enableLog,
   onReconnect: onReconnect,
+  tokenValidator: tokenValidator,
   delay: delay ?? (_) async {},
   subscriptionDelay: subscriptionDelay ?? (_) async {},
   jitterSource: jitterSource ?? () => 0.5,

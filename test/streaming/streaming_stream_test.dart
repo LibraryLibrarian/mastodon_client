@@ -49,10 +49,25 @@ void main() {
     expect(upper.key, lower.key);
   });
 
-  test('uses list ID as the list parameter and key suffix', () {
+  test('uses the list ID in the list parameter and structured key', () {
     const stream = MastodonStream.list('42');
 
     expect(stream.params, {'list': '42'});
-    expect(stream.key, 'list:42');
+    expect(stream.key, MastodonStream.keyFor('list', const {'list': '42'}));
+  });
+
+  test('builds keys from channel names and normalized parameters', () {
+    expect(
+      MastodonStream.keyFor('hashtag', const {'tag': 'Dart'}),
+      MastodonStream.keyFor('hashtag', const {'tag': 'dart'}),
+    );
+    expect(
+      MastodonStream.keyFor('hashtag', const {'tag': 'dart'}),
+      isNot(MastodonStream.keyFor('hashtag:dart', const {})),
+    );
+    expect(
+      const MastodonStream.public(local: true).key,
+      MastodonStream.keyFor('public:local', const {}),
+    );
   });
 }

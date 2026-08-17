@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 /// A typed definition of a Mastodon Streaming API channel.
 sealed class MastodonStream {
   const MastodonStream();
@@ -51,6 +53,24 @@ sealed class MastodonStream {
 
   /// Normalized key used for reference counting and inbound routing.
   String get key;
+
+  /// Builds a structured reference-counting key from a channel definition.
+  ///
+  /// Hashtag values are normalized to lowercase, and parameter order does not
+  /// affect the result.
+  static String keyFor(String name, Map<String, String> params) {
+    final entries = params.entries.toList()
+      ..sort((left, right) => left.key.compareTo(right.key));
+    return jsonEncode([
+      name,
+      {
+        for (final entry in entries)
+          entry.key: entry.key == 'tag'
+              ? entry.value.toLowerCase()
+              : entry.value,
+      },
+    ]);
+  }
 }
 
 final class _UserStream extends MastodonStream {
@@ -63,7 +83,7 @@ final class _UserStream extends MastodonStream {
   Map<String, String> get params => const {};
 
   @override
-  String get key => name;
+  String get key => MastodonStream.keyFor(name, params);
 }
 
 final class _UserNotificationStream extends MastodonStream {
@@ -76,7 +96,7 @@ final class _UserNotificationStream extends MastodonStream {
   Map<String, String> get params => const {};
 
   @override
-  String get key => name;
+  String get key => MastodonStream.keyFor(name, params);
 }
 
 final class _PublicStream extends MastodonStream {
@@ -108,7 +128,7 @@ final class _PublicStream extends MastodonStream {
   Map<String, String> get params => const {};
 
   @override
-  String get key => name;
+  String get key => MastodonStream.keyFor(name, params);
 }
 
 final class _HashtagStream extends MastodonStream {
@@ -125,7 +145,7 @@ final class _HashtagStream extends MastodonStream {
   Map<String, String> get params => {'tag': tag};
 
   @override
-  String get key => '$name:${tag.toLowerCase()}';
+  String get key => MastodonStream.keyFor(name, params);
 }
 
 final class _ListStream extends MastodonStream {
@@ -141,7 +161,7 @@ final class _ListStream extends MastodonStream {
   Map<String, String> get params => {'list': listId};
 
   @override
-  String get key => '$name:$listId';
+  String get key => MastodonStream.keyFor(name, params);
 }
 
 final class _DirectStream extends MastodonStream {
@@ -154,5 +174,5 @@ final class _DirectStream extends MastodonStream {
   Map<String, String> get params => const {};
 
   @override
-  String get key => name;
+  String get key => MastodonStream.keyFor(name, params);
 }

@@ -75,6 +75,10 @@ class MastodonStreamingConfig {
   ///
   /// Successful Mastodon subscriptions have no acknowledgement, so requests
   /// are serialized and considered successful after this quiet period.
+  /// A delayed server error may be attributed to the next subscription
+  /// operation after this period expires. Higher-latency environments should
+  /// use a longer period, at the cost of slower `subscribe()` responses and
+  /// slower sequential subscription restoration after reconnection.
   final Duration subscriptionErrorWindow;
 
   /// Whether unexpected disconnections trigger reconnection.
@@ -93,5 +97,9 @@ class MastodonStreamingConfig {
   ///
   /// A value of `null` allows unlimited attempts. A value of zero disables
   /// automatic attempts after an unexpected disconnection.
+  ///
+  /// Browsers do not expose WebSocket handshake status codes, so an HTTP 401
+  /// cannot be identified and stopped immediately on Web. Set a finite limit
+  /// for Web applications to avoid unlimited retries with an invalid token.
   final int? maxReconnectAttempts;
 }

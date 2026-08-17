@@ -24,6 +24,9 @@ typedef MastodonStreamingMetadataProvider =
     Future<({MastodonInstance? instance, MastodonInstanceV1? instanceV1})>
     Function();
 
+/// Verifies whether the access token used by the streaming connection is valid.
+typedef MastodonStreamingTokenValidator = Future<bool> Function();
+
 /// Maintains a WebSocket connection to the Mastodon Streaming API.
 ///
 /// A single connection multiplexes every active subscription.
@@ -41,6 +44,7 @@ class MastodonStreaming {
     bool enableLog = false,
     MastodonStreamingReconnectCallback? onReconnect,
     MastodonStreamingMetadataProvider? metadataProvider,
+    MastodonStreamingTokenValidator? tokenValidator,
   }) => MastodonStreaming.withConnector(
     baseUrl: baseUrl,
     accessToken: accessToken,
@@ -50,6 +54,7 @@ class MastodonStreaming {
     enableLog: enableLog,
     onReconnect: onReconnect,
     metadataProvider: metadataProvider,
+    tokenValidator: tokenValidator,
   );
 
   /// Creates a transport with an injectable WebSocket connector.
@@ -65,6 +70,7 @@ class MastodonStreaming {
     bool enableLog = false,
     this.onReconnect,
     MastodonStreamingMetadataProvider? metadataProvider,
+    MastodonStreamingTokenValidator? tokenValidator,
     Future<void> Function(Duration duration)? delay,
     Future<void> Function(Duration duration)? subscriptionDelay,
     double Function()? jitterSource,
@@ -76,6 +82,7 @@ class MastodonStreaming {
        _logger = logger ?? const StdoutLogger(),
        _enableLog = enableLog,
        _metadataProvider = metadataProvider,
+       _tokenValidator = tokenValidator,
        _delay = delay ?? Future<void>.delayed,
        _subscriptionDelay = subscriptionDelay ?? Future<void>.delayed,
        _jitterSource = jitterSource ?? Random().nextDouble,
@@ -87,6 +94,7 @@ class MastodonStreaming {
   final Logger _logger;
   final bool _enableLog;
   final MastodonStreamingMetadataProvider? _metadataProvider;
+  final MastodonStreamingTokenValidator? _tokenValidator;
   final Future<void> Function(Duration duration) _delay;
   final Future<void> Function(Duration duration) _subscriptionDelay;
   final double Function() _jitterSource;
@@ -126,6 +134,8 @@ class MastodonStreaming {
   bool _reconnectScheduled = false;
   Future<void> _subscriptionQueue = Future<void>.value();
   _PendingSubscriptionOperation? _pendingSubscriptionOperation;
+  int _activeSubscriptionCalls = 0;
+  Completer<void>? _subscriptionCallsDrained;
 
   /// Current connection state.
   MastodonStreamingConnectionState get state => _state;
@@ -243,7 +253,7 @@ class MastodonStreaming {
       _SubscriptionTarget(
         name: trimmedName,
         params: params,
-        key: _rawSubscriptionKey(trimmedName, params),
+        key: MastodonStream.keyFor(trimmedName, params),
         isRaw: true,
       ),
     );
@@ -317,8 +327,11 @@ class MastodonStreaming {
     final connection = _takeConnection();
     _setState(MastodonStreamingConnectionState.disposed);
     final subscriptionHandles = _takeSubscriptionHandles();
+    _pendingSubscriptionOperation?.interrupt();
     try {
       await _releaseConnection(connection);
+      await _subscriptionQueue;
+      await _waitForSubscriptionCalls();
     } finally {
       await Future.wait(subscriptionHandles.map((handle) => handle.close()));
       await _messageController.close();
@@ -495,6 +508,23 @@ class MastodonStreaming {
     _SubscriptionTarget target,
   ) async {
     _ensureNotDisposed();
+    _activeSubscriptionCalls++;
+    try {
+      return await _performSubscribeTarget(target);
+    } finally {
+      _activeSubscriptionCalls--;
+      if (_activeSubscriptionCalls == 0) {
+        _subscriptionCallsDrained?.complete();
+        _subscriptionCallsDrained = null;
+      }
+    }
+  }
+
+  Future<MastodonStreamingSubscription> _performSubscribeTarget(
+    _SubscriptionTarget target,
+  ) async {
+    final generation = _generation;
+    final connection = _connection;
     var entry = _subscriptions[target.key];
     final isNewEntry = entry == null;
     entry ??= _SubscriptionEntry(target);
@@ -506,7 +536,13 @@ class MastodonStreaming {
     final existingSend = entry.initialSendFuture;
     if (!isNewEntry) {
       if (existingSend != null) {
-        await existingSend;
+        try {
+          await existingSend;
+          _ensureSubscriptionCallIsCurrent(generation, connection);
+        } on StateError {
+          await _discardSubscriptionEntry(entry);
+          rethrow;
+        }
       }
       return handle.subscription;
     }
@@ -518,14 +554,13 @@ class MastodonStreaming {
     entry.initialSendFuture = send;
     try {
       await send;
+      _ensureSubscriptionCallIsCurrent(generation, connection);
       return handle.subscription;
+    } on StateError {
+      await _discardSubscriptionEntry(entry);
+      rethrow;
     } on MastodonStreamingSubscriptionException catch (error) {
-      if (identical(_subscriptions[target.key], entry)) {
-        _subscriptions.remove(target.key);
-      }
-      final handles = List<_SubscriptionHandle>.of(entry.handles);
-      entry.handles.clear();
-      await Future.wait(handles.map((item) => item.close()));
+      await _discardSubscriptionEntry(entry);
       _emitError(error);
       rethrow;
     } finally {
@@ -533,6 +568,36 @@ class MastodonStreaming {
         entry.initialSendFuture = null;
       }
     }
+  }
+
+  void _ensureSubscriptionCallIsCurrent(
+    int generation,
+    _ActiveConnection? connection,
+  ) {
+    _ensureNotDisposed();
+    if (_generation != generation ||
+        !isConnected ||
+        !identical(_connection, connection)) {
+      throw StateError(
+        'MastodonStreaming connection changed during subscription',
+      );
+    }
+  }
+
+  Future<void> _discardSubscriptionEntry(_SubscriptionEntry entry) async {
+    if (identical(_subscriptions[entry.target.key], entry)) {
+      _subscriptions.remove(entry.target.key);
+    }
+    final handles = List<_SubscriptionHandle>.of(entry.handles);
+    entry.handles.clear();
+    await Future.wait(handles.map((item) => item.close()));
+  }
+
+  Future<void> _waitForSubscriptionCalls() {
+    if (_activeSubscriptionCalls == 0) {
+      return Future<void>.value();
+    }
+    return (_subscriptionCallsDrained ??= Completer<void>()).future;
   }
 
   _SubscriptionHandle _createSubscriptionHandle(_SubscriptionEntry entry) {
@@ -623,6 +688,7 @@ class MastodonStreaming {
           config.subscriptionErrorWindow,
         ).then<MastodonStreamingSubscriptionException?>((_) => null),
         pending.error.future,
+        pending.interrupted.future.then((_) => null),
       ]);
       if (error != null) {
         throw error;
@@ -742,26 +808,6 @@ class MastodonStreaming {
     return stream.length == 1;
   }
 
-  static String _rawSubscriptionKey(
-    String streamName,
-    Map<String, String> params,
-  ) {
-    final tag = params['tag'];
-    if (tag != null) {
-      return '$streamName:${tag.toLowerCase()}';
-    }
-    final list = params['list'];
-    if (list != null) {
-      return '$streamName:$list';
-    }
-    if (params.isEmpty) {
-      return streamName;
-    }
-    final entries = params.entries.toList()
-      ..sort((left, right) => left.key.compareTo(right.key));
-    return '$streamName?${entries.map((entry) => '${entry.key}=${entry.value}').join('&')}';
-  }
-
   List<_SubscriptionHandle> _takeSubscriptionHandles() {
     final handles = [
       for (final entry in _subscriptions.values) ...entry.handles,
@@ -826,8 +872,62 @@ class MastodonStreaming {
       closeReason: connection.socket.closeReason,
       endpoint: _safeEndpoint,
     );
+    if (code == 1005 && _tokenValidator != null) {
+      connection.terminationHandled = true;
+      _connection = null;
+      _setState(MastodonStreamingConnectionState.disconnected);
+      unawaited(_releaseConnection(connection));
+      unawaited(_validateTokenAfterMissingCloseStatus(connection, exception));
+      return;
+    }
+
     final reconnect = code != 1003 && code != 1005;
     _terminateConnection(connection, exception, reconnect: reconnect);
+  }
+
+  Future<void> _validateTokenAfterMissingCloseStatus(
+    _ActiveConnection connection,
+    MastodonStreamingClosedException exception,
+  ) async {
+    bool isValid;
+    try {
+      isValid = await _tokenValidator!.call();
+    } catch (_) {
+      if (!_isCurrentIntent(connection.generation)) {
+        return;
+      }
+      _wantsConnection = false;
+      _emitError(
+        MastodonStreamingClosedException(
+          closeCode: exception.closeCode,
+          closeReason: exception.closeReason,
+          endpoint: exception.endpoint,
+          message:
+              'Streaming connection closed and access token validation failed',
+        ),
+      );
+      return;
+    }
+
+    if (!_isCurrentIntent(connection.generation)) {
+      return;
+    }
+    if (!isValid) {
+      _wantsConnection = false;
+      _emitError(
+        MastodonStreamingClosedException(
+          closeCode: exception.closeCode,
+          closeReason: exception.closeReason,
+          endpoint: exception.endpoint,
+          message:
+              'Streaming connection closed because the access token is invalid',
+        ),
+      );
+      return;
+    }
+
+    _emitError(exception);
+    _scheduleReconnect();
   }
 
   void _terminateConnection(
@@ -1104,4 +1204,11 @@ final class _PendingSubscriptionOperation {
   final _SubscriptionTarget target;
   final Completer<MastodonStreamingSubscriptionException?> error =
       Completer<MastodonStreamingSubscriptionException?>();
+  final Completer<void> interrupted = Completer<void>();
+
+  void interrupt() {
+    if (!interrupted.isCompleted) {
+      interrupted.complete();
+    }
+  }
 }

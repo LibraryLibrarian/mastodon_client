@@ -4,6 +4,12 @@ import 'websocket_channel_connection.dart';
 import 'websocket_types.dart';
 
 /// Creates the platform-default connector.
+///
+/// Browsers do not expose WebSocket handshake HTTP status codes. Consequently,
+/// [WebSocketConnectorException.statusCode] remains `null` on Web even for a
+/// 401 response. Web applications should set a finite
+/// `MastodonStreamingConfig.maxReconnectAttempts` value to avoid unlimited
+/// retries with an invalid token.
 WebSocketConnector createDefaultWebSocketConnector() =>
     _DefaultWebSocketConnector();
 

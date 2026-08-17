@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 
 import 'e2e_env.dart';
 
-/// fediverse_e2e 環境(mastodon.test)に対する Streaming API のE2Eテスト
+/// E2E tests for the Streaming API against mastodon.test in fediverse_e2e.
 void main() {
   final env = E2eEnv.tryLoad();
   if (env == null) {
@@ -19,7 +19,12 @@ void main() {
 
   setUpAll(() {
     client = env.createMastodonClient();
-    streaming = env.createMastodonStreaming();
+    // 実サーバーの往復は既定の250msを超えうるので、購読エラーの待ち受け窓を広げる
+    streaming = env.createMastodonStreaming(
+      config: MastodonStreamingConfig(
+        subscriptionErrorWindow: const Duration(seconds: 5),
+      ),
+    );
   });
 
   tearDownAll(() async {
