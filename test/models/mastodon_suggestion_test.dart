@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:mastodon_client/mastodon_client.dart';
@@ -81,6 +83,31 @@ void main() {
       final suggestion = MastodonSuggestion.fromJson(json);
 
       expect(suggestion.account.note, '<p>A great person to follow.</p>');
+    });
+
+    test('deserializes a null legacy source for a FASP suggestion', () {
+      final json = <String, dynamic>{
+        'source': null,
+        'sources': <String>['fasp'],
+        'account': _minimalAccountJson(),
+      };
+
+      final suggestion = MastodonSuggestion.fromJson(json);
+
+      expect(suggestion.source, isNull);
+      expect(suggestion.sources, <String>['fasp']);
+    });
+
+    test('deserializes a suggestion when the legacy source is absent', () {
+      final json = <String, dynamic>{
+        'sources': <String>['featured'],
+        'account': _minimalAccountJson(),
+      };
+
+      final suggestion = MastodonSuggestion.fromJson(json);
+
+      expect(suggestion.source, isNull);
+      expect(suggestion.sources, <String>['featured']);
     });
   });
 

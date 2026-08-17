@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `MastodonHttpClient` now retains and exposes `baseUrl`, `accessToken`, and `enableLog` (issue #21)
+- **Breaking:** `MastodonSuggestion.source` is now nullable and deprecated in
+  favor of `sources`. This prevents deserialization failures when Mastodon
+  returns `null` or omits the legacy source value (issue #18)
 
 ## [1.0.0-beta.2] - 2026-08-13
 
