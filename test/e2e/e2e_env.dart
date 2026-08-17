@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:mastodon_client/mastodon_client.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 /// Connection settings for the local closed-federation E2E environment
 /// (`fediverse_e2e`).
@@ -133,6 +135,84 @@ class E2eEnv {
     accessToken: admin ? fedibirdAdminToken : fedibirdUserToken,
     httpClientAdapter: createHttpClientAdapter(),
   );
+
+  /// Creates a [MastodonStreaming] connected to `mastodon.test`.
+  ///
+  /// The default connector cannot complete the TLS handshake against the
+  /// self-signed E2E certificate, so a connector trusting [rootCaPath] is
+  /// injected instead.
+  MastodonStreaming createMastodonStreaming({
+    bool admin = false,
+    MastodonStreamingConfig? config,
+  }) => MastodonStreaming.withConnector(
+    baseUrl: mastodonBaseUrl,
+    accessToken: admin ? mastodonAdminToken : mastodonUserToken,
+    connector: _E2eWebSocketConnector(rootCaPath),
+    config: config,
+  );
+}
+
+/// A [WebSocketConnector] that trusts the E2E root CA.
+final class _E2eWebSocketConnector implements WebSocketConnector {
+  _E2eWebSocketConnector(this._rootCaPath);
+
+  final String _rootCaPath;
+
+  @override
+  Future<WebSocketConnection> connect(WebSocketConnectOptions options) async {
+    final context = SecurityContext(withTrustedRoots: true)
+      ..setTrustedCertificates(_rootCaPath);
+    final channel = IOWebSocketChannel.connect(
+      options.uri,
+      protocols: options.protocols.isEmpty ? null : options.protocols,
+      headers: options.headers.isEmpty ? null : options.headers,
+      pingInterval: options.pingInterval,
+      connectTimeout: options.connectTimeout,
+      customClient: HttpClient(context: context),
+    );
+    try {
+      await channel.ready;
+      return _E2eWebSocketConnection(channel);
+    } on Object catch (error) {
+      try {
+        await channel.sink.close();
+      } on Object {
+        // 接続失敗の原因を close 側の例外で上書きしない。
+      }
+      throw WebSocketConnectorException(
+        message: 'WebSocket handshake failed',
+        statusCode: switch (error) {
+          WebSocketChannelException(inner: final WebSocketException inner) =>
+            inner.httpStatusCode,
+          WebSocketException(:final httpStatusCode) => httpStatusCode,
+          _ => null,
+        },
+        cause: error,
+      );
+    }
+  }
+}
+
+final class _E2eWebSocketConnection implements WebSocketConnection {
+  _E2eWebSocketConnection(this._channel);
+
+  final IOWebSocketChannel _channel;
+
+  @override
+  Stream<Object?> get messages => _channel.stream;
+
+  @override
+  int? get closeCode => _channel.closeCode;
+
+  @override
+  String? get closeReason => _channel.closeReason;
+
+  @override
+  void sendText(String data) => _channel.sink.add(data);
+
+  @override
+  Future<void> close([int? closeCode, String? closeReason]) =>
+      _channel.sink.close(closeCode, closeReason);
 }
 
 /// Polls [probe] until it returns non-null, or fails after [timeout].
