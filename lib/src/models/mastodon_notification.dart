@@ -1,9 +1,10 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'json_converters.dart';
 import 'mastodon_account.dart';
 import 'mastodon_status.dart';
 
+part 'mastodon_notification.freezed.dart';
 part 'mastodon_notification.g.dart';
 
 /// Type of notification.
@@ -61,8 +62,10 @@ enum MastodonNotificationType {
 }
 
 /// Relationship severance event (Mastodon 4.3+).
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonRelationshipSeveranceEvent {
+class MastodonRelationshipSeveranceEvent
+    with _$MastodonRelationshipSeveranceEvent {
   const MastodonRelationshipSeveranceEvent({
     required this.id,
     required this.type,
@@ -81,33 +84,41 @@ class MastodonRelationshipSeveranceEvent {
   Map<String, dynamic> toJson() =>
       _$MastodonRelationshipSeveranceEventToJson(this);
 
+  @override
   final String id;
 
   /// Type of event (`domain_block` / `user_domain_block` / `account_suspension`).
+  @override
   final String type;
 
   /// Whether the account was purged.
   @JsonKey(defaultValue: false)
+  @override
   final bool purged;
 
   /// Name of the severed domain or account.
+  @override
   final String targetName;
 
   /// Number of affected followers.
   @JsonKey(defaultValue: 0)
+  @override
   final int followersCount;
 
   /// Number of affected followings.
   @JsonKey(defaultValue: 0)
+  @override
   final int followingCount;
 
   @SafeDateTimeConverter()
+  @override
   final DateTime? createdAt;
 }
 
 /// Moderation warning (Mastodon 4.3+).
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonAccountWarning {
+class MastodonAccountWarning with _$MastodonAccountWarning {
   const MastodonAccountWarning({
     required this.id,
     required this.action,
@@ -125,29 +136,35 @@ class MastodonAccountWarning {
   static Object? _readAppeal(Map<dynamic, dynamic> json, String key) =>
       json['appeal'] != null;
 
+  @override
   final String id;
 
   /// Type of warning (`none` / `disable` / `mark_statuses_as_sensitive`, etc.).
+  @override
   final String action;
 
   /// Body text of the warning.
   @JsonKey(defaultValue: '')
+  @override
   final String text;
 
   /// Whether an appeal exists.
   @JsonKey(readValue: _readAppeal, defaultValue: false)
+  @override
   final bool appeal;
 
   /// Timestamp when the notification was created.
   @SafeDateTimeConverter()
+  @override
   final DateTime? createdAt;
 }
 
 /// Mastodon notification.
 ///
 /// Corresponds to the response from `/api/v1/notifications`.
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonNotification {
+class MastodonNotification with _$MastodonNotification {
   const MastodonNotification({
     required this.id,
     required this.type,
@@ -169,6 +186,7 @@ class MastodonNotification {
       json['type'] ?? 'unknown';
 
   /// Internal ID of the notification.
+  @override
   final String id;
 
   /// Type of the notification.
@@ -176,12 +194,15 @@ class MastodonNotification {
     readValue: _readType,
     unknownEnumValue: MastodonNotificationType.unknown,
   )
+  @override
   final MastodonNotificationType type;
 
   /// Timestamp when the notification was created.
+  @override
   final DateTime createdAt;
 
   /// Account that triggered the notification.
+  @override
   final MastodonAccount account;
 
   /// Key identifying the group this notification belongs to.
@@ -191,17 +212,21 @@ class MastodonNotification {
   /// not grouped receive a synthetic `ungrouped-<id>` key.
   ///
   /// Added in Mastodon 4.3.0.
+  @override
   final String? groupKey;
 
   /// Associated status. Null depending on the notification type.
+  @override
   final MastodonStatus? status;
 
   /// Details of the relationship severance event.
   ///
   /// Non-null only for [MastodonNotificationType.severedRelationships].
+  @override
   final MastodonRelationshipSeveranceEvent? relationshipSeveranceEvent;
 
   /// Details of the moderation warning. Non-null only for
   /// [MastodonNotificationType.moderationWarning].
+  @override
   final MastodonAccountWarning? moderationWarning;
 }

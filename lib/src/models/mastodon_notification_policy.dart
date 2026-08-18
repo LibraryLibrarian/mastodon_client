@@ -1,5 +1,6 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'mastodon_notification_policy.freezed.dart';
 part 'mastodon_notification_policy.g.dart';
 
 /// Filtering action for a notification policy.
@@ -20,8 +21,10 @@ enum NotificationFilterAction {
 /// Summary of a notification policy.
 ///
 /// Holds statistics about filtered notifications.
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonNotificationPolicySummary {
+class MastodonNotificationPolicySummary
+    with _$MastodonNotificationPolicySummary {
   const MastodonNotificationPolicySummary({
     required this.pendingRequestsCount,
     required this.pendingNotificationsCount,
@@ -37,10 +40,12 @@ class MastodonNotificationPolicySummary {
 
   /// Number of pending notification requests (maximum 100).
   @JsonKey(defaultValue: 0)
+  @override
   final int pendingRequestsCount;
 
   /// Total number of pending filtered notifications.
   @JsonKey(defaultValue: 0)
+  @override
   final int pendingNotificationsCount;
 }
 
@@ -49,8 +54,9 @@ class MastodonNotificationPolicySummary {
 /// `/api/v2/notifications/policy`
 ///
 /// Holds filtering rules for each notification category.
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonNotificationPolicy {
+class MastodonNotificationPolicy with _$MastodonNotificationPolicy {
   const MastodonNotificationPolicy({
     required this.forNotFollowing,
     required this.forNotFollowers,
@@ -71,6 +77,7 @@ class MastodonNotificationPolicy {
     name: 'for_not_following',
     unknownEnumValue: NotificationFilterAction.accept,
   )
+  @override
   final NotificationFilterAction forNotFollowing;
 
   /// Action for notifications from accounts that do not follow you.
@@ -78,6 +85,7 @@ class MastodonNotificationPolicy {
     name: 'for_not_followers',
     unknownEnumValue: NotificationFilterAction.accept,
   )
+  @override
   final NotificationFilterAction forNotFollowers;
 
   /// Action for notifications from accounts created less than 30 days ago.
@@ -85,6 +93,7 @@ class MastodonNotificationPolicy {
     name: 'for_new_accounts',
     unknownEnumValue: NotificationFilterAction.accept,
   )
+  @override
   final NotificationFilterAction forNewAccounts;
 
   /// Action for private mention notifications.
@@ -92,6 +101,7 @@ class MastodonNotificationPolicy {
     name: 'for_private_mentions',
     unknownEnumValue: NotificationFilterAction.accept,
   )
+  @override
   final NotificationFilterAction forPrivateMentions;
 
   /// Action for notifications from accounts limited by a moderator.
@@ -99,8 +109,10 @@ class MastodonNotificationPolicy {
     name: 'for_limited_accounts',
     unknownEnumValue: NotificationFilterAction.accept,
   )
+  @override
   final NotificationFilterAction forLimitedAccounts;
 
   /// Summary of filtered notifications.
+  @override
   final MastodonNotificationPolicySummary? summary;
 }

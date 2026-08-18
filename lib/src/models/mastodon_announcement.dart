@@ -1,14 +1,16 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'json_converters.dart';
 import 'mastodon_custom_emoji.dart';
 import 'mastodon_status.dart';
 
+part 'mastodon_announcement.freezed.dart';
 part 'mastodon_announcement.g.dart';
 
 /// Reaction to an announcement.
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonAnnouncementReaction {
+class MastodonAnnouncementReaction with _$MastodonAnnouncementReaction {
   const MastodonAnnouncementReaction({
     required this.name,
     required this.count,
@@ -24,26 +26,32 @@ class MastodonAnnouncementReaction {
   Map<String, dynamic> toJson() => _$MastodonAnnouncementReactionToJson(this);
 
   /// Emoji name (Unicode emoji or custom emoji shortcode).
+  @override
   final String name;
 
   /// Total count of this reaction.
   @JsonKey(defaultValue: 0)
+  @override
   final int count;
 
   /// Whether the authenticated user has added this reaction.
   @JsonKey(defaultValue: false)
+  @override
   final bool me;
 
   /// Image URL if this is a custom emoji.
+  @override
   final String? url;
 
   /// Static image URL if this is a custom emoji.
+  @override
   final String? staticUrl;
 }
 
 /// Server announcement.
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonAnnouncement {
+class MastodonAnnouncement with _$MastodonAnnouncement {
   const MastodonAnnouncement({
     required this.id,
     required this.content,
@@ -67,60 +75,74 @@ class MastodonAnnouncement {
   Map<String, dynamic> toJson() => _$MastodonAnnouncementToJson(this);
 
   /// Internal ID of the announcement.
+  @override
   final String id;
 
   /// Body of the announcement (HTML).
   @JsonKey(defaultValue: '')
+  @override
   final String content;
 
   /// Start timestamp.
   @SafeDateTimeConverter()
+  @override
   final DateTime? startsAt;
 
   /// End timestamp.
   @SafeDateTimeConverter()
+  @override
   final DateTime? endsAt;
 
   /// Whether this is an all-day event.
   @JsonKey(defaultValue: false)
+  @override
   final bool allDay;
 
   /// Timestamp when published.
   @SafeDateTimeConverter()
+  @override
   final DateTime? publishedAt;
 
   /// Timestamp when last updated.
   @SafeDateTimeConverter()
+  @override
   final DateTime? updatedAt;
 
   /// Whether the announcement has been read.
   @JsonKey(defaultValue: false)
+  @override
   final bool read;
 
   /// Custom emojis in the body.
   @JsonKey(defaultValue: [])
+  @override
   final List<MastodonCustomEmoji> emojis;
 
   /// List of reactions.
   @JsonKey(defaultValue: [])
+  @override
   final List<MastodonAnnouncementReaction> reactions;
 
   /// Hashtags in the body.
   @JsonKey(defaultValue: [])
+  @override
   final List<MastodonTag> tags;
 
   /// Mentions in the body.
   @JsonKey(defaultValue: [])
+  @override
   final List<MastodonMention> mentions;
 
   /// Statuses referenced in the body.
   @JsonKey(defaultValue: [])
+  @override
   final List<MastodonAnnouncementStatus> statuses;
 }
 
 /// Status referenced in an announcement body.
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonAnnouncementStatus {
+class MastodonAnnouncementStatus with _$MastodonAnnouncementStatus {
   const MastodonAnnouncementStatus({required this.id, required this.url});
 
   factory MastodonAnnouncementStatus.fromJson(Map<String, dynamic> json) =>
@@ -130,9 +152,11 @@ class MastodonAnnouncementStatus {
   Map<String, dynamic> toJson() => _$MastodonAnnouncementStatusToJson(this);
 
   /// Status ID.
+  @override
   final String id;
 
   /// Status URL.
   @JsonKey(defaultValue: '')
+  @override
   final String url;
 }
