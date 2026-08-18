@@ -1,10 +1,12 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'mastodon_list.freezed.dart';
 part 'mastodon_list.g.dart';
 
 /// User-defined list.
+@freezed
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonList {
+class MastodonList with _$MastodonList {
   /// Creates a [MastodonList] with the given fields.
   const MastodonList({
     required this.id,
@@ -21,16 +23,20 @@ class MastodonList {
   Map<String, dynamic> toJson() => _$MastodonListToJson(this);
 
   /// Internal ID of the list.
+  @override
   final String id;
 
   /// Title of the list.
+  @override
   final String title;
 
   /// Reply display policy within the list (`followed` / `list` / `none`).
   @JsonKey(defaultValue: 'list')
+  @override
   final String repliesPolicy;
 
   /// Whether to exclude list member posts from the home timeline.
   @JsonKey(defaultValue: false)
+  @override
   final bool exclusive;
 }

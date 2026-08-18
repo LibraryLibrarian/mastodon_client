@@ -1,12 +1,14 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'mastodon_weekly_activity.freezed.dart';
 part 'mastodon_weekly_activity.g.dart';
 
 /// Weekly activity statistics of the instance.
 ///
 /// `GET /api/v1/instance/activity`
+@freezed
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonWeeklyActivity {
+class MastodonWeeklyActivity with _$MastodonWeeklyActivity {
   const MastodonWeeklyActivity({
     required this.week,
     required this.statuses,
@@ -22,17 +24,21 @@ class MastodonWeeklyActivity {
 
   /// UNIX timestamp at the start of the week (string).
   @JsonKey(defaultValue: '0')
+  @override
   final String week;
 
   /// Number of statuses posted during the week (string).
   @JsonKey(defaultValue: '0')
+  @override
   final String statuses;
 
   /// Number of users who logged in during the week (string).
   @JsonKey(defaultValue: '0')
+  @override
   final String logins;
 
   /// Number of users who registered during the week (string).
   @JsonKey(defaultValue: '0')
+  @override
   final String registrations;
 }

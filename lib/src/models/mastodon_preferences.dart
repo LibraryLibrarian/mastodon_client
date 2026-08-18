@@ -1,13 +1,15 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'mastodon_preferences.freezed.dart';
 part 'mastodon_preferences.g.dart';
 
 /// User account preferences model.
 ///
 /// Retrieved via `GET /api/v1/preferences`.
 /// Preferences are changed via `PATCH /api/v1/accounts/update_credentials`.
+@freezed
 @JsonSerializable()
-class MastodonPreferences {
+class MastodonPreferences with _$MastodonPreferences {
   /// Creates a [MastodonPreferences] with the given fields.
   const MastodonPreferences({
     required this.postingDefaultVisibility,
@@ -28,29 +30,36 @@ class MastodonPreferences {
 
   /// Default visibility for new posts (`public` / `unlisted` / `private` / `direct`).
   @JsonKey(name: 'posting:default:visibility', defaultValue: 'public')
+  @override
   final String postingDefaultVisibility;
 
   /// Whether to mark new posts as sensitive by default.
   @JsonKey(name: 'posting:default:sensitive', defaultValue: false)
+  @override
   final bool postingDefaultSensitive;
 
   /// Default language for new posts (ISO 639-1 code, `null` if unset).
   @JsonKey(name: 'posting:default:language')
+  @override
   final String? postingDefaultLanguage;
 
   /// Default quote policy (v4.5.0+).
   @JsonKey(name: 'posting:default:quote_policy')
+  @override
   final String? postingDefaultQuotePolicy;
 
   /// Auto-display setting for media attachments (`default` / `show_all` / `hide_all`).
   @JsonKey(name: 'reading:expand:media', defaultValue: 'default')
+  @override
   final String readingExpandMedia;
 
   /// Whether to expand content warnings (CW) by default.
   @JsonKey(name: 'reading:expand:spoilers', defaultValue: false)
+  @override
   final bool readingExpandSpoilers;
 
   /// Whether to autoplay animated GIFs.
   @JsonKey(name: 'reading:autoplay:gifs', defaultValue: false)
+  @override
   final bool readingAutoplayGifs;
 }
