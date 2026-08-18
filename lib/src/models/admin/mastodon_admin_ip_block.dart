@@ -1,6 +1,7 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import '../json_converters.dart';
 
+part 'mastodon_admin_ip_block.freezed.dart';
 part 'mastodon_admin_ip_block.g.dart';
 
 /// Severity level of an IP block.
@@ -19,8 +20,9 @@ enum MastodonAdminIpBlockSeverity {
 /// Admin-level IP block information.
 ///
 /// Information about a blocked IP address range.
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonAdminIpBlock {
+class MastodonAdminIpBlock with _$MastodonAdminIpBlock {
   const MastodonAdminIpBlock({
     required this.id,
     required this.ip,
@@ -37,24 +39,30 @@ class MastodonAdminIpBlock {
   Map<String, dynamic> toJson() => _$MastodonAdminIpBlockToJson(this);
 
   /// Database ID of the IP block.
+  @override
   final String id;
 
   /// Blocked IP address range (CIDR notation).
+  @override
   final String ip;
 
   /// Severity level of the block.
   @JsonKey(unknownEnumValue: MastodonAdminIpBlockSeverity.signUpBlock)
+  @override
   final MastodonAdminIpBlockSeverity severity;
 
   /// Reason for the block.
   @JsonKey(defaultValue: '')
+  @override
   final String? comment;
 
   /// Timestamp when the block was created.
   @SafeDateTimeConverter()
+  @override
   final DateTime? createdAt;
 
   /// Expiration timestamp of the block (null if permanent).
   @SafeDateTimeConverter()
+  @override
   final DateTime? expiresAt;
 }
