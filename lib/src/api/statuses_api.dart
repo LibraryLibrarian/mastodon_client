@@ -94,7 +94,13 @@ class StatusesApi {
   ///
   /// `GET /api/v1/statuses/{id}/card`
   ///
+  /// **Deprecated in Mastodon 2.6.0, removed in 3.0.0.**
+  /// Use the [MastodonStatus.card] property returned by [fetch] instead.
+  /// This method is retained only for compatibility with Mastodon 2.x.
+  ///
   /// Throws a `MastodonException` on failure.
+  // ignore: remove_deprecations_in_breaking_versions
+  @Deprecated('Removed in Mastodon 3.0.0. Use (await fetch(id)).card instead')
   Future<MastodonPreviewCard> fetchCard(String id) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/statuses/$id/card',

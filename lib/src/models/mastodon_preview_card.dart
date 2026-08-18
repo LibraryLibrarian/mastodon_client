@@ -21,7 +21,8 @@ enum MastodonPreviewCardType {
 
 /// Preview card for a link.
 ///
-/// Corresponds to the response from `GET /api/v1/statuses/:id/card`.
+/// Embedded in the `MastodonStatus.card` property since Mastodon 2.6.0.
+/// The former `GET /api/v1/statuses/:id/card` endpoint was removed in 3.0.0.
 @Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPreviewCard with _$MastodonPreviewCard {
