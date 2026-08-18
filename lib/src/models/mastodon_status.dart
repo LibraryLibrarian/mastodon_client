@@ -237,9 +237,8 @@ class MastodonStatus with _$MastodonStatus {
   /// Link preview card for the first link in the status.
   ///
   /// Null when the status contains no link, or when the card has not been
-  /// fetched yet. From Mastodon 4.6.0 this is the only way to obtain a
-  /// status's preview card; the dedicated `GET /api/v1/statuses/:id/card`
-  /// endpoint was removed.
+  /// fetched yet. Added in Mastodon 2.6.0 as the replacement for the dedicated
+  /// `GET /api/v1/statuses/:id/card` endpoint, which was removed in 3.0.0.
   @override
   final MastodonPreviewCard? card;
 
