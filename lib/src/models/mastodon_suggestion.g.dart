@@ -11,7 +11,7 @@ part of 'mastodon_suggestion.dart';
 MastodonSuggestion _$MastodonSuggestionFromJson(
   Map<String, dynamic> json,
 ) => MastodonSuggestion(
-  source: json['source'] as String,
+  source: json['source'] as String?,
   account: MastodonAccount.fromJson(json['account'] as Map<String, dynamic>),
   sources:
       (json['sources'] as List<dynamic>?)?.map((e) => e as String).toList() ??
