@@ -27,6 +27,7 @@ class MastodonCollection with _$MastodonCollection {
     this.createdAt,
     this.updatedAt,
     this.tag,
+    this.items = const <MastodonCollectionItem>[],
   });
 
   factory MastodonCollection.fromJson(Map<String, dynamic> json) =>
@@ -91,5 +92,65 @@ class MastodonCollection with _$MastodonCollection {
 
   /// Hashtag associated with the collection, if any.
   @override
-  final String? tag;
+  final MastodonCollectionTag? tag;
+
+  /// Items included in the collection for the authenticated account.
+  @JsonKey(defaultValue: <MastodonCollectionItem>[])
+  @override
+  final List<MastodonCollectionItem> items;
+}
+
+/// A shallow hashtag embedded in a collection.
+@Freezed(toStringOverride: false)
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MastodonCollectionTag with _$MastodonCollectionTag {
+  const MastodonCollectionTag({required this.name, required this.url});
+
+  factory MastodonCollectionTag.fromJson(Map<String, dynamic> json) =>
+      _$MastodonCollectionTagFromJson(json);
+
+  /// Serializes to JSON.
+  Map<String, dynamic> toJson() => _$MastodonCollectionTagToJson(this);
+
+  /// Name of the hashtag without the `#` symbol.
+  @override
+  final String name;
+
+  /// URL to the hashtag on the instance.
+  @override
+  final String url;
+}
+
+/// An item included in a collection.
+@Freezed(toStringOverride: false)
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MastodonCollectionItem with _$MastodonCollectionItem {
+  const MastodonCollectionItem({
+    required this.id,
+    required this.state,
+    required this.createdAt,
+    this.accountId,
+  });
+
+  factory MastodonCollectionItem.fromJson(Map<String, dynamic> json) =>
+      _$MastodonCollectionItemFromJson(json);
+
+  /// Serializes to JSON.
+  Map<String, dynamic> toJson() => _$MastodonCollectionItemToJson(this);
+
+  /// Internal ID of the collection item.
+  @override
+  final String id;
+
+  /// Moderation state of the item.
+  @override
+  final String state;
+
+  /// Date and time the item was created.
+  @override
+  final DateTime createdAt;
+
+  /// ID of the associated account for pending or accepted items.
+  @override
+  final String? accountId;
 }
