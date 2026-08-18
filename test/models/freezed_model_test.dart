@@ -1,8 +1,64 @@
+import 'dart:io';
+
 import 'package:mastodon_client/mastodon_client.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('freezed models', () {
+    test('cover every JSON response model', () {
+      final sources = Directory('lib/src/models')
+          .listSync(recursive: true)
+          .whereType<File>()
+          .where(
+            (file) =>
+                file.path.endsWith('.dart') &&
+                !file.path.endsWith('.g.dart') &&
+                !file.path.endsWith('.freezed.dart'),
+          );
+      var jsonSerializableCount = 0;
+      var freezedCount = 0;
+
+      for (final source in sources) {
+        final content = source.readAsStringSync();
+        final jsonCount = RegExp(
+          r'^@JsonSerializable',
+          multiLine: true,
+        ).allMatches(content).length;
+        if (jsonCount == 0) continue;
+
+        final fileFreezedCount = RegExp(
+          r'^@Freezed\(toStringOverride: false\)$',
+          multiLine: true,
+        ).allMatches(content).length;
+        final mixinCount = RegExp(
+          r'class\s+\w+\s+with\s+_\$\w+\s*\{',
+          multiLine: true,
+        ).allMatches(content).length;
+        final basename = source.uri.pathSegments.last.replaceFirst('.dart', '');
+        final generated = File('${source.parent.path}/$basename.freezed.dart');
+
+        expect(fileFreezedCount, jsonCount, reason: source.path);
+        expect(mixinCount, jsonCount, reason: source.path);
+        expect(
+          content,
+          contains("part '$basename.freezed.dart';"),
+          reason: source.path,
+        );
+        expect(generated.existsSync(), isTrue, reason: generated.path);
+        expect(
+          generated.readAsStringSync(),
+          isNot(contains('String toString()')),
+          reason: generated.path,
+        );
+
+        jsonSerializableCount += jsonCount;
+        freezedCount += fileFreezedCount;
+      }
+
+      expect(jsonSerializableCount, 121);
+      expect(freezedCount, jsonSerializableCount);
+    });
+
     test('keep public construction and add value semantics', () {
       const first = MastodonToken(
         accessToken: 'token',
