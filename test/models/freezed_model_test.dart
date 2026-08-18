@@ -55,7 +55,7 @@ void main() {
         freezedCount += fileFreezedCount;
       }
 
-      expect(jsonSerializableCount, 121);
+      expect(jsonSerializableCount, 123);
       expect(freezedCount, jsonSerializableCount);
     });
 

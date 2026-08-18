@@ -61,6 +61,24 @@ void main() {
       expect(status.taggedCollections.first.name, collection['name']);
     });
 
+    test('deserializes a collection with an embedded shallow tag', () {
+      final file = File('test/fixtures/status.json');
+      final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+      final collection =
+          jsonDecode(
+                File('test/fixtures/collection_tagged.json').readAsStringSync(),
+              )
+              as Map<String, dynamic>;
+
+      final status = MastodonStatus.fromJson({
+        ...json,
+        'tagged_collections': <Map<String, dynamic>>[collection],
+      });
+
+      expect(status.taggedCollections, hasLength(1));
+      expect(status.taggedCollections.single.tag?.name, 'probetag');
+    });
+
     test('defaults to an empty list on servers older than 4.6.0', () {
       final file = File('test/fixtures/status.json');
       final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>

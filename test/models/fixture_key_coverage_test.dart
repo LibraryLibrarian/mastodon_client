@@ -28,7 +28,6 @@ void main() {
   const outstandingGaps = <String, Set<String>>{
     'preview_card.json': {'language', 'image_description', 'published_at'},
     'media_attachment.json': {'preview_remote_url', 'text_url', 'meta'},
-    'collection.json': {'items'},
   };
 
   final cases = <String, Map<String, dynamic> Function(Map<String, dynamic>)>{
@@ -50,6 +49,8 @@ void main() {
     'media_attachment.json': (json) =>
         MastodonMediaAttachment.fromJson(json).toJson(),
     'collection.json': (json) => MastodonCollection.fromJson(json).toJson(),
+    'collection_tagged.json': (json) =>
+        MastodonCollection.fromJson(json).toJson(),
     'streaming_announcement_reaction.json': (json) =>
         MastodonStreamingAnnouncementReaction.fromJson(json).toJson(),
   };

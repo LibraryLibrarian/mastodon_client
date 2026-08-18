@@ -17,8 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Breaking:** `MastodonCollection.tag` is now a
+  `MastodonCollectionTag?` object instead of `String?`, matching Mastodon's
+  `{name, url}` response. `MastodonCollection.items` now exposes collection
+  item IDs, states, creation times, and conditional account IDs (issue #11)
 - **Breaking:** Added value equality (`==` / `hashCode`) and `copyWith` to all
-  121 JSON response models with Freezed. Existing constructors and JSON
+  JSON response models with Freezed. Existing constructors and JSON
   behavior are preserved, while generated `toString` output is disabled to
   avoid exposing model contents in logs (issue #29)
 - `MastodonHttpClient` now retains and exposes `baseUrl`, `accessToken`, and `enableLog` (issue #21)
