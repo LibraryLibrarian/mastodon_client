@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hashAll([runtimeType,id,username,acct,displayName,note,url,uri,avatarUrl,avatarStaticUrl,headerUrl,headerStaticUrl,locked,bot,discoverable,indexable,group,noindex,followersCount,followingCount,statusesCount,createdAt,lastStatusAt,const DeepCollectionEquality().hash(fields),const DeepCollectionEquality().hash(emojis),moved,suspended,limited,hideCollections,avatarBlurhash,headerBlurhash,avatarDescription,headerDescription,featureApproval,showFeatured,showMedia,showMediaReplies,const DeepCollectionEquality().hash(roles)]);
 
-@override
-String toString() {
-  return 'MastodonAccount(id: $id, username: $username, acct: $acct, displayName: $displayName, note: $note, url: $url, uri: $uri, avatarUrl: $avatarUrl, avatarStaticUrl: $avatarStaticUrl, headerUrl: $headerUrl, headerStaticUrl: $headerStaticUrl, locked: $locked, bot: $bot, discoverable: $discoverable, indexable: $indexable, group: $group, noindex: $noindex, followersCount: $followersCount, followingCount: $followingCount, statusesCount: $statusesCount, createdAt: $createdAt, lastStatusAt: $lastStatusAt, fields: $fields, emojis: $emojis, moved: $moved, suspended: $suspended, limited: $limited, hideCollections: $hideCollections, avatarBlurhash: $avatarBlurhash, headerBlurhash: $headerBlurhash, avatarDescription: $avatarDescription, headerDescription: $headerDescription, featureApproval: $featureApproval, showFeatured: $showFeatured, showMedia: $showMedia, showMediaReplies: $showMediaReplies, roles: $roles)';
-}
 
 
 }
@@ -255,10 +251,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,id,name,permissions,color,highlighted,createdAt,updatedAt);
 
-@override
-String toString() {
-  return 'MastodonRole(id: $id, name: $name, permissions: $permissions, color: $color, highlighted: $highlighted, createdAt: $createdAt, updatedAt: $updatedAt)';
-}
 
 
 }
@@ -447,10 +439,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(automatic),const DeepCollectionEquality().hash(manual),currentUser);
 
-@override
-String toString() {
-  return 'MastodonFeatureApproval(automatic: $automatic, manual: $manual, currentUser: $currentUser)';
-}
 
 
 }
@@ -635,10 +623,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,name,value,verifiedAt);
 
-@override
-String toString() {
-  return 'MastodonField(name: $name, value: $value, verifiedAt: $verifiedAt)';
-}
 
 
 }

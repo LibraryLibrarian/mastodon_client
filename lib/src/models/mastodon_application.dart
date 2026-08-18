@@ -6,7 +6,7 @@ part 'mastodon_application.g.dart';
 /// OAuth application information model.
 ///
 /// Corresponds to the response from `GET /api/v1/apps/verify_credentials`.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonApplication with _$MastodonApplication {
   /// Creates a [MastodonApplication] with the given fields.

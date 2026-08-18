@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,id,following,showingReblogs,notifying,const DeepCollectionEquality().hash(languages),followedBy,blocking,blockedBy,muting,mutingExpiresAt,mutingNotifications,requested,requestedBy,domainBlocking,endorsed,note);
 
-@override
-String toString() {
-  return 'MastodonRelationship(id: $id, following: $following, showingReblogs: $showingReblogs, notifying: $notifying, languages: $languages, followedBy: $followedBy, blocking: $blocking, blockedBy: $blockedBy, muting: $muting, mutingExpiresAt: $mutingExpiresAt, mutingNotifications: $mutingNotifications, requested: $requested, requestedBy: $requestedBy, domainBlocking: $domainBlocking, endorsed: $endorsed, note: $note)';
-}
 
 
 }

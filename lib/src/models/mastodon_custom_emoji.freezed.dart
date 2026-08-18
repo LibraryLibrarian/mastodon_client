@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,shortcode,url,staticUrl,visibleInPicker,category);
 
-@override
-String toString() {
-  return 'MastodonCustomEmoji(shortcode: $shortcode, url: $url, staticUrl: $staticUrl, visibleInPicker: $visibleInPicker, category: $category)';
-}
 
 
 }

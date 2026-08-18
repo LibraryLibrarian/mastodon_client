@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,id,status,resultCount);
 
-@override
-String toString() {
-  return 'MastodonAsyncRefresh(id: $id, status: $status, resultCount: $resultCount)';
-}
 
 
 }

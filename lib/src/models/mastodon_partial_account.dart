@@ -7,7 +7,7 @@ part 'mastodon_partial_account.g.dart';
 ///
 /// Model representing minimal account information returned by the grouped
 /// notifications API. Used when `expand_accounts=partial_avatars` is specified.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPartialAccount with _$MastodonPartialAccount {
   const MastodonPartialAccount({

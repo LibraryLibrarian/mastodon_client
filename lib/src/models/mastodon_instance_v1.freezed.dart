@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,streamingApi);
 
-@override
-String toString() {
-  return 'MastodonInstanceV1Urls(streamingApi: $streamingApi)';
-}
 
 
 }
@@ -219,10 +215,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,userCount,statusCount,domainCount);
 
-@override
-String toString() {
-  return 'MastodonInstanceV1Stats(userCount: $userCount, statusCount: $statusCount, domainCount: $domainCount)';
-}
 
 
 }
@@ -407,10 +399,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,statuses,mediaAttachments,polls);
 
-@override
-String toString() {
-  return 'MastodonInstanceV1Configuration(statuses: $statuses, mediaAttachments: $mediaAttachments, polls: $polls)';
-}
 
 
 }
@@ -595,10 +583,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,uri,title,shortDescription,description,email,version,urls,stats,thumbnail,const DeepCollectionEquality().hash(languages),registrations,approvalRequired,invitesEnabled,configuration,contactAccount,const DeepCollectionEquality().hash(rules));
 
-@override
-String toString() {
-  return 'MastodonInstanceV1(uri: $uri, title: $title, shortDescription: $shortDescription, description: $description, email: $email, version: $version, urls: $urls, stats: $stats, thumbnail: $thumbnail, languages: $languages, registrations: $registrations, approvalRequired: $approvalRequired, invitesEnabled: $invitesEnabled, configuration: $configuration, contactAccount: $contactAccount, rules: $rules)';
-}
 
 
 }

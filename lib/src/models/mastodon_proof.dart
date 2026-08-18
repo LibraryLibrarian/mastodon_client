@@ -9,7 +9,7 @@ part 'mastodon_proof.g.dart';
 ///
 /// **Deprecated**: The identity proof feature was removed in Mastodon 3.5.0.
 /// Provided for backward compatibility with older server versions.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonProof with _$MastodonProof {
   /// Creates a [MastodonProof] with the given fields.
@@ -33,7 +33,7 @@ class MastodonProof with _$MastodonProof {
 }
 
 /// Signature information for an identity proof.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonProofSignature with _$MastodonProofSignature {
   /// Creates a [MastodonProofSignature] with the given fields.

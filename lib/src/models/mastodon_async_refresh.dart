@@ -6,7 +6,7 @@ part 'mastodon_async_refresh.g.dart';
 /// Status of an asynchronous refresh operation (experimental).
 ///
 /// Corresponds to the response from `GET /api/v1_alpha/async_refreshes/:id`.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAsyncRefresh with _$MastodonAsyncRefresh {
   const MastodonAsyncRefresh({

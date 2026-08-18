@@ -6,7 +6,7 @@ part 'mastodon_oembed.g.dart';
 /// OEmbed metadata for Mastodon.
 ///
 /// Corresponds to the response from `/api/oembed`.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonOEmbed with _$MastodonOEmbed {
   const MastodonOEmbed({

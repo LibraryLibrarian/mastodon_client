@@ -6,7 +6,7 @@ part 'mastodon_trends_link.freezed.dart';
 part 'mastodon_trends_link.g.dart';
 
 /// Daily usage statistics for a trending link.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTrendsLinkHistory with _$MastodonTrendsLinkHistory {
   const MastodonTrendsLinkHistory({
@@ -41,7 +41,7 @@ class MastodonTrendsLinkHistory with _$MastodonTrendsLinkHistory {
 ///
 /// Corresponds to the response from `GET /api/v1/trends/links`.
 /// Includes all [MastodonPreviewCard] fields plus trend-specific [history].
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTrendsLink with _$MastodonTrendsLink {
   const MastodonTrendsLink({

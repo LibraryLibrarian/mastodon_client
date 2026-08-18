@@ -16,7 +16,7 @@ part 'mastodon_credential_account.g.dart';
 /// Corresponds to responses from `/api/v1/accounts/verify_credentials`,
 /// `/api/v1/accounts/update_credentials`,
 /// `DELETE /api/v1/profile/avatar|header`, etc.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonCredentialAccount with _$MastodonCredentialAccount {
   const MastodonCredentialAccount({
@@ -267,7 +267,7 @@ class MastodonCredentialAccount with _$MastodonCredentialAccount {
 }
 
 /// Default posting settings and private information of the authenticated user.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAccountSource with _$MastodonAccountSource {
   const MastodonAccountSource({

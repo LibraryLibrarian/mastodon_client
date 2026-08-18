@@ -6,7 +6,7 @@ part 'mastodon_featured_tag.freezed.dart';
 part 'mastodon_featured_tag.g.dart';
 
 /// Hashtag featured on an account's profile.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFeaturedTag with _$MastodonFeaturedTag {
   /// Creates a [MastodonFeaturedTag] with the given fields.

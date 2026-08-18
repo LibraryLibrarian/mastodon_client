@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,count);
 
-@override
-String toString() {
-  return 'MastodonUnreadNotificationCount(count: $count)';
-}
 
 
 }

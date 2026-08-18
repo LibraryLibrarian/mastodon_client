@@ -6,7 +6,7 @@ part 'mastodon_oauth_server_metadata.g.dart';
 /// OAuth authorization server metadata model.
 ///
 /// Corresponds to the response from `GET /.well-known/oauth-authorization-server`.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonOAuthServerMetadata with _$MastodonOAuthServerMetadata {
   /// Creates a [MastodonOAuthServerMetadata] with the given fields.

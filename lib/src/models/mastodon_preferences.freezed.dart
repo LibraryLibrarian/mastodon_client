@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,postingDefaultVisibility,postingDefaultSensitive,postingDefaultLanguage,postingDefaultQuotePolicy,readingExpandMedia,readingExpandSpoilers,readingAutoplayGifs);
 
-@override
-String toString() {
-  return 'MastodonPreferences(postingDefaultVisibility: $postingDefaultVisibility, postingDefaultSensitive: $postingDefaultSensitive, postingDefaultLanguage: $postingDefaultLanguage, postingDefaultQuotePolicy: $postingDefaultQuotePolicy, readingExpandMedia: $readingExpandMedia, readingExpandSpoilers: $readingExpandSpoilers, readingAutoplayGifs: $readingAutoplayGifs)';
-}
 
 
 }

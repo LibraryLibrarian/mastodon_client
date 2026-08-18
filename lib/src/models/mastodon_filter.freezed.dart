@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,id,title,const DeepCollectionEquality().hash(context),expiresAt,filterAction,const DeepCollectionEquality().hash(keywords),const DeepCollectionEquality().hash(statuses));
 
-@override
-String toString() {
-  return 'MastodonFilter(id: $id, title: $title, context: $context, expiresAt: $expiresAt, filterAction: $filterAction, keywords: $keywords, statuses: $statuses)';
-}
 
 
 }
@@ -225,10 +221,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,id,keyword,wholeWord);
 
-@override
-String toString() {
-  return 'MastodonFilterKeyword(id: $id, keyword: $keyword, wholeWord: $wholeWord)';
-}
 
 
 }
@@ -413,10 +405,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,id,statusId);
 
-@override
-String toString() {
-  return 'MastodonFilterStatus(id: $id, statusId: $statusId)';
-}
 
 
 }
@@ -600,10 +588,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,id,phrase,const DeepCollectionEquality().hash(context),expiresAt,irreversible,wholeWord);
 
-@override
-String toString() {
-  return 'MastodonFilterV1(id: $id, phrase: $phrase, context: $context, expiresAt: $expiresAt, irreversible: $irreversible, wholeWord: $wholeWord)';
-}
 
 
 }
@@ -791,10 +775,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,filter,const DeepCollectionEquality().hash(keywordMatches),const DeepCollectionEquality().hash(statusMatches));
 
-@override
-String toString() {
-  return 'MastodonFilterResult(filter: $filter, keywordMatches: $keywordMatches, statusMatches: $statusMatches)';
-}
 
 
 }

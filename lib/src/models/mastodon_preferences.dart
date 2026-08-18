@@ -7,7 +7,7 @@ part 'mastodon_preferences.g.dart';
 ///
 /// Retrieved via `GET /api/v1/preferences`.
 /// Preferences are changed via `PATCH /api/v1/accounts/update_credentials`.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable()
 class MastodonPreferences with _$MastodonPreferences {
   /// Creates a [MastodonPreferences] with the given fields.

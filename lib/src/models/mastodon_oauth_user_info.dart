@@ -6,7 +6,7 @@ part 'mastodon_oauth_user_info.g.dart';
 /// OAuth userinfo endpoint response model.
 ///
 /// Corresponds to the response from `GET /oauth/userinfo`.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonOAuthUserInfo with _$MastodonOAuthUserInfo {
   /// Creates a [MastodonOAuthUserInfo] with the given fields.

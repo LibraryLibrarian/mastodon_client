@@ -9,7 +9,7 @@ part 'mastodon_web_push_subscription.g.dart';
 ///
 /// Each field indicates whether to receive Push notifications for the
 /// corresponding notification type.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPushAlerts with _$MastodonPushAlerts {
   const MastodonPushAlerts({
@@ -98,7 +98,7 @@ class MastodonPushAlerts with _$MastodonPushAlerts {
 ///
 /// Retrieved, created, and updated via `/api/v1/push/subscription`.
 /// Entity representing Push notification settings.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonWebPushSubscription with _$MastodonWebPushSubscription {
   const MastodonWebPushSubscription({

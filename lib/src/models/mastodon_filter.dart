@@ -23,7 +23,7 @@ enum MastodonFilterAction {
 /// Corresponds to the response from `/api/v2/filters`.
 /// Performs server-side filtering and allows associating multiple keywords
 /// and statuses with a single filter.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFilter with _$MastodonFilter {
   const MastodonFilter({
@@ -81,7 +81,7 @@ class MastodonFilter with _$MastodonFilter {
 /// Filter keyword.
 ///
 /// Corresponds to the response from `/api/v2/filters/:filter_id/keywords`.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFilterKeyword with _$MastodonFilterKeyword {
   const MastodonFilterKeyword({
@@ -114,7 +114,7 @@ class MastodonFilterKeyword with _$MastodonFilterKeyword {
 /// Status filter.
 ///
 /// Corresponds to the response from `/api/v2/filters/:filter_id/statuses`.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFilterStatus with _$MastodonFilterStatus {
   const MastodonFilterStatus({required this.id, required this.statusId});
@@ -141,7 +141,7 @@ class MastodonFilterStatus with _$MastodonFilterStatus {
 /// Designed for client-side filtering with a one-filter-per-keyword structure.
 // ignore: remove_deprecations_in_breaking_versions
 @Deprecated('Deprecated in Mastodon 4.0.0. Use MastodonFilter (v2) instead')
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFilterV1 with _$MastodonFilterV1 {
   // ignore: remove_deprecations_in_breaking_versions
@@ -201,7 +201,7 @@ class MastodonFilterV1 with _$MastodonFilterV1 {
 /// element per filter the status matched. Clients are expected to honour
 /// [MastodonFilter.filterAction] of the matched [filter] rather than
 /// re-evaluating the filter rules themselves.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFilterResult with _$MastodonFilterResult {
   const MastodonFilterResult({

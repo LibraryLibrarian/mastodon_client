@@ -6,7 +6,7 @@ part 'mastodon_unread_notification_count.g.dart';
 /// Unread notification count (Mastodon 4.3+).
 ///
 /// `GET /api/v1/notifications/unread_count`
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonUnreadNotificationCount with _$MastodonUnreadNotificationCount {
   const MastodonUnreadNotificationCount({required this.count});

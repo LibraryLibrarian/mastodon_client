@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,issuer,serviceDocumentation,authorizationEndpoint,tokenEndpoint,appRegistrationEndpoint,revocationEndpoint,userinfoEndpoint,const DeepCollectionEquality().hash(scopesSupported),const DeepCollectionEquality().hash(responseTypesSupported),const DeepCollectionEquality().hash(responseModesSupported),const DeepCollectionEquality().hash(codeChallengeMethodsSupported),const DeepCollectionEquality().hash(grantTypesSupported),const DeepCollectionEquality().hash(tokenEndpointAuthMethodsSupported));
 
-@override
-String toString() {
-  return 'MastodonOAuthServerMetadata(issuer: $issuer, serviceDocumentation: $serviceDocumentation, authorizationEndpoint: $authorizationEndpoint, tokenEndpoint: $tokenEndpoint, appRegistrationEndpoint: $appRegistrationEndpoint, revocationEndpoint: $revocationEndpoint, userinfoEndpoint: $userinfoEndpoint, scopesSupported: $scopesSupported, responseTypesSupported: $responseTypesSupported, responseModesSupported: $responseModesSupported, codeChallengeMethodsSupported: $codeChallengeMethodsSupported, grantTypesSupported: $grantTypesSupported, tokenEndpointAuthMethodsSupported: $tokenEndpointAuthMethodsSupported)';
-}
 
 
 }

@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,domain,digest,severity,comment);
 
-@override
-String toString() {
-  return 'MastodonDomainBlock(domain: $domain, digest: $digest, severity: $severity, comment: $comment)';
-}
 
 
 }

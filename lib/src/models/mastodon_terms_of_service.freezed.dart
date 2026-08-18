@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,effectiveDate,effective,content,succeededBy);
 
-@override
-String toString() {
-  return 'MastodonTermsOfService(effectiveDate: $effectiveDate, effective: $effective, content: $content, succeededBy: $succeededBy)';
-}
 
 
 }

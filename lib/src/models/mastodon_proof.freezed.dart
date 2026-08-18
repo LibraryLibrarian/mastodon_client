@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,avatar,const DeepCollectionEquality().hash(signatures));
 
-@override
-String toString() {
-  return 'MastodonProof(avatar: $avatar, signatures: $signatures)';
-}
 
 
 }
@@ -220,10 +216,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,sigHash,kbUsername);
 
-@override
-String toString() {
-  return 'MastodonProofSignature(sigHash: $sigHash, kbUsername: $kbUsername)';
-}
 
 
 }

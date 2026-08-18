@@ -10,7 +10,7 @@ part 'mastodon_account.g.dart';
 ///
 /// Corresponds to responses from `/api/v1/accounts/:id`,
 /// `/api/v1/accounts/verify_credentials`, etc.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAccount with _$MastodonAccount {
   const MastodonAccount({
@@ -252,7 +252,7 @@ class MastodonAccount with _$MastodonAccount {
 }
 
 /// User role information.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonRole with _$MastodonRole {
   const MastodonRole({
@@ -310,7 +310,7 @@ class MastodonRole with _$MastodonRole {
 /// [automatic] and [manual] each list the visibility scopes (e.g.
 /// `public`, `followers`) for which tagging requests are automatically
 /// accepted or require manual approval, respectively.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFeatureApproval with _$MastodonFeatureApproval {
   const MastodonFeatureApproval({
@@ -344,7 +344,7 @@ class MastodonFeatureApproval with _$MastodonFeatureApproval {
 }
 
 /// Profile field of a Mastodon account.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonField with _$MastodonField {
   const MastodonField({

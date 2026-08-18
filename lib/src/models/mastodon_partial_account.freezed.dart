@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,id,acct,url,avatar,avatarStatic,locked,bot);
 
-@override
-String toString() {
-  return 'MastodonPartialAccount(id: $id, acct: $acct, url: $url, avatar: $avatar, avatarStatic: $avatarStatic, locked: $locked, bot: $bot)';
-}
 
 
 }

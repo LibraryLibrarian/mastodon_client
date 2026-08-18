@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,source,account,const DeepCollectionEquality().hash(sources));
 
-@override
-String toString() {
-  return 'MastodonSuggestion(source: $source, account: $account, sources: $sources)';
-}
 
 
 }

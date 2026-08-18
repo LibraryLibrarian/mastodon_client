@@ -19,7 +19,7 @@ enum MastodonDomainBlockSeverity {
 /// Information about a domain blocked by the instance.
 ///
 /// `GET /api/v1/instance/domain_blocks`
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonDomainBlock with _$MastodonDomainBlock {
   const MastodonDomainBlock({

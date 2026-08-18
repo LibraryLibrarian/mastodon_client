@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,type,version,title,authorName,authorUrl,providerName,providerUrl,cacheAge,html,width,height);
 
-@override
-String toString() {
-  return 'MastodonOEmbed(type: $type, version: $version, title: $title, authorName: $authorName, authorUrl: $authorUrl, providerName: $providerName, providerUrl: $providerUrl, cacheAge: $cacheAge, html: $html, width: $width, height: $height)';
-}
 
 
 }

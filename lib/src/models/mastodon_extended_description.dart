@@ -8,7 +8,7 @@ part 'mastodon_extended_description.g.dart';
 /// Extended description of the instance.
 ///
 /// `GET /api/v1/instance/extended_description`
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonExtendedDescription with _$MastodonExtendedDescription {
   const MastodonExtendedDescription({this.updatedAt, required this.content});

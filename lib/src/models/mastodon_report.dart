@@ -10,7 +10,7 @@ part 'mastodon_report.g.dart';
 ///
 /// Model representing report information referenced by admin notifications
 /// and grouped notifications.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonReport with _$MastodonReport {
   const MastodonReport({

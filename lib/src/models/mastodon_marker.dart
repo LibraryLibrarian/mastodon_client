@@ -6,7 +6,7 @@ part 'mastodon_marker.freezed.dart';
 part 'mastodon_marker.g.dart';
 
 /// Timeline read position marker model.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonMarker with _$MastodonMarker {
   /// Creates a [MastodonMarker] with the given fields.

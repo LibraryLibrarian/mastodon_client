@@ -4,7 +4,7 @@ part 'mastodon_list.freezed.dart';
 part 'mastodon_list.g.dart';
 
 /// User-defined list.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonList with _$MastodonList {
   /// Creates a [MastodonList] with the given fields.

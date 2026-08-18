@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hashAll([runtimeType,id,username,acct,displayName,note,url,uri,avatarUrl,avatarStaticUrl,headerUrl,headerStaticUrl,locked,bot,discoverable,indexable,group,noindex,followersCount,followingCount,statusesCount,createdAt,lastStatusAt,const DeepCollectionEquality().hash(fields),const DeepCollectionEquality().hash(emojis),moved,suspended,limited,hideCollections,avatarBlurhash,headerBlurhash,avatarDescription,headerDescription,featureApproval,showFeatured,showMedia,showMediaReplies,const DeepCollectionEquality().hash(roles),source,role]);
 
-@override
-String toString() {
-  return 'MastodonCredentialAccount(id: $id, username: $username, acct: $acct, displayName: $displayName, note: $note, url: $url, uri: $uri, avatarUrl: $avatarUrl, avatarStaticUrl: $avatarStaticUrl, headerUrl: $headerUrl, headerStaticUrl: $headerStaticUrl, locked: $locked, bot: $bot, discoverable: $discoverable, indexable: $indexable, group: $group, noindex: $noindex, followersCount: $followersCount, followingCount: $followingCount, statusesCount: $statusesCount, createdAt: $createdAt, lastStatusAt: $lastStatusAt, fields: $fields, emojis: $emojis, moved: $moved, suspended: $suspended, limited: $limited, hideCollections: $hideCollections, avatarBlurhash: $avatarBlurhash, headerBlurhash: $headerBlurhash, avatarDescription: $avatarDescription, headerDescription: $headerDescription, featureApproval: $featureApproval, showFeatured: $showFeatured, showMedia: $showMedia, showMediaReplies: $showMediaReplies, roles: $roles, source: $source, role: $role)';
-}
 
 
 }
@@ -257,10 +253,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,privacy,sensitive,language,note,const DeepCollectionEquality().hash(fields),followRequestsCount,quotePolicy);
 
-@override
-String toString() {
-  return 'MastodonAccountSource(privacy: $privacy, sensitive: $sensitive, language: $language, note: $note, fields: $fields, followRequestsCount: $followRequestsCount, quotePolicy: $quotePolicy)';
-}
 
 
 }

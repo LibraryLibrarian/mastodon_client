@@ -6,7 +6,7 @@ part 'mastodon_weekly_activity.g.dart';
 /// Weekly activity statistics of the instance.
 ///
 /// `GET /api/v1/instance/activity`
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonWeeklyActivity with _$MastodonWeeklyActivity {
   const MastodonWeeklyActivity({

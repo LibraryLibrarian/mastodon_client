@@ -4,7 +4,7 @@ part 'mastodon_tag.freezed.dart';
 part 'mastodon_tag.g.dart';
 
 /// Hashtag information model.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTag with _$MastodonTag {
   /// Creates a [MastodonTag] with the given fields.
@@ -54,7 +54,7 @@ class MastodonTag with _$MastodonTag {
 }
 
 /// Daily usage statistics for a hashtag.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTagHistory with _$MastodonTagHistory {
   /// Creates a [MastodonTagHistory] with the given fields.

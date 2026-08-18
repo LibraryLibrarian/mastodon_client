@@ -6,7 +6,7 @@ part 'mastodon_familiar_followers.freezed.dart';
 part 'mastodon_familiar_followers.g.dart';
 
 /// List of accounts you follow that also follow the specified account.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonFamiliarFollowers with _$MastodonFamiliarFollowers {
   /// Creates a [MastodonFamiliarFollowers] with the given fields.

@@ -6,7 +6,7 @@ part 'mastodon_identity_proof.g.dart';
 /// Identity proof information for an account.
 ///
 /// **Deprecated**: Always returns an empty array since Mastodon 3.5.0.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonIdentityProof with _$MastodonIdentityProof {
   const MastodonIdentityProof({

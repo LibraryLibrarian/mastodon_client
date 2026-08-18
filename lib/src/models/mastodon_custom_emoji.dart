@@ -7,7 +7,7 @@ part 'mastodon_custom_emoji.g.dart';
 ///
 /// Represents a `:shortcode:` format emoji found in account profiles and
 /// status text.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonCustomEmoji with _$MastodonCustomEmoji {
   const MastodonCustomEmoji({

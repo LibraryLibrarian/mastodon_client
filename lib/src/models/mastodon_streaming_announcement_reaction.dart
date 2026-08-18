@@ -4,7 +4,7 @@ part 'mastodon_streaming_announcement_reaction.freezed.dart';
 part 'mastodon_streaming_announcement_reaction.g.dart';
 
 /// Reaction update delivered by the `announcement.reaction` streaming event.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonStreamingAnnouncementReaction
     with _$MastodonStreamingAnnouncementReaction {

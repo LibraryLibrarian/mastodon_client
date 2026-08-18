@@ -6,7 +6,7 @@ part 'mastodon_suggestion.freezed.dart';
 part 'mastodon_suggestion.g.dart';
 
 /// Suggested account to follow and the reason for the suggestion.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonSuggestion with _$MastodonSuggestion {
   /// Creates a [MastodonSuggestion] with the given fields.

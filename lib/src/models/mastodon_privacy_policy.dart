@@ -8,7 +8,7 @@ part 'mastodon_privacy_policy.g.dart';
 /// Privacy policy of the instance.
 ///
 /// `GET /api/v1/instance/privacy_policy`
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPrivacyPolicy with _$MastodonPrivacyPolicy {
   const MastodonPrivacyPolicy({this.updatedAt, required this.content});

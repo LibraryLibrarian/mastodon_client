@@ -9,7 +9,7 @@ part 'mastodon_conversation.g.dart';
 /// Direct message conversation.
 ///
 /// Corresponds to the response from `/api/v1/conversations`.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonConversation with _$MastodonConversation {
   const MastodonConversation({

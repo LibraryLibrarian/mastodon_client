@@ -6,7 +6,7 @@ part 'mastodon_relationship.freezed.dart';
 part 'mastodon_relationship.g.dart';
 
 /// Relationship between two accounts (follow, block, mute, etc.).
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonRelationship with _$MastodonRelationship {
   /// Creates a [MastodonRelationship] with the given fields.

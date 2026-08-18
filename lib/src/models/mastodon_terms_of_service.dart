@@ -6,7 +6,7 @@ part 'mastodon_terms_of_service.g.dart';
 /// Terms of service of the instance.
 ///
 /// `GET /api/v1/instance/terms_of_service`
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonTermsOfService with _$MastodonTermsOfService {
   const MastodonTermsOfService({

@@ -7,7 +7,7 @@ part 'mastodon_instance_v1.freezed.dart';
 part 'mastodon_instance_v1.g.dart';
 
 /// v1 instance URL settings.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceV1Urls with _$MastodonInstanceV1Urls {
   const MastodonInstanceV1Urls({this.streamingApi});
@@ -24,7 +24,7 @@ class MastodonInstanceV1Urls with _$MastodonInstanceV1Urls {
 }
 
 /// v1 instance statistics.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceV1Stats with _$MastodonInstanceV1Stats {
   const MastodonInstanceV1Stats({
@@ -56,7 +56,7 @@ class MastodonInstanceV1Stats with _$MastodonInstanceV1Stats {
 }
 
 /// v1 instance configuration.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceV1Configuration with _$MastodonInstanceV1Configuration {
   const MastodonInstanceV1Configuration({
@@ -90,7 +90,7 @@ class MastodonInstanceV1Configuration with _$MastodonInstanceV1Configuration {
 /// Corresponds to the response from `/api/v1/instance`.
 ///
 /// **Deprecated**: Use [MastodonInstance] (v2) for Mastodon 4.0.0 and later.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonInstanceV1 with _$MastodonInstanceV1 {
   const MastodonInstanceV1({

@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,mention,quote,status,reblog,follow,followRequest,favourite,poll,update,quotedUpdate,adminSignUp,adminReport);
 
-@override
-String toString() {
-  return 'MastodonPushAlerts(mention: $mention, quote: $quote, status: $status, reblog: $reblog, follow: $follow, followRequest: $followRequest, favourite: $favourite, poll: $poll, update: $update, quotedUpdate: $quotedUpdate, adminSignUp: $adminSignUp, adminReport: $adminReport)';
-}
 
 
 }
@@ -230,10 +226,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,id,endpoint,serverKey,alerts,policy,standard);
 
-@override
-String toString() {
-  return 'MastodonWebPushSubscription(id: $id, endpoint: $endpoint, serverKey: $serverKey, alerts: $alerts, policy: $policy, standard: $standard)';
-}
 
 
 }

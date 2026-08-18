@@ -33,10 +33,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,day,accounts,uses);
 
-@override
-String toString() {
-  return 'MastodonTrendsLinkHistory(day: $day, accounts: $accounts, uses: $uses)';
-}
 
 
 }
@@ -221,10 +217,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,url,title,description,type,authorName,authorUrl,providerName,providerUrl,html,width,height,image,embedUrl,blurhash,const DeepCollectionEquality().hash(authors),const DeepCollectionEquality().hash(history));
 
-@override
-String toString() {
-  return 'MastodonTrendsLink(url: $url, title: $title, description: $description, type: $type, authorName: $authorName, authorUrl: $authorUrl, providerName: $providerName, providerUrl: $providerUrl, html: $html, width: $width, height: $height, image: $image, embedUrl: $embedUrl, blurhash: $blurhash, authors: $authors, history: $history)';
-}
 
 
 }
