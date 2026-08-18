@@ -48,6 +48,32 @@ void main() {
       expect(first.hashCode, second.hashCode);
     });
 
+    test('maps and nested models use deep equality', () {
+      final first = MastodonInstanceRule(
+        id: '1',
+        text: 'Be kind',
+        translations: {
+          'ja': const MastodonInstanceRuleTranslation(text: '親切に'),
+        },
+      );
+      final second = MastodonInstanceRule(
+        id: '1',
+        text: 'Be kind',
+        translations: {
+          'ja': const MastodonInstanceRuleTranslation(text: '親切に'),
+        },
+      );
+
+      expect(first.translations, isNot(same(second.translations)));
+      expect(first, second);
+      expect(first.hashCode, second.hashCode);
+
+      first.translations!['en'] = const MastodonInstanceRuleTranslation(
+        text: 'Be kind',
+      );
+      expect(first, isNot(second));
+    });
+
     test('keeps JsonKey defaults and converters', () {
       final missing = MastodonFeaturedTag.fromJson(const {
         'id': '1',
