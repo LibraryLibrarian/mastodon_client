@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'mastodon_token.dart';
+part of 'mastodon_partial_account.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,36 +13,40 @@ part of 'mastodon_token.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$MastodonToken {
+mixin _$MastodonPartialAccount {
 
- String get accessToken; String get tokenType; String get scope; int get createdAt;
-/// Create a copy of MastodonToken
+ String get id; String get acct; String get url; String get avatar; String get avatarStatic; bool get locked; bool get bot;
+/// Create a copy of MastodonPartialAccount
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$MastodonTokenCopyWith<MastodonToken> get copyWith => _$MastodonTokenCopyWithImpl<MastodonToken>(this as MastodonToken, _$identity);
+$MastodonPartialAccountCopyWith<MastodonPartialAccount> get copyWith => _$MastodonPartialAccountCopyWithImpl<MastodonPartialAccount>(this as MastodonPartialAccount, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonToken&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.tokenType, tokenType) || other.tokenType == tokenType)&&(identical(other.scope, scope) || other.scope == scope)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonPartialAccount&&(identical(other.id, id) || other.id == id)&&(identical(other.acct, acct) || other.acct == acct)&&(identical(other.url, url) || other.url == url)&&(identical(other.avatar, avatar) || other.avatar == avatar)&&(identical(other.avatarStatic, avatarStatic) || other.avatarStatic == avatarStatic)&&(identical(other.locked, locked) || other.locked == locked)&&(identical(other.bot, bot) || other.bot == bot));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,accessToken,tokenType,scope,createdAt);
+int get hashCode => Object.hash(runtimeType,id,acct,url,avatar,avatarStatic,locked,bot);
 
+@override
+String toString() {
+  return 'MastodonPartialAccount(id: $id, acct: $acct, url: $url, avatar: $avatar, avatarStatic: $avatarStatic, locked: $locked, bot: $bot)';
+}
 
 
 }
 
 /// @nodoc
-abstract mixin class $MastodonTokenCopyWith<$Res>  {
-  factory $MastodonTokenCopyWith(MastodonToken value, $Res Function(MastodonToken) _then) = _$MastodonTokenCopyWithImpl;
+abstract mixin class $MastodonPartialAccountCopyWith<$Res>  {
+  factory $MastodonPartialAccountCopyWith(MastodonPartialAccount value, $Res Function(MastodonPartialAccount) _then) = _$MastodonPartialAccountCopyWithImpl;
 @useResult
 $Res call({
- String accessToken, String tokenType, String scope, int createdAt
+ String id, String acct, String url, String avatar, String avatarStatic, bool locked, bool bot
 });
 
 
@@ -50,30 +54,33 @@ $Res call({
 
 }
 /// @nodoc
-class _$MastodonTokenCopyWithImpl<$Res>
-    implements $MastodonTokenCopyWith<$Res> {
-  _$MastodonTokenCopyWithImpl(this._self, this._then);
+class _$MastodonPartialAccountCopyWithImpl<$Res>
+    implements $MastodonPartialAccountCopyWith<$Res> {
+  _$MastodonPartialAccountCopyWithImpl(this._self, this._then);
 
-  final MastodonToken _self;
-  final $Res Function(MastodonToken) _then;
+  final MastodonPartialAccount _self;
+  final $Res Function(MastodonPartialAccount) _then;
 
-/// Create a copy of MastodonToken
+/// Create a copy of MastodonPartialAccount
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? accessToken = null,Object? tokenType = null,Object? scope = null,Object? createdAt = null,}) {
-  return _then(MastodonToken(
-accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
-as String,tokenType: null == tokenType ? _self.tokenType : tokenType // ignore: cast_nullable_to_non_nullable
-as String,scope: null == scope ? _self.scope : scope // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as int,
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? acct = null,Object? url = null,Object? avatar = null,Object? avatarStatic = null,Object? locked = null,Object? bot = null,}) {
+  return _then(MastodonPartialAccount(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,acct: null == acct ? _self.acct : acct // ignore: cast_nullable_to_non_nullable
+as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String,avatar: null == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
+as String,avatarStatic: null == avatarStatic ? _self.avatarStatic : avatarStatic // ignore: cast_nullable_to_non_nullable
+as String,locked: null == locked ? _self.locked : locked // ignore: cast_nullable_to_non_nullable
+as bool,bot: null == bot ? _self.bot : bot // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
 }
 
 
-/// Adds pattern-matching-related methods to [MastodonToken].
-extension MastodonTokenPatterns on MastodonToken {
+/// Adds pattern-matching-related methods to [MastodonPartialAccount].
+extension MastodonPartialAccountPatterns on MastodonPartialAccount {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:

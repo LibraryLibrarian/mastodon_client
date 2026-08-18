@@ -1,12 +1,14 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'mastodon_application.freezed.dart';
 part 'mastodon_application.g.dart';
 
 /// OAuth application information model.
 ///
 /// Corresponds to the response from `GET /api/v1/apps/verify_credentials`.
+@freezed
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonApplication {
+class MastodonApplication with _$MastodonApplication {
   /// Creates a [MastodonApplication] with the given fields.
   const MastodonApplication({
     required this.id,
@@ -28,28 +30,35 @@ class MastodonApplication {
   Map<String, dynamic> toJson() => _$MastodonApplicationToJson(this);
 
   /// Database ID of the application.
+  @override
   final String id;
 
   /// Name of the application.
+  @override
   final String name;
 
   /// Website URL of the application.
+  @override
   final String? website;
 
   /// Scopes granted to the application.
+  @override
   final List<String> scopes;
 
   /// List of registered redirect URIs.
+  @override
   final List<String> redirectUris;
 
   /// Redirect URI (deprecated, for backward compatibility).
   // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Use redirectUris instead')
+  @override
   final String? redirectUri;
 
   /// VAPID key for the Web Push API (deprecated).
   // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('VAPID key used by the Push Streaming API')
+  @override
   final String? vapidKey;
 }
 
@@ -57,8 +66,9 @@ class MastodonApplication {
 ///
 /// Corresponds to the response from `POST /api/v1/apps`.
 /// Includes client credentials in addition to the [MastodonApplication] fields.
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonCredentialApplication {
+class MastodonCredentialApplication with _$MastodonCredentialApplication {
   /// Creates a [MastodonCredentialApplication] with the given fields.
   const MastodonCredentialApplication({
     required this.id,
@@ -81,31 +91,40 @@ class MastodonCredentialApplication {
   Map<String, dynamic> toJson() => _$MastodonCredentialApplicationToJson(this);
 
   /// Database ID of the application.
+  @override
   final String id;
 
   /// Name of the application.
+  @override
   final String name;
 
   /// Website URL of the application.
+  @override
   final String? website;
 
   /// Scopes granted to the application.
+  @override
   final List<String> scopes;
 
   /// List of registered redirect URIs.
+  @override
   final List<String> redirectUris;
 
   /// Redirect URI (deprecated, for backward compatibility).
   // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Use redirectUris instead')
+  @override
   final String? redirectUri;
 
   /// Client ID used for obtaining OAuth tokens.
+  @override
   final String clientId;
 
   /// Client secret used for obtaining OAuth tokens.
+  @override
   final String clientSecret;
 
   /// Expiration time of the client secret (currently always 0).
+  @override
   final int clientSecretExpiresAt;
 }

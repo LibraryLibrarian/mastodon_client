@@ -1,12 +1,14 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'mastodon_account.dart';
 
+part 'mastodon_suggestion.freezed.dart';
 part 'mastodon_suggestion.g.dart';
 
 /// Suggested account to follow and the reason for the suggestion.
+@freezed
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonSuggestion {
+class MastodonSuggestion with _$MastodonSuggestion {
   /// Creates a [MastodonSuggestion] with the given fields.
   const MastodonSuggestion({
     // ignore: remove_deprecations_in_breaking_versions
@@ -31,9 +33,11 @@ class MastodonSuggestion {
   /// does not provide a legacy value or cannot map an entry from [sources].
   // ignore: remove_deprecations_in_breaking_versions
   @Deprecated('Deprecated in Mastodon 4.3.0. Use sources instead')
+  @override
   final String? source;
 
   /// Suggested account.
+  @override
   final MastodonAccount account;
 
   /// Reasons for the suggestion, in the current (non-legacy) vocabulary.
@@ -43,5 +47,6 @@ class MastodonSuggestion {
   /// field is a lossy mapping of the first entry onto the legacy three-value
   /// vocabulary, so prefer this field when distinguishing suggestion reasons.
   @JsonKey(defaultValue: <String>[])
+  @override
   final List<String> sources;
 }

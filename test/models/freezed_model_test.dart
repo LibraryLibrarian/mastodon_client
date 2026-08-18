@@ -68,6 +68,30 @@ void main() {
       expect(missing.lastStatusAt, DateTime.utc(2026, 8, 19));
       expect(missing.toJson()['last_status_at'], '2026-08-19T00:00:00.000Z');
     });
+
+    test('does not expose OAuth secrets through toString', () {
+      const token = MastodonToken(
+        accessToken: 'sensitive-access-token',
+        tokenType: 'Bearer',
+        scope: 'read',
+        createdAt: 1,
+      );
+      const application = MastodonCredentialApplication(
+        id: '1',
+        name: 'client',
+        scopes: ['read'],
+        redirectUris: ['app://callback'],
+        clientId: 'client-id',
+        clientSecret: 'sensitive-client-secret',
+        clientSecretExpiresAt: 0,
+      );
+
+      expect(token.toString(), isNot(contains('sensitive-access-token')));
+      expect(
+        application.toString(),
+        isNot(contains('sensitive-client-secret')),
+      );
+    });
   });
 }
 

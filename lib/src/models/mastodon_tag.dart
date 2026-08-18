@@ -1,10 +1,12 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'mastodon_tag.freezed.dart';
 part 'mastodon_tag.g.dart';
 
 /// Hashtag information model.
+@freezed
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonTag {
+class MastodonTag with _$MastodonTag {
   /// Creates a [MastodonTag] with the given fields.
   const MastodonTag({
     required this.id,
@@ -24,30 +26,37 @@ class MastodonTag {
 
   /// Database ID of the tag.
   @JsonKey(defaultValue: '')
+  @override
   final String id;
 
   /// Name of the hashtag without the `#` symbol.
+  @override
   final String name;
 
   /// URL to the hashtag on the instance.
   @JsonKey(defaultValue: '')
+  @override
   final String url;
 
   /// Recent daily usage statistics.
   @JsonKey(defaultValue: [])
+  @override
   final List<MastodonTagHistory> history;
 
   /// Whether the authenticated user is following this tag (authenticated only).
+  @override
   final bool? following;
 
   /// Whether the authenticated user is featuring this tag on their profile
   /// (authenticated only).
+  @override
   final bool? featuring;
 }
 
 /// Daily usage statistics for a hashtag.
+@freezed
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonTagHistory {
+class MastodonTagHistory with _$MastodonTagHistory {
   /// Creates a [MastodonTagHistory] with the given fields.
   const MastodonTagHistory({
     required this.day,
@@ -63,11 +72,14 @@ class MastodonTagHistory {
   Map<String, dynamic> toJson() => _$MastodonTagHistoryToJson(this);
 
   /// UNIX timestamp at midnight of the day (string).
+  @override
   final String day;
 
   /// Number of times the tag was used on that day (string).
+  @override
   final String uses;
 
   /// Number of accounts that used the tag on that day (string).
+  @override
   final String accounts;
 }

@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'mastodon_token.dart';
+part of 'mastodon_familiar_followers.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,36 +13,40 @@ part of 'mastodon_token.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$MastodonToken {
+mixin _$MastodonFamiliarFollowers {
 
- String get accessToken; String get tokenType; String get scope; int get createdAt;
-/// Create a copy of MastodonToken
+ String get id; List<MastodonAccount> get accounts;
+/// Create a copy of MastodonFamiliarFollowers
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$MastodonTokenCopyWith<MastodonToken> get copyWith => _$MastodonTokenCopyWithImpl<MastodonToken>(this as MastodonToken, _$identity);
+$MastodonFamiliarFollowersCopyWith<MastodonFamiliarFollowers> get copyWith => _$MastodonFamiliarFollowersCopyWithImpl<MastodonFamiliarFollowers>(this as MastodonFamiliarFollowers, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonToken&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.tokenType, tokenType) || other.tokenType == tokenType)&&(identical(other.scope, scope) || other.scope == scope)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonFamiliarFollowers&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.accounts, accounts));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,accessToken,tokenType,scope,createdAt);
+int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(accounts));
 
+@override
+String toString() {
+  return 'MastodonFamiliarFollowers(id: $id, accounts: $accounts)';
+}
 
 
 }
 
 /// @nodoc
-abstract mixin class $MastodonTokenCopyWith<$Res>  {
-  factory $MastodonTokenCopyWith(MastodonToken value, $Res Function(MastodonToken) _then) = _$MastodonTokenCopyWithImpl;
+abstract mixin class $MastodonFamiliarFollowersCopyWith<$Res>  {
+  factory $MastodonFamiliarFollowersCopyWith(MastodonFamiliarFollowers value, $Res Function(MastodonFamiliarFollowers) _then) = _$MastodonFamiliarFollowersCopyWithImpl;
 @useResult
 $Res call({
- String accessToken, String tokenType, String scope, int createdAt
+ String id, List<MastodonAccount> accounts
 });
 
 
@@ -50,30 +54,28 @@ $Res call({
 
 }
 /// @nodoc
-class _$MastodonTokenCopyWithImpl<$Res>
-    implements $MastodonTokenCopyWith<$Res> {
-  _$MastodonTokenCopyWithImpl(this._self, this._then);
+class _$MastodonFamiliarFollowersCopyWithImpl<$Res>
+    implements $MastodonFamiliarFollowersCopyWith<$Res> {
+  _$MastodonFamiliarFollowersCopyWithImpl(this._self, this._then);
 
-  final MastodonToken _self;
-  final $Res Function(MastodonToken) _then;
+  final MastodonFamiliarFollowers _self;
+  final $Res Function(MastodonFamiliarFollowers) _then;
 
-/// Create a copy of MastodonToken
+/// Create a copy of MastodonFamiliarFollowers
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? accessToken = null,Object? tokenType = null,Object? scope = null,Object? createdAt = null,}) {
-  return _then(MastodonToken(
-accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
-as String,tokenType: null == tokenType ? _self.tokenType : tokenType // ignore: cast_nullable_to_non_nullable
-as String,scope: null == scope ? _self.scope : scope // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as int,
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? accounts = null,}) {
+  return _then(MastodonFamiliarFollowers(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,accounts: null == accounts ? _self.accounts : accounts // ignore: cast_nullable_to_non_nullable
+as List<MastodonAccount>,
   ));
 }
 
 }
 
 
-/// Adds pattern-matching-related methods to [MastodonToken].
-extension MastodonTokenPatterns on MastodonToken {
+/// Adds pattern-matching-related methods to [MastodonFamiliarFollowers].
+extension MastodonFamiliarFollowersPatterns on MastodonFamiliarFollowers {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:

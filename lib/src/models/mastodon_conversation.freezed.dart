@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'mastodon_token.dart';
+part of 'mastodon_conversation.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,36 +13,40 @@ part of 'mastodon_token.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$MastodonToken {
+mixin _$MastodonConversation {
 
- String get accessToken; String get tokenType; String get scope; int get createdAt;
-/// Create a copy of MastodonToken
+ String get id; bool get unread; List<MastodonAccount> get accounts; MastodonStatus? get lastStatus;
+/// Create a copy of MastodonConversation
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$MastodonTokenCopyWith<MastodonToken> get copyWith => _$MastodonTokenCopyWithImpl<MastodonToken>(this as MastodonToken, _$identity);
+$MastodonConversationCopyWith<MastodonConversation> get copyWith => _$MastodonConversationCopyWithImpl<MastodonConversation>(this as MastodonConversation, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonToken&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.tokenType, tokenType) || other.tokenType == tokenType)&&(identical(other.scope, scope) || other.scope == scope)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonConversation&&(identical(other.id, id) || other.id == id)&&(identical(other.unread, unread) || other.unread == unread)&&const DeepCollectionEquality().equals(other.accounts, accounts)&&(identical(other.lastStatus, lastStatus) || other.lastStatus == lastStatus));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,accessToken,tokenType,scope,createdAt);
+int get hashCode => Object.hash(runtimeType,id,unread,const DeepCollectionEquality().hash(accounts),lastStatus);
 
+@override
+String toString() {
+  return 'MastodonConversation(id: $id, unread: $unread, accounts: $accounts, lastStatus: $lastStatus)';
+}
 
 
 }
 
 /// @nodoc
-abstract mixin class $MastodonTokenCopyWith<$Res>  {
-  factory $MastodonTokenCopyWith(MastodonToken value, $Res Function(MastodonToken) _then) = _$MastodonTokenCopyWithImpl;
+abstract mixin class $MastodonConversationCopyWith<$Res>  {
+  factory $MastodonConversationCopyWith(MastodonConversation value, $Res Function(MastodonConversation) _then) = _$MastodonConversationCopyWithImpl;
 @useResult
 $Res call({
- String accessToken, String tokenType, String scope, int createdAt
+ String id, bool unread, List<MastodonAccount> accounts, MastodonStatus? lastStatus
 });
 
 
@@ -50,30 +54,30 @@ $Res call({
 
 }
 /// @nodoc
-class _$MastodonTokenCopyWithImpl<$Res>
-    implements $MastodonTokenCopyWith<$Res> {
-  _$MastodonTokenCopyWithImpl(this._self, this._then);
+class _$MastodonConversationCopyWithImpl<$Res>
+    implements $MastodonConversationCopyWith<$Res> {
+  _$MastodonConversationCopyWithImpl(this._self, this._then);
 
-  final MastodonToken _self;
-  final $Res Function(MastodonToken) _then;
+  final MastodonConversation _self;
+  final $Res Function(MastodonConversation) _then;
 
-/// Create a copy of MastodonToken
+/// Create a copy of MastodonConversation
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? accessToken = null,Object? tokenType = null,Object? scope = null,Object? createdAt = null,}) {
-  return _then(MastodonToken(
-accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
-as String,tokenType: null == tokenType ? _self.tokenType : tokenType // ignore: cast_nullable_to_non_nullable
-as String,scope: null == scope ? _self.scope : scope // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as int,
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? unread = null,Object? accounts = null,Object? lastStatus = freezed,}) {
+  return _then(MastodonConversation(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,unread: null == unread ? _self.unread : unread // ignore: cast_nullable_to_non_nullable
+as bool,accounts: null == accounts ? _self.accounts : accounts // ignore: cast_nullable_to_non_nullable
+as List<MastodonAccount>,lastStatus: freezed == lastStatus ? _self.lastStatus : lastStatus // ignore: cast_nullable_to_non_nullable
+as MastodonStatus?,
   ));
 }
 
 }
 
 
-/// Adds pattern-matching-related methods to [MastodonToken].
-extension MastodonTokenPatterns on MastodonToken {
+/// Adds pattern-matching-related methods to [MastodonConversation].
+extension MastodonConversationPatterns on MastodonConversation {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:

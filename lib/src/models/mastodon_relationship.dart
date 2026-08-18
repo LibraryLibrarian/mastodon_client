@@ -1,12 +1,14 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'json_converters.dart';
 
+part 'mastodon_relationship.freezed.dart';
 part 'mastodon_relationship.g.dart';
 
 /// Relationship between two accounts (follow, block, mute, etc.).
+@freezed
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonRelationship {
+class MastodonRelationship with _$MastodonRelationship {
   /// Creates a [MastodonRelationship] with the given fields.
   const MastodonRelationship({
     required this.id,
@@ -35,65 +37,81 @@ class MastodonRelationship {
   Map<String, dynamic> toJson() => _$MastodonRelationshipToJson(this);
 
   /// ID of the target account.
+  @override
   final String id;
 
   /// Whether you are following this account.
   @JsonKey(defaultValue: false)
+  @override
   final bool following;
 
   /// Whether boosts from this account are shown in your home timeline.
   @JsonKey(defaultValue: true)
+  @override
   final bool showingReblogs;
 
   /// Whether notifications from this account are enabled.
   @JsonKey(defaultValue: false)
+  @override
   final bool notifying;
 
   /// List of languages you follow from this account (ISO 639-1).
+  @override
   final List<String>? languages;
 
   /// Whether this account follows you.
   @JsonKey(defaultValue: false)
+  @override
   final bool followedBy;
 
   /// Whether you are blocking this account.
   @JsonKey(defaultValue: false)
+  @override
   final bool blocking;
 
   /// Whether you are blocked by this account.
   @JsonKey(defaultValue: false)
+  @override
   final bool blockedBy;
 
   /// Whether you are muting this account.
   @JsonKey(defaultValue: false)
+  @override
   final bool muting;
 
   /// Expiry of a timed mute. Null when the mute is indefinite or when you are
   /// not muting this account.
   @SafeDateTimeConverter()
+  @override
   final DateTime? mutingExpiresAt;
 
   /// Whether you are muting notifications from this account.
   @JsonKey(defaultValue: false)
+  @override
   final bool mutingNotifications;
 
   /// Whether a follow request to this account is pending.
   @JsonKey(defaultValue: false)
+  @override
   final bool requested;
 
   /// Whether a follow request from this account is pending.
   @JsonKey(defaultValue: false)
+  @override
   final bool requestedBy;
 
   /// Whether you are blocking this account's domain.
   @JsonKey(defaultValue: false)
+  @override
   final bool domainBlocking;
 
   /// Whether you are featuring this account on your profile.
   @JsonKey(defaultValue: false)
+  @override
   final bool endorsed;
 
   /// Private note set on this account.
   @JsonKey(defaultValue: '')
+  @override
   final String note;
 }

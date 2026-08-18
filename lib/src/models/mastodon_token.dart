@@ -4,7 +4,7 @@ part 'mastodon_token.freezed.dart';
 part 'mastodon_token.g.dart';
 
 /// OAuth access token.
-@freezed
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonToken with _$MastodonToken {
   /// Creates a [MastodonToken] with the given fields.

@@ -1,5 +1,6 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'mastodon_proof.freezed.dart';
 part 'mastodon_proof.g.dart';
 
 /// Proof information returned by an identity verification provider.
@@ -8,8 +9,9 @@ part 'mastodon_proof.g.dart';
 ///
 /// **Deprecated**: The identity proof feature was removed in Mastodon 3.5.0.
 /// Provided for backward compatibility with older server versions.
+@freezed
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonProof {
+class MastodonProof with _$MastodonProof {
   /// Creates a [MastodonProof] with the given fields.
   const MastodonProof({required this.avatar, required this.signatures});
 
@@ -21,16 +23,19 @@ class MastodonProof {
   Map<String, dynamic> toJson() => _$MastodonProofToJson(this);
 
   /// Avatar URL on the provider.
+  @override
   final String avatar;
 
   /// List of signature information.
   @JsonKey(defaultValue: <MastodonProofSignature>[])
+  @override
   final List<MastodonProofSignature> signatures;
 }
 
 /// Signature information for an identity proof.
+@freezed
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonProofSignature {
+class MastodonProofSignature with _$MastodonProofSignature {
   /// Creates a [MastodonProofSignature] with the given fields.
   const MastodonProofSignature({
     required this.sigHash,
@@ -45,8 +50,10 @@ class MastodonProofSignature {
   Map<String, dynamic> toJson() => _$MastodonProofSignatureToJson(this);
 
   /// Hash value of the signature.
+  @override
   final String sigHash;
 
   /// Username on Keybase.
+  @override
   final String kbUsername;
 }
