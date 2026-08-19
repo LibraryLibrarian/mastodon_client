@@ -1,5 +1,6 @@
 import '../client/mastodon_http_client.dart';
 import '../models/mastodon_oauth_server_metadata.dart';
+import '../models/mastodon_oauth_token_introspection.dart';
 import '../models/mastodon_oauth_user_info.dart';
 import '../models/mastodon_token.dart';
 
@@ -14,6 +15,39 @@ class OAuthApi {
   const OAuthApi(this._http);
 
   final MastodonHttpClient _http;
+
+  /// Introspects an OAuth token using RFC 7662.
+  ///
+  /// `POST /oauth/introspect`
+  Future<MastodonOAuthTokenIntrospection> introspectToken({
+    required String token,
+    String? tokenTypeHint,
+    String? clientId,
+    String? clientSecret,
+  }) async {
+    final data = await _http.send<Map<String, dynamic>>(
+      '/oauth/introspect',
+      method: 'POST',
+      contentType: 'application/x-www-form-urlencoded',
+      data: {
+        'token': token,
+        'token_type_hint': ?tokenTypeHint,
+        'client_id': ?clientId,
+        'client_secret': ?clientSecret,
+      },
+    );
+    return MastodonOAuthTokenIntrospection.fromJson(data!);
+  }
+
+  /// Fetches information about the bearer token used for this client.
+  ///
+  /// `GET /oauth/token/info`
+  ///
+  /// The response is owned by Doorkeeper and has no stable Mastodon entity.
+  Future<Map<String, dynamic>> fetchTokenInfo() async {
+    final data = await _http.send<Map<String, dynamic>>('/oauth/token/info');
+    return data!;
+  }
 
   /// Obtains an access token using an authorization code or client credentials.
   ///

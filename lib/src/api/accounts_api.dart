@@ -21,6 +21,17 @@ class AccountsApi {
 
   final MastodonHttpClient _http;
 
+  /// Subscribes [email] to public post updates from [accountId].
+  ///
+  /// `POST /api/v1/accounts/{accountId}/email_subscriptions`
+  Future<void> subscribeToEmailUpdates(String accountId, String email) async {
+    await _http.send<void>(
+      '/api/v1/accounts/$accountId/email_subscriptions',
+      method: 'POST',
+      data: {'email': email},
+    );
+  }
+
   /// Fetches account information by ID.
   ///
   /// `GET /api/v1/accounts/{accountId}`

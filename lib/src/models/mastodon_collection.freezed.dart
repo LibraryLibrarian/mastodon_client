@@ -575,4 +575,187 @@ case _:
 
 }
 
+
+/// @nodoc
+mixin _$MastodonCollectionDetail {
+
+ MastodonCollection get collection; List<MastodonAccount> get accounts;
+/// Create a copy of MastodonCollectionDetail
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MastodonCollectionDetailCopyWith<MastodonCollectionDetail> get copyWith => _$MastodonCollectionDetailCopyWithImpl<MastodonCollectionDetail>(this as MastodonCollectionDetail, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonCollectionDetail&&(identical(other.collection, collection) || other.collection == collection)&&const DeepCollectionEquality().equals(other.accounts, accounts));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,collection,const DeepCollectionEquality().hash(accounts));
+
+
+
+}
+
+/// @nodoc
+abstract mixin class $MastodonCollectionDetailCopyWith<$Res>  {
+  factory $MastodonCollectionDetailCopyWith(MastodonCollectionDetail value, $Res Function(MastodonCollectionDetail) _then) = _$MastodonCollectionDetailCopyWithImpl;
+@useResult
+$Res call({
+ MastodonCollection collection, List<MastodonAccount> accounts
+});
+
+
+
+
+}
+/// @nodoc
+class _$MastodonCollectionDetailCopyWithImpl<$Res>
+    implements $MastodonCollectionDetailCopyWith<$Res> {
+  _$MastodonCollectionDetailCopyWithImpl(this._self, this._then);
+
+  final MastodonCollectionDetail _self;
+  final $Res Function(MastodonCollectionDetail) _then;
+
+/// Create a copy of MastodonCollectionDetail
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? collection = null,Object? accounts = null,}) {
+  return _then(MastodonCollectionDetail(
+collection: null == collection ? _self.collection : collection // ignore: cast_nullable_to_non_nullable
+as MastodonCollection,accounts: null == accounts ? _self.accounts : accounts // ignore: cast_nullable_to_non_nullable
+as List<MastodonAccount>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [MastodonCollectionDetail].
+extension MastodonCollectionDetailPatterns on MastodonCollectionDetail {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(){
+final _that = this;
+switch (_that) {
+case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(){
+final _that = this;
+switch (_that) {
+case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>() {final _that = this;
+switch (_that) {
+case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>() {final _that = this;
+switch (_that) {
+case _:
+  return null;
+
+}
+}
+
+}
+
 // dart format on

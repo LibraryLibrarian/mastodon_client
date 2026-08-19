@@ -116,3 +116,45 @@ class MastodonNotificationPolicy with _$MastodonNotificationPolicy {
   @override
   final MastodonNotificationPolicySummary? summary;
 }
+
+/// Legacy boolean notification policy returned by the v1 endpoint.
+@Freezed(toStringOverride: false)
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MastodonNotificationPolicyV1 with _$MastodonNotificationPolicyV1 {
+  const MastodonNotificationPolicyV1({
+    required this.filterNotFollowing,
+    required this.filterNotFollowers,
+    required this.filterNewAccounts,
+    required this.filterPrivateMentions,
+    required this.filterBots,
+    this.summary,
+  });
+
+  factory MastodonNotificationPolicyV1.fromJson(Map<String, dynamic> json) =>
+      _$MastodonNotificationPolicyV1FromJson(json);
+
+  Map<String, dynamic> toJson() => _$MastodonNotificationPolicyV1ToJson(this);
+
+  @JsonKey(defaultValue: false)
+  @override
+  final bool filterNotFollowing;
+
+  @JsonKey(defaultValue: false)
+  @override
+  final bool filterNotFollowers;
+
+  @JsonKey(defaultValue: false)
+  @override
+  final bool filterNewAccounts;
+
+  @JsonKey(defaultValue: false)
+  @override
+  final bool filterPrivateMentions;
+
+  @JsonKey(defaultValue: false)
+  @override
+  final bool filterBots;
+
+  @override
+  final MastodonNotificationPolicySummary? summary;
+}

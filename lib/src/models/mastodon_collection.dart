@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'json_converters.dart';
+import 'mastodon_account.dart';
 
 part 'mastodon_collection.freezed.dart';
 part 'mastodon_collection.g.dart';
@@ -153,4 +154,85 @@ class MastodonCollectionItem with _$MastodonCollectionItem {
   /// ID of the associated account for pending or accepted items.
   @override
   final String? accountId;
+}
+
+/// A collection together with the accounts visible to the requester.
+@Freezed(toStringOverride: false)
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MastodonCollectionDetail with _$MastodonCollectionDetail {
+  const MastodonCollectionDetail({
+    required this.collection,
+    this.accounts = const <MastodonAccount>[],
+  });
+
+  factory MastodonCollectionDetail.fromJson(Map<String, dynamic> json) =>
+      _$MastodonCollectionDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MastodonCollectionDetailToJson(this);
+
+  @override
+  final MastodonCollection collection;
+
+  @JsonKey(defaultValue: <MastodonAccount>[])
+  @override
+  final List<MastodonAccount> accounts;
+}
+
+/// Parameters for creating a collection.
+class MastodonCollectionCreateRequest {
+  const MastodonCollectionCreateRequest({
+    required this.name,
+    required this.sensitive,
+    required this.discoverable,
+    this.description,
+    this.language,
+    this.tagName,
+    this.accountIds,
+  });
+
+  final String name;
+  final bool sensitive;
+  final bool discoverable;
+  final String? description;
+  final String? language;
+  final String? tagName;
+  final List<String>? accountIds;
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'name': name,
+    'sensitive': sensitive,
+    'discoverable': discoverable,
+    'description': ?description,
+    'language': ?language,
+    'tag_name': ?tagName,
+    if (accountIds != null) 'account_ids': accountIds,
+  };
+}
+
+/// Parameters for updating a collection.
+class MastodonCollectionUpdateRequest {
+  const MastodonCollectionUpdateRequest({
+    this.name,
+    this.description,
+    this.language,
+    this.sensitive,
+    this.discoverable,
+    this.tagName,
+  });
+
+  final String? name;
+  final String? description;
+  final String? language;
+  final bool? sensitive;
+  final bool? discoverable;
+  final String? tagName;
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'name': ?name,
+    'description': ?description,
+    'language': ?language,
+    'sensitive': ?sensitive,
+    'discoverable': ?discoverable,
+    'tag_name': ?tagName,
+  };
 }

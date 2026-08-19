@@ -159,6 +159,36 @@ class NotificationsApi {
     return MastodonNotificationPolicy.fromJson(data!);
   }
 
+  /// Fetches the legacy boolean notification policy.
+  ///
+  /// `GET /api/v1/notifications/policy`
+  Future<MastodonNotificationPolicyV1> fetchPolicyV1() async {
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/notifications/policy',
+    );
+    return MastodonNotificationPolicyV1.fromJson(data!);
+  }
+
+  /// Updates the legacy boolean notification policy.
+  ///
+  /// `PATCH /api/v1/notifications/policy`
+  Future<MastodonNotificationPolicyV1> updatePolicyV1(
+    MastodonNotificationPolicyV1 policy,
+  ) async {
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/notifications/policy',
+      method: 'PATCH',
+      data: {
+        'filter_not_following': policy.filterNotFollowing,
+        'filter_not_followers': policy.filterNotFollowers,
+        'filter_new_accounts': policy.filterNewAccounts,
+        'filter_private_mentions': policy.filterPrivateMentions,
+        'filter_bots': policy.filterBots,
+      },
+    );
+    return MastodonNotificationPolicyV1.fromJson(data!);
+  }
+
   /// Fetches the list of filtered notification requests (Mastodon 4.3+).
   ///
   /// `GET /api/v1/notifications/requests`

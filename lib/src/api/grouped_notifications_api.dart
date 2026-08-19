@@ -13,6 +13,13 @@ class GroupedNotificationsApi {
 
   final MastodonHttpClient _http;
 
+  /// Clears all notifications through the grouped notifications API.
+  ///
+  /// `POST /api/v2/notifications/clear`
+  Future<void> clear() async {
+    await _http.send<void>('/api/v2/notifications/clear', method: 'POST');
+  }
+
   /// Fetches grouped notifications.
   ///
   /// `GET /api/v2/notifications`

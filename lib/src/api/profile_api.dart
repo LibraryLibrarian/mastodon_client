@@ -1,5 +1,6 @@
 import '../client/mastodon_http_client.dart';
 import '../models/mastodon_credential_account.dart';
+import '../models/mastodon_profile.dart';
 
 /// API client for profile image management.
 class ProfileApi {
@@ -7,6 +8,26 @@ class ProfileApi {
   const ProfileApi(this._http);
 
   final MastodonHttpClient _http;
+
+  /// Fetches the authenticated account's editable profile.
+  ///
+  /// `GET /api/v1/profile`
+  Future<MastodonProfile> fetch() async {
+    final data = await _http.send<Map<String, dynamic>>('/api/v1/profile');
+    return MastodonProfile.fromJson(data!);
+  }
+
+  /// Updates the authenticated account's editable profile.
+  ///
+  /// `PATCH /api/v1/profile`
+  Future<MastodonProfile> update(MastodonProfileUpdateRequest request) async {
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/profile',
+      method: 'PATCH',
+      data: request.toJson(),
+    );
+    return MastodonProfile.fromJson(data!);
+  }
 
   /// Deletes the profile avatar image.
   ///
