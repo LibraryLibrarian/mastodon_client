@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MastodonAdminTrendsLink {
 
- String get id; String get url; String get title; String get description; MastodonPreviewCardType get type; String get authorName; String get authorUrl; String get providerName; String get providerUrl; String get html; int get width; int get height; String? get image; String get embedUrl; String? get blurhash; List<MastodonPreviewCardAuthor> get authors; List<MastodonTrendsLinkHistory> get history; bool? get requiresReview;
+ String get id; String get url; String get title; String get description; String? get language; MastodonPreviewCardType get type; String get authorName; String get authorUrl; String get providerName; String get providerUrl; String get html; int get width; int get height; String? get image; String get imageDescription; String get embedUrl; String? get blurhash; DateTime? get publishedAt; bool? get missingAttribution; List<MastodonPreviewCardAuthor> get authors; List<MastodonTrendsLinkHistory> get history; bool? get requiresReview;
 /// Create a copy of MastodonAdminTrendsLink
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,12 +26,12 @@ $MastodonAdminTrendsLinkCopyWith<MastodonAdminTrendsLink> get copyWith => _$Mast
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonAdminTrendsLink&&(identical(other.id, id) || other.id == id)&&(identical(other.url, url) || other.url == url)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.type, type) || other.type == type)&&(identical(other.authorName, authorName) || other.authorName == authorName)&&(identical(other.authorUrl, authorUrl) || other.authorUrl == authorUrl)&&(identical(other.providerName, providerName) || other.providerName == providerName)&&(identical(other.providerUrl, providerUrl) || other.providerUrl == providerUrl)&&(identical(other.html, html) || other.html == html)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.image, image) || other.image == image)&&(identical(other.embedUrl, embedUrl) || other.embedUrl == embedUrl)&&(identical(other.blurhash, blurhash) || other.blurhash == blurhash)&&const DeepCollectionEquality().equals(other.authors, authors)&&const DeepCollectionEquality().equals(other.history, history)&&(identical(other.requiresReview, requiresReview) || other.requiresReview == requiresReview));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonAdminTrendsLink&&(identical(other.id, id) || other.id == id)&&(identical(other.url, url) || other.url == url)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.language, language) || other.language == language)&&(identical(other.type, type) || other.type == type)&&(identical(other.authorName, authorName) || other.authorName == authorName)&&(identical(other.authorUrl, authorUrl) || other.authorUrl == authorUrl)&&(identical(other.providerName, providerName) || other.providerName == providerName)&&(identical(other.providerUrl, providerUrl) || other.providerUrl == providerUrl)&&(identical(other.html, html) || other.html == html)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.image, image) || other.image == image)&&(identical(other.imageDescription, imageDescription) || other.imageDescription == imageDescription)&&(identical(other.embedUrl, embedUrl) || other.embedUrl == embedUrl)&&(identical(other.blurhash, blurhash) || other.blurhash == blurhash)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.missingAttribution, missingAttribution) || other.missingAttribution == missingAttribution)&&const DeepCollectionEquality().equals(other.authors, authors)&&const DeepCollectionEquality().equals(other.history, history)&&(identical(other.requiresReview, requiresReview) || other.requiresReview == requiresReview));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,url,title,description,type,authorName,authorUrl,providerName,providerUrl,html,width,height,image,embedUrl,blurhash,const DeepCollectionEquality().hash(authors),const DeepCollectionEquality().hash(history),requiresReview);
+int get hashCode => Object.hashAll([runtimeType,id,url,title,description,language,type,authorName,authorUrl,providerName,providerUrl,html,width,height,image,imageDescription,embedUrl,blurhash,publishedAt,missingAttribution,const DeepCollectionEquality().hash(authors),const DeepCollectionEquality().hash(history),requiresReview]);
 
 
 
@@ -42,7 +42,7 @@ abstract mixin class $MastodonAdminTrendsLinkCopyWith<$Res>  {
   factory $MastodonAdminTrendsLinkCopyWith(MastodonAdminTrendsLink value, $Res Function(MastodonAdminTrendsLink) _then) = _$MastodonAdminTrendsLinkCopyWithImpl;
 @useResult
 $Res call({
- String id, String url, String title, String description, MastodonPreviewCardType type, String authorName, String authorUrl, String providerName, String providerUrl, String html, int width, int height, String embedUrl, List<MastodonPreviewCardAuthor> authors, List<MastodonTrendsLinkHistory> history, String? image, String? blurhash, bool? requiresReview
+ String id, String url, String title, String description, MastodonPreviewCardType type, String authorName, String authorUrl, String providerName, String providerUrl, String html, int width, int height, String embedUrl, List<MastodonPreviewCardAuthor> authors, List<MastodonTrendsLinkHistory> history, String? language, String? image, String imageDescription, String? blurhash, DateTime? publishedAt, bool? missingAttribution, bool? requiresReview
 });
 
 
@@ -59,7 +59,7 @@ class _$MastodonAdminTrendsLinkCopyWithImpl<$Res>
 
 /// Create a copy of MastodonAdminTrendsLink
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? url = null,Object? title = null,Object? description = null,Object? type = null,Object? authorName = null,Object? authorUrl = null,Object? providerName = null,Object? providerUrl = null,Object? html = null,Object? width = null,Object? height = null,Object? embedUrl = null,Object? authors = null,Object? history = null,Object? image = freezed,Object? blurhash = freezed,Object? requiresReview = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? url = null,Object? title = null,Object? description = null,Object? type = null,Object? authorName = null,Object? authorUrl = null,Object? providerName = null,Object? providerUrl = null,Object? html = null,Object? width = null,Object? height = null,Object? embedUrl = null,Object? authors = null,Object? history = null,Object? language = freezed,Object? image = freezed,Object? imageDescription = null,Object? blurhash = freezed,Object? publishedAt = freezed,Object? missingAttribution = freezed,Object? requiresReview = freezed,}) {
   return _then(MastodonAdminTrendsLink(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
@@ -76,9 +76,13 @@ as int,height: null == height ? _self.height : height // ignore: cast_nullable_t
 as int,embedUrl: null == embedUrl ? _self.embedUrl : embedUrl // ignore: cast_nullable_to_non_nullable
 as String,authors: null == authors ? _self.authors : authors // ignore: cast_nullable_to_non_nullable
 as List<MastodonPreviewCardAuthor>,history: null == history ? _self.history : history // ignore: cast_nullable_to_non_nullable
-as List<MastodonTrendsLinkHistory>,image: freezed == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
-as String?,blurhash: freezed == blurhash ? _self.blurhash : blurhash // ignore: cast_nullable_to_non_nullable
-as String?,requiresReview: freezed == requiresReview ? _self.requiresReview : requiresReview // ignore: cast_nullable_to_non_nullable
+as List<MastodonTrendsLinkHistory>,language: freezed == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
+as String?,image: freezed == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
+as String?,imageDescription: null == imageDescription ? _self.imageDescription : imageDescription // ignore: cast_nullable_to_non_nullable
+as String,blurhash: freezed == blurhash ? _self.blurhash : blurhash // ignore: cast_nullable_to_non_nullable
+as String?,publishedAt: freezed == publishedAt ? _self.publishedAt : publishedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,missingAttribution: freezed == missingAttribution ? _self.missingAttribution : missingAttribution // ignore: cast_nullable_to_non_nullable
+as bool?,requiresReview: freezed == requiresReview ? _self.requiresReview : requiresReview // ignore: cast_nullable_to_non_nullable
 as bool?,
   ));
 }

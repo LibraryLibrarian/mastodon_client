@@ -1308,7 +1308,7 @@ case _:
 /// @nodoc
 mixin _$MastodonAccountsConfiguration {
 
- int get maxFeaturedTags; int get maxPinnedStatuses; int get maxProfileFields; int get profileFieldNameLimit; int get profileFieldValueLimit;
+ int get maxDisplayNameLength; int get maxNoteLength; int get maxAvatarDescriptionLength; int get maxHeaderDescriptionLength; int get maxFeaturedTags; int get maxPinnedStatuses; int get maxProfileFields; int get profileFieldNameLimit; int get profileFieldValueLimit;
 /// Create a copy of MastodonAccountsConfiguration
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1319,12 +1319,12 @@ $MastodonAccountsConfigurationCopyWith<MastodonAccountsConfiguration> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonAccountsConfiguration&&(identical(other.maxFeaturedTags, maxFeaturedTags) || other.maxFeaturedTags == maxFeaturedTags)&&(identical(other.maxPinnedStatuses, maxPinnedStatuses) || other.maxPinnedStatuses == maxPinnedStatuses)&&(identical(other.maxProfileFields, maxProfileFields) || other.maxProfileFields == maxProfileFields)&&(identical(other.profileFieldNameLimit, profileFieldNameLimit) || other.profileFieldNameLimit == profileFieldNameLimit)&&(identical(other.profileFieldValueLimit, profileFieldValueLimit) || other.profileFieldValueLimit == profileFieldValueLimit));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonAccountsConfiguration&&(identical(other.maxDisplayNameLength, maxDisplayNameLength) || other.maxDisplayNameLength == maxDisplayNameLength)&&(identical(other.maxNoteLength, maxNoteLength) || other.maxNoteLength == maxNoteLength)&&(identical(other.maxAvatarDescriptionLength, maxAvatarDescriptionLength) || other.maxAvatarDescriptionLength == maxAvatarDescriptionLength)&&(identical(other.maxHeaderDescriptionLength, maxHeaderDescriptionLength) || other.maxHeaderDescriptionLength == maxHeaderDescriptionLength)&&(identical(other.maxFeaturedTags, maxFeaturedTags) || other.maxFeaturedTags == maxFeaturedTags)&&(identical(other.maxPinnedStatuses, maxPinnedStatuses) || other.maxPinnedStatuses == maxPinnedStatuses)&&(identical(other.maxProfileFields, maxProfileFields) || other.maxProfileFields == maxProfileFields)&&(identical(other.profileFieldNameLimit, profileFieldNameLimit) || other.profileFieldNameLimit == profileFieldNameLimit)&&(identical(other.profileFieldValueLimit, profileFieldValueLimit) || other.profileFieldValueLimit == profileFieldValueLimit));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,maxFeaturedTags,maxPinnedStatuses,maxProfileFields,profileFieldNameLimit,profileFieldValueLimit);
+int get hashCode => Object.hash(runtimeType,maxDisplayNameLength,maxNoteLength,maxAvatarDescriptionLength,maxHeaderDescriptionLength,maxFeaturedTags,maxPinnedStatuses,maxProfileFields,profileFieldNameLimit,profileFieldValueLimit);
 
 
 
@@ -1335,7 +1335,7 @@ abstract mixin class $MastodonAccountsConfigurationCopyWith<$Res>  {
   factory $MastodonAccountsConfigurationCopyWith(MastodonAccountsConfiguration value, $Res Function(MastodonAccountsConfiguration) _then) = _$MastodonAccountsConfigurationCopyWithImpl;
 @useResult
 $Res call({
- int maxFeaturedTags, int maxPinnedStatuses, int maxProfileFields, int profileFieldNameLimit, int profileFieldValueLimit
+ int maxDisplayNameLength, int maxNoteLength, int maxAvatarDescriptionLength, int maxHeaderDescriptionLength, int maxFeaturedTags, int maxPinnedStatuses, int maxProfileFields, int profileFieldNameLimit, int profileFieldValueLimit
 });
 
 
@@ -1352,9 +1352,13 @@ class _$MastodonAccountsConfigurationCopyWithImpl<$Res>
 
 /// Create a copy of MastodonAccountsConfiguration
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? maxFeaturedTags = null,Object? maxPinnedStatuses = null,Object? maxProfileFields = null,Object? profileFieldNameLimit = null,Object? profileFieldValueLimit = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? maxDisplayNameLength = null,Object? maxNoteLength = null,Object? maxAvatarDescriptionLength = null,Object? maxHeaderDescriptionLength = null,Object? maxFeaturedTags = null,Object? maxPinnedStatuses = null,Object? maxProfileFields = null,Object? profileFieldNameLimit = null,Object? profileFieldValueLimit = null,}) {
   return _then(MastodonAccountsConfiguration(
-maxFeaturedTags: null == maxFeaturedTags ? _self.maxFeaturedTags : maxFeaturedTags // ignore: cast_nullable_to_non_nullable
+maxDisplayNameLength: null == maxDisplayNameLength ? _self.maxDisplayNameLength : maxDisplayNameLength // ignore: cast_nullable_to_non_nullable
+as int,maxNoteLength: null == maxNoteLength ? _self.maxNoteLength : maxNoteLength // ignore: cast_nullable_to_non_nullable
+as int,maxAvatarDescriptionLength: null == maxAvatarDescriptionLength ? _self.maxAvatarDescriptionLength : maxAvatarDescriptionLength // ignore: cast_nullable_to_non_nullable
+as int,maxHeaderDescriptionLength: null == maxHeaderDescriptionLength ? _self.maxHeaderDescriptionLength : maxHeaderDescriptionLength // ignore: cast_nullable_to_non_nullable
+as int,maxFeaturedTags: null == maxFeaturedTags ? _self.maxFeaturedTags : maxFeaturedTags // ignore: cast_nullable_to_non_nullable
 as int,maxPinnedStatuses: null == maxPinnedStatuses ? _self.maxPinnedStatuses : maxPinnedStatuses // ignore: cast_nullable_to_non_nullable
 as int,maxProfileFields: null == maxProfileFields ? _self.maxProfileFields : maxProfileFields // ignore: cast_nullable_to_non_nullable
 as int,profileFieldNameLimit: null == profileFieldNameLimit ? _self.profileFieldNameLimit : profileFieldNameLimit // ignore: cast_nullable_to_non_nullable

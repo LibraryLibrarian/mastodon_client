@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'json_converters.dart';
 import 'mastodon_preview_card.dart';
 
 part 'mastodon_trends_link.freezed.dart';
@@ -59,8 +60,12 @@ class MastodonTrendsLink with _$MastodonTrendsLink {
     required this.embedUrl,
     required this.authors,
     required this.history,
+    this.language,
     this.image,
+    this.imageDescription = '',
     this.blurhash,
+    this.publishedAt,
+    this.missingAttribution,
   });
 
   factory MastodonTrendsLink.fromJson(Map<String, dynamic> json) =>
@@ -85,6 +90,10 @@ class MastodonTrendsLink with _$MastodonTrendsLink {
   @JsonKey(defaultValue: '')
   @override
   final String description;
+
+  /// ISO 639 language code detected for the linked content.
+  @override
+  final String? language;
 
   /// Type of the preview card.
   @JsonKey(readValue: _readType, unknownEnumValue: MastodonPreviewCardType.link)
@@ -130,6 +139,11 @@ class MastodonTrendsLink with _$MastodonTrendsLink {
   @override
   final String? image;
 
+  /// Alternative text for the preview image.
+  @JsonKey(defaultValue: '')
+  @override
+  final String imageDescription;
+
   /// URL for embedding photos.
   @JsonKey(defaultValue: '')
   @override
@@ -138,6 +152,15 @@ class MastodonTrendsLink with _$MastodonTrendsLink {
   /// Blurhash string for the thumbnail.
   @override
   final String? blurhash;
+
+  /// Publication timestamp of the linked content.
+  @SafeDateTimeConverter()
+  @override
+  final DateTime? publishedAt;
+
+  /// Whether the current user is an author whose attribution is missing.
+  @override
+  final bool? missingAttribution;
 
   /// List of content authors (Mastodon 4.3.0+).
   @JsonKey(defaultValue: <MastodonPreviewCardAuthor>[])

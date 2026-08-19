@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MastodonMediaAttachment {
 
- String get id; MastodonMediaType get type; String? get url; String? get previewUrl; String? get remoteUrl; String? get description; String? get blurhash;
+ String get id; MastodonMediaType get type; String? get url; String? get previewUrl; String? get remoteUrl; String? get previewRemoteUrl; String? get textUrl; Map<String, dynamic>? get meta; String? get description; String? get blurhash;
 /// Create a copy of MastodonMediaAttachment
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,12 +26,12 @@ $MastodonMediaAttachmentCopyWith<MastodonMediaAttachment> get copyWith => _$Mast
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonMediaAttachment&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.url, url) || other.url == url)&&(identical(other.previewUrl, previewUrl) || other.previewUrl == previewUrl)&&(identical(other.remoteUrl, remoteUrl) || other.remoteUrl == remoteUrl)&&(identical(other.description, description) || other.description == description)&&(identical(other.blurhash, blurhash) || other.blurhash == blurhash));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonMediaAttachment&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.url, url) || other.url == url)&&(identical(other.previewUrl, previewUrl) || other.previewUrl == previewUrl)&&(identical(other.remoteUrl, remoteUrl) || other.remoteUrl == remoteUrl)&&(identical(other.previewRemoteUrl, previewRemoteUrl) || other.previewRemoteUrl == previewRemoteUrl)&&(identical(other.textUrl, textUrl) || other.textUrl == textUrl)&&const DeepCollectionEquality().equals(other.meta, meta)&&(identical(other.description, description) || other.description == description)&&(identical(other.blurhash, blurhash) || other.blurhash == blurhash));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type,url,previewUrl,remoteUrl,description,blurhash);
+int get hashCode => Object.hash(runtimeType,id,type,url,previewUrl,remoteUrl,previewRemoteUrl,textUrl,const DeepCollectionEquality().hash(meta),description,blurhash);
 
 
 
@@ -42,7 +42,7 @@ abstract mixin class $MastodonMediaAttachmentCopyWith<$Res>  {
   factory $MastodonMediaAttachmentCopyWith(MastodonMediaAttachment value, $Res Function(MastodonMediaAttachment) _then) = _$MastodonMediaAttachmentCopyWithImpl;
 @useResult
 $Res call({
- String id, MastodonMediaType type, String? url, String? previewUrl, String? remoteUrl, String? description, String? blurhash
+ String id, MastodonMediaType type, String? url, String? previewUrl, String? remoteUrl, String? previewRemoteUrl, String? textUrl, Map<String, dynamic>? meta, String? description, String? blurhash
 });
 
 
@@ -59,14 +59,17 @@ class _$MastodonMediaAttachmentCopyWithImpl<$Res>
 
 /// Create a copy of MastodonMediaAttachment
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,Object? url = freezed,Object? previewUrl = freezed,Object? remoteUrl = freezed,Object? description = freezed,Object? blurhash = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,Object? url = freezed,Object? previewUrl = freezed,Object? remoteUrl = freezed,Object? previewRemoteUrl = freezed,Object? textUrl = freezed,Object? meta = freezed,Object? description = freezed,Object? blurhash = freezed,}) {
   return _then(MastodonMediaAttachment(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as MastodonMediaType,url: freezed == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
 as String?,previewUrl: freezed == previewUrl ? _self.previewUrl : previewUrl // ignore: cast_nullable_to_non_nullable
 as String?,remoteUrl: freezed == remoteUrl ? _self.remoteUrl : remoteUrl // ignore: cast_nullable_to_non_nullable
-as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,previewRemoteUrl: freezed == previewRemoteUrl ? _self.previewRemoteUrl : previewRemoteUrl // ignore: cast_nullable_to_non_nullable
+as String?,textUrl: freezed == textUrl ? _self.textUrl : textUrl // ignore: cast_nullable_to_non_nullable
+as String?,meta: freezed == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,blurhash: freezed == blurhash ? _self.blurhash : blurhash // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

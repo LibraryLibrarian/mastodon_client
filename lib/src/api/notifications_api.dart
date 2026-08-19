@@ -21,7 +21,9 @@ class NotificationsApi {
   /// older ones, and [minId] for immediate forward pagination. [types]
   /// and [excludeTypes] filter by notification type. [accountId] restricts
   /// results to a specific account, and [includeFiltered] controls whether
-  /// filtered notifications are included.
+  /// filtered notifications are included. [supportedTypes] tells Mastodon
+  /// which types the client can render so unsupported notifications include
+  /// a fallback title and summary (Mastodon 4.6+).
   Future<MastodonPage<MastodonNotification>> fetch({
     int? limit,
     String? sinceId,
@@ -29,6 +31,7 @@ class NotificationsApi {
     String? minId,
     List<String>? types,
     List<String>? excludeTypes,
+    List<String>? supportedTypes,
     String? accountId,
     bool? includeFiltered,
   }) async {
@@ -40,6 +43,8 @@ class NotificationsApi {
       if (types != null && types.isNotEmpty) 'types[]': types,
       if (excludeTypes != null && excludeTypes.isNotEmpty)
         'exclude_types[]': excludeTypes,
+      if (supportedTypes != null && supportedTypes.isNotEmpty)
+        'supported_types[]': supportedTypes,
       if (accountId != null && accountId.isNotEmpty) 'account_id': accountId,
       'include_filtered': ?includeFiltered,
     };
@@ -62,9 +67,16 @@ class NotificationsApi {
   /// Fetches a notification by its ID.
   ///
   /// `GET /api/v1/notifications/:id`
-  Future<MastodonNotification> fetchById(String id) async {
+  Future<MastodonNotification> fetchById(
+    String id, {
+    List<String>? supportedTypes,
+  }) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/notifications/$id',
+      queryParameters: <String, dynamic>{
+        if (supportedTypes != null && supportedTypes.isNotEmpty)
+          'supported_types[]': supportedTypes,
+      },
     );
     return MastodonNotification.fromJson(data!);
   }

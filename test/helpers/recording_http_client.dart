@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:mastodon_client/src/client/mastodon_http_client.dart';
 
 class RecordedRequest {
@@ -44,5 +45,30 @@ class RecordingHttpClient extends MastodonHttpClient {
     );
     if (_responses.isEmpty) return null;
     return _responses.removeAt(0) as T?;
+  }
+
+  @override
+  Future<Response<T>> sendRaw<T>(
+    String path, {
+    String method = 'GET',
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    Map<String, String>? headers,
+    String? contentType,
+  }) async {
+    requests.add(
+      RecordedRequest(
+        path: path,
+        method: method,
+        data: data,
+        queryParameters: queryParameters,
+        contentType: contentType,
+      ),
+    );
+    final responseData = _responses.isEmpty ? null : _responses.removeAt(0);
+    return Response<T>(
+      data: responseData as T?,
+      requestOptions: RequestOptions(path: path),
+    );
   }
 }
