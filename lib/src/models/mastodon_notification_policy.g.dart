@@ -79,3 +79,29 @@ const _$NotificationFilterActionEnumMap = {
   NotificationFilterAction.filter: 'filter',
   NotificationFilterAction.drop: 'drop',
 };
+
+MastodonNotificationPolicyV1 _$MastodonNotificationPolicyV1FromJson(
+  Map<String, dynamic> json,
+) => MastodonNotificationPolicyV1(
+  filterNotFollowing: json['filter_not_following'] as bool? ?? false,
+  filterNotFollowers: json['filter_not_followers'] as bool? ?? false,
+  filterNewAccounts: json['filter_new_accounts'] as bool? ?? false,
+  filterPrivateMentions: json['filter_private_mentions'] as bool? ?? false,
+  filterBots: json['filter_bots'] as bool? ?? false,
+  summary: json['summary'] == null
+      ? null
+      : MastodonNotificationPolicySummary.fromJson(
+          json['summary'] as Map<String, dynamic>,
+        ),
+);
+
+Map<String, dynamic> _$MastodonNotificationPolicyV1ToJson(
+  MastodonNotificationPolicyV1 instance,
+) => <String, dynamic>{
+  'filter_not_following': instance.filterNotFollowing,
+  'filter_not_followers': instance.filterNotFollowers,
+  'filter_new_accounts': instance.filterNewAccounts,
+  'filter_private_mentions': instance.filterPrivateMentions,
+  'filter_bots': instance.filterBots,
+  'summary': instance.summary?.toJson(),
+};

@@ -87,3 +87,23 @@ Map<String, dynamic> _$MastodonCollectionItemToJson(
   'created_at': instance.createdAt.toIso8601String(),
   'account_id': instance.accountId,
 };
+
+MastodonCollectionDetail _$MastodonCollectionDetailFromJson(
+  Map<String, dynamic> json,
+) => MastodonCollectionDetail(
+  collection: MastodonCollection.fromJson(
+    json['collection'] as Map<String, dynamic>,
+  ),
+  accounts:
+      (json['accounts'] as List<dynamic>?)
+          ?.map((e) => MastodonAccount.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      [],
+);
+
+Map<String, dynamic> _$MastodonCollectionDetailToJson(
+  MastodonCollectionDetail instance,
+) => <String, dynamic>{
+  'collection': instance.collection.toJson(),
+  'accounts': instance.accounts.map((e) => e.toJson()).toList(),
+};

@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'json_converters.dart';
 import 'mastodon_account.dart';
+import 'mastodon_collection.dart';
 import 'mastodon_status.dart';
 
 part 'mastodon_notification.freezed.dart';
@@ -57,8 +58,68 @@ enum MastodonNotificationType {
   /// A quoted status was updated (Mastodon 4.5+ / FEP-044f).
   quotedUpdate,
 
+  /// Your annual report is available (Mastodon 4.6+).
+  annualReport,
+
+  /// You were added to a collection (Mastodon 4.6+).
+  addedToCollection,
+
+  /// A collection involving you was updated (Mastodon 4.6+).
+  collectionUpdate,
+
   /// Unknown or future notification type.
   unknown,
+}
+
+/// Generic presentation for a notification type unsupported by the client.
+///
+/// Returned by Mastodon 4.6+ when `supported_types[]` is supplied and a
+/// notification cannot be represented by one of those types.
+@Freezed(toStringOverride: false)
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MastodonNotificationFallback with _$MastodonNotificationFallback {
+  const MastodonNotificationFallback({
+    required this.title,
+    required this.summary,
+    this.description,
+  });
+
+  factory MastodonNotificationFallback.fromJson(Map<String, dynamic> json) =>
+      _$MastodonNotificationFallbackFromJson(json);
+
+  /// Serializes to JSON.
+  Map<String, dynamic> toJson() => _$MastodonNotificationFallbackToJson(this);
+
+  /// Human-readable notification title. May contain sanitized HTML.
+  @JsonKey(defaultValue: '')
+  @override
+  final String title;
+
+  /// Human-readable notification summary. May contain sanitized HTML.
+  @JsonKey(defaultValue: '')
+  @override
+  final String summary;
+
+  /// Optional longer notification description.
+  @override
+  final String? description;
+}
+
+/// Annual report event embedded in a grouped notification.
+@Freezed(toStringOverride: false)
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MastodonAnnualReportEvent with _$MastodonAnnualReportEvent {
+  const MastodonAnnualReportEvent({required this.year});
+
+  factory MastodonAnnualReportEvent.fromJson(Map<String, dynamic> json) =>
+      _$MastodonAnnualReportEventFromJson(json);
+
+  /// Serializes to JSON.
+  Map<String, dynamic> toJson() => _$MastodonAnnualReportEventToJson(this);
+
+  /// Calendar year represented by the report.
+  @override
+  final String year;
 }
 
 /// Relationship severance event (Mastodon 4.3+).
@@ -174,6 +235,8 @@ class MastodonNotification with _$MastodonNotification {
     this.status,
     this.relationshipSeveranceEvent,
     this.moderationWarning,
+    this.collection,
+    this.fallback,
   });
 
   factory MastodonNotification.fromJson(Map<String, dynamic> json) =>
@@ -229,4 +292,12 @@ class MastodonNotification with _$MastodonNotification {
   /// [MastodonNotificationType.moderationWarning].
   @override
   final MastodonAccountWarning? moderationWarning;
+
+  /// Associated collection for collection-related notifications.
+  @override
+  final MastodonCollection? collection;
+
+  /// Generic rendering for a notification type not supported by the client.
+  @override
+  final MastodonNotificationFallback? fallback;
 }

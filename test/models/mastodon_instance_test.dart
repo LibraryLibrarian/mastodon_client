@@ -65,6 +65,12 @@ void main() {
       expect(config.polls!.minExpiration, 300);
       expect(config.polls!.maxExpiration, 2629746);
 
+      expect(config.accounts, isNotNull);
+      expect(config.accounts!.maxDisplayNameLength, 40);
+      expect(config.accounts!.maxNoteLength, 500);
+      expect(config.accounts!.maxAvatarDescriptionLength, 150);
+      expect(config.accounts!.maxHeaderDescriptionLength, 150);
+
       expect(config.timelinesAccess, isNotNull);
       expect(config.timelinesAccess!.liveFeeds, isNotNull);
       expect(

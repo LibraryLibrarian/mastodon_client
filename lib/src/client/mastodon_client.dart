@@ -14,14 +14,17 @@ import '../api/admin/admin_retention_api.dart';
 import '../api/admin/admin_tags_api.dart';
 import '../api/admin/admin_trends_api.dart';
 import '../api/announcements_api.dart';
+import '../api/annual_reports_api.dart';
 import '../api/apps_api.dart';
 import '../api/async_refreshes_api.dart';
 import '../api/blocks_api.dart';
 import '../api/bookmarks_api.dart';
 import '../api/conversations_api.dart';
+import '../api/collections_api.dart';
 import '../api/custom_emojis_api.dart';
 import '../api/directory_api.dart';
 import '../api/domain_blocks_api.dart';
+import '../api/donation_campaigns_api.dart';
 import '../api/emails_api.dart';
 import '../api/endorsements_api.dart';
 import '../api/favourites_api.dart';
@@ -203,6 +206,9 @@ class MastodonClient {
   /// Server announcements API.
   AnnouncementsApi get announcements => AnnouncementsApi(_http);
 
+  /// Annual usage reports (Wrapstodon) API.
+  AnnualReportsApi get annualReports => AnnualReportsApi(_http);
+
   /// OAuth application registration and verification API.
   AppsApi get apps => AppsApi(_http);
 
@@ -218,6 +224,9 @@ class MastodonClient {
   /// Direct message conversations API.
   ConversationsApi get conversations => ConversationsApi(_http);
 
+  /// Account collections API.
+  CollectionsApi get collections => CollectionsApi(_http);
+
   /// Custom emoji API.
   CustomEmojisApi get customEmojis => CustomEmojisApi(_http);
 
@@ -226,6 +235,9 @@ class MastodonClient {
 
   /// User-level domain block management API.
   DomainBlocksApi get domainBlocks => DomainBlocksApi(_http);
+
+  /// Optional instance donation campaigns API.
+  DonationCampaignsApi get donationCampaigns => DonationCampaignsApi(_http);
 
   /// Email confirmation API.
   EmailsApi get emails => EmailsApi(_http);

@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'json_converters.dart';
+
 part 'mastodon_preview_card.freezed.dart';
 part 'mastodon_preview_card.g.dart';
 
@@ -40,8 +42,12 @@ class MastodonPreviewCard with _$MastodonPreviewCard {
     required this.height,
     required this.embedUrl,
     required this.authors,
+    this.language,
     this.image,
+    this.imageDescription = '',
     this.blurhash,
+    this.publishedAt,
+    this.missingAttribution,
   });
 
   factory MastodonPreviewCard.fromJson(Map<String, dynamic> json) =>
@@ -66,6 +72,10 @@ class MastodonPreviewCard with _$MastodonPreviewCard {
   @JsonKey(defaultValue: '')
   @override
   final String description;
+
+  /// ISO 639 language code detected for the linked content.
+  @override
+  final String? language;
 
   /// Type of the preview card.
   @JsonKey(readValue: _readType, unknownEnumValue: MastodonPreviewCardType.link)
@@ -115,6 +125,11 @@ class MastodonPreviewCard with _$MastodonPreviewCard {
   @override
   final String? image;
 
+  /// Alternative text for the preview image.
+  @JsonKey(defaultValue: '')
+  @override
+  final String imageDescription;
+
   /// URL for embedding photos.
   @JsonKey(defaultValue: '')
   @override
@@ -123,6 +138,17 @@ class MastodonPreviewCard with _$MastodonPreviewCard {
   /// Blurhash string for the thumbnail. `null` if not available.
   @override
   final String? blurhash;
+
+  /// Publication timestamp of the linked content.
+  @SafeDateTimeConverter()
+  @override
+  final DateTime? publishedAt;
+
+  /// Whether the current user is an author whose attribution is missing.
+  ///
+  /// This field is returned only for authenticated requests.
+  @override
+  final bool? missingAttribution;
 
   /// List of content authors (Mastodon 4.3.0+).
   @JsonKey(defaultValue: <MastodonPreviewCardAuthor>[])

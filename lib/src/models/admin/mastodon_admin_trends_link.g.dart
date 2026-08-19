@@ -44,8 +44,14 @@ MastodonAdminTrendsLink _$MastodonAdminTrendsLinkFromJson(
           )
           .toList() ??
       [],
+  language: json['language'] as String?,
   image: json['image'] as String?,
+  imageDescription: json['image_description'] as String? ?? '',
   blurhash: json['blurhash'] as String?,
+  publishedAt: const SafeDateTimeConverter().fromJson(
+    json['published_at'] as String?,
+  ),
+  missingAttribution: json['missing_attribution'] as bool?,
   requiresReview: json['requires_review'] as bool?,
 );
 
@@ -56,6 +62,7 @@ Map<String, dynamic> _$MastodonAdminTrendsLinkToJson(
   'url': instance.url,
   'title': instance.title,
   'description': instance.description,
+  'language': instance.language,
   'type': _$MastodonPreviewCardTypeEnumMap[instance.type]!,
   'author_name': instance.authorName,
   'author_url': instance.authorUrl,
@@ -65,8 +72,11 @@ Map<String, dynamic> _$MastodonAdminTrendsLinkToJson(
   'width': instance.width,
   'height': instance.height,
   'image': instance.image,
+  'image_description': instance.imageDescription,
   'embed_url': instance.embedUrl,
   'blurhash': instance.blurhash,
+  'published_at': const SafeDateTimeConverter().toJson(instance.publishedAt),
+  'missing_attribution': instance.missingAttribution,
   'authors': instance.authors.map((e) => e.toJson()).toList(),
   'history': instance.history.map((e) => e.toJson()).toList(),
   'requires_review': instance.requiresReview,

@@ -173,6 +173,13 @@ Map<String, dynamic> _$MastodonPollsConfigurationToJson(
 MastodonAccountsConfiguration _$MastodonAccountsConfigurationFromJson(
   Map<String, dynamic> json,
 ) => MastodonAccountsConfiguration(
+  maxDisplayNameLength:
+      (json['max_display_name_length'] as num?)?.toInt() ?? 40,
+  maxNoteLength: (json['max_note_length'] as num?)?.toInt() ?? 500,
+  maxAvatarDescriptionLength:
+      (json['max_avatar_description_length'] as num?)?.toInt() ?? 150,
+  maxHeaderDescriptionLength:
+      (json['max_header_description_length'] as num?)?.toInt() ?? 150,
   maxFeaturedTags: (json['max_featured_tags'] as num?)?.toInt() ?? 10,
   maxPinnedStatuses: (json['max_pinned_statuses'] as num?)?.toInt() ?? 5,
   maxProfileFields: (json['max_profile_fields'] as num?)?.toInt() ?? 4,
@@ -185,6 +192,10 @@ MastodonAccountsConfiguration _$MastodonAccountsConfigurationFromJson(
 Map<String, dynamic> _$MastodonAccountsConfigurationToJson(
   MastodonAccountsConfiguration instance,
 ) => <String, dynamic>{
+  'max_display_name_length': instance.maxDisplayNameLength,
+  'max_note_length': instance.maxNoteLength,
+  'max_avatar_description_length': instance.maxAvatarDescriptionLength,
+  'max_header_description_length': instance.maxHeaderDescriptionLength,
   'max_featured_tags': instance.maxFeaturedTags,
   'max_pinned_statuses': instance.maxPinnedStatuses,
   'max_profile_fields': instance.maxProfileFields,

@@ -1,5 +1,6 @@
 import '../client/mastodon_http_client.dart';
 import '../internal/link_header_parser.dart';
+import '../models/mastodon_domain_block_preview.dart';
 import '../models/mastodon_page.dart';
 
 /// API client for user-level domain block management.
@@ -8,6 +9,17 @@ class DomainBlocksApi {
   const DomainBlocksApi(this._http);
 
   final MastodonHttpClient _http;
+
+  /// Previews the relationship impact of blocking [domain].
+  ///
+  /// `GET /api/v1/domain_blocks/preview`
+  Future<MastodonDomainBlockPreview> preview(String domain) async {
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/domain_blocks/preview',
+      queryParameters: {'domain': domain},
+    );
+    return MastodonDomainBlockPreview.fromJson(data!);
+  }
 
   /// Fetches the list of blocked domains.
   ///

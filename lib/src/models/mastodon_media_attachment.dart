@@ -17,6 +17,9 @@ class MastodonMediaAttachment with _$MastodonMediaAttachment {
     this.url,
     this.previewUrl,
     this.remoteUrl,
+    this.previewRemoteUrl,
+    this.textUrl,
+    this.meta,
     this.description,
     this.blurhash,
   });
@@ -50,6 +53,24 @@ class MastodonMediaAttachment with _$MastodonMediaAttachment {
   /// Original URL on the remote instance.
   @override
   final String? remoteUrl;
+
+  /// Original thumbnail URL on the remote instance.
+  @override
+  final String? previewRemoteUrl;
+
+  /// Legacy shortened URL for the media attachment.
+  ///
+  /// Deprecated by Mastodon in 3.5.0 and always `null` on recent servers.
+  @Deprecated('Use url instead.')
+  @override
+  final String? textUrl;
+
+  /// Media metadata returned by the server.
+  ///
+  /// Its structure depends on the media type and may contain `original`,
+  /// `small`, `focus`, and audio-specific entries.
+  @override
+  final Map<String, dynamic>? meta;
 
   /// Alt text (for screen readers).
   @override

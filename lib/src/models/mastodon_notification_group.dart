@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'json_converters.dart';
+import 'mastodon_collection.dart';
 import 'mastodon_notification.dart';
 import 'mastodon_report.dart';
 
@@ -27,6 +28,9 @@ class MastodonNotificationGroup with _$MastodonNotificationGroup {
     this.report,
     this.event,
     this.moderationWarning,
+    this.annualReport,
+    this.collection,
+    this.fallback,
   });
 
   factory MastodonNotificationGroup.fromJson(Map<String, dynamic> json) =>
@@ -97,4 +101,18 @@ class MastodonNotificationGroup with _$MastodonNotificationGroup {
   /// Non-null only for [MastodonNotificationType.moderationWarning].
   @override
   final MastodonAccountWarning? moderationWarning;
+
+  /// Annual report metadata.
+  ///
+  /// Non-null only for [MastodonNotificationType.annualReport].
+  @override
+  final MastodonAnnualReportEvent? annualReport;
+
+  /// Associated collection for collection-related notifications.
+  @override
+  final MastodonCollection? collection;
+
+  /// Generic rendering for a notification type not supported by the client.
+  @override
+  final MastodonNotificationFallback? fallback;
 }

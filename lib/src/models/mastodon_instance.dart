@@ -284,6 +284,10 @@ class MastodonPollsConfiguration with _$MastodonPollsConfiguration {
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonAccountsConfiguration with _$MastodonAccountsConfiguration {
   const MastodonAccountsConfiguration({
+    this.maxDisplayNameLength = 40,
+    this.maxNoteLength = 500,
+    this.maxAvatarDescriptionLength = 150,
+    this.maxHeaderDescriptionLength = 150,
     required this.maxFeaturedTags,
     required this.maxPinnedStatuses,
     required this.maxProfileFields,
@@ -296,6 +300,26 @@ class MastodonAccountsConfiguration with _$MastodonAccountsConfiguration {
 
   /// Serializes to JSON.
   Map<String, dynamic> toJson() => _$MastodonAccountsConfigurationToJson(this);
+
+  /// Maximum character count for display names.
+  @JsonKey(defaultValue: 40)
+  @override
+  final int maxDisplayNameLength;
+
+  /// Maximum character count for profile notes.
+  @JsonKey(defaultValue: 500)
+  @override
+  final int maxNoteLength;
+
+  /// Maximum character count for avatar descriptions.
+  @JsonKey(defaultValue: 150)
+  @override
+  final int maxAvatarDescriptionLength;
+
+  /// Maximum character count for header descriptions.
+  @JsonKey(defaultValue: 150)
+  @override
+  final int maxHeaderDescriptionLength;
 
   /// Maximum number of featured tags.
   @JsonKey(defaultValue: 10)

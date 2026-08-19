@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MastodonNotificationGroup {
 
- String get groupKey; int get notificationsCount; MastodonNotificationType get type; String? get mostRecentNotificationId; String? get pageMinId; String? get pageMaxId; DateTime? get latestPageNotificationAt; List<String> get sampleAccountIds; String? get statusId; MastodonReport? get report; MastodonRelationshipSeveranceEvent? get event; MastodonAccountWarning? get moderationWarning;
+ String get groupKey; int get notificationsCount; MastodonNotificationType get type; String? get mostRecentNotificationId; String? get pageMinId; String? get pageMaxId; DateTime? get latestPageNotificationAt; List<String> get sampleAccountIds; String? get statusId; MastodonReport? get report; MastodonRelationshipSeveranceEvent? get event; MastodonAccountWarning? get moderationWarning; MastodonAnnualReportEvent? get annualReport; MastodonCollection? get collection; MastodonNotificationFallback? get fallback;
 /// Create a copy of MastodonNotificationGroup
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,12 +26,12 @@ $MastodonNotificationGroupCopyWith<MastodonNotificationGroup> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonNotificationGroup&&(identical(other.groupKey, groupKey) || other.groupKey == groupKey)&&(identical(other.notificationsCount, notificationsCount) || other.notificationsCount == notificationsCount)&&(identical(other.type, type) || other.type == type)&&(identical(other.mostRecentNotificationId, mostRecentNotificationId) || other.mostRecentNotificationId == mostRecentNotificationId)&&(identical(other.pageMinId, pageMinId) || other.pageMinId == pageMinId)&&(identical(other.pageMaxId, pageMaxId) || other.pageMaxId == pageMaxId)&&(identical(other.latestPageNotificationAt, latestPageNotificationAt) || other.latestPageNotificationAt == latestPageNotificationAt)&&const DeepCollectionEquality().equals(other.sampleAccountIds, sampleAccountIds)&&(identical(other.statusId, statusId) || other.statusId == statusId)&&(identical(other.report, report) || other.report == report)&&(identical(other.event, event) || other.event == event)&&(identical(other.moderationWarning, moderationWarning) || other.moderationWarning == moderationWarning));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonNotificationGroup&&(identical(other.groupKey, groupKey) || other.groupKey == groupKey)&&(identical(other.notificationsCount, notificationsCount) || other.notificationsCount == notificationsCount)&&(identical(other.type, type) || other.type == type)&&(identical(other.mostRecentNotificationId, mostRecentNotificationId) || other.mostRecentNotificationId == mostRecentNotificationId)&&(identical(other.pageMinId, pageMinId) || other.pageMinId == pageMinId)&&(identical(other.pageMaxId, pageMaxId) || other.pageMaxId == pageMaxId)&&(identical(other.latestPageNotificationAt, latestPageNotificationAt) || other.latestPageNotificationAt == latestPageNotificationAt)&&const DeepCollectionEquality().equals(other.sampleAccountIds, sampleAccountIds)&&(identical(other.statusId, statusId) || other.statusId == statusId)&&(identical(other.report, report) || other.report == report)&&(identical(other.event, event) || other.event == event)&&(identical(other.moderationWarning, moderationWarning) || other.moderationWarning == moderationWarning)&&(identical(other.annualReport, annualReport) || other.annualReport == annualReport)&&(identical(other.collection, collection) || other.collection == collection)&&(identical(other.fallback, fallback) || other.fallback == fallback));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,groupKey,notificationsCount,type,mostRecentNotificationId,pageMinId,pageMaxId,latestPageNotificationAt,const DeepCollectionEquality().hash(sampleAccountIds),statusId,report,event,moderationWarning);
+int get hashCode => Object.hash(runtimeType,groupKey,notificationsCount,type,mostRecentNotificationId,pageMinId,pageMaxId,latestPageNotificationAt,const DeepCollectionEquality().hash(sampleAccountIds),statusId,report,event,moderationWarning,annualReport,collection,fallback);
 
 
 
@@ -42,7 +42,7 @@ abstract mixin class $MastodonNotificationGroupCopyWith<$Res>  {
   factory $MastodonNotificationGroupCopyWith(MastodonNotificationGroup value, $Res Function(MastodonNotificationGroup) _then) = _$MastodonNotificationGroupCopyWithImpl;
 @useResult
 $Res call({
- String groupKey, int notificationsCount, MastodonNotificationType type, String? mostRecentNotificationId, String? pageMinId, String? pageMaxId, DateTime? latestPageNotificationAt, List<String> sampleAccountIds, String? statusId, MastodonReport? report, MastodonRelationshipSeveranceEvent? event, MastodonAccountWarning? moderationWarning
+ String groupKey, int notificationsCount, MastodonNotificationType type, String? mostRecentNotificationId, String? pageMinId, String? pageMaxId, DateTime? latestPageNotificationAt, List<String> sampleAccountIds, String? statusId, MastodonReport? report, MastodonRelationshipSeveranceEvent? event, MastodonAccountWarning? moderationWarning, MastodonAnnualReportEvent? annualReport, MastodonCollection? collection, MastodonNotificationFallback? fallback
 });
 
 
@@ -59,7 +59,7 @@ class _$MastodonNotificationGroupCopyWithImpl<$Res>
 
 /// Create a copy of MastodonNotificationGroup
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? groupKey = null,Object? notificationsCount = null,Object? type = null,Object? mostRecentNotificationId = freezed,Object? pageMinId = freezed,Object? pageMaxId = freezed,Object? latestPageNotificationAt = freezed,Object? sampleAccountIds = null,Object? statusId = freezed,Object? report = freezed,Object? event = freezed,Object? moderationWarning = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? groupKey = null,Object? notificationsCount = null,Object? type = null,Object? mostRecentNotificationId = freezed,Object? pageMinId = freezed,Object? pageMaxId = freezed,Object? latestPageNotificationAt = freezed,Object? sampleAccountIds = null,Object? statusId = freezed,Object? report = freezed,Object? event = freezed,Object? moderationWarning = freezed,Object? annualReport = freezed,Object? collection = freezed,Object? fallback = freezed,}) {
   return _then(MastodonNotificationGroup(
 groupKey: null == groupKey ? _self.groupKey : groupKey // ignore: cast_nullable_to_non_nullable
 as String,notificationsCount: null == notificationsCount ? _self.notificationsCount : notificationsCount // ignore: cast_nullable_to_non_nullable
@@ -73,7 +73,10 @@ as List<String>,statusId: freezed == statusId ? _self.statusId : statusId // ign
 as String?,report: freezed == report ? _self.report : report // ignore: cast_nullable_to_non_nullable
 as MastodonReport?,event: freezed == event ? _self.event : event // ignore: cast_nullable_to_non_nullable
 as MastodonRelationshipSeveranceEvent?,moderationWarning: freezed == moderationWarning ? _self.moderationWarning : moderationWarning // ignore: cast_nullable_to_non_nullable
-as MastodonAccountWarning?,
+as MastodonAccountWarning?,annualReport: freezed == annualReport ? _self.annualReport : annualReport // ignore: cast_nullable_to_non_nullable
+as MastodonAnnualReportEvent?,collection: freezed == collection ? _self.collection : collection // ignore: cast_nullable_to_non_nullable
+as MastodonCollection?,fallback: freezed == fallback ? _self.fallback : fallback // ignore: cast_nullable_to_non_nullable
+as MastodonNotificationFallback?,
   ));
 }
 

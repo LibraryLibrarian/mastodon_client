@@ -25,6 +25,15 @@ void main() {
         ),
       );
       expect(attachment.remoteUrl, isNull);
+      expect(attachment.previewRemoteUrl, isNull);
+      // ignore: deprecated_member_use_from_same_package
+      expect(attachment.textUrl, isNull);
+      expect(attachment.meta?['original'], {
+        'width': 16,
+        'height': 16,
+        'size': '16x16',
+        'aspect': 1.0,
+      });
       expect(
         attachment.description,
         equals('Test image for fixture collection'),

@@ -13,6 +13,13 @@ class GroupedNotificationsApi {
 
   final MastodonHttpClient _http;
 
+  /// Clears all notifications through the grouped notifications API.
+  ///
+  /// `POST /api/v2/notifications/clear`
+  Future<void> clear() async {
+    await _http.send<void>('/api/v2/notifications/clear', method: 'POST');
+  }
+
   /// Fetches grouped notifications.
   ///
   /// `GET /api/v2/notifications`
@@ -24,6 +31,8 @@ class GroupedNotificationsApi {
   /// sets the account expansion method (`full` or `partial_avatars`).
   /// [groupedTypes] lists the notification types to group, and
   /// [includeFiltered] controls whether filtered notifications are included.
+  /// [supportedTypes] tells Mastodon which types the client can render so
+  /// unsupported notifications include fallback text (Mastodon 4.6+).
   ///
   /// Pagination cursors are parsed from the `Link` response header and
   /// stored in [MastodonPage]. [MastodonPage.items] contains a single
@@ -38,6 +47,7 @@ class GroupedNotificationsApi {
     String? accountId,
     String? expandAccounts,
     List<String>? groupedTypes,
+    List<String>? supportedTypes,
     bool? includeFiltered,
   }) async {
     final query = <String, dynamic>{
@@ -53,6 +63,8 @@ class GroupedNotificationsApi {
         'expand_accounts': expandAccounts,
       if (groupedTypes != null && groupedTypes.isNotEmpty)
         'grouped_types[]': groupedTypes,
+      if (supportedTypes != null && supportedTypes.isNotEmpty)
+        'supported_types[]': supportedTypes,
       'include_filtered': ?includeFiltered,
     };
     final response = await _http.sendRaw<Map<String, dynamic>>(
@@ -74,10 +86,15 @@ class GroupedNotificationsApi {
   ///
   /// `GET /api/v2/notifications/:group_key`
   Future<MastodonGroupedNotificationsResults> fetchByGroupKey(
-    String groupKey,
-  ) async {
+    String groupKey, {
+    List<String>? supportedTypes,
+  }) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v2/notifications/$groupKey',
+      queryParameters: <String, dynamic>{
+        if (supportedTypes != null && supportedTypes.isNotEmpty)
+          'supported_types[]': supportedTypes,
+      },
     );
     return MastodonGroupedNotificationsResults.fromJson(data!);
   }
