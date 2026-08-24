@@ -56,5 +56,25 @@ void main() {
 
       expect(MastodonNotification.fromJson(json).groupKey, isNull);
     });
+
+    test('deserializes Mastodon 4.6 collection notification fallback', () {
+      final file = File('test/fixtures/notifications.json');
+      final list = jsonDecode(file.readAsStringSync()) as List<dynamic>;
+      final json = Map<String, dynamic>.from(list.first as Map<String, dynamic>)
+        ..['type'] = 'added_to_collection'
+        ..['collection'] = {'id': '42', 'name': 'Friends'}
+        ..['fallback'] = {
+          'title': '<span>Alice</span> added you to a collection',
+          'summary': '<a href="/">Sign in</a> to view it',
+          'description': null,
+        };
+
+      final notification = MastodonNotification.fromJson(json);
+
+      expect(notification.type, MastodonNotificationType.addedToCollection);
+      expect(notification.collection?.id, '42');
+      expect(notification.fallback?.title, contains('Alice'));
+      expect(notification.fallback?.description, isNull);
+    });
   });
 }

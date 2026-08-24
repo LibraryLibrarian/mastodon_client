@@ -8,6 +8,30 @@ part of 'mastodon_notification.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+MastodonNotificationFallback _$MastodonNotificationFallbackFromJson(
+  Map<String, dynamic> json,
+) => MastodonNotificationFallback(
+  title: json['title'] as String? ?? '',
+  summary: json['summary'] as String? ?? '',
+  description: json['description'] as String?,
+);
+
+Map<String, dynamic> _$MastodonNotificationFallbackToJson(
+  MastodonNotificationFallback instance,
+) => <String, dynamic>{
+  'title': instance.title,
+  'summary': instance.summary,
+  'description': instance.description,
+};
+
+MastodonAnnualReportEvent _$MastodonAnnualReportEventFromJson(
+  Map<String, dynamic> json,
+) => MastodonAnnualReportEvent(year: json['year'] as String);
+
+Map<String, dynamic> _$MastodonAnnualReportEventToJson(
+  MastodonAnnualReportEvent instance,
+) => <String, dynamic>{'year': instance.year};
+
 MastodonRelationshipSeveranceEvent _$MastodonRelationshipSeveranceEventFromJson(
   Map<String, dynamic> json,
 ) => MastodonRelationshipSeveranceEvent(
@@ -81,6 +105,14 @@ MastodonNotification _$MastodonNotificationFromJson(
       : MastodonAccountWarning.fromJson(
           json['moderation_warning'] as Map<String, dynamic>,
         ),
+  collection: json['collection'] == null
+      ? null
+      : MastodonCollection.fromJson(json['collection'] as Map<String, dynamic>),
+  fallback: json['fallback'] == null
+      ? null
+      : MastodonNotificationFallback.fromJson(
+          json['fallback'] as Map<String, dynamic>,
+        ),
 );
 
 Map<String, dynamic> _$MastodonNotificationToJson(
@@ -94,6 +126,8 @@ Map<String, dynamic> _$MastodonNotificationToJson(
   'status': instance.status?.toJson(),
   'relationship_severance_event': instance.relationshipSeveranceEvent?.toJson(),
   'moderation_warning': instance.moderationWarning?.toJson(),
+  'collection': instance.collection?.toJson(),
+  'fallback': instance.fallback?.toJson(),
 };
 
 const _$MastodonNotificationTypeEnumMap = {
@@ -111,5 +145,8 @@ const _$MastodonNotificationTypeEnumMap = {
   MastodonNotificationType.moderationWarning: 'moderation_warning',
   MastodonNotificationType.quote: 'quote',
   MastodonNotificationType.quotedUpdate: 'quoted_update',
+  MastodonNotificationType.annualReport: 'annual_report',
+  MastodonNotificationType.addedToCollection: 'added_to_collection',
+  MastodonNotificationType.collectionUpdate: 'collection_update',
   MastodonNotificationType.unknown: 'unknown',
 };

@@ -14,14 +14,17 @@ import '../api/admin/admin_retention_api.dart';
 import '../api/admin/admin_tags_api.dart';
 import '../api/admin/admin_trends_api.dart';
 import '../api/announcements_api.dart';
+import '../api/annual_reports_api.dart';
 import '../api/apps_api.dart';
 import '../api/async_refreshes_api.dart';
 import '../api/blocks_api.dart';
 import '../api/bookmarks_api.dart';
 import '../api/conversations_api.dart';
+import '../api/collections_api.dart';
 import '../api/custom_emojis_api.dart';
 import '../api/directory_api.dart';
 import '../api/domain_blocks_api.dart';
+import '../api/donation_campaigns_api.dart';
 import '../api/emails_api.dart';
 import '../api/endorsements_api.dart';
 import '../api/favourites_api.dart';
@@ -52,7 +55,12 @@ import '../api/suggestions_api.dart';
 import '../api/tags_api.dart';
 import '../api/timelines_api.dart';
 import '../api/trends_api.dart';
+import '../exception/mastodon_exception.dart';
 import '../logging/logger.dart';
+import '../models/mastodon_instance.dart';
+import '../models/mastodon_instance_v1.dart';
+import '../streaming/mastodon_streaming.dart';
+import '../streaming/streaming_config.dart';
 import 'mastodon_http_client.dart';
 
 /// Main entry point for the Mastodon API client.
@@ -83,7 +91,9 @@ class MastodonClient {
     bool enableLog = true,
     Logger? logger,
     HttpClientAdapter? httpClientAdapter,
-  }) : _http = MastodonHttpClient(
+    MastodonStreamingConfig? streamingConfig,
+  }) : streamingConfig = streamingConfig ?? MastodonStreamingConfig(),
+       _http = MastodonHttpClient(
          baseUrl: baseUrl,
          accessToken: accessToken,
          enableLog: enableLog,
@@ -92,6 +102,66 @@ class MastodonClient {
        );
 
   final MastodonHttpClient _http;
+  MastodonStreaming? _streaming;
+  Future<void>? _disposeFuture;
+
+  /// Connection and reconnection settings used by [streaming].
+  final MastodonStreamingConfig streamingConfig;
+
+  /// Lazily created and cached Streaming API client.
+  ///
+  /// Accessing this property does not open a WebSocket. Call
+  /// [MastodonStreaming.connect] explicitly when streaming is needed.
+  MastodonStreaming get streaming {
+    if (_disposeFuture != null) {
+      throw StateError('MastodonClient has been disposed');
+    }
+    final accessToken = _http.accessToken;
+    if (accessToken == null || accessToken.isEmpty) {
+      throw StateError('Mastodon Streaming API requires an access token');
+    }
+    return _streaming ??= MastodonStreaming(
+      baseUrl: _http.baseUrl,
+      accessToken: accessToken,
+      config: streamingConfig,
+      logger: _http.logger,
+      enableLog: _http.enableLog,
+      metadataProvider: _resolveStreamingMetadata,
+      tokenValidator: _validateStreamingToken,
+    );
+  }
+
+  Future<bool> _validateStreamingToken() async {
+    try {
+      await AccountsApi(_http).verifyCredentials();
+      return true;
+    } on MastodonUnauthorizedException {
+      return false;
+    }
+  }
+
+  Future<({MastodonInstance? instance, MastodonInstanceV1? instanceV1})>
+  _resolveStreamingMetadata() async {
+    MastodonInstance? instance;
+    try {
+      instance = await InstanceApi(_http).fetch();
+    } on MastodonException {
+      // v2 非対応サーバでは v1 の取得へフォールバックする。
+    }
+    final v2Url = instance?.configuration.urls.streaming?.trim();
+    if (v2Url != null && v2Url.isNotEmpty) {
+      return (instance: instance, instanceV1: null);
+    }
+
+    MastodonInstanceV1? instanceV1;
+    try {
+      // ignore: deprecated_member_use_from_same_package
+      instanceV1 = await InstanceApi(_http).fetchV1();
+    } on MastodonException {
+      // メタデータが取れなければ StreamingUrlResolver が REST host を使う。
+    }
+    return (instance: instance, instanceV1: instanceV1);
+  }
 
   /// Account information API.
   AccountsApi get accounts => AccountsApi(_http);
@@ -136,6 +206,9 @@ class MastodonClient {
   /// Server announcements API.
   AnnouncementsApi get announcements => AnnouncementsApi(_http);
 
+  /// Annual usage reports (Wrapstodon) API.
+  AnnualReportsApi get annualReports => AnnualReportsApi(_http);
+
   /// OAuth application registration and verification API.
   AppsApi get apps => AppsApi(_http);
 
@@ -151,6 +224,9 @@ class MastodonClient {
   /// Direct message conversations API.
   ConversationsApi get conversations => ConversationsApi(_http);
 
+  /// Account collections API.
+  CollectionsApi get collections => CollectionsApi(_http);
+
   /// Custom emoji API.
   CustomEmojisApi get customEmojis => CustomEmojisApi(_http);
 
@@ -159,6 +235,9 @@ class MastodonClient {
 
   /// User-level domain block management API.
   DomainBlocksApi get domainBlocks => DomainBlocksApi(_http);
+
+  /// Optional instance donation campaigns API.
+  DonationCampaignsApi get donationCampaigns => DonationCampaignsApi(_http);
 
   /// Email confirmation API.
   EmailsApi get emails => EmailsApi(_http);
@@ -256,4 +335,18 @@ class MastodonClient {
 
   /// Trends (tags, statuses, and links) API.
   TrendsApi get trends => TrendsApi(_http);
+
+  /// Releases the optional streaming connection and the HTTP transport.
+  ///
+  /// If [streaming] was never accessed, this method does not create it or open
+  /// a WebSocket. Calling this method repeatedly is safe.
+  Future<void> dispose() => _disposeFuture ??= _performDispose();
+
+  Future<void> _performDispose() async {
+    try {
+      await _streaming?.dispose();
+    } finally {
+      _http.dio.close(force: true);
+    }
+  }
 }

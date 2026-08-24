@@ -1,10 +1,12 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'mastodon_token.freezed.dart';
 part 'mastodon_token.g.dart';
 
 /// OAuth access token.
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonToken {
+class MastodonToken with _$MastodonToken {
   /// Creates a [MastodonToken] with the given fields.
   const MastodonToken({
     required this.accessToken,
@@ -21,14 +23,18 @@ class MastodonToken {
   Map<String, dynamic> toJson() => _$MastodonTokenToJson(this);
 
   /// OAuth token string used for authorization.
+  @override
   final String accessToken;
 
   /// Type of the OAuth token (`Bearer` in Mastodon).
+  @override
   final String tokenType;
 
   /// Scopes granted to this token (space-delimited).
+  @override
   final String scope;
 
   /// Timestamp when the token was generated (UNIX timestamp).
+  @override
   final int createdAt;
 }

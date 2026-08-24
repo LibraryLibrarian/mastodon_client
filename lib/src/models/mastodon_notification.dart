@@ -1,9 +1,11 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'json_converters.dart';
 import 'mastodon_account.dart';
+import 'mastodon_collection.dart';
 import 'mastodon_status.dart';
 
+part 'mastodon_notification.freezed.dart';
 part 'mastodon_notification.g.dart';
 
 /// Type of notification.
@@ -56,13 +58,75 @@ enum MastodonNotificationType {
   /// A quoted status was updated (Mastodon 4.5+ / FEP-044f).
   quotedUpdate,
 
+  /// Your annual report is available (Mastodon 4.6+).
+  annualReport,
+
+  /// You were added to a collection (Mastodon 4.6+).
+  addedToCollection,
+
+  /// A collection involving you was updated (Mastodon 4.6+).
+  collectionUpdate,
+
   /// Unknown or future notification type.
   unknown,
 }
 
-/// Relationship severance event (Mastodon 4.3+).
+/// Generic presentation for a notification type unsupported by the client.
+///
+/// Returned by Mastodon 4.6+ when `supported_types[]` is supplied and a
+/// notification cannot be represented by one of those types.
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonRelationshipSeveranceEvent {
+class MastodonNotificationFallback with _$MastodonNotificationFallback {
+  const MastodonNotificationFallback({
+    required this.title,
+    required this.summary,
+    this.description,
+  });
+
+  factory MastodonNotificationFallback.fromJson(Map<String, dynamic> json) =>
+      _$MastodonNotificationFallbackFromJson(json);
+
+  /// Serializes to JSON.
+  Map<String, dynamic> toJson() => _$MastodonNotificationFallbackToJson(this);
+
+  /// Human-readable notification title. May contain sanitized HTML.
+  @JsonKey(defaultValue: '')
+  @override
+  final String title;
+
+  /// Human-readable notification summary. May contain sanitized HTML.
+  @JsonKey(defaultValue: '')
+  @override
+  final String summary;
+
+  /// Optional longer notification description.
+  @override
+  final String? description;
+}
+
+/// Annual report event embedded in a grouped notification.
+@Freezed(toStringOverride: false)
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MastodonAnnualReportEvent with _$MastodonAnnualReportEvent {
+  const MastodonAnnualReportEvent({required this.year});
+
+  factory MastodonAnnualReportEvent.fromJson(Map<String, dynamic> json) =>
+      _$MastodonAnnualReportEventFromJson(json);
+
+  /// Serializes to JSON.
+  Map<String, dynamic> toJson() => _$MastodonAnnualReportEventToJson(this);
+
+  /// Calendar year represented by the report.
+  @override
+  final String year;
+}
+
+/// Relationship severance event (Mastodon 4.3+).
+@Freezed(toStringOverride: false)
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MastodonRelationshipSeveranceEvent
+    with _$MastodonRelationshipSeveranceEvent {
   const MastodonRelationshipSeveranceEvent({
     required this.id,
     required this.type,
@@ -81,33 +145,41 @@ class MastodonRelationshipSeveranceEvent {
   Map<String, dynamic> toJson() =>
       _$MastodonRelationshipSeveranceEventToJson(this);
 
+  @override
   final String id;
 
   /// Type of event (`domain_block` / `user_domain_block` / `account_suspension`).
+  @override
   final String type;
 
   /// Whether the account was purged.
   @JsonKey(defaultValue: false)
+  @override
   final bool purged;
 
   /// Name of the severed domain or account.
+  @override
   final String targetName;
 
   /// Number of affected followers.
   @JsonKey(defaultValue: 0)
+  @override
   final int followersCount;
 
   /// Number of affected followings.
   @JsonKey(defaultValue: 0)
+  @override
   final int followingCount;
 
   @SafeDateTimeConverter()
+  @override
   final DateTime? createdAt;
 }
 
 /// Moderation warning (Mastodon 4.3+).
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonAccountWarning {
+class MastodonAccountWarning with _$MastodonAccountWarning {
   const MastodonAccountWarning({
     required this.id,
     required this.action,
@@ -125,29 +197,35 @@ class MastodonAccountWarning {
   static Object? _readAppeal(Map<dynamic, dynamic> json, String key) =>
       json['appeal'] != null;
 
+  @override
   final String id;
 
   /// Type of warning (`none` / `disable` / `mark_statuses_as_sensitive`, etc.).
+  @override
   final String action;
 
   /// Body text of the warning.
   @JsonKey(defaultValue: '')
+  @override
   final String text;
 
   /// Whether an appeal exists.
   @JsonKey(readValue: _readAppeal, defaultValue: false)
+  @override
   final bool appeal;
 
   /// Timestamp when the notification was created.
   @SafeDateTimeConverter()
+  @override
   final DateTime? createdAt;
 }
 
 /// Mastodon notification.
 ///
 /// Corresponds to the response from `/api/v1/notifications`.
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonNotification {
+class MastodonNotification with _$MastodonNotification {
   const MastodonNotification({
     required this.id,
     required this.type,
@@ -157,6 +235,8 @@ class MastodonNotification {
     this.status,
     this.relationshipSeveranceEvent,
     this.moderationWarning,
+    this.collection,
+    this.fallback,
   });
 
   factory MastodonNotification.fromJson(Map<String, dynamic> json) =>
@@ -169,6 +249,7 @@ class MastodonNotification {
       json['type'] ?? 'unknown';
 
   /// Internal ID of the notification.
+  @override
   final String id;
 
   /// Type of the notification.
@@ -176,12 +257,15 @@ class MastodonNotification {
     readValue: _readType,
     unknownEnumValue: MastodonNotificationType.unknown,
   )
+  @override
   final MastodonNotificationType type;
 
   /// Timestamp when the notification was created.
+  @override
   final DateTime createdAt;
 
   /// Account that triggered the notification.
+  @override
   final MastodonAccount account;
 
   /// Key identifying the group this notification belongs to.
@@ -191,17 +275,29 @@ class MastodonNotification {
   /// not grouped receive a synthetic `ungrouped-<id>` key.
   ///
   /// Added in Mastodon 4.3.0.
+  @override
   final String? groupKey;
 
   /// Associated status. Null depending on the notification type.
+  @override
   final MastodonStatus? status;
 
   /// Details of the relationship severance event.
   ///
   /// Non-null only for [MastodonNotificationType.severedRelationships].
+  @override
   final MastodonRelationshipSeveranceEvent? relationshipSeveranceEvent;
 
   /// Details of the moderation warning. Non-null only for
   /// [MastodonNotificationType.moderationWarning].
+  @override
   final MastodonAccountWarning? moderationWarning;
+
+  /// Associated collection for collection-related notifications.
+  @override
+  final MastodonCollection? collection;
+
+  /// Generic rendering for a notification type not supported by the client.
+  @override
+  final MastodonNotificationFallback? fallback;
 }

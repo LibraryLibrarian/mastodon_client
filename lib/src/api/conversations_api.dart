@@ -68,4 +68,15 @@ class ConversationsApi {
     );
     return MastodonConversation.fromJson(data!);
   }
+
+  /// Marks a conversation as unread.
+  ///
+  /// `POST /api/v1/conversations/{id}/unread`
+  Future<MastodonConversation> markAsUnread(String id) async {
+    final data = await _http.send<Map<String, dynamic>>(
+      '/api/v1/conversations/$id/unread',
+      method: 'POST',
+    );
+    return MastodonConversation.fromJson(data!);
+  }
 }

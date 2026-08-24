@@ -14,6 +14,7 @@ pure Dart で実装された [Mastodon](https://joinmastodon.org/) APIクライ�
 - `MastodonPage<T>` によるカーソルベースのページネーション
 - 網羅的なエラーハンドリングのための sealed 例外階層
 - 自動的な v2/v1 フォールバックと処理ポーリングを備えた非同期メディアアップロード
+- 多重化された購読と自動再接続を備えた WebSocket による Streaming API
 - 交換可能な `Logger` インターフェースによる設定可能なロギング
 - pure Dart — Flutter への依存は不要
 
@@ -103,6 +104,7 @@ void main() async {
 | `markers` | タイムラインの既読位置マーカー |
 | `scheduledStatuses` | 予約投稿の管理 |
 | `health` | サーバーのヘルスチェック |
+| `streaming` | WebSocket による Streaming API（[ストリーミング](#ストリーミング)を参照） |
 | `profile` | アバター・ヘッダー画像の管理 |
 | `groupedNotifications` | グループ化された通知（v2） |
 | `adminAccounts` | 管理者用アカウント管理 |
@@ -171,6 +173,56 @@ try {
   // Timeout, connection refused, etc.
 }
 ```
+
+## ストリーミング
+
+Streaming API（WebSocket）によるリアルタイム更新です。単一の接続にすべての購読を多重化し、接続先はインスタンス情報から自動的に解決されます。
+
+```dart
+final client = MastodonClient(
+  baseUrl: 'https://mastodon.social',
+  accessToken: 'your_token',
+);
+
+await client.streaming.connect();
+
+final home = await client.streaming.subscribe(const MastodonStream.user());
+home.events.listen((event) {
+  switch (event) {
+    case MastodonUpdateEvent(:final status):
+      print(status.content);
+    case MastodonDeleteEvent(:final statusId):
+      print('削除: $statusId');
+    case MastodonNotificationEvent(:final notification):
+      print(notification.type);
+    default:
+      break;
+  }
+});
+
+// 投稿だけを受け取る（`update` と `status.update`）
+home.statuses.listen((status) => print(status.id));
+
+final tag = await client.streaming.subscribe(
+  const MastodonStream.hashtag('dart'),
+);
+
+await tag.cancel();
+await client.dispose();
+```
+
+チャンネルは `MastodonStream` で表現します。`user()` / `userNotification()` / `public()`（`local`、`remote`、`onlyMedia` を指定可能）/ `hashtag()`（`local` を指定可能）/ `list()` / `direct()` が利用できます。本ライブラリが型として持たないチャンネルには `subscribeRaw` を使います。
+
+購読は参照カウントで管理されるため、同一チャンネルを二重に購読しても `subscribe` フレームは 1 回しか送られません。再接続は指数バックオフとジッタで自動的に行われ、再接続後はすべての購読が自動的に再送されます。アプリのライフサイクルに合わせて `suspend()` と `resume()` を使い、接続の監視には `stateChanges` と `errors` を利用してください。
+
+### 注意点
+
+- パブリックなチャンネルを含め、ストリーミングには例外なくアクセストークンが必要です。
+- `read:statuses` のみのトークンで `user` に繋ぐと、ホームタイムラインは流れますが通知は一切届きません（エラーも出ません）。通知が必要な場合は `read` または `read:notifications` を使ってください。
+- `only_media` は WebSocket では無視されます。`MastodonStream.public(onlyMedia: true)` のようにチャンネル名で指定してください。
+- `user` と `userNotification` を同時に購読すると、同じ通知が 2 回届きます。`user` だけで十分です。
+- パブリックおよびハッシュタグの更新は、言語設定・フィード公開設定・ブロック・ミュートによってサイレントに破棄されることがあります。何も流れてこないことが必ずしも異常とは限りません。
+- 切断中に発生したイベントは再接続後も届きません。REST の `since_id` や `min_id` で穴埋めしてください。
 
 ## ロギング
 

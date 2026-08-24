@@ -13,6 +13,7 @@ A pure Dart client library for the [Mastodon](https://joinmastodon.org/) API. Pr
 - Cursor-based pagination via `MastodonPage<T>`
 - Sealed exception hierarchy for exhaustive error handling
 - Async media upload with automatic v2/v1 fallback and processing polling
+- Streaming API over WebSocket with multiplexed subscriptions and automatic reconnection
 - Configurable logging through a swappable `Logger` interface
 - Pure Dart — no Flutter dependency required
 
@@ -102,6 +103,7 @@ void main() async {
 | `markers` | Timeline read position markers |
 | `scheduledStatuses` | Scheduled status management |
 | `health` | Server health check |
+| `streaming` | Streaming API over WebSocket (see [Streaming](#streaming)) |
 | `profile` | Avatar/header image management |
 | `groupedNotifications` | Grouped notifications (v2) |
 | `adminAccounts` | Admin account management |
@@ -170,6 +172,56 @@ try {
   // Timeout, connection refused, etc.
 }
 ```
+
+## Streaming
+
+Real-time updates over the Streaming API (WebSocket). A single connection multiplexes every subscription, and the endpoint is discovered from instance metadata automatically.
+
+```dart
+final client = MastodonClient(
+  baseUrl: 'https://mastodon.social',
+  accessToken: 'your_token',
+);
+
+await client.streaming.connect();
+
+final home = await client.streaming.subscribe(const MastodonStream.user());
+home.events.listen((event) {
+  switch (event) {
+    case MastodonUpdateEvent(:final status):
+      print(status.content);
+    case MastodonDeleteEvent(:final statusId):
+      print('deleted: $statusId');
+    case MastodonNotificationEvent(:final notification):
+      print(notification.type);
+    default:
+      break;
+  }
+});
+
+// Statuses only (`update` and `status.update`)
+home.statuses.listen((status) => print(status.id));
+
+final tag = await client.streaming.subscribe(
+  const MastodonStream.hashtag('dart'),
+);
+
+await tag.cancel();
+await client.dispose();
+```
+
+Channels are described by `MastodonStream`: `user()`, `userNotification()`, `public()` (with `local`, `remote`, `onlyMedia`), `hashtag()` (with `local`), `list()`, and `direct()`. Use `subscribeRaw` for channels this library does not model.
+
+Subscriptions are reference counted, so subscribing twice to the same channel sends a single `subscribe` frame. Reconnection is automatic with exponential backoff and jitter, and every active subscription is resent afterwards. Use `suspend()` and `resume()` around application lifecycle changes, and observe `stateChanges` and `errors` to monitor the connection.
+
+### Things to know
+
+- Streaming always requires an access token, including public channels.
+- A `read:statuses` token receives home statuses on `user`, but silently receives no notifications. Use `read` or `read:notifications` when notifications are needed.
+- `only_media` is ignored over WebSocket. Select the channel name instead, via `MastodonStream.public(onlyMedia: true)`.
+- Subscribing to both `user` and `userNotification` delivers every notification twice. `user` alone is enough.
+- Public and hashtag updates may be silently dropped by language preferences, feed access settings, blocks, or mutes. An idle stream is not necessarily an error.
+- Events produced while disconnected are not replayed. Fill the gap through REST endpoints using `since_id` or `min_id`.
 
 ## Logging
 

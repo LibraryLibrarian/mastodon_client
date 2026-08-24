@@ -19,6 +19,7 @@ void main() {
           ' open-source decentralized social media platform.',
         ),
       );
+      expect(card.language, 'en');
       expect(card.type, equals(MastodonPreviewCardType.link));
       expect(card.authorName, equals(''));
       expect(card.authorUrl, equals(''));
@@ -34,7 +35,10 @@ void main() {
         ),
       );
       expect(card.embedUrl, equals(''));
+      expect(card.imageDescription, equals(''));
       expect(card.blurhash, equals('U44UXbj_D~aus^fRayfRD#aw-rj{ajfQoffR'));
+      expect(card.publishedAt, isNull);
+      expect(card.missingAttribution, isNull);
       expect(card.authors, isEmpty);
     });
 

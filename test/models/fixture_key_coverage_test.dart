@@ -21,16 +21,6 @@ void main() {
     'instance_v2.json': {'api_versions'},
   };
 
-  /// 未実装と分かっているが issue #13 の対象外のフィールド。
-  ///
-  /// このチェックを導入した際に検出されたもので、実装した時点でここから外す。
-  /// 新しい欠落を素通りさせないために、除外は一覧として明示しておく。
-  const outstandingGaps = <String, Set<String>>{
-    'preview_card.json': {'language', 'image_description', 'published_at'},
-    'media_attachment.json': {'preview_remote_url', 'text_url', 'meta'},
-    'collection.json': {'items'},
-  };
-
   final cases = <String, Map<String, dynamic> Function(Map<String, dynamic>)>{
     'status.json': (json) => MastodonStatus.fromJson(json).toJson(),
     'status_filtered.json': (json) => MastodonStatus.fromJson(json).toJson(),
@@ -50,6 +40,10 @@ void main() {
     'media_attachment.json': (json) =>
         MastodonMediaAttachment.fromJson(json).toJson(),
     'collection.json': (json) => MastodonCollection.fromJson(json).toJson(),
+    'collection_tagged.json': (json) =>
+        MastodonCollection.fromJson(json).toJson(),
+    'streaming_announcement_reaction.json': (json) =>
+        MastodonStreamingAnnouncementReaction.fromJson(json).toJson(),
   };
 
   group('fixture key coverage', () {
@@ -63,8 +57,7 @@ void main() {
 
         final missing = json.keys.toSet()
           ..removeAll(roundTrip(json).keys)
-          ..removeAll(knownDivergences[fixture] ?? const <String>{})
-          ..removeAll(outstandingGaps[fixture] ?? const <String>{});
+          ..removeAll(knownDivergences[fixture] ?? const <String>{});
 
         expect(
           missing,

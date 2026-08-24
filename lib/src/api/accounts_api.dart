@@ -21,6 +21,17 @@ class AccountsApi {
 
   final MastodonHttpClient _http;
 
+  /// Subscribes [email] to public post updates from [accountId].
+  ///
+  /// `POST /api/v1/accounts/{accountId}/email_subscriptions`
+  Future<void> subscribeToEmailUpdates(String accountId, String email) async {
+    await _http.send<void>(
+      '/api/v1/accounts/$accountId/email_subscriptions',
+      method: 'POST',
+      data: {'email': email},
+    );
+  }
+
   /// Fetches account information by ID.
   ///
   /// `GET /api/v1/accounts/{accountId}`
@@ -170,9 +181,10 @@ class AccountsApi {
   /// when omitted). Pass the last status ID as [maxId] to page backward,
   /// or use [minId] for forward pagination; [sinceId] returns only statuses
   /// newer than that ID. Set [excludeReplies] or [excludeReblogs] to `true`
-  /// to omit replies or boosts respectively. [onlyMedia] restricts results
-  /// to statuses with media attachments, [pinned] to pinned statuses only,
-  /// and [tagged] filters to statuses containing the specified hashtag.
+  /// to omit replies or boosts respectively. Set [excludeDirect] to omit
+  /// direct mentions (Mastodon 4.6+). [onlyMedia] restricts results to
+  /// statuses with media attachments, [pinned] to pinned statuses only, and
+  /// [tagged] filters to statuses containing the specified hashtag.
   ///
   /// Throws a subclass of [MastodonException] on failure.
   Future<MastodonPage<MastodonStatus>> fetchStatuses(
@@ -183,6 +195,7 @@ class AccountsApi {
     String? minId,
     bool? excludeReplies,
     bool? excludeReblogs,
+    bool? excludeDirect,
     bool? onlyMedia,
     bool? pinned,
     String? tagged,
@@ -196,6 +209,7 @@ class AccountsApi {
         'min_id': ?minId,
         'exclude_replies': ?excludeReplies,
         'exclude_reblogs': ?excludeReblogs,
+        'exclude_direct': ?excludeDirect,
         'only_media': ?onlyMedia,
         'pinned': ?pinned,
         'tagged': ?tagged,

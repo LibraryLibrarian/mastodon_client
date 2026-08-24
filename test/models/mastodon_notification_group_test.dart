@@ -65,5 +65,35 @@ void main() {
       final group = MastodonNotificationGroup.fromJson(base);
       expect(group.type, equals(MastodonNotificationType.unknown));
     });
+
+    test('deserializes an annual report event', () {
+      final json = Map<String, dynamic>.from(loadGroups()[0])
+        ..['type'] = 'annual_report'
+        ..['annual_report'] = {'year': '2026'}
+        ..remove('status_id');
+
+      final group = MastodonNotificationGroup.fromJson(json);
+
+      expect(group.type, MastodonNotificationType.annualReport);
+      expect(group.annualReport?.year, '2026');
+    });
+
+    test('deserializes collection data and fallback text', () {
+      final json = Map<String, dynamic>.from(loadGroups()[0])
+        ..['type'] = 'collection_update'
+        ..['collection'] = {'id': '42', 'name': 'Friends'}
+        ..['fallback'] = {
+          'title': 'Collection updated',
+          'summary': 'Sign in to view it',
+          'description': null,
+        }
+        ..remove('status_id');
+
+      final group = MastodonNotificationGroup.fromJson(json);
+
+      expect(group.type, MastodonNotificationType.collectionUpdate);
+      expect(group.collection?.name, 'Friends');
+      expect(group.fallback?.summary, 'Sign in to view it');
+    });
   });
 }

@@ -45,6 +45,19 @@ MastodonNotificationGroup _$MastodonNotificationGroupFromJson(
       : MastodonAccountWarning.fromJson(
           json['moderation_warning'] as Map<String, dynamic>,
         ),
+  annualReport: json['annual_report'] == null
+      ? null
+      : MastodonAnnualReportEvent.fromJson(
+          json['annual_report'] as Map<String, dynamic>,
+        ),
+  collection: json['collection'] == null
+      ? null
+      : MastodonCollection.fromJson(json['collection'] as Map<String, dynamic>),
+  fallback: json['fallback'] == null
+      ? null
+      : MastodonNotificationFallback.fromJson(
+          json['fallback'] as Map<String, dynamic>,
+        ),
 );
 
 Map<String, dynamic> _$MastodonNotificationGroupToJson(
@@ -64,6 +77,9 @@ Map<String, dynamic> _$MastodonNotificationGroupToJson(
   'report': instance.report?.toJson(),
   'event': instance.event?.toJson(),
   'moderation_warning': instance.moderationWarning?.toJson(),
+  'annual_report': instance.annualReport?.toJson(),
+  'collection': instance.collection?.toJson(),
+  'fallback': instance.fallback?.toJson(),
 };
 
 const _$MastodonNotificationTypeEnumMap = {
@@ -81,5 +97,8 @@ const _$MastodonNotificationTypeEnumMap = {
   MastodonNotificationType.moderationWarning: 'moderation_warning',
   MastodonNotificationType.quote: 'quote',
   MastodonNotificationType.quotedUpdate: 'quoted_update',
+  MastodonNotificationType.annualReport: 'annual_report',
+  MastodonNotificationType.addedToCollection: 'added_to_collection',
+  MastodonNotificationType.collectionUpdate: 'collection_update',
   MastodonNotificationType.unknown: 'unknown',
 };

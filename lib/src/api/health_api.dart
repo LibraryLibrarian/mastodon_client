@@ -21,4 +21,17 @@ class HealthApi {
     await _http.send<dynamic>('/health');
     return true;
   }
+
+  /// Checks whether the streaming process is healthy.
+  ///
+  /// `GET /api/v1/streaming/health`
+  ///
+  /// No authentication is required. The endpoint returns a plain-text `OK`
+  /// response rather than JSON.
+  ///
+  /// Throws a `MastodonException` on failure.
+  Future<bool> checkStreaming() async {
+    final data = await _http.send<String>('/api/v1/streaming/health');
+    return data?.trim() == 'OK';
+  }
 }

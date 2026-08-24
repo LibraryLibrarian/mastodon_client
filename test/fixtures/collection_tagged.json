@@ -1,0 +1,11 @@
+{
+  "id": "117036905954333172",
+  "name": "probe-tagged",
+  "sensitive": false,
+  "discoverable": true,
+  "tag": {
+    "name": "probetag",
+    "url": "https://mastodon.test/tags/probetag"
+  },
+  "items": []
+}

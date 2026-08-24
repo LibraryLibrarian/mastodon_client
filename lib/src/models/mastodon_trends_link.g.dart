@@ -59,29 +59,40 @@ MastodonTrendsLink _$MastodonTrendsLinkFromJson(
           )
           .toList() ??
       [],
+  language: json['language'] as String?,
   image: json['image'] as String?,
+  imageDescription: json['image_description'] as String? ?? '',
   blurhash: json['blurhash'] as String?,
+  publishedAt: const SafeDateTimeConverter().fromJson(
+    json['published_at'] as String?,
+  ),
+  missingAttribution: json['missing_attribution'] as bool?,
 );
 
-Map<String, dynamic> _$MastodonTrendsLinkToJson(MastodonTrendsLink instance) =>
-    <String, dynamic>{
-      'url': instance.url,
-      'title': instance.title,
-      'description': instance.description,
-      'type': _$MastodonPreviewCardTypeEnumMap[instance.type]!,
-      'author_name': instance.authorName,
-      'author_url': instance.authorUrl,
-      'provider_name': instance.providerName,
-      'provider_url': instance.providerUrl,
-      'html': instance.html,
-      'width': instance.width,
-      'height': instance.height,
-      'image': instance.image,
-      'embed_url': instance.embedUrl,
-      'blurhash': instance.blurhash,
-      'authors': instance.authors.map((e) => e.toJson()).toList(),
-      'history': instance.history.map((e) => e.toJson()).toList(),
-    };
+Map<String, dynamic> _$MastodonTrendsLinkToJson(
+  MastodonTrendsLink instance,
+) => <String, dynamic>{
+  'url': instance.url,
+  'title': instance.title,
+  'description': instance.description,
+  'language': instance.language,
+  'type': _$MastodonPreviewCardTypeEnumMap[instance.type]!,
+  'author_name': instance.authorName,
+  'author_url': instance.authorUrl,
+  'provider_name': instance.providerName,
+  'provider_url': instance.providerUrl,
+  'html': instance.html,
+  'width': instance.width,
+  'height': instance.height,
+  'image': instance.image,
+  'image_description': instance.imageDescription,
+  'embed_url': instance.embedUrl,
+  'blurhash': instance.blurhash,
+  'published_at': const SafeDateTimeConverter().toJson(instance.publishedAt),
+  'missing_attribution': instance.missingAttribution,
+  'authors': instance.authors.map((e) => e.toJson()).toList(),
+  'history': instance.history.map((e) => e.toJson()).toList(),
+};
 
 const _$MastodonPreviewCardTypeEnumMap = {
   MastodonPreviewCardType.link: 'link',

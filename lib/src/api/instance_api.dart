@@ -2,6 +2,7 @@ import '../client/mastodon_http_client.dart';
 import '../models/mastodon_domain_block.dart';
 import '../models/mastodon_extended_description.dart';
 import '../models/mastodon_instance.dart';
+import '../models/mastodon_instance_language.dart';
 import '../models/mastodon_instance_v1.dart';
 import '../models/mastodon_privacy_policy.dart';
 import '../models/mastodon_terms_of_service.dart';
@@ -31,6 +32,28 @@ class InstanceApi {
   Future<List<String>> fetchPeers() async {
     final data = await _http.send<List<dynamic>>('/api/v1/instance/peers');
     return (data ?? const <dynamic>[]).cast<String>();
+  }
+
+  /// Searches known peer domains by prefix.
+  ///
+  /// `GET /api/v1/peers/search`
+  Future<List<String>> searchPeers(String query) async {
+    final data = await _http.send<List<dynamic>>(
+      '/api/v1/peers/search',
+      queryParameters: {'q': query},
+    );
+    return (data ?? const <dynamic>[]).whereType<String>().toList();
+  }
+
+  /// Fetches locales supported by the Mastodon user interface.
+  ///
+  /// `GET /api/v1/instance/languages`
+  Future<List<MastodonInstanceLanguage>> fetchLanguages() async {
+    final data = await _http.send<List<dynamic>>('/api/v1/instance/languages');
+    return (data ?? const <dynamic>[])
+        .whereType<Map<String, dynamic>>()
+        .map(MastodonInstanceLanguage.fromJson)
+        .toList(growable: false);
   }
 
   /// Fetches weekly activity statistics for the last 3 months.

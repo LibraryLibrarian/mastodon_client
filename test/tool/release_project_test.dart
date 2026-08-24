@@ -16,6 +16,29 @@ void main() {
     root.deleteSync(recursive: true);
   });
 
+  test('readPubspecVersion returns the version declared in pubspec.yaml', () {
+    expect(readPubspecVersion(root), '1.0.0-beta.3');
+  });
+
+  test('readPubspecVersion rejects duplicate version fields', () {
+    _write(
+      root,
+      'pubspec.yaml',
+      '${_read(root, 'pubspec.yaml')}version: 1.0.0-beta.4\n',
+    );
+
+    expect(
+      () => readPubspecVersion(root),
+      throwsA(
+        isA<ReleaseToolException>().having(
+          (error) => error.message,
+          'message',
+          contains('exactly one top-level version field'),
+        ),
+      ),
+    );
+  });
+
   test('bumpVersion updates all version references and CHANGELOG', () {
     final updatedPaths = bumpVersion(
       root,

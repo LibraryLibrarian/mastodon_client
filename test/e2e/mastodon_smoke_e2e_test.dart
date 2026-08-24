@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 
 import 'e2e_env.dart';
 
-/// fediverse_e2e 環境(mastodon.test)に対する単一サーバーのスモークテスト
+/// Single-server smoke tests against mastodon.test in fediverse_e2e.
 void main() {
   final env = E2eEnv.tryLoad();
   if (env == null) {

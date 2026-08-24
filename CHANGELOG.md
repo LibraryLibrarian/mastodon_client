@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added the Streaming API over WebSocket, exposed as `client.streaming`, with a single multiplexed connection, reference-counted subscriptions, and typed sealed events (issue #21)
+- Added `MastodonStream` covering all twelve official channels, plus `subscribeRaw` for channels this library does not model (issue #21)
+- Added automatic streaming endpoint discovery from instance metadata, with normalization of scheme, port, and path (issue #21)
+- Added three streaming authentication modes with fallback, close-code-aware reconnection with exponential backoff and jitter, and `suspend()` / `resume()` (issue #21)
+- Added `MastodonClient.dispose()` and `HealthApi.checkStreaming()` (issue #21)
+
+### Changed
+
+- **Breaking:** `MastodonCollection.tag` is now a
+  `MastodonCollectionTag?` object instead of `String?`, matching Mastodon's
+  `{name, url}` response. `MastodonCollection.items` now exposes collection
+  item IDs, states, creation times, and conditional account IDs (issue #11)
+- **Breaking:** Added value equality (`==` / `hashCode`) and `copyWith` to all
+  JSON response models with Freezed. Existing constructors and JSON
+  behavior are preserved, while generated `toString` output is disabled to
+  avoid exposing model contents in logs (issue #29)
+- `MastodonHttpClient` now retains and exposes `baseUrl`, `accessToken`, and `enableLog` (issue #21)
+- **Breaking:** `MastodonSuggestion.source` is now nullable and deprecated in
+  favor of `sources`. This prevents deserialization failures when Mastodon
+  returns `null` or omits the legacy source value (issue #18)
+- Deprecated `StatusesApi.fetchCard()`, whose endpoint was removed in Mastodon
+  3.0.0. Use the `card` property returned by `StatusesApi.fetch()` instead.
+  `fetchCard()` is retained for Mastodon 2.x compatibility and will be removed
+  in the next major version (issue #12)
+
 ## [1.0.0-beta.2] - 2026-08-13
 
 ### Added
@@ -44,7 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tests covering the `unknownEnumValue` fallback for `MastodonFilterAction`, `MastodonTimelineAccessLevel`, `MastodonPreviewCardType`, `MastodonMediaType`, `MastodonVisibility`, `MastodonAdminIpBlockSeverity`, and `MastodonAdminDomainBlockSeverity` when the server returns a value not yet known to this client
 - Tests for the HTTP error conversion logic (`convertDioException`): all status-code branches (401/403/404/422/429/5xx/unmapped), error body parsing (`{"error": "..."}` extraction and fallbacks), retry-after header parsing, and network-level errors (connection/timeout/cancel)
 - Tests pinning the `int` → `String` coercion of `MastodonRole.id` and `MastodonAdminRole.id`, and the deserialization of every Mastodon 4.6.0 field from a live server response
-- `MastodonStatus.card`, exposing the link preview as a `MastodonPreviewCard`. From Mastodon 4.6.0 this is the only way to obtain a status's preview card, as `GET /api/v1/statuses/:id/card` was removed
+- `MastodonStatus.card`, exposing the link preview as a `MastodonPreviewCard`. Mastodon added this field in 2.6.0 as the replacement for `GET /api/v1/statuses/:id/card`, then removed the dedicated endpoint in 3.0.0
 - `MastodonStatus.filtered`, listing the filters a status matched for the authenticated user as `MastodonFilterResult`s. Without it, the v2 filters already implemented in `FiltersApi` could not be honoured on the timeline side
 - `MastodonStatus.application`, the app a status was posted from, as a `MastodonStatusApplication` (`name` / `website` only — the status API does not disclose client credentials)
 - `MastodonStatus.quoteApproval` (as `MastodonQuoteApproval`) and `MastodonStatus.quotesCount` (Mastodon 4.5.0)

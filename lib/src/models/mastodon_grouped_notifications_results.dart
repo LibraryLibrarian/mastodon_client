@@ -1,10 +1,11 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'mastodon_account.dart';
 import 'mastodon_notification_group.dart';
 import 'mastodon_partial_account.dart';
 import 'mastodon_status.dart';
 
+part 'mastodon_grouped_notifications_results.freezed.dart';
 part 'mastodon_grouped_notifications_results.g.dart';
 
 /// Response from the grouped notifications API.
@@ -12,8 +13,10 @@ part 'mastodon_grouped_notifications_results.g.dart';
 /// Model corresponding to the response from `/api/v2/notifications`.
 /// Returns notification groups, related accounts, and related statuses
 /// together.
+@Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MastodonGroupedNotificationsResults {
+class MastodonGroupedNotificationsResults
+    with _$MastodonGroupedNotificationsResults {
   const MastodonGroupedNotificationsResults({
     required this.accounts,
     required this.partialAccounts,
@@ -31,19 +34,23 @@ class MastodonGroupedNotificationsResults {
 
   /// List of accounts related to the notifications.
   @JsonKey(defaultValue: <MastodonAccount>[])
+  @override
   final List<MastodonAccount> accounts;
 
   /// List of partial account information.
   ///
   /// Used when `expand_accounts=partial_avatars` is specified.
   @JsonKey(defaultValue: <MastodonPartialAccount>[])
+  @override
   final List<MastodonPartialAccount> partialAccounts;
 
   /// List of statuses related to the notifications.
   @JsonKey(defaultValue: <MastodonStatus>[])
+  @override
   final List<MastodonStatus> statuses;
 
   /// List of notification groups.
   @JsonKey(defaultValue: <MastodonNotificationGroup>[])
+  @override
   final List<MastodonNotificationGroup> notificationGroups;
 }
