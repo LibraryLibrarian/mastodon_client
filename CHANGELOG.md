@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.3] - 2026-08-25
+
 ### Added
 
 - Added the Streaming API over WebSocket, exposed as `client.streaming`, with a single multiplexed connection, reference-counted subscriptions, and typed sealed events (issue #21)
@@ -14,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added automatic streaming endpoint discovery from instance metadata, with normalization of scheme, port, and path (issue #21)
 - Added three streaming authentication modes with fallback, close-code-aware reconnection with exponential backoff and jitter, and `suspend()` / `resume()` (issue #21)
 - Added `MastodonClient.dispose()` and `HealthApi.checkStreaming()` (issue #21)
+- Added Mastodon 4.6 APIs for Collections, Profile, Annual Reports, instance languages, domain block previews, peer search, donation campaigns, unread conversations, notification clearing and policies, and OAuth token inspection (issue #14)
+- Added Mastodon 4.5 and 4.6 response fields for media attachments, preview cards, instances, notifications, notification groups, and trend links (issue #17)
+- Added automated release branch and pull request creation, version tagging, and `main`-to-`develop` merge-back on top of the existing pub.dev publishing and GitHub Release workflows (issue #38)
 
 ### Changed
 
