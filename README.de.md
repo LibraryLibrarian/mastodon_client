@@ -23,7 +23,7 @@ Fügen Sie das Paket zu Ihrer `pubspec.yaml` hinzu:
 
 ```yaml
 dependencies:
-  mastodon_client: ^1.0.0-beta.2
+  mastodon_client: ^1.0.0-beta.3
 ```
 
 Führen Sie dann aus:
