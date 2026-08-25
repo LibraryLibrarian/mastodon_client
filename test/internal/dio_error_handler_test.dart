@@ -195,6 +195,79 @@ void main() {
       });
     }
 
+    test('keeps an RFC850 date exactly 50 years in the future', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'retry-after': ['Wednesday, 26-Aug-76 12:00:00 GMT'],
+          },
+        ),
+        now,
+      );
+      expect(
+        (result as MastodonRateLimitException).retryAfter,
+        DateTime.utc(2076, 8, 26, 12).difference(now),
+      );
+    });
+
+    test(
+      'moves an RFC850 instant over the 50-year boundary back a century',
+      () {
+        final result = convertDioExceptionAt(
+          _errorWithStatus(
+            429,
+            headers: {
+              'retry-after': ['Thursday, 26-Aug-76 12:00:01 GMT'],
+            },
+          ),
+          now,
+        );
+        expect(
+          (result as MastodonRateLimitException).retryAfter,
+          Duration.zero,
+        );
+      },
+    );
+
+    test('moves an RFC850 date over the 50-year boundary back a century', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'retry-after': ['Friday, 27-Aug-76 12:00:00 GMT'],
+          },
+        ),
+        now,
+      );
+      expect((result as MastodonRateLimitException).retryAfter, Duration.zero);
+    });
+
+    for (final retryAfter in [
+      'Foo, 26 Aug 2026 12:01:00 GMT',
+      'Thu, 26 Aug 2026 12:01:00 GMT',
+    ]) {
+      test(
+        'falls back when retry-after has an invalid weekday: $retryAfter',
+        () {
+          final result = convertDioExceptionAt(
+            _errorWithStatus(
+              429,
+              headers: {
+                'retry-after': [retryAfter],
+                'x-ratelimit-reset': ['2026-08-26T12:02:00Z'],
+              },
+            ),
+            now,
+          );
+          expect(
+            (result as MastodonRateLimitException).retryAfter,
+            const Duration(minutes: 2),
+          );
+        },
+      );
+    }
+
     test('falls back to x-ratelimit-reset when retry-after is invalid', () {
       final result = convertDioExceptionAt(
         _errorWithStatus(
@@ -232,6 +305,54 @@ void main() {
       expect(rateLimit.limit, 300);
       expect(rateLimit.remaining, 0);
       expect(rateLimit.resetAt, DateTime.utc(2026, 8, 26, 12, 2, 0, 123, 456));
+    });
+
+    test('accepts an explicit offset in x-ratelimit-reset', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'x-ratelimit-reset': ['2026-08-26T21:02:00+09:00'],
+          },
+        ),
+        now,
+      );
+      final rateLimit = result as MastodonRateLimitException;
+      expect(rateLimit.retryAfter, const Duration(minutes: 2));
+      expect(rateLimit.resetAt, DateTime.utc(2026, 8, 26, 12, 2));
+    });
+
+    for (final reset in ['2026-08-26T12:02:00', '2026-02-30T12:02:00Z']) {
+      test('rejects a non-strict x-ratelimit-reset value: $reset', () {
+        final result = convertDioExceptionAt(
+          _errorWithStatus(
+            429,
+            headers: {
+              'x-ratelimit-reset': [reset],
+            },
+          ),
+          now,
+        );
+        final rateLimit = result as MastodonRateLimitException;
+        expect(rateLimit.retryAfter, isNull);
+        expect(rateLimit.resetAt, isNull);
+      });
+    }
+
+    test('uses retry-after when x-ratelimit-reset is not strict ISO', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'retry-after': ['30'],
+            'x-ratelimit-reset': ['2026-08-26T12:02:00'],
+          },
+        ),
+        now,
+      );
+      final rateLimit = result as MastodonRateLimitException;
+      expect(rateLimit.retryAfter, const Duration(seconds: 30));
+      expect(rateLimit.resetAt, isNull);
     });
 
     test('clamps a past x-ratelimit-reset to zero', () {
