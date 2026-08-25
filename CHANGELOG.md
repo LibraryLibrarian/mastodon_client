@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Breaking:** `FiltersApi.update()`, `FiltersApi.updateV1()`, and
+  `MastodonAdminIpBlockUpdateRequest.expiresIn` now accept `Optional<int>`
+  instead of `int`. Pass `Optional(seconds)` to set an expiration,
+  `Optional.null_()` to clear it, or omit the parameter to leave it unchanged
+  (issue #61)
+
 ## [1.0.0-beta.3] - 2026-08-25
 
 ### Added

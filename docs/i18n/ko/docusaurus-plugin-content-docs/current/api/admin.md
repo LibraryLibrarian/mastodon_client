@@ -187,12 +187,18 @@ final block = await client.adminIpBlocks.create(
 // 업데이트
 await client.adminIpBlocks.update(
   block.id,
-  MastodonAdminIpBlockUpdateRequest(severity: 'sign_up_block'),
+  const MastodonAdminIpBlockUpdateRequest(
+    severity: 'sign_up_block',
+    expiresIn: Optional.null_(), // 무기한으로 변경
+  ),
 );
 
 // 삭제
 await client.adminIpBlocks.delete(block.id);
 ```
+
+업데이트할 때 `expiresIn`을 생략하면 현재 만료 시간을 유지하고,
+`Optional(seconds)`로 설정하거나 `Optional.null_()`로 무기한으로 변경합니다.
 
 ## 이메일 차단
 

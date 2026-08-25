@@ -187,12 +187,18 @@ final block = await client.adminIpBlocks.create(
 // 更新
 await client.adminIpBlocks.update(
   block.id,
-  MastodonAdminIpBlockUpdateRequest(severity: 'sign_up_block'),
+  const MastodonAdminIpBlockUpdateRequest(
+    severity: 'sign_up_block',
+    expiresIn: Optional.null_(), // 改为永不过期
+  ),
 );
 
 // 删除
 await client.adminIpBlocks.delete(block.id);
 ```
+
+更新时省略 `expiresIn` 会保留当前过期时间，传入 `Optional(seconds)` 可设置
+过期时间，传入 `Optional.null_()` 可改为永不过期。
 
 ## 邮件屏蔽
 
