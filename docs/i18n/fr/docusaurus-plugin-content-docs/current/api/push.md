@@ -34,7 +34,7 @@ print(subscription.serverKey); // use to verify incoming pushes
 
 ### Types d'alertes
 
-`MastodonPushAlertSettings` accepte toute combinaison des champs suivants. Les champs définis à `null` sont omis de la requête et restent inchangés.
+`MastodonPushAlertSettings` accepte toute combinaison des champs suivants. Les champs définis à `null` sont omis de la requête. Lors de la création, les champs omis utilisent les valeurs par défaut du serveur. Lors d'une mise à jour, l'ensemble des paramètres est remplacé comme décrit ci-dessous.
 
 | Champ | Description |
 |-------|-------------|
@@ -71,7 +71,7 @@ print(subscription.policy);
 
 ## Mettre à jour les paramètres d'alerte
 
-Utilisez `update` pour modifier les paramètres d'alerte ou la politique sans recréer l'abonnement. Seule la partie `data` (alertes et politique) peut être modifiée.
+Utilisez `update` pour remplacer la partie `data` (alertes et politique) sans recréer l'abonnement. Il ne s'agit pas d'une mise à jour partielle : chaque type d'alerte omis est désactivé et l'omission de `policy` la réinitialise à `all`. Indiquez chaque type d'alerte qui doit rester activé. Si `alerts` et `policy` sont tous deux omis, une `ArgumentError` est levée avant l'envoi d'une requête HTTP.
 
 ```dart
 final updated = await client.push.update(
@@ -79,8 +79,21 @@ final updated = await client.push.update(
     alerts: MastodonPushAlertSettings(
       mention: true,
       follow: false,
+      reblog: true,
+      favourite: true,
+      poll: true,
     ),
     policy: 'all',
+  ),
+);
+```
+
+Pour désactiver explicitement toutes les alertes et réinitialiser la politique à `all`, envoyez un objet de paramètres d'alerte vide :
+
+```dart
+await client.push.update(
+  const MastodonPushSubscriptionUpdateRequest(
+    alerts: MastodonPushAlertSettings(),
   ),
 );
 ```
