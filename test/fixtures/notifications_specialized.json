@@ -1,0 +1,58 @@
+[
+  {
+    "id": "901",
+    "type": "severed_relationships",
+    "created_at": "2026-08-25T10:00:00.000Z",
+    "account": {
+      "id": "117100000000000010",
+      "username": "moderator",
+      "acct": "moderator"
+    },
+    "event": {
+      "id": "42",
+      "type": "domain_block",
+      "purged": false,
+      "target_name": "remote.example",
+      "followers_count": 3,
+      "following_count": 5,
+      "created_at": "2026-08-25T09:59:00.000Z"
+    }
+  },
+  {
+    "id": "902",
+    "type": "admin.report",
+    "created_at": "2026-08-25T11:00:00.000Z",
+    "account": {
+      "id": "117100000000000011",
+      "username": "reporter",
+      "acct": "reporter@remote.example"
+    },
+    "report": {
+      "id": "73",
+      "action_taken": false,
+      "action_taken_at": null,
+      "category": "spam",
+      "comment": "Repeated unsolicited messages",
+      "forwarded": true,
+      "created_at": "2026-08-25T10:58:00.000Z",
+      "status_ids": ["117100000000000012"],
+      "rule_ids": [],
+      "target_account": {
+        "id": "117100000000000013",
+        "username": "reported_user",
+        "acct": "reported_user@remote.example"
+      }
+    }
+  },
+  {
+    "id": "903",
+    "type": "mention",
+    "created_at": "2026-08-25T12:00:00.000Z",
+    "account": {
+      "id": "117100000000000014",
+      "username": "filtered_user",
+      "acct": "filtered_user"
+    },
+    "filtered": true
+  }
+]

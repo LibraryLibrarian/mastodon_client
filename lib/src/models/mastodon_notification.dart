@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'json_converters.dart';
 import 'mastodon_account.dart';
 import 'mastodon_collection.dart';
+import 'mastodon_report.dart';
 import 'mastodon_status.dart';
 
 part 'mastodon_notification.freezed.dart';
@@ -233,10 +234,12 @@ class MastodonNotification with _$MastodonNotification {
     required this.account,
     this.groupKey,
     this.status,
+    this.report,
     this.relationshipSeveranceEvent,
     this.moderationWarning,
     this.collection,
     this.fallback,
+    this.filtered = false,
   });
 
   factory MastodonNotification.fromJson(Map<String, dynamic> json) =>
@@ -282,9 +285,16 @@ class MastodonNotification with _$MastodonNotification {
   @override
   final MastodonStatus? status;
 
+  /// Associated report.
+  ///
+  /// Non-null only for [MastodonNotificationType.adminReport].
+  @override
+  final MastodonReport? report;
+
   /// Details of the relationship severance event.
   ///
   /// Non-null only for [MastodonNotificationType.severedRelationships].
+  @JsonKey(name: 'event')
   @override
   final MastodonRelationshipSeveranceEvent? relationshipSeveranceEvent;
 
@@ -300,4 +310,11 @@ class MastodonNotification with _$MastodonNotification {
   /// Generic rendering for a notification type not supported by the client.
   @override
   final MastodonNotificationFallback? fallback;
+
+  /// Whether this notification was filtered by a notification policy.
+  ///
+  /// Added in Mastodon 4.3.0. The server omits this key when it is false.
+  @JsonKey(defaultValue: false)
+  @override
+  final bool filtered;
 }
