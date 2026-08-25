@@ -9,7 +9,7 @@ Une bibliothèque cliente pure Dart pour l'API [Mastodon](https://joinmastodon.o
 ## Fonctionnalités
 
 - Couvre toutes les principales catégories de l'API Mastodon (comptes, statuts, fils d'actualité, notifications, médias, et plus)
-- Gestion des jetons OAuth 2.0 (obtention, révocation, support PKCE)
+- Gestion des jetons OAuth 2.0 (obtention, révocation, transmission du `code_verifier` PKCE lors de l'échange de jetons)
 - Pagination par curseur via `MastodonPage<T>`
 - Hiérarchie d'exceptions sealed pour une gestion exhaustive des erreurs
 - Téléversement de médias asynchrone avec basculement automatique v2/v1 et scrutation du traitement

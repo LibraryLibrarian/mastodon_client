@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Removed the unused direct `crypto` dependency and clarified that PKCE support
+  is limited to forwarding a caller-provided `code_verifier` during token
+  exchange (issue #59)
+
 ## [1.0.0-beta.3] - 2026-08-25
 
 ### Added

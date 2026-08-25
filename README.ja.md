@@ -10,7 +10,7 @@ pure Dart で実装された [Mastodon](https://joinmastodon.org/) APIクライ�
 ## 機能
 
 - Mastodonの主要APIカテゴリをカバー（アカウント、投稿、タイムライン、通知、メディアなど）
-- OAuth 2.0 トークン管理（取得、失効、PKCE サポート）
+- OAuth 2.0 トークン管理（取得、失効、トークン交換時の PKCE `code_verifier` の受け渡し）
 - `MastodonPage<T>` によるカーソルベースのページネーション
 - 網羅的なエラーハンドリングのための sealed 例外階層
 - 自動的な v2/v1 フォールバックと処理ポーリングを備えた非同期メディアアップロード
