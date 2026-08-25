@@ -19,6 +19,21 @@ part 'mastodon_status.g.dart';
 @JsonEnum(fieldRename: FieldRename.snake)
 enum MastodonVisibility { public, unlisted, private, direct }
 
+/// State of a quote relationship.
+@JsonEnum(fieldRename: FieldRename.snake)
+enum MastodonQuoteState {
+  pending,
+  accepted,
+  rejected,
+  revoked,
+  deleted,
+  unauthorized,
+  blockedDomain,
+  blockedAccount,
+  mutedAccount,
+  unknown,
+}
+
 /// Mention (the `@username` portion within a status).
 @Freezed(toStringOverride: false)
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -230,9 +245,11 @@ class MastodonStatus with _$MastodonStatus {
   @override
   final MastodonPoll? poll;
 
-  /// Quoted status (Mastodon 4.5+ / FEP-044f). Null if not a quote.
+  /// Quote relationship attached to this status.
+  ///
+  /// Null if this status is not a quote. Added in Mastodon 4.5.0.
   @override
-  final MastodonStatus? quote;
+  final MastodonQuote? quote;
 
   /// Link preview card for the first link in the status.
   ///
@@ -269,6 +286,36 @@ class MastodonStatus with _$MastodonStatus {
   @JsonKey(defaultValue: <MastodonCollection>[])
   @override
   final List<MastodonCollection> taggedCollections;
+}
+
+/// Quote relationship attached to a status (Mastodon 4.5.0+).
+@Freezed(toStringOverride: false)
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MastodonQuote with _$MastodonQuote {
+  const MastodonQuote({
+    required this.state,
+    this.quotedStatus,
+    this.quotedStatusId,
+  });
+
+  factory MastodonQuote.fromJson(Map<String, dynamic> json) =>
+      _$MastodonQuoteFromJson(json);
+
+  /// Serializes to JSON.
+  Map<String, dynamic> toJson() => _$MastodonQuoteToJson(this);
+
+  /// State of the quote relationship.
+  @JsonKey(unknownEnumValue: MastodonQuoteState.unknown)
+  @override
+  final MastodonQuoteState state;
+
+  /// Quoted status when the response embeds the visible status.
+  @override
+  final MastodonStatus? quotedStatus;
+
+  /// ID of the quoted status in shallow nested contexts.
+  @override
+  final String? quotedStatusId;
 }
 
 /// Application that published a status.

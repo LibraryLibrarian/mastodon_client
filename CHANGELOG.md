@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Breaking:** `MastodonStatus.quote` is now a `MastodonQuote?` relationship
+  instead of a `MastodonStatus?`, matching Mastodon 4.5 responses. Access the
+  embedded status through `status.quote?.quotedStatus`; shallow nested quotes
+  expose `quotedStatusId` instead. Edit history now exposes the same entity via
+  `MastodonStatusEdit.quote` (issue #43)
+
 ## [1.0.0-beta.3] - 2026-08-25
 
 ### Added
