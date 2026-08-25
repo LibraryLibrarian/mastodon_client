@@ -54,51 +54,60 @@ void main() {
     },
   );
 
-  test('FiltersApi.updateV1 distinguishes set, clear, and reset', () async {
-    final http = RecordingHttpClient(const [
-      filterV1Response,
-      filterV1Response,
-      filterV1Response,
-    ]);
-    final api = FiltersApi(http);
+  test(
+    'FiltersApi.updateV1 distinguishes set, clear, reset, and omission',
+    () async {
+      final http = RecordingHttpClient(const [
+        filterV1Response,
+        filterV1Response,
+        filterV1Response,
+        filterV1Response,
+      ]);
+      final api = FiltersApi(http);
 
-    await api.updateV1(
-      '1',
-      phrase: 'spoiler',
-      context: const ['home'],
-      expiresIn: const Optional(3600),
-    );
-    await api.updateV1(
-      '1',
-      phrase: 'spoiler',
-      context: const ['home'],
-      expiresIn: const Optional.null_(),
-    );
-    await api.updateV1(
-      '1',
-      phrase: 'spoiler',
-      context: const ['home'],
-      expiresIn: const Optional(7200),
-    );
+      await api.updateV1(
+        '1',
+        phrase: 'spoiler',
+        context: const ['home'],
+        expiresIn: const Optional(3600),
+      );
+      await api.updateV1(
+        '1',
+        phrase: 'spoiler',
+        context: const ['home'],
+        expiresIn: const Optional.null_(),
+      );
+      await api.updateV1(
+        '1',
+        phrase: 'spoiler',
+        context: const ['home'],
+        expiresIn: const Optional(7200),
+      );
+      await api.updateV1('1', phrase: 'spoiler', context: const ['home']);
 
-    expect(http.requests.map((request) => request.data), [
-      {
-        'phrase': 'spoiler',
-        'context': ['home'],
-        'expires_in': 3600,
-      },
-      {
-        'phrase': 'spoiler',
-        'context': ['home'],
-        'expires_in': null,
-      },
-      {
-        'phrase': 'spoiler',
-        'context': ['home'],
-        'expires_in': 7200,
-      },
-    ]);
-  });
+      expect(http.requests.map((request) => request.data), [
+        {
+          'phrase': 'spoiler',
+          'context': ['home'],
+          'expires_in': 3600,
+        },
+        {
+          'phrase': 'spoiler',
+          'context': ['home'],
+          'expires_in': null,
+        },
+        {
+          'phrase': 'spoiler',
+          'context': ['home'],
+          'expires_in': 7200,
+        },
+        {
+          'phrase': 'spoiler',
+          'context': ['home'],
+        },
+      ]);
+    },
+  );
 
   test('AdminIpBlocksApi.update distinguishes set, clear, and reset', () async {
     final http = RecordingHttpClient(const [
