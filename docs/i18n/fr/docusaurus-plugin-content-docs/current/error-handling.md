@@ -15,7 +15,10 @@ MastodonException (sealed)
 │   ├── MastodonForbiddenException    // 403 - Permission error
 │   ├── MastodonNotFoundException     // 404 - Resource not found
 │   ├── MastodonRateLimitException    // 429 - Rate limited
-│   │   └── retryAfter                //   Recommended wait duration
+│   │   ├── retryAfter                //   Recommended wait duration
+│   │   ├── limit                     //   Request limit for the window
+│   │   ├── remaining                 //   Remaining requests
+│   │   └── resetAt                   //   Time when the window resets
 │   ├── MastodonValidationException   // 422 - Validation error
 │   │   ├── serverMessage             //   Detailed server message
 │   │   └── MastodonAlreadyVotedException // Already voted
@@ -97,11 +100,16 @@ try {
 
 ## Gérer les limites de débit
 
+`MastodonRateLimitException` expose les en-têtes `X-RateLimit-*` de Mastodon.
+L'attente recommandée utilise `Retry-After` lorsqu'il est fourni par le serveur
+ou le proxy, puis se rabat sur l'horodatage `X-RateLimit-Reset`.
+
 ```dart
 Future<T> withRetry<T>(Future<T> Function() action) async {
   try {
     return await action();
   } on MastodonRateLimitException catch (e) {
+    print('${e.remaining}/${e.limit} requêtes restantes ; réinitialisation à ${e.resetAt}');
     final wait = e.retryAfter ?? const Duration(seconds: 60);
     await Future<void>.delayed(wait);
     return action();

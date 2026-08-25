@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `MastodonRateLimitException` now derives `retryAfter` from Mastodon's
+  `X-RateLimit-Reset` header when `Retry-After` is unavailable, supports
+  HTTP-date values, and exposes `limit`, `remaining`, and `resetAt` (issue #47)
+
 ## [1.0.0-beta.3] - 2026-08-25
 
 ### Added

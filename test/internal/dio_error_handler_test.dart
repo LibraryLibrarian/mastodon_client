@@ -136,35 +136,150 @@ void main() {
     });
   });
 
-  group('convertDioException - retry-after header (429)', () {
+  group('convertDioException - rate-limit headers (429)', () {
+    final now = DateTime.utc(2026, 8, 26, 12);
+
     test('parses a numeric retry-after header into a Duration', () {
-      final result = convertDioException(
+      final result = convertDioExceptionAt(
         _errorWithStatus(
           429,
           headers: {
             'retry-after': ['60'],
           },
         ),
+        now,
       );
       final rateLimit = result as MastodonRateLimitException;
       expect(rateLimit.retryAfter, const Duration(seconds: 60));
     });
 
-    test('retryAfter is null when the header is absent', () {
-      final result = convertDioException(_errorWithStatus(429));
+    test('retryAfter is null when rate-limit headers are absent', () {
+      final result = convertDioExceptionAt(_errorWithStatus(429), now);
       expect((result as MastodonRateLimitException).retryAfter, isNull);
     });
 
-    test('retryAfter is null when the header is not a valid integer', () {
-      final result = convertDioException(
+    test('parses an IMF-fixdate retry-after header', () {
+      final result = convertDioExceptionAt(
         _errorWithStatus(
           429,
           headers: {
-            'retry-after': ['Wed, 21 Oct 2026 07:28:00 GMT'],
+            'retry-after': ['Wed, 26 Aug 2026 12:01:30 GMT'],
           },
         ),
+        now,
       );
-      expect((result as MastodonRateLimitException).retryAfter, isNull);
+      expect(
+        (result as MastodonRateLimitException).retryAfter,
+        const Duration(seconds: 90),
+      );
+    });
+
+    for (final retryAfter in [
+      'Wednesday, 26-Aug-26 12:01:30 GMT',
+      'Wed Aug 26 12:01:30 2026',
+    ]) {
+      test('parses the obsolete HTTP-date form: $retryAfter', () {
+        final result = convertDioExceptionAt(
+          _errorWithStatus(
+            429,
+            headers: {
+              'retry-after': [retryAfter],
+            },
+          ),
+          now,
+        );
+        expect(
+          (result as MastodonRateLimitException).retryAfter,
+          const Duration(seconds: 90),
+        );
+      });
+    }
+
+    test('falls back to x-ratelimit-reset when retry-after is invalid', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'retry-after': ['invalid'],
+            'x-ratelimit-reset': ['2026-08-26T12:02:00.000000Z'],
+          },
+        ),
+        now,
+      );
+      expect(
+        (result as MastodonRateLimitException).retryAfter,
+        const Duration(minutes: 2),
+      );
+    });
+
+    test('parses Mastodon rate-limit metadata', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'x-ratelimit-limit': ['300'],
+            'x-ratelimit-remaining': ['0'],
+            'x-ratelimit-reset': ['2026-08-26T12:02:00.123456Z'],
+          },
+        ),
+        now,
+      );
+      final rateLimit = result as MastodonRateLimitException;
+      expect(
+        rateLimit.retryAfter,
+        const Duration(minutes: 2, microseconds: 123456),
+      );
+      expect(rateLimit.limit, 300);
+      expect(rateLimit.remaining, 0);
+      expect(rateLimit.resetAt, DateTime.utc(2026, 8, 26, 12, 2, 0, 123, 456));
+    });
+
+    test('clamps a past x-ratelimit-reset to zero', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'x-ratelimit-reset': ['2026-08-26T11:59:59.999999Z'],
+          },
+        ),
+        now,
+      );
+      expect((result as MastodonRateLimitException).retryAfter, Duration.zero);
+    });
+
+    test('prefers a valid retry-after over x-ratelimit-reset', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'retry-after': ['60'],
+            'x-ratelimit-reset': ['2026-08-26T12:02:00Z'],
+          },
+        ),
+        now,
+      );
+      final rateLimit = result as MastodonRateLimitException;
+      expect(rateLimit.retryAfter, const Duration(minutes: 1));
+      expect(rateLimit.resetAt, DateTime.utc(2026, 8, 26, 12, 2));
+    });
+
+    test('ignores malformed rate-limit metadata', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'x-ratelimit-limit': ['many'],
+            'x-ratelimit-remaining': ['-1'],
+            'x-ratelimit-reset': ['later'],
+          },
+        ),
+        now,
+      );
+      final rateLimit = result as MastodonRateLimitException;
+      expect(rateLimit.retryAfter, isNull);
+      expect(rateLimit.limit, isNull);
+      expect(rateLimit.remaining, isNull);
+      expect(rateLimit.resetAt, isNull);
     });
   });
 
