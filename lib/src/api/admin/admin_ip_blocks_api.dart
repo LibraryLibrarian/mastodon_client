@@ -78,6 +78,10 @@ class AdminIpBlocksApi {
   ///
   /// `PUT /api/v1/admin/ip_blocks/{id}`
   ///
+  /// In [request], omit `expiresIn` to preserve the current expiration, pass
+  /// `Optional(seconds)` to set it, or pass `Optional.null_()` to make the
+  /// block permanent.
+  ///
   /// Throws a `MastodonException` on failure.
   Future<MastodonAdminIpBlock> update(
     String id,

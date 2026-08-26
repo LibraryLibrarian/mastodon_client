@@ -187,12 +187,19 @@ final block = await client.adminIpBlocks.create(
 // Update
 await client.adminIpBlocks.update(
   block.id,
-  MastodonAdminIpBlockUpdateRequest(severity: 'sign_up_block'),
+  const MastodonAdminIpBlockUpdateRequest(
+    severity: 'sign_up_block',
+    expiresIn: Optional.null_(), // Make the block permanent
+  ),
 );
 
 // Delete
 await client.adminIpBlocks.delete(block.id);
 ```
+
+For updates, omit `expiresIn` to keep the current expiration, pass
+`Optional(seconds)` to set one, or pass `Optional.null_()` to make the block
+permanent.
 
 ## Email blocks
 
