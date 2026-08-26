@@ -23,6 +23,22 @@ final statuses = await client.statuses.fetchMultiple(['1', '2', '3']);
 
 Nicht vorhandene oder nicht zugängliche IDs werden stillschweigend aus den Ergebnissen ausgeschlossen.
 
+### Zitierte Status
+
+Mastodon 4.5 und neuer stellt die Zitatbeziehung als `MastodonQuote` bereit:
+
+```dart
+final quote = status.quote;
+final quotedStatus = quote?.quotedStatus;     // Eingebetteter sichtbarer Status
+final quotedStatusId = quote?.quotedStatusId; // ID in flach verschachtelten Antworten
+final state = quote?.state;
+```
+
+`quotedStatus` kann null sein, wenn ein Zitat aussteht, nicht verfügbar ist oder
+in einer flach verschachtelten Antwort durch `quotedStatusId` dargestellt wird.
+Der Bearbeitungsverlauf stellt die Zitatbeziehung ebenfalls über
+`MastodonStatusEdit.quote` bereit.
+
 ### Thread-Kontext
 
 ```dart

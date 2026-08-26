@@ -38,6 +38,20 @@ final page = await client.notifications.fetch(
 final notification = await client.notifications.fetchById('12345');
 ```
 
+### 通知種別ごとの詳細
+
+一部の v1 通知には追加の詳細情報が含まれます。
+
+```dart
+final event = notification.relationshipSeveranceEvent; // severed_relationships
+final report = notification.report;                    // admin.report
+final wasFiltered = notification.filtered;             // Mastodon 4.3+
+```
+
+サーバーは true の場合にのみキーを返すため、`filtered` の既定値は false です。
+グループ化された v2 通知では関係切断の詳細を `group.event`、通報を
+`group.report` から取得できますが、通知単位の `filtered` フィールドはありません。
+
 ### 未読数（Mastodon 4.3+）
 
 ```dart
