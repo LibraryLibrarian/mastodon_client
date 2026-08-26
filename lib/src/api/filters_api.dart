@@ -1,4 +1,6 @@
 import '../client/mastodon_http_client.dart';
+import '../internal/optional.dart';
+import '../internal/request_body.dart';
 import '../models/mastodon_filter.dart';
 
 /// API client for filters.
@@ -81,6 +83,9 @@ class FiltersApi {
   /// `PUT /api/v2/filters/{id}`
   ///
   /// All parameters are optional; only the fields provided are updated.
+  /// Omit [expiresIn] to preserve the current expiration, pass
+  /// `Optional(seconds)` to set it, or pass `Optional.null_()` to make the
+  /// filter permanent.
   /// [keywordsAttributes] may include new keywords to add, existing ones
   /// to update, or ones marked with `_destroy` to delete.
   ///
@@ -90,14 +95,14 @@ class FiltersApi {
     String? title,
     List<String>? context,
     String? filterAction,
-    int? expiresIn,
+    Optional<int>? expiresIn,
     List<MastodonFilterKeywordUpdateParam>? keywordsAttributes,
   }) async {
     final body = <String, dynamic>{
       'title': ?title,
       'filter_action': ?filterAction,
-      'expires_in': ?expiresIn,
     };
+    putOptional(body, 'expires_in', expiresIn);
     if (context != null) {
       body['context'] = context;
     }
@@ -339,7 +344,9 @@ class FiltersApi {
   /// or `context` on a filter with multiple keywords.
   ///
   /// [phrase] and [context] are required. [irreversible] and [wholeWord]
-  /// default to `false`. [expiresIn] is the expiration in seconds.
+  /// default to `false`. Omit [expiresIn] to preserve the current expiration,
+  /// pass `Optional(seconds)` to set it, or pass `Optional.null_()` to make the
+  /// filter permanent.
   ///
   /// Use [update] (v2) instead since Mastodon 4.0.
   ///
@@ -352,18 +359,19 @@ class FiltersApi {
     required List<String> context,
     bool? irreversible,
     bool? wholeWord,
-    int? expiresIn,
+    Optional<int>? expiresIn,
   }) async {
+    final body = <String, dynamic>{
+      'phrase': phrase,
+      'context': context,
+      'irreversible': ?irreversible,
+      'whole_word': ?wholeWord,
+    };
+    putOptional(body, 'expires_in', expiresIn);
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/filters/$id',
       method: 'PUT',
-      data: <String, dynamic>{
-        'phrase': phrase,
-        'context': context,
-        'irreversible': ?irreversible,
-        'whole_word': ?wholeWord,
-        'expires_in': ?expiresIn,
-      },
+      data: body,
     );
     return MastodonFilterV1.fromJson(data!);
   }

@@ -74,10 +74,22 @@ class MastodonRateLimitException extends MastodonApiException {
     super.endpoint,
     super.raw,
     this.retryAfter,
+    this.limit,
+    this.remaining,
+    this.resetAt,
   }) : super(statusCode: 429);
 
   /// Recommended wait duration indicated by the server.
   final Duration? retryAfter;
+
+  /// Maximum number of requests allowed in the current rate-limit window.
+  final int? limit;
+
+  /// Number of requests remaining in the current rate-limit window.
+  final int? remaining;
+
+  /// Time when the current rate-limit window resets.
+  final DateTime? resetAt;
 }
 
 /// Validation error (HTTP 422).

@@ -15,7 +15,10 @@ MastodonException (sealed)
 │   ├── MastodonForbiddenException    // 403 - 権限エラー
 │   ├── MastodonNotFoundException     // 404 - リソース不在
 │   ├── MastodonRateLimitException    // 429 - レート制限
-│   │   └── retryAfter                //   リトライ推奨待機時間
+│   │   ├── retryAfter                //   リトライ推奨待機時間
+│   │   ├── limit                     //   制限期間内のリクエスト上限
+│   │   ├── remaining                 //   残りリクエスト数
+│   │   └── resetAt                   //   制限がリセットされる時刻
 │   ├── MastodonValidationException   // 422 - バリデーションエラー
 │   │   ├── serverMessage             //   サーバーからの詳細メッセージ
 │   │   └── MastodonAlreadyVotedException // 投票済みエラー
@@ -97,11 +100,16 @@ try {
 
 ## レート制限への対応
 
+`MastodonRateLimitException` は Mastodon の `X-RateLimit-*` ヘッダーを公開します。
+推奨待機時間には、サーバーまたはプロキシが `Retry-After` を返した場合はその値を使い、
+返さない場合は `X-RateLimit-Reset` のタイムスタンプを使います。
+
 ```dart
 Future<T> withRetry<T>(Future<T> Function() action) async {
   try {
     return await action();
   } on MastodonRateLimitException catch (e) {
+    print('残り ${e.remaining}/${e.limit} 件。${e.resetAt} にリセット');
     final wait = e.retryAfter ?? const Duration(seconds: 60);
     await Future<void>.delayed(wait);
     return action();

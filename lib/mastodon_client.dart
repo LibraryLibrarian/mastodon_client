@@ -5,6 +5,7 @@ export 'src/api/filters_api.dart'
     show MastodonFilterKeywordParam, MastodonFilterKeywordUpdateParam;
 export 'src/client/mastodon_client.dart';
 export 'src/exception/mastodon_exception.dart';
+export 'src/internal/optional.dart';
 export 'src/logging/function_logger.dart';
 export 'src/logging/logger.dart';
 export 'src/models/admin/mastodon_admin_account.dart';

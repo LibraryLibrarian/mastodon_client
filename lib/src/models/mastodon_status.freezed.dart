@@ -200,7 +200,7 @@ case _:
 /// @nodoc
 mixin _$MastodonStatus {
 
- String get id; String? get uri; String? get url; DateTime get createdAt; String? get inReplyToId; String? get inReplyToAccountId; bool get sensitive; String get spoilerText; MastodonVisibility get visibility; String? get language; String get content; String? get text; DateTime? get editedAt; int get reblogsCount; int get favouritesCount; int get repliesCount; int get quotesCount; bool? get favourited; bool? get reblogged; bool? get bookmarked; bool? get muted; bool? get pinned; MastodonAccount get account; List<MastodonMediaAttachment> get mediaAttachments; List<MastodonMention> get mentions; List<MastodonTag> get tags; List<MastodonCustomEmoji> get emojis; MastodonStatus? get reblog; MastodonPoll? get poll; MastodonStatus? get quote; MastodonPreviewCard? get card; MastodonStatusApplication? get application; List<MastodonFilterResult> get filtered; MastodonQuoteApproval? get quoteApproval; List<MastodonCollection> get taggedCollections;
+ String get id; String? get uri; String? get url; DateTime get createdAt; String? get inReplyToId; String? get inReplyToAccountId; bool get sensitive; String get spoilerText; MastodonVisibility get visibility; String? get language; String get content; String? get text; DateTime? get editedAt; int get reblogsCount; int get favouritesCount; int get repliesCount; int get quotesCount; bool? get favourited; bool? get reblogged; bool? get bookmarked; bool? get muted; bool? get pinned; MastodonAccount get account; List<MastodonMediaAttachment> get mediaAttachments; List<MastodonMention> get mentions; List<MastodonTag> get tags; List<MastodonCustomEmoji> get emojis; MastodonStatus? get reblog; MastodonPoll? get poll; MastodonQuote? get quote; MastodonPreviewCard? get card; MastodonStatusApplication? get application; List<MastodonFilterResult> get filtered; MastodonQuoteApproval? get quoteApproval; List<MastodonCollection> get taggedCollections;
 /// Create a copy of MastodonStatus
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -227,7 +227,7 @@ abstract mixin class $MastodonStatusCopyWith<$Res>  {
   factory $MastodonStatusCopyWith(MastodonStatus value, $Res Function(MastodonStatus) _then) = _$MastodonStatusCopyWithImpl;
 @useResult
 $Res call({
- String id, DateTime createdAt, bool sensitive, String spoilerText, MastodonVisibility visibility, String content, int reblogsCount, int favouritesCount, int repliesCount, MastodonAccount account, List<MastodonMediaAttachment> mediaAttachments, List<MastodonMention> mentions, List<MastodonTag> tags, List<MastodonCustomEmoji> emojis, String? uri, String? url, String? inReplyToId, String? inReplyToAccountId, String? language, String? text, DateTime? editedAt, bool? favourited, bool? reblogged, bool? bookmarked, bool? muted, bool? pinned, MastodonStatus? reblog, MastodonPoll? poll, MastodonStatus? quote, MastodonPreviewCard? card, MastodonStatusApplication? application, MastodonQuoteApproval? quoteApproval, int quotesCount, List<MastodonFilterResult> filtered, List<MastodonCollection> taggedCollections
+ String id, DateTime createdAt, bool sensitive, String spoilerText, MastodonVisibility visibility, String content, int reblogsCount, int favouritesCount, int repliesCount, MastodonAccount account, List<MastodonMediaAttachment> mediaAttachments, List<MastodonMention> mentions, List<MastodonTag> tags, List<MastodonCustomEmoji> emojis, String? uri, String? url, String? inReplyToId, String? inReplyToAccountId, String? language, String? text, DateTime? editedAt, bool? favourited, bool? reblogged, bool? bookmarked, bool? muted, bool? pinned, MastodonStatus? reblog, MastodonPoll? poll, MastodonQuote? quote, MastodonPreviewCard? card, MastodonStatusApplication? application, MastodonQuoteApproval? quoteApproval, int quotesCount, List<MastodonFilterResult> filtered, List<MastodonCollection> taggedCollections
 });
 
 
@@ -275,7 +275,7 @@ as bool?,pinned: freezed == pinned ? _self.pinned : pinned // ignore: cast_nulla
 as bool?,reblog: freezed == reblog ? _self.reblog : reblog // ignore: cast_nullable_to_non_nullable
 as MastodonStatus?,poll: freezed == poll ? _self.poll : poll // ignore: cast_nullable_to_non_nullable
 as MastodonPoll?,quote: freezed == quote ? _self.quote : quote // ignore: cast_nullable_to_non_nullable
-as MastodonStatus?,card: freezed == card ? _self.card : card // ignore: cast_nullable_to_non_nullable
+as MastodonQuote?,card: freezed == card ? _self.card : card // ignore: cast_nullable_to_non_nullable
 as MastodonPreviewCard?,application: freezed == application ? _self.application : application // ignore: cast_nullable_to_non_nullable
 as MastodonStatusApplication?,quoteApproval: freezed == quoteApproval ? _self.quoteApproval : quoteApproval // ignore: cast_nullable_to_non_nullable
 as MastodonQuoteApproval?,quotesCount: null == quotesCount ? _self.quotesCount : quotesCount // ignore: cast_nullable_to_non_nullable
@@ -290,6 +290,190 @@ as List<MastodonCollection>,
 
 /// Adds pattern-matching-related methods to [MastodonStatus].
 extension MastodonStatusPatterns on MastodonStatus {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(){
+final _that = this;
+switch (_that) {
+case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(){
+final _that = this;
+switch (_that) {
+case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>() {final _that = this;
+switch (_that) {
+case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>() {final _that = this;
+switch (_that) {
+case _:
+  return null;
+
+}
+}
+
+}
+
+
+/// @nodoc
+mixin _$MastodonQuote {
+
+ MastodonQuoteState get state; MastodonStatus? get quotedStatus; String? get quotedStatusId;
+/// Create a copy of MastodonQuote
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MastodonQuoteCopyWith<MastodonQuote> get copyWith => _$MastodonQuoteCopyWithImpl<MastodonQuote>(this as MastodonQuote, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonQuote&&(identical(other.state, state) || other.state == state)&&(identical(other.quotedStatus, quotedStatus) || other.quotedStatus == quotedStatus)&&(identical(other.quotedStatusId, quotedStatusId) || other.quotedStatusId == quotedStatusId));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,state,quotedStatus,quotedStatusId);
+
+
+
+}
+
+/// @nodoc
+abstract mixin class $MastodonQuoteCopyWith<$Res>  {
+  factory $MastodonQuoteCopyWith(MastodonQuote value, $Res Function(MastodonQuote) _then) = _$MastodonQuoteCopyWithImpl;
+@useResult
+$Res call({
+ MastodonQuoteState state, MastodonStatus? quotedStatus, String? quotedStatusId
+});
+
+
+
+
+}
+/// @nodoc
+class _$MastodonQuoteCopyWithImpl<$Res>
+    implements $MastodonQuoteCopyWith<$Res> {
+  _$MastodonQuoteCopyWithImpl(this._self, this._then);
+
+  final MastodonQuote _self;
+  final $Res Function(MastodonQuote) _then;
+
+/// Create a copy of MastodonQuote
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? state = null,Object? quotedStatus = freezed,Object? quotedStatusId = freezed,}) {
+  return _then(MastodonQuote(
+state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
+as MastodonQuoteState,quotedStatus: freezed == quotedStatus ? _self.quotedStatus : quotedStatus // ignore: cast_nullable_to_non_nullable
+as MastodonStatus?,quotedStatusId: freezed == quotedStatusId ? _self.quotedStatusId : quotedStatusId // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [MastodonQuote].
+extension MastodonQuotePatterns on MastodonQuote {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
