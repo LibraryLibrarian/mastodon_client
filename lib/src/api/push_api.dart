@@ -36,8 +36,12 @@ class PushApi {
   ///
   /// `PUT /api/v1/push/subscription`
   ///
-  /// Updates only the `data` portion of the subscription (alert settings
-  /// and policy).
+  /// Replaces the `data` portion of the subscription (alert settings and
+  /// policy). Omitted alert types become disabled, and an omitted policy resets
+  /// to `all`.
+  ///
+  /// Throws an [ArgumentError] if neither alert settings nor a policy is
+  /// provided.
   Future<MastodonWebPushSubscription> update(
     MastodonPushSubscriptionUpdateRequest request,
   ) async {

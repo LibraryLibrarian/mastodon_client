@@ -1,6 +1,9 @@
 /// Alert settings per Web Push notification type (for requests).
 ///
-/// Fields set to `null` are not included in the request.
+/// Fields set to `null` are not included in the request. When creating a
+/// subscription, omitted fields use the server defaults. When updating a
+/// subscription, the server replaces the whole `data` object, so omitted alert
+/// types become disabled.
 class MastodonPushAlertSettings {
   const MastodonPushAlertSettings({
     this.mention,
@@ -129,8 +132,10 @@ class MastodonPushSubscriptionRequest {
 /// Web Push subscription update request.
 ///
 /// Used with `PUT /api/v1/push/subscription`.
-/// Updates only the `data` portion (alert settings and policy) of the
-/// subscription.
+///
+/// The server replaces the whole `data` portion (alert settings and policy) of
+/// the subscription. Omitted alert types become disabled, and omitting [policy]
+/// resets it to `all`.
 class MastodonPushSubscriptionUpdateRequest {
   const MastodonPushSubscriptionUpdateRequest({this.alerts, this.policy});
 
@@ -142,17 +147,23 @@ class MastodonPushSubscriptionUpdateRequest {
 
   /// Converts to a JSON map for the request.
   ///
-  /// For PUT requests, `policy` is placed at the top level (unlike
-  /// `data[policy]` in POST).
+  /// Throws an [ArgumentError] when both [alerts] and [policy] are `null`,
+  /// because an empty update would clear the subscription's existing data.
+  ///
+  /// To explicitly disable every alert and reset the policy to `all`, pass an
+  /// empty [MastodonPushAlertSettings] as [alerts].
   Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    if (alerts != null) {
-      data['alerts'] = alerts!.toJson();
+    if (alerts == null && policy == null) {
+      throw ArgumentError(
+        'At least one of alerts or policy must be provided for an update.',
+      );
     }
-    final json = <String, dynamic>{'data': data};
-    if (policy != null) {
-      json['policy'] = policy;
-    }
-    return json;
+
+    return <String, dynamic>{
+      'data': <String, dynamic>{
+        if (alerts != null) 'alerts': alerts!.toJson(),
+        if (policy != null) 'policy': policy,
+      },
+    };
   }
 }

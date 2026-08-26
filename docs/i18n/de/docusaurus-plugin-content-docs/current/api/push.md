@@ -34,7 +34,7 @@ print(subscription.serverKey); // use to verify incoming pushes
 
 ### Alert-Typen
 
-`MastodonPushAlertSettings` akzeptiert jede Kombination der folgenden Felder. Auf `null` gesetzte Felder werden aus der Anfrage weggelassen und bleiben unverändert.
+`MastodonPushAlertSettings` akzeptiert jede Kombination der folgenden Felder. Auf `null` gesetzte Felder werden aus der Anfrage weggelassen. Beim Erstellen gelten für ausgelassene Felder die Server-Standardwerte. Beim Aktualisieren wird das gesamte Einstellungsobjekt wie unten beschrieben ersetzt.
 
 | Feld | Beschreibung |
 |------|-------------|
@@ -71,7 +71,7 @@ print(subscription.policy);
 
 ## Alert-Einstellungen aktualisieren
 
-Mit `update` können Alert-Einstellungen oder die Richtlinie geändert werden, ohne das Abonnement neu zu erstellen. Nur der `data`-Teil (Alerts und Richtlinie) kann geändert werden.
+Mit `update` wird der `data`-Teil (Alerts und Richtlinie) ersetzt, ohne das Abonnement neu zu erstellen. Dies ist keine Teilaktualisierung: Jeder ausgelassene Alert-Typ wird deaktiviert, und eine ausgelassene `policy` wird auf `all` zurückgesetzt. Geben Sie jeden Alert-Typ an, der aktiviert bleiben soll. Werden sowohl `alerts` als auch `policy` ausgelassen, wird vor dem Senden einer HTTP-Anfrage ein `ArgumentError` ausgelöst.
 
 ```dart
 final updated = await client.push.update(
@@ -79,8 +79,21 @@ final updated = await client.push.update(
     alerts: MastodonPushAlertSettings(
       mention: true,
       follow: false,
+      reblog: true,
+      favourite: true,
+      poll: true,
     ),
     policy: 'all',
+  ),
+);
+```
+
+Um alle Alerts ausdrücklich zu deaktivieren und die Richtlinie auf `all` zurückzusetzen, senden Sie ein leeres Alert-Einstellungsobjekt:
+
+```dart
+await client.push.update(
+  const MastodonPushSubscriptionUpdateRequest(
+    alerts: MastodonPushAlertSettings(),
   ),
 );
 ```

@@ -34,7 +34,7 @@ print(subscription.serverKey); // 수신된 푸시 검증에 사용
 
 ### 알림 타입
 
-`MastodonPushAlertSettings`는 다음 필드의 임의 조합을 허용합니다. `null`로 설정된 필드는 요청에서 생략되어 변경되지 않습니다.
+`MastodonPushAlertSettings`는 다음 필드의 임의 조합을 허용합니다. `null`로 설정된 필드는 요청에서 생략됩니다. 구독을 생성할 때 생략된 필드에는 서버 기본값이 사용됩니다. 업데이트할 때는 아래 설명과 같이 전체 설정 객체가 교체됩니다.
 
 | 필드 | 설명 |
 |------|------|
@@ -71,7 +71,7 @@ print(subscription.policy);
 
 ## 알림 설정 업데이트
 
-`update`를 사용하면 구독을 재생성하지 않고 알림 설정이나 정책을 변경할 수 있습니다. `data` 부분(알림과 정책)만 변경할 수 있습니다.
+`update`를 사용하면 구독을 재생성하지 않고 `data` 부분(알림과 정책)을 교체할 수 있습니다. 부분 업데이트가 아니므로 생략한 모든 알림 타입은 비활성화되고, `policy`를 생략하면 `all`로 재설정됩니다. 계속 활성화할 모든 알림 타입을 지정해야 합니다. `alerts`와 `policy`를 모두 생략하면 HTTP 요청을 보내기 전에 `ArgumentError`가 발생합니다.
 
 ```dart
 final updated = await client.push.update(
@@ -79,8 +79,21 @@ final updated = await client.push.update(
     alerts: MastodonPushAlertSettings(
       mention: true,
       follow: false,
+      reblog: true,
+      favourite: true,
+      poll: true,
     ),
     policy: 'all',
+  ),
+);
+```
+
+모든 알림을 명시적으로 비활성화하고 정책을 `all`로 재설정하려면 빈 알림 설정 객체를 전송합니다.
+
+```dart
+await client.push.update(
+  const MastodonPushSubscriptionUpdateRequest(
+    alerts: MastodonPushAlertSettings(),
   ),
 );
 ```
