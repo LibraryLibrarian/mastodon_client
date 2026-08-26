@@ -9,7 +9,7 @@ A pure Dart client library for the [Mastodon](https://joinmastodon.org/) API. Pr
 ## Features
 
 - Covers all major Mastodon API categories (Accounts, Statuses, Timelines, Notifications, Media, and more)
-- OAuth 2.0 token management (obtain, revoke, PKCE support)
+- OAuth 2.0 token management (obtain, revoke, PKCE `code_verifier` forwarding during token exchange)
 - Cursor-based pagination via `MastodonPage<T>`
 - Sealed exception hierarchy for exhaustive error handling
 - Async media upload with automatic v2/v1 fallback and processing polling

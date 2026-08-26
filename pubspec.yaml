@@ -8,7 +8,6 @@ description: >-
   notifications, media, filters, and admin APIs with OAuth, pagination,
   and typed error handling.
 dependencies:
-  crypto: ^3.0.7
   dio: ^5.11.0
   freezed_annotation: ^3.1.0
   json_annotation: ^4.12.0

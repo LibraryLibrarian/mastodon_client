@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   server's `event` key and exposes admin reports through `report` and the v1
   notification filter flag through `filtered`. Its `toJson()` output now uses
   `event` instead of the incorrect `relationship_severance_event` key (issue #44)
+- Removed the unused direct `crypto` dependency and clarified that PKCE support
+  is limited to forwarding a caller-provided `code_verifier` during token
+  exchange (issue #59)
 - **Breaking:** `FiltersApi.update()`, `FiltersApi.updateV1()`, and
   `MastodonAdminIpBlockUpdateRequest.expiresIn` now accept `Optional<int>`
   instead of `int`. Pass `Optional(seconds)` to set an expiration,
