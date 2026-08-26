@@ -95,10 +95,13 @@ MastodonNotification _$MastodonNotificationFromJson(
   status: json['status'] == null
       ? null
       : MastodonStatus.fromJson(json['status'] as Map<String, dynamic>),
-  relationshipSeveranceEvent: json['relationship_severance_event'] == null
+  report: json['report'] == null
+      ? null
+      : MastodonReport.fromJson(json['report'] as Map<String, dynamic>),
+  relationshipSeveranceEvent: json['event'] == null
       ? null
       : MastodonRelationshipSeveranceEvent.fromJson(
-          json['relationship_severance_event'] as Map<String, dynamic>,
+          json['event'] as Map<String, dynamic>,
         ),
   moderationWarning: json['moderation_warning'] == null
       ? null
@@ -113,6 +116,7 @@ MastodonNotification _$MastodonNotificationFromJson(
       : MastodonNotificationFallback.fromJson(
           json['fallback'] as Map<String, dynamic>,
         ),
+  filtered: json['filtered'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$MastodonNotificationToJson(
@@ -124,10 +128,12 @@ Map<String, dynamic> _$MastodonNotificationToJson(
   'account': instance.account.toJson(),
   'group_key': instance.groupKey,
   'status': instance.status?.toJson(),
-  'relationship_severance_event': instance.relationshipSeveranceEvent?.toJson(),
+  'report': instance.report?.toJson(),
+  'event': instance.relationshipSeveranceEvent?.toJson(),
   'moderation_warning': instance.moderationWarning?.toJson(),
   'collection': instance.collection?.toJson(),
   'fallback': instance.fallback?.toJson(),
+  'filtered': instance.filtered,
 };
 
 const _$MastodonNotificationTypeEnumMap = {

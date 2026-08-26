@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'mastodon_account.dart';
 import 'mastodon_custom_emoji.dart';
 import 'mastodon_media_attachment.dart';
+import 'mastodon_status.dart';
 
 part 'mastodon_status_edit.freezed.dart';
 part 'mastodon_status_edit.g.dart';
@@ -23,6 +24,7 @@ class MastodonStatusEdit with _$MastodonStatusEdit {
     required this.mediaAttachments,
     required this.emojis,
     this.poll,
+    this.quote,
   });
 
   factory MastodonStatusEdit.fromJson(Map<String, dynamic> json) =>
@@ -67,6 +69,10 @@ class MastodonStatusEdit with _$MastodonStatusEdit {
   /// Poll at revision time. `null` if no poll.
   @override
   final MastodonStatusEditPoll? poll;
+
+  /// Quote relationship at revision time. `null` if not a quote.
+  @override
+  final MastodonQuote? quote;
 }
 
 /// Poll snapshot within the edit history.
