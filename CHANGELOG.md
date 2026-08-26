@@ -9,11 +9,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Breaking:** `MastodonStatus.quote` is now a `MastodonQuote?` relationship
+  instead of a `MastodonStatus?`, matching Mastodon 4.5 responses. Access the
+  embedded status through `status.quote?.quotedStatus`; shallow nested quotes
+  expose `quotedStatusId` instead. Edit history now exposes the same entity via
+  `MastodonStatusEdit.quote` (issue #43)
+- `MastodonNotification` now reads relationship severance details from the
+  server's `event` key and exposes admin reports through `report` and the v1
+  notification filter flag through `filtered`. Its `toJson()` output now uses
+  `event` instead of the incorrect `relationship_severance_event` key (issue #44)
 - **Breaking:** `FiltersApi.update()`, `FiltersApi.updateV1()`, and
   `MastodonAdminIpBlockUpdateRequest.expiresIn` now accept `Optional<int>`
   instead of `int`. Pass `Optional(seconds)` to set an expiration,
   `Optional.null_()` to clear it, or omit the parameter to leave it unchanged
   (issue #61)
+
+### Fixed
+
+- Fixed Web Push subscription updates so `policy` is nested inside `data`,
+  documented the server's whole-data replacement behavior, and rejected empty
+  updates before they can silently clear existing settings (issue #45)
+- `MastodonRateLimitException` now derives `retryAfter` from Mastodon's
+  `X-RateLimit-Reset` header when `Retry-After` is unavailable, supports
+  HTTP-date values, and exposes `limit`, `remaining`, and `resetAt` (issue #47)
 
 ## [1.0.0-beta.3] - 2026-08-25
 

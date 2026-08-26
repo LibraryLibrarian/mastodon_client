@@ -15,7 +15,10 @@ MastodonException (sealed)
 │   ├── MastodonForbiddenException    // 403 - 权限错误
 │   ├── MastodonNotFoundException     // 404 - 资源不存在
 │   ├── MastodonRateLimitException    // 429 - 触发频率限制
-│   │   └── retryAfter                //   建议等待时长
+│   │   ├── retryAfter                //   建议等待时长
+│   │   ├── limit                     //   限制周期内的请求上限
+│   │   ├── remaining                 //   剩余请求数
+│   │   └── resetAt                   //   限制重置时间
 │   ├── MastodonValidationException   // 422 - 校验错误
 │   │   ├── serverMessage             //   服务器详细错误信息
 │   │   └── MastodonAlreadyVotedException // 已投过票
@@ -97,11 +100,16 @@ try {
 
 ## 处理频率限制
 
+`MastodonRateLimitException` 会公开 Mastodon 的 `X-RateLimit-*` 响应头。
+建议等待时长会优先使用服务器或代理提供的 `Retry-After`，否则使用
+`X-RateLimit-Reset` 时间戳。
+
 ```dart
 Future<T> withRetry<T>(Future<T> Function() action) async {
   try {
     return await action();
   } on MastodonRateLimitException catch (e) {
+    print('剩余 ${e.remaining}/${e.limit} 次请求；${e.resetAt} 重置');
     final wait = e.retryAfter ?? const Duration(seconds: 60);
     await Future<void>.delayed(wait);
     return action();

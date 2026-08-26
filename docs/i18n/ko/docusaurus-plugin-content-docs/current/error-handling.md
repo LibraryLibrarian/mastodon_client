@@ -15,7 +15,10 @@ MastodonException (sealed)
 │   ├── MastodonForbiddenException    // 403 - 권한 에러
 │   ├── MastodonNotFoundException     // 404 - 리소스 없음
 │   ├── MastodonRateLimitException    // 429 - 요청 제한 초과
-│   │   └── retryAfter                //   재시도 권장 대기 시간
+│   │   ├── retryAfter                //   재시도 권장 대기 시간
+│   │   ├── limit                     //   제한 기간의 요청 한도
+│   │   ├── remaining                 //   남은 요청 수
+│   │   └── resetAt                   //   제한이 재설정되는 시각
 │   ├── MastodonValidationException   // 422 - 유효성 검사 에러
 │   │   ├── serverMessage             //   서버의 상세 메시지
 │   │   └── MastodonAlreadyVotedException // 이미 투표함
@@ -97,11 +100,16 @@ try {
 
 ## 요청 제한 처리
 
+`MastodonRateLimitException`은 Mastodon의 `X-RateLimit-*` 헤더를 제공합니다.
+권장 대기 시간은 서버나 프록시가 `Retry-After`를 제공하면 그 값을 사용하고,
+그렇지 않으면 `X-RateLimit-Reset` 타임스탬프를 사용합니다.
+
 ```dart
 Future<T> withRetry<T>(Future<T> Function() action) async {
   try {
     return await action();
   } on MastodonRateLimitException catch (e) {
+    print('${e.remaining}/${e.limit}개 요청 남음; ${e.resetAt}에 재설정');
     final wait = e.retryAfter ?? const Duration(seconds: 60);
     await Future<void>.delayed(wait);
     return action();
