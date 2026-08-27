@@ -24,11 +24,10 @@ MastodonException (sealed)
 │   │   └── MastodonAlreadyVotedException // Already voted
 │   └── MastodonServerException       // 5xx - Server error
 ├── MastodonNetworkException          // Network connection error
-├── MastodonAuthException (sealed)    // OAuth authentication flow errors
-│   ├── MastodonAuthCancelledException    // User cancelled
-│   ├── MastodonAuthStateMismatchException // CSRF detected
-│   └── MastodonAuthTokenException        // Token acquisition failed
-└── MastodonMediaProcessingTimeoutException // Media processing timeout
+└── MastodonAuthException (sealed)    // OAuth authentication flow errors
+    ├── MastodonAuthCancelledException    // User cancelled
+    ├── MastodonAuthStateMismatchException // CSRF detected
+    └── MastodonAuthTokenException        // Token acquisition failed
 ```
 
 ## Modèles de capture de base
@@ -82,19 +81,6 @@ try {
   await client.polls.vote(pollId, [0]);
 } on MastodonAlreadyVotedException {
   print('Already voted on this poll');
-}
-```
-
-### MastodonMediaProcessingTimeoutException
-
-Levée lorsque le traitement asynchrone d'un média dépasse le délai après le téléversement.
-
-```dart
-try {
-  final attachment = await client.media.upload(bytes, 'photo.jpg');
-} on MastodonMediaProcessingTimeoutException catch (e) {
-  print('Media ${e.mediaId} processing timed out');
-  // Check status later with client.media.fetchById(e.mediaId)
 }
 ```
 

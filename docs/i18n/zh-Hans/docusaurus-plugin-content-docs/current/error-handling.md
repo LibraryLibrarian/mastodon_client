@@ -24,11 +24,10 @@ MastodonException (sealed)
 │   │   └── MastodonAlreadyVotedException // 已投过票
 │   └── MastodonServerException       // 5xx - 服务器错误
 ├── MastodonNetworkException          // 网络连接错误
-├── MastodonAuthException (sealed)    // OAuth 认证流程错误
-│   ├── MastodonAuthCancelledException    // 用户取消
-│   ├── MastodonAuthStateMismatchException // 检测到 CSRF
-│   └── MastodonAuthTokenException        // token 获取失败
-└── MastodonMediaProcessingTimeoutException // 媒体处理超时
+└── MastodonAuthException (sealed)    // OAuth 认证流程错误
+    ├── MastodonAuthCancelledException    // 用户取消
+    ├── MastodonAuthStateMismatchException // 检测到 CSRF
+    └── MastodonAuthTokenException        // token 获取失败
 ```
 
 ## 基本捕获模式
@@ -82,19 +81,6 @@ try {
   await client.polls.vote(pollId, [0]);
 } on MastodonAlreadyVotedException {
   print('已经投过票了');
-}
-```
-
-### MastodonMediaProcessingTimeoutException
-
-当上传后异步媒体处理超时时抛出。
-
-```dart
-try {
-  final attachment = await client.media.upload(bytes, 'photo.jpg');
-} on MastodonMediaProcessingTimeoutException catch (e) {
-  print('媒体 ${e.mediaId} 处理超时');
-  // 稍后通过 client.media.fetchById(e.mediaId) 查询状态
 }
 ```
 

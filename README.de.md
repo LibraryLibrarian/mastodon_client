@@ -12,7 +12,7 @@ Eine reine Dart-Clientbibliothek für die [Mastodon](https://joinmastodon.org/) 
 - OAuth 2.0 Token-Verwaltung (Abrufen, Widerrufen, Weitergabe des PKCE-`code_verifier` beim Token-Austausch)
 - Cursorbasierte Paginierung über `MastodonPage<T>`
 - Sealed-Ausnahmehierarchie für erschöpfende Fehlerbehandlung
-- Asynchroner Medien-Upload mit automatischem v2/v1-Fallback und Verarbeitungs-Polling
+- Asynchroner Medien-Upload mit automatischem v2/v1-Fallback und expliziter Statusabfrage
 - Streaming-API über WebSocket mit gemultiplexten Abonnements und automatischer Wiederverbindung
 - Konfigurierbares Logging über eine austauschbare `Logger`-Schnittstelle
 - Reines Dart — keine Flutter-Abhängigkeit erforderlich
@@ -62,6 +62,10 @@ void main() async {
   }
 }
 ```
+
+Der Client setzt keine eigenen HTTP-Zeitüberschreitungen. Anfragen folgen dem
+Verhalten des Transports und des Mastodon-Servers, statt durch Bibliotheksvorgaben
+abgebrochen zu werden.
 
 ## API-Übersicht
 

@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # 媒体上传
 
-`client.media` API 处理文件上传，并自动支持异步处理。
+`client.media` API 处理文件上传，并在不添加客户端等待期限的情况下公开服务器的异步处理状态。
 
 ## 上传媒体
 
@@ -50,19 +50,16 @@ final attachment = await client.media.upload(
 
 ## 异步处理
 
-当服务器返回 HTTP 202（异步处理）时，本库会自动轮询 `GET /api/v1/media/{id}`，直到 `url` 字段变为可用。这对调用方是透明的。
-
-如果处理在轮询限制内（8 次，每次间隔 500ms）未完成，将抛出 `MastodonMediaProcessingTimeoutException`：
+当服务器返回 HTTP 202 时，`upload()` 会立即返回 `url` 为 `null` 的附件。
+应用需要检查状态时可调用 `fetchById()`。HTTP 206 表示仍在处理中，HTTP 200 表示已获取
+最新附件状态。本库不会自动轮询，也不会设置处理期限。
 
 ```dart
-try {
-  final attachment = await client.media.upload(bytes, 'large-video.mp4');
-} on MastodonMediaProcessingTimeoutException catch (e) {
-  // 稍后检查状态
-  final attachment = await client.media.fetchById(e.mediaId);
-  if (attachment.url != null) {
-    print('Processing complete: ${attachment.url}');
-  }
+final attachment = await client.media.upload(bytes, 'large-video.mp4');
+if (attachment.url == null) {
+  // 根据应用自身策略稍后检查。
+  final current = await client.media.fetchById(attachment.id);
+  print(current.url == null ? '仍在处理中' : current.url);
 }
 ```
 

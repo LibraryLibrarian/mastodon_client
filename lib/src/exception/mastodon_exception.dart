@@ -164,19 +164,6 @@ class MastodonAlreadyVotedException extends MastodonValidationException {
     : super(message: 'Already voted', serverMessage: 'already voted');
 }
 
-/// Media async processing timeout.
-///
-/// Thrown when the media with [MastodonMediaProcessingTimeoutException.mediaId]
-/// did not finish processing within the polling limit after the server
-/// returned HTTP 202.
-class MastodonMediaProcessingTimeoutException extends MastodonException {
-  MastodonMediaProcessingTimeoutException({required this.mediaId})
-    : super('Media processing timed out (id: $mediaId)');
-
-  /// ID of the media that was awaiting processing.
-  final String mediaId;
-}
-
 /// Base class for errors from the Mastodon Streaming API.
 sealed class MastodonStreamingException extends MastodonException {
   const MastodonStreamingException(super.message);

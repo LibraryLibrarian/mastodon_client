@@ -12,7 +12,7 @@ Une bibliothèque cliente pure Dart pour l'API [Mastodon](https://joinmastodon.o
 - Gestion des jetons OAuth 2.0 (obtention, révocation, transmission du `code_verifier` PKCE lors de l'échange de jetons)
 - Pagination par curseur via `MastodonPage<T>`
 - Hiérarchie d'exceptions sealed pour une gestion exhaustive des erreurs
-- Téléversement de médias asynchrone avec basculement automatique v2/v1 et scrutation du traitement
+- Téléversement de médias asynchrone avec basculement automatique v2/v1 et vérification explicite du traitement
 - API de diffusion via WebSocket avec abonnements multiplexés et reconnexion automatique
 - Journalisation configurable via une interface `Logger` interchangeable
 - Pure Dart — aucune dépendance Flutter requise
@@ -62,6 +62,10 @@ void main() async {
   }
 }
 ```
+
+Le client n'impose aucun délai d'expiration HTTP propre à la bibliothèque. Les
+requêtes suivent le comportement du transport et du serveur Mastodon sans être
+interrompues par une valeur par défaut de la bibliothèque.
 
 ## Aperçu de l'API
 

@@ -24,11 +24,10 @@ MastodonException (sealed)
 │   │   └── MastodonAlreadyVotedException // 이미 투표함
 │   └── MastodonServerException       // 5xx - 서버 에러
 ├── MastodonNetworkException          // 네트워크 연결 에러
-├── MastodonAuthException (sealed)    // OAuth 인증 흐름 에러
-│   ├── MastodonAuthCancelledException    // 사용자가 취소
-│   ├── MastodonAuthStateMismatchException // CSRF 감지
-│   └── MastodonAuthTokenException        // 토큰 획득 실패
-└── MastodonMediaProcessingTimeoutException // 미디어 처리 타임아웃
+└── MastodonAuthException (sealed)    // OAuth 인증 흐름 에러
+    ├── MastodonAuthCancelledException    // 사용자가 취소
+    ├── MastodonAuthStateMismatchException // CSRF 감지
+    └── MastodonAuthTokenException        // 토큰 획득 실패
 ```
 
 ## 기본 catch 패턴
@@ -82,19 +81,6 @@ try {
   await client.polls.vote(pollId, [0]);
 } on MastodonAlreadyVotedException {
   print('이미 이 설문에 투표했습니다');
-}
-```
-
-### MastodonMediaProcessingTimeoutException
-
-업로드 후 비동기 미디어 처리가 타임아웃되면 발생합니다.
-
-```dart
-try {
-  final attachment = await client.media.upload(bytes, 'photo.jpg');
-} on MastodonMediaProcessingTimeoutException catch (e) {
-  print('미디어 ${e.mediaId} 처리가 타임아웃되었습니다');
-  // 나중에 client.media.fetchById(e.mediaId)로 상태를 확인하세요
 }
 ```
 

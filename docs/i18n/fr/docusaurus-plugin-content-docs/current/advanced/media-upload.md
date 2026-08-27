@@ -4,7 +4,8 @@ sidebar_position: 2
 
 # Téléversement de médias
 
-L'API `client.media` gère les téléversements de fichiers avec prise en charge automatique du traitement asynchrone.
+L'API `client.media` gère les téléversements et expose l'état du traitement
+asynchrone du serveur sans ajouter de délai d'attente côté client.
 
 ## Téléverser un média
 
@@ -50,19 +51,18 @@ final attachment = await client.media.upload(
 
 ## Traitement asynchrone
 
-Lorsque le serveur retourne HTTP 202 (traitement asynchrone), la bibliothèque interroge automatiquement `GET /api/v1/media/{id}` jusqu'à ce que le champ `url` soit disponible. Cela est transparent pour l'appelant.
-
-Si le traitement ne se termine pas dans la limite d'interrogation (8 tentatives espacées de 500ms), une `MastodonMediaProcessingTimeoutException` est levée :
+Lorsque le serveur retourne HTTP 202, `upload()` renvoie immédiatement la pièce
+jointe avec une `url` nulle. Appelez `fetchById()` lorsque l'application doit
+vérifier son état. HTTP 206 indique que le traitement continue, tandis que HTTP
+200 fournit l'état actuel. La bibliothèque n'effectue aucune scrutation et
+n'impose aucun délai de traitement.
 
 ```dart
-try {
-  final attachment = await client.media.upload(bytes, 'large-video.mp4');
-} on MastodonMediaProcessingTimeoutException catch (e) {
-  // Check status later
-  final attachment = await client.media.fetchById(e.mediaId);
-  if (attachment.url != null) {
-    print('Processing complete: ${attachment.url}');
-  }
+final attachment = await client.media.upload(bytes, 'large-video.mp4');
+if (attachment.url == null) {
+  // Vérifier plus tard selon la politique de l'application.
+  final current = await client.media.fetchById(attachment.id);
+  print(current.url == null ? 'Traitement en cours' : current.url);
 }
 ```
 
