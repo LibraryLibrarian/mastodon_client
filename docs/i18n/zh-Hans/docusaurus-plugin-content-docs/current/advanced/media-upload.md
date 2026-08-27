@@ -54,6 +54,9 @@ final attachment = await client.media.upload(
 应用需要检查状态时可调用 `fetchById()`。HTTP 206 表示仍在处理中，HTTP 200 表示已获取
 最新附件状态。本库不会自动轮询，也不会设置处理期限。
 
+如果 Mastodon 返回 HTTP 422，`fetchById()` 会通过标准错误转换流程将处理失败转换为
+`MastodonValidationException`。
+
 ```dart
 final attachment = await client.media.upload(bytes, 'large-video.mp4');
 if (attachment.url == null) {

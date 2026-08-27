@@ -57,6 +57,9 @@ status. HTTP 206 means processing is still in progress, while HTTP 200 means the
 latest attachment state is available. The library does not poll or impose a
 processing deadline.
 
+If Mastodon reports HTTP 422, `fetchById()` surfaces the processing failure as
+`MastodonValidationException` through the standard error conversion path.
+
 ```dart
 final attachment = await client.media.upload(bytes, 'large-video.mp4');
 if (attachment.url == null) {

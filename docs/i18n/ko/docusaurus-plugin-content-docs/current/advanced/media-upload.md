@@ -56,6 +56,9 @@ final attachment = await client.media.upload(
 HTTP 200은 최신 첨부 상태를 가져왔음을 뜻합니다. 라이브러리는 자동 폴링이나 처리 제한 시간을
 설정하지 않습니다.
 
+Mastodon이 HTTP 422를 반환하면 `fetchById()`는 표준 오류 변환 경로를 통해 처리 실패를
+`MastodonValidationException`으로 전달합니다.
+
 ```dart
 final attachment = await client.media.upload(bytes, 'large-video.mp4');
 if (attachment.url == null) {

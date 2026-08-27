@@ -57,6 +57,9 @@ vérifier son état. HTTP 206 indique que le traitement continue, tandis que HTT
 200 fournit l'état actuel. La bibliothèque n'effectue aucune scrutation et
 n'impose aucun délai de traitement.
 
+Si Mastodon renvoie HTTP 422, `fetchById()` expose l'échec du traitement sous
+forme de `MastodonValidationException` via la conversion d'erreur standard.
+
 ```dart
 final attachment = await client.media.upload(bytes, 'large-video.mp4');
 if (attachment.url == null) {

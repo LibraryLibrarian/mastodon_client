@@ -63,9 +63,15 @@ void main() async {
 }
 ```
 
-Le client n'impose aucun délai d'expiration HTTP propre à la bibliothèque. Les
-requêtes suivent le comportement du transport et du serveur Mastodon sans être
-interrompues par une valeur par défaut de la bibliothèque.
+Le client REST n'impose aucun délai d'expiration HTTP propre à la bibliothèque.
+Les requêtes suivent le comportement du transport et du serveur Mastodon sans
+être interrompues par une valeur par défaut de la bibliothèque.
+
+Pour un média asynchrone, `upload()` renvoie immédiatement la pièce jointe HTTP
+202 avec une `url` nulle. Vérifiez-la explicitement avec
+`client.media.fetchById(id)` : HTTP 206 indique un traitement en cours, HTTP 200
+renvoie la pièce jointe actuelle et HTTP 422 devient une
+`MastodonValidationException`.
 
 ## Aperçu de l'API
 

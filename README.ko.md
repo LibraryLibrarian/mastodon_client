@@ -63,8 +63,13 @@ void main() async {
 }
 ```
 
-클라이언트는 라이브러리 자체 HTTP 타임아웃을 설정하지 않습니다. 라이브러리 기본값으로
-요청을 중단하지 않고 전송 계층과 Mastodon 서버의 동작을 따릅니다.
+REST 클라이언트는 라이브러리 자체 HTTP 타임아웃을 설정하지 않습니다. 라이브러리
+기본값으로 요청을 중단하지 않고 전송 계층과 Mastodon 서버의 동작을 따릅니다.
+
+비동기 미디어 업로드에서 `upload()`는 HTTP 202의 `url`이 `null`인 첨부 정보를 즉시
+반환합니다. `client.media.fetchById(id)`로 명시적으로 확인하세요. HTTP 206은 처리 중,
+HTTP 200은 현재 첨부 정보, HTTP 422는 `MastodonValidationException`으로 전달되는
+처리 실패를 뜻합니다.
 
 ## API 개요
 

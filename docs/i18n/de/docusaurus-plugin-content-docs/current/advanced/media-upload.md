@@ -56,6 +56,9 @@ Bei HTTP 202 gibt `upload()` den Anhang sofort mit `url: null` zurück. Rufe
 dass die Verarbeitung noch läuft; HTTP 200 liefert den aktuellen Anhang. Die
 Bibliothek fragt nicht automatisch ab und setzt kein Verarbeitungszeitlimit.
 
+Meldet Mastodon HTTP 422, gibt `fetchById()` den Verarbeitungsfehler über die
+normale Fehlerumwandlung als `MastodonValidationException` weiter.
+
 ```dart
 final attachment = await client.media.upload(bytes, 'large-video.mp4');
 if (attachment.url == null) {

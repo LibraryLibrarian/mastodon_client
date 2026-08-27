@@ -63,8 +63,12 @@ void main() async {
 }
 ```
 
-客户端不会设置本库自有的 HTTP 超时。请求遵循传输层和 Mastodon 服务器的行为，
+REST 客户端不会设置本库自有的 HTTP 超时。请求遵循传输层和 Mastodon 服务器的行为，
 不会因本库的默认值而被中断。
+
+对于异步媒体上传，`upload()` 会立即返回 HTTP 202 且 `url` 为 `null` 的附件。
+请使用 `client.media.fetchById(id)` 显式检查：HTTP 206 表示仍在处理中，HTTP 200
+返回当前附件，HTTP 422 表示处理失败并转换为 `MastodonValidationException`。
 
 ## API 概览
 

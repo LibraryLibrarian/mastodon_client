@@ -63,8 +63,14 @@ void main() async {
 }
 ```
 
-The client does not impose its own HTTP timeouts. Requests follow the transport
-and Mastodon server behavior instead of being cut off by library defaults.
+The REST client does not impose its own HTTP timeouts. Requests follow the
+transport and Mastodon server behavior instead of being cut off by library
+defaults.
+
+For async media uploads, `upload()` returns an HTTP 202 attachment immediately
+with a null `url`. Check it explicitly with `client.media.fetchById(id)`: HTTP
+206 means processing is still in progress, HTTP 200 returns the current
+attachment, and HTTP 422 is surfaced as `MastodonValidationException`.
 
 ## API Overview
 

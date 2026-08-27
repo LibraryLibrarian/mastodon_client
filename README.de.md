@@ -63,9 +63,14 @@ void main() async {
 }
 ```
 
-Der Client setzt keine eigenen HTTP-Zeitüberschreitungen. Anfragen folgen dem
-Verhalten des Transports und des Mastodon-Servers, statt durch Bibliotheksvorgaben
-abgebrochen zu werden.
+Der REST-Client setzt keine eigenen HTTP-Zeitüberschreitungen. Anfragen folgen
+dem Verhalten des Transports und des Mastodon-Servers, statt durch
+Bibliotheksvorgaben abgebrochen zu werden.
+
+Bei asynchronen Medien-Uploads gibt `upload()` einen HTTP-202-Anhang sofort mit
+`url: null` zurück. Prüfe ihn explizit mit `client.media.fetchById(id)`: HTTP 206
+bedeutet laufende Verarbeitung, HTTP 200 liefert den aktuellen Anhang und HTTP
+422 wird als `MastodonValidationException` gemeldet.
 
 ## API-Übersicht
 
