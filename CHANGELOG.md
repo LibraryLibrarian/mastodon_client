@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Breaking:** Account follower, following, and endorsement listings now
+  propagate HTTP 403 as `MastodonForbiddenException` instead of silently
+  returning an empty page, allowing authorization and scope failures to be
+  detected (issue #60)
 - **Breaking:** `MastodonStatus.quote` is now a `MastodonQuote?` relationship
   instead of a `MastodonStatus?`, matching Mastodon 4.5 responses. Access the
   embedded status through `status.quote?.quotedStatus`; shallow nested quotes

@@ -132,8 +132,9 @@ class AccountsApi {
   /// pass the `nextMaxId` from the previous response as [maxId] to page
   /// backward, or use [minId] for forward pagination.
   ///
-  /// Returns an empty [MastodonPage] for private accounts (HTTP 403).
-  /// Throws a subclass of [MastodonException] on other failures.
+  /// Throws [MastodonForbiddenException] on HTTP 403, including when the
+  /// access token does not have the required `read` or `read:accounts` scope.
+  /// Throws another subclass of [MastodonException] on other failures.
   Future<MastodonPage<MastodonAccount>> fetchFollowers(
     String accountId, {
     int? limit,
@@ -157,8 +158,9 @@ class AccountsApi {
   /// pass the `nextMaxId` from the previous response as [maxId] to page
   /// backward, or use [minId] for forward pagination.
   ///
-  /// Returns an empty [MastodonPage] for private accounts (HTTP 403).
-  /// Throws a subclass of [MastodonException] on other failures.
+  /// Throws [MastodonForbiddenException] on HTTP 403, including when the
+  /// access token does not have the required `read` or `read:accounts` scope.
+  /// Throws another subclass of [MastodonException] on other failures.
   Future<MastodonPage<MastodonAccount>> fetchFollowing(
     String accountId, {
     int? limit,
@@ -470,7 +472,9 @@ class AccountsApi {
   /// backward; use [sinceId] to receive only newer results, or [minId]
   /// for forward pagination.
   ///
-  /// Throws a subclass of [MastodonException] on failure.
+  /// Throws [MastodonForbiddenException] on HTTP 403, including when the
+  /// access token does not have the required `read` or `read:accounts` scope.
+  /// Throws another subclass of [MastodonException] on other failures.
   Future<MastodonPage<MastodonAccount>> fetchEndorsements(
     String id, {
     int? limit,
@@ -609,28 +613,24 @@ class AccountsApi {
     String? sinceId,
     String? minId,
   }) async {
-    try {
-      final response = await _http.sendRaw<List<dynamic>>(
-        path,
-        queryParameters: <String, dynamic>{
-          'limit': ?limit,
-          'max_id': ?maxId,
-          'since_id': ?sinceId,
-          'min_id': ?minId,
-        },
-      );
-      final linkHeader = response.headers.map['link']?.join(',');
-      final items = (response.data ?? const <dynamic>[])
-          .cast<Map<String, dynamic>>()
-          .map(MastodonAccount.fromJson)
-          .toList();
-      return MastodonPage(
-        items: items,
-        nextMaxId: parseNextMaxId(linkHeader),
-        prevMinId: parsePrevMinId(linkHeader),
-      );
-    } on MastodonForbiddenException {
-      return const MastodonPage(items: []);
-    }
+    final response = await _http.sendRaw<List<dynamic>>(
+      path,
+      queryParameters: <String, dynamic>{
+        'limit': ?limit,
+        'max_id': ?maxId,
+        'since_id': ?sinceId,
+        'min_id': ?minId,
+      },
+    );
+    final linkHeader = response.headers.map['link']?.join(',');
+    final items = (response.data ?? const <dynamic>[])
+        .cast<Map<String, dynamic>>()
+        .map(MastodonAccount.fromJson)
+        .toList();
+    return MastodonPage(
+      items: items,
+      nextMaxId: parseNextMaxId(linkHeader),
+      prevMinId: parsePrevMinId(linkHeader),
+    );
   }
 }
