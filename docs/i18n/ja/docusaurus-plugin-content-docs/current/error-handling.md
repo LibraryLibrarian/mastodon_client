@@ -24,11 +24,10 @@ MastodonException (sealed)
 │   │   └── MastodonAlreadyVotedException // 投票済みエラー
 │   └── MastodonServerException       // 5xx - サーバーエラー
 ├── MastodonNetworkException          // ネットワーク接続エラー
-├── MastodonAuthException (sealed)    // OAuth 認証フローエラー
-│   ├── MastodonAuthCancelledException    // ユーザーによるキャンセル
-│   ├── MastodonAuthStateMismatchException // CSRF 検出
-│   └── MastodonAuthTokenException        // トークン取得失敗
-└── MastodonMediaProcessingTimeoutException // メディア処理タイムアウト
+└── MastodonAuthException (sealed)    // OAuth 認証フローエラー
+    ├── MastodonAuthCancelledException    // ユーザーによるキャンセル
+    ├── MastodonAuthStateMismatchException // CSRF 検出
+    └── MastodonAuthTokenException        // トークン取得失敗
 ```
 
 ## 基本的な catch パターン
@@ -82,19 +81,6 @@ try {
   await client.polls.vote(pollId, [0]);
 } on MastodonAlreadyVotedException {
   print('このアンケートには既に投票済みです');
-}
-```
-
-### MastodonMediaProcessingTimeoutException
-
-メディアアップロード後の非同期処理がタイムアウトした場合にスローされます。
-
-```dart
-try {
-  final attachment = await client.media.upload(bytes, 'photo.jpg');
-} on MastodonMediaProcessingTimeoutException catch (e) {
-  print('メディア ${e.mediaId} の処理がタイムアウトしました');
-  // 後で client.media.fetchById(e.mediaId) で状態を確認可能
 }
 ```
 

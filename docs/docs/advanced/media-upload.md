@@ -4,7 +4,8 @@ sidebar_position: 2
 
 # Media Upload
 
-The `client.media` API handles file uploads with automatic async processing support.
+The `client.media` API handles file uploads and exposes the server's async
+processing state without adding a client-side waiting deadline.
 
 ## Uploading media
 
@@ -50,19 +51,21 @@ final attachment = await client.media.upload(
 
 ## Async processing
 
-When the server returns HTTP 202 (async processing), the library automatically polls `GET /api/v1/media/{id}` until the `url` field becomes available. This is transparent to the caller.
+When the server returns HTTP 202, `upload()` returns the attachment immediately
+with a `null` `url`. Call `fetchById()` when your application needs to check the
+status. HTTP 206 means processing is still in progress, while HTTP 200 means the
+latest attachment state is available. The library does not poll or impose a
+processing deadline.
 
-If processing does not complete within the polling limit (8 attempts, 500ms apart), a `MastodonMediaProcessingTimeoutException` is thrown:
+If Mastodon reports HTTP 422, `fetchById()` surfaces the processing failure as
+`MastodonValidationException` through the standard error conversion path.
 
 ```dart
-try {
-  final attachment = await client.media.upload(bytes, 'large-video.mp4');
-} on MastodonMediaProcessingTimeoutException catch (e) {
-  // Check status later
-  final attachment = await client.media.fetchById(e.mediaId);
-  if (attachment.url != null) {
-    print('Processing complete: ${attachment.url}');
-  }
+final attachment = await client.media.upload(bytes, 'large-video.mp4');
+if (attachment.url == null) {
+  // Check later according to the application's own policy.
+  final current = await client.media.fetchById(attachment.id);
+  print(current.url == null ? 'Still processing' : current.url);
 }
 ```
 

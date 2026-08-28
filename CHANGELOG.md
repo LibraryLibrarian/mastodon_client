@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Breaking:** HTTP requests no longer use library-defined 10-second connect,
+  receive, or send timeouts. Async media uploads now return the server's HTTP
+  202 attachment immediately with a null `url` instead of polling implicitly;
+  callers can check progress explicitly with `MediaApi.fetchById()`. Removed
+  the now-unused `MastodonMediaProcessingTimeoutException` (issue #46)
 - **Breaking:** Account follower, following, and endorsement listings now
   propagate HTTP 403 as `MastodonForbiddenException` instead of silently
   returning an empty page, allowing authorization and scope failures to be

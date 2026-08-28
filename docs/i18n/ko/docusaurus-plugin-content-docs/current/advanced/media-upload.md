@@ -4,7 +4,8 @@ sidebar_position: 2
 
 # 미디어 업로드
 
-`client.media` API는 비동기 처리 자동 지원을 포함한 파일 업로드를 처리합니다.
+`client.media` API는 파일 업로드를 처리하고 클라이언트 측 대기 제한을 추가하지 않은 채
+서버의 비동기 처리 상태를 제공합니다.
 
 ## 미디어 업로드
 
@@ -50,19 +51,20 @@ final attachment = await client.media.upload(
 
 ## 비동기 처리
 
-서버가 HTTP 202(비동기 처리 중)를 반환하면, 라이브러리는 `url` 필드가 채워질 때까지 자동으로 `GET /api/v1/media/{id}`를 폴링합니다. 이 과정은 호출자에게 투명하게 처리됩니다.
+서버가 HTTP 202를 반환하면 `upload()`는 `url`이 `null`인 첨부 정보를 즉시 반환합니다.
+애플리케이션에서 상태 확인이 필요할 때 `fetchById()`를 호출하세요. HTTP 206은 처리 중임을,
+HTTP 200은 최신 첨부 상태를 가져왔음을 뜻합니다. 라이브러리는 자동 폴링이나 처리 제한 시간을
+설정하지 않습니다.
 
-폴링 제한(8회, 500ms 간격) 내에 처리가 완료되지 않으면 `MastodonMediaProcessingTimeoutException`이 발생합니다:
+Mastodon이 HTTP 422를 반환하면 `fetchById()`는 표준 오류 변환 경로를 통해 처리 실패를
+`MastodonValidationException`으로 전달합니다.
 
 ```dart
-try {
-  final attachment = await client.media.upload(bytes, 'large-video.mp4');
-} on MastodonMediaProcessingTimeoutException catch (e) {
-  // 나중에 상태 확인
-  final attachment = await client.media.fetchById(e.mediaId);
-  if (attachment.url != null) {
-    print('Processing complete: ${attachment.url}');
-  }
+final attachment = await client.media.upload(bytes, 'large-video.mp4');
+if (attachment.url == null) {
+  // 애플리케이션 정책에 따라 나중에 확인합니다.
+  final current = await client.media.fetchById(attachment.id);
+  print(current.url == null ? '처리 중' : current.url);
 }
 ```
 

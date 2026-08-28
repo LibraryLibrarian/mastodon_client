@@ -12,7 +12,7 @@
 - OAuth 2.0 토큰 관리 (획득, 취소, 토큰 교환 시 PKCE `code_verifier` 전달)
 - `MastodonPage<T>`를 통한 커서 기반 페이지네이션
 - 완전한 오류 처리를 위한 sealed 예외 계층
-- 자동 v2/v1 폴백 및 처리 폴링을 지원하는 비동기 미디어 업로드
+- 자동 v2/v1 폴백 및 명시적 처리 상태 확인을 지원하는 비동기 미디어 업로드
 - 다중화된 구독과 자동 재연결을 지원하는 WebSocket 기반 스트리밍 API
 - 교체 가능한 `Logger` 인터페이스를 통한 설정 가능한 로깅
 - 순수 Dart — Flutter 의존성 불필요
@@ -62,6 +62,14 @@ void main() async {
   }
 }
 ```
+
+REST 클라이언트는 라이브러리 자체 HTTP 타임아웃을 설정하지 않습니다. 라이브러리
+기본값으로 요청을 중단하지 않고 전송 계층과 Mastodon 서버의 동작을 따릅니다.
+
+비동기 미디어 업로드에서 `upload()`는 HTTP 202의 `url`이 `null`인 첨부 정보를 즉시
+반환합니다. `client.media.fetchById(id)`로 명시적으로 확인하세요. HTTP 206은 처리 중,
+HTTP 200은 현재 첨부 정보, HTTP 422는 `MastodonValidationException`으로 전달되는
+처리 실패를 뜻합니다.
 
 ## API 개요
 
