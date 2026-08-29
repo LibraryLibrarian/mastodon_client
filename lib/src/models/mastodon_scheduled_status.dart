@@ -59,6 +59,12 @@ class MastodonScheduledStatusParams with _$MastodonScheduledStatusParams {
     this.inReplyToId,
     this.language,
     this.idempotency,
+    this.quotedStatusId,
+    this.quoteApprovalPolicy,
+    this.applicationId,
+    this.withRateLimit,
+    this.allowedMentions,
+    this.scheduledAt,
   });
 
   /// Creates a [MastodonScheduledStatusParams] from a JSON map.
@@ -106,8 +112,50 @@ class MastodonScheduledStatusParams with _$MastodonScheduledStatusParams {
   final String? language;
 
   /// Idempotency key.
+  ///
+  /// Mastodon stores this as `null` in scheduled status parameters.
   @override
   final String? idempotency;
+
+  /// ID of the status being quoted.
+  @override
+  final String? quotedStatusId;
+
+  /// Quote approval policy.
+  ///
+  /// Usually `public`, `followers`, or `nobody` on Mastodon.
+  @override
+  final String? quoteApprovalPolicy;
+
+  /// ID of the application that created the scheduled status.
+  ///
+  /// Normalizes to `String` regardless of whether the server returns an
+  /// integer or string.
+  @JsonKey(fromJson: flexibleIdFromJson)
+  @override
+  final String? applicationId;
+
+  /// Whether rate limiting was requested when scheduling the status.
+  ///
+  /// Mastodon stores this as `false` in scheduled status parameters.
+  @override
+  final bool? withRateLimit;
+
+  /// IDs of accounts expected to be mentioned by the scheduled status.
+  ///
+  /// Each ID is normalized to `String` when the server returns an integer.
+  @JsonKey(fromJson: flexibleIdListFromJson)
+  @override
+  final List<String>? allowedMentions;
+
+  /// Scheduling timestamp retained inside the status parameters.
+  ///
+  /// This is distinct from [MastodonScheduledStatus.scheduledAt]. Mastodon
+  /// stores this parameter as `null`; it is retained for response-shape
+  /// completeness.
+  @SafeDateTimeConverter()
+  @override
+  final DateTime? scheduledAt;
 }
 
 /// Poll parameters of a scheduled status.

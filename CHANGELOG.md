@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   validation errors as typed `MastodonValidationErrorDetail` values, including
   the nested Collections response shape, while preserving unknown error codes
   (issue #54)
+- `MastodonScheduledStatusParams` now exposes quoted status, quote policy,
+  application, rate-limit, allowed-mention, and nested scheduling fields from
+  Mastodon's scheduled status response (issue #51)
 
 ### Changed
 
