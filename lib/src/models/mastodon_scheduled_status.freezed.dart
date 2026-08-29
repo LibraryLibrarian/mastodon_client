@@ -200,7 +200,7 @@ case _:
 /// @nodoc
 mixin _$MastodonScheduledStatusParams {
 
- String get text; MastodonScheduledStatusPoll? get poll; List<String>? get mediaIds; bool? get sensitive; String? get spoilerText; String? get visibility; String? get inReplyToId; String? get language; String? get idempotency;
+ String get text; MastodonScheduledStatusPoll? get poll; List<String>? get mediaIds; bool? get sensitive; String? get spoilerText; String? get visibility; String? get inReplyToId; String? get language; String? get idempotency; String? get quotedStatusId; String? get quoteApprovalPolicy; String? get applicationId; bool? get withRateLimit; List<String>? get allowedMentions; DateTime? get scheduledAt;
 /// Create a copy of MastodonScheduledStatusParams
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -211,12 +211,12 @@ $MastodonScheduledStatusParamsCopyWith<MastodonScheduledStatusParams> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonScheduledStatusParams&&(identical(other.text, text) || other.text == text)&&(identical(other.poll, poll) || other.poll == poll)&&const DeepCollectionEquality().equals(other.mediaIds, mediaIds)&&(identical(other.sensitive, sensitive) || other.sensitive == sensitive)&&(identical(other.spoilerText, spoilerText) || other.spoilerText == spoilerText)&&(identical(other.visibility, visibility) || other.visibility == visibility)&&(identical(other.inReplyToId, inReplyToId) || other.inReplyToId == inReplyToId)&&(identical(other.language, language) || other.language == language)&&(identical(other.idempotency, idempotency) || other.idempotency == idempotency));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonScheduledStatusParams&&(identical(other.text, text) || other.text == text)&&(identical(other.poll, poll) || other.poll == poll)&&const DeepCollectionEquality().equals(other.mediaIds, mediaIds)&&(identical(other.sensitive, sensitive) || other.sensitive == sensitive)&&(identical(other.spoilerText, spoilerText) || other.spoilerText == spoilerText)&&(identical(other.visibility, visibility) || other.visibility == visibility)&&(identical(other.inReplyToId, inReplyToId) || other.inReplyToId == inReplyToId)&&(identical(other.language, language) || other.language == language)&&(identical(other.idempotency, idempotency) || other.idempotency == idempotency)&&(identical(other.quotedStatusId, quotedStatusId) || other.quotedStatusId == quotedStatusId)&&(identical(other.quoteApprovalPolicy, quoteApprovalPolicy) || other.quoteApprovalPolicy == quoteApprovalPolicy)&&(identical(other.applicationId, applicationId) || other.applicationId == applicationId)&&(identical(other.withRateLimit, withRateLimit) || other.withRateLimit == withRateLimit)&&const DeepCollectionEquality().equals(other.allowedMentions, allowedMentions)&&(identical(other.scheduledAt, scheduledAt) || other.scheduledAt == scheduledAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,text,poll,const DeepCollectionEquality().hash(mediaIds),sensitive,spoilerText,visibility,inReplyToId,language,idempotency);
+int get hashCode => Object.hash(runtimeType,text,poll,const DeepCollectionEquality().hash(mediaIds),sensitive,spoilerText,visibility,inReplyToId,language,idempotency,quotedStatusId,quoteApprovalPolicy,applicationId,withRateLimit,const DeepCollectionEquality().hash(allowedMentions),scheduledAt);
 
 
 
@@ -227,7 +227,7 @@ abstract mixin class $MastodonScheduledStatusParamsCopyWith<$Res>  {
   factory $MastodonScheduledStatusParamsCopyWith(MastodonScheduledStatusParams value, $Res Function(MastodonScheduledStatusParams) _then) = _$MastodonScheduledStatusParamsCopyWithImpl;
 @useResult
 $Res call({
- String text, MastodonScheduledStatusPoll? poll, List<String>? mediaIds, bool? sensitive, String? spoilerText, String? visibility, String? inReplyToId, String? language, String? idempotency
+ String text, MastodonScheduledStatusPoll? poll, List<String>? mediaIds, bool? sensitive, String? spoilerText, String? visibility, String? inReplyToId, String? language, String? idempotency, String? quotedStatusId, String? quoteApprovalPolicy, String? applicationId, bool? withRateLimit, List<String>? allowedMentions, DateTime? scheduledAt
 });
 
 
@@ -244,7 +244,7 @@ class _$MastodonScheduledStatusParamsCopyWithImpl<$Res>
 
 /// Create a copy of MastodonScheduledStatusParams
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? text = null,Object? poll = freezed,Object? mediaIds = freezed,Object? sensitive = freezed,Object? spoilerText = freezed,Object? visibility = freezed,Object? inReplyToId = freezed,Object? language = freezed,Object? idempotency = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? text = null,Object? poll = freezed,Object? mediaIds = freezed,Object? sensitive = freezed,Object? spoilerText = freezed,Object? visibility = freezed,Object? inReplyToId = freezed,Object? language = freezed,Object? idempotency = freezed,Object? quotedStatusId = freezed,Object? quoteApprovalPolicy = freezed,Object? applicationId = freezed,Object? withRateLimit = freezed,Object? allowedMentions = freezed,Object? scheduledAt = freezed,}) {
   return _then(MastodonScheduledStatusParams(
 text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,poll: freezed == poll ? _self.poll : poll // ignore: cast_nullable_to_non_nullable
@@ -255,7 +255,13 @@ as String?,visibility: freezed == visibility ? _self.visibility : visibility // 
 as String?,inReplyToId: freezed == inReplyToId ? _self.inReplyToId : inReplyToId // ignore: cast_nullable_to_non_nullable
 as String?,language: freezed == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
 as String?,idempotency: freezed == idempotency ? _self.idempotency : idempotency // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,quotedStatusId: freezed == quotedStatusId ? _self.quotedStatusId : quotedStatusId // ignore: cast_nullable_to_non_nullable
+as String?,quoteApprovalPolicy: freezed == quoteApprovalPolicy ? _self.quoteApprovalPolicy : quoteApprovalPolicy // ignore: cast_nullable_to_non_nullable
+as String?,applicationId: freezed == applicationId ? _self.applicationId : applicationId // ignore: cast_nullable_to_non_nullable
+as String?,withRateLimit: freezed == withRateLimit ? _self.withRateLimit : withRateLimit // ignore: cast_nullable_to_non_nullable
+as bool?,allowedMentions: freezed == allowedMentions ? _self.allowedMentions : allowedMentions // ignore: cast_nullable_to_non_nullable
+as List<String>?,scheduledAt: freezed == scheduledAt ? _self.scheduledAt : scheduledAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

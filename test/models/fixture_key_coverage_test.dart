@@ -46,6 +46,8 @@ void main() {
         MastodonCollection.fromJson(json).toJson(),
     'streaming_announcement_reaction.json': (json) =>
         MastodonStreamingAnnouncementReaction.fromJson(json).toJson(),
+    'scheduled_statuses.json': (json) =>
+        MastodonScheduledStatus.fromJson(json).toJson(),
   };
 
   group('fixture key coverage', () {
