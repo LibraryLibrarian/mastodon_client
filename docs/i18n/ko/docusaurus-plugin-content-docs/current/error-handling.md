@@ -21,6 +21,7 @@ MastodonException (sealed)
 │   │   └── resetAt                   //   제한이 재설정되는 시각
 │   ├── MastodonValidationException   // 422 - 유효성 검사 에러
 │   │   ├── serverMessage             //   서버의 상세 메시지
+│   │   ├── details                   //   요청 필드별 에러
 │   │   └── MastodonAlreadyVotedException // 이미 투표함
 │   └── MastodonServerException       // 5xx - 서버 에러
 ├── MastodonNetworkException          // 네트워크 연결 에러
@@ -64,11 +65,25 @@ try {
 
 ```dart
 try {
-  await client.statuses.create(request);
+  await client.accounts.create(request);
 } on MastodonValidationException catch (e) {
   print('유효성 검사 에러: ${e.serverMessage}');
+  final details = e.details;
+  if (details != null) {
+    for (final entry in details.entries) {
+      for (final detail in entry.value) {
+        print('${entry.key}: ${detail.code} - ${detail.description ?? ''}');
+      }
+    }
+  }
 }
 ```
+
+`details`는 요청 필드를 키로 사용하는 Map입니다. 각
+`MastodonValidationErrorDetail`에는 서버의 에러 코드와 선택적 설명이
+포함됩니다. 알 수 없는 코드도 향후 호환성을 위해 문자열로 유지됩니다.
+엔드포인트가 Mastodon의 인식 가능한 유효성 검사 상세 형식을 반환하지 않으면
+`details`는 `null`입니다.
 
 ## 특수 예외
 

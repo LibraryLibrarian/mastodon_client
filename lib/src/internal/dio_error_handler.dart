@@ -38,11 +38,7 @@ MastodonException convertDioExceptionAt(
         endpoint: endpoint,
         raw: e,
       ),
-      422 => MastodonValidationException(
-        serverMessage: serverMessage,
-        endpoint: endpoint,
-        raw: e,
-      ),
+      422 => _convertValidationException(e, endpoint),
       429 => MastodonRateLimitException(
         message: serverMessage ?? 'Rate limited',
         endpoint: endpoint,
@@ -81,6 +77,73 @@ String? _extractMessage(dynamic data) {
     if (error is String) return error;
   }
   return null;
+}
+
+MastodonValidationException _convertValidationException(
+  DioException error,
+  String? endpoint,
+) {
+  final parsed = _parseValidationError(error.response?.data);
+  return MastodonValidationException(
+    serverMessage: parsed.serverMessage,
+    details: parsed.details,
+    endpoint: endpoint,
+    raw: error,
+  );
+}
+
+({
+  String? serverMessage,
+  Map<String, List<MastodonValidationErrorDetail>>? details,
+})
+_parseValidationError(dynamic data) {
+  if (data is! Map<String, dynamic>) {
+    return (serverMessage: null, details: null);
+  }
+
+  final nestedError = data['error'];
+  final payload = nestedError is Map<String, dynamic> ? nestedError : data;
+  final message = payload['error'];
+
+  return (
+    serverMessage: message is String ? message : null,
+    details: _parseValidationDetails(payload['details']),
+  );
+}
+
+Map<String, List<MastodonValidationErrorDetail>>? _parseValidationDetails(
+  dynamic data,
+) {
+  if (data is! Map<String, dynamic>) return null;
+  if (data.isEmpty) {
+    return const <String, List<MastodonValidationErrorDetail>>{};
+  }
+
+  final parsed = <String, List<MastodonValidationErrorDetail>>{};
+  for (final entry in data.entries) {
+    final value = entry.value;
+    if (value is! List<dynamic>) continue;
+
+    final fieldErrors = <MastodonValidationErrorDetail>[];
+    for (final item in value) {
+      if (item is! Map<String, dynamic>) continue;
+      final code = item['error'];
+      if (code is! String || code.isEmpty) continue;
+      final description = item['description'];
+      fieldErrors.add(
+        MastodonValidationErrorDetail(
+          code: code,
+          description: description is String ? description : null,
+        ),
+      );
+    }
+
+    if (fieldErrors.isNotEmpty) {
+      parsed[entry.key] = List.unmodifiable(fieldErrors);
+    }
+  }
+
+  return parsed.isEmpty ? null : Map.unmodifiable(parsed);
 }
 
 ({Duration? retryAfter, int? limit, int? remaining, DateTime? resetAt})

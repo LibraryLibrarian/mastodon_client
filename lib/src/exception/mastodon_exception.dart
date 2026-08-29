@@ -92,21 +92,43 @@ class MastodonRateLimitException extends MastodonApiException {
   final DateTime? resetAt;
 }
 
+/// Field-level detail returned in a Mastodon validation error.
+class MastodonValidationErrorDetail {
+  /// Creates a field-level validation error detail.
+  const MastodonValidationErrorDetail({required this.code, this.description});
+
+  /// Machine-readable identifier such as `ERR_TAKEN` or `ERR_BLANK`.
+  ///
+  /// Unknown values are preserved for forward compatibility.
+  final String code;
+
+  /// Human-readable description supplied by the server.
+  final String? description;
+}
+
 /// Validation error (HTTP 422).
 ///
 /// The request content is invalid.
 ///
-/// Holds the error details returned by the server in [serverMessage].
+/// Holds the message returned by the server in [serverMessage] and any
+/// field-level validation errors in [details].
 class MastodonValidationException extends MastodonApiException {
   const MastodonValidationException({
     super.message = 'Unprocessable entity',
     super.endpoint,
     super.raw,
     this.serverMessage,
+    this.details,
   }) : super(statusCode: 422);
 
-  /// Raw error message returned by the server.
+  /// Human-readable error message returned by the server.
   final String? serverMessage;
+
+  /// Field-level validation errors keyed by request field name.
+  ///
+  /// This is `null` when the response does not include a recognized
+  /// `details` object. Error codes not yet known to this client are preserved.
+  final Map<String, List<MastodonValidationErrorDetail>>? details;
 }
 
 /// Server error (HTTP 5xx).

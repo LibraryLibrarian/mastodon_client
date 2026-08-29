@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `MastodonValidationException.details` now exposes Mastodon's field-level
+  validation errors as typed `MastodonValidationErrorDetail` values, including
+  the nested Collections response shape, while preserving unknown error codes
+  (issue #54)
+
 ### Changed
 
 - **Breaking:** HTTP requests no longer use library-defined 10-second connect,
