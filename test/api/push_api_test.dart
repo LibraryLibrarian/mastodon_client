@@ -5,6 +5,32 @@ import 'package:test/test.dart';
 import '../helpers/recording_http_client.dart';
 
 void main() {
+  group('MastodonPushAlertSettings', () {
+    test('serializes all 17 official notification types', () {
+      const alerts = MastodonPushAlertSettings(
+        mention: true,
+        quote: false,
+        status: true,
+        reblog: false,
+        follow: true,
+        followRequest: false,
+        favourite: true,
+        poll: false,
+        update: true,
+        severedRelationships: false,
+        moderationWarning: true,
+        annualReport: false,
+        quotedUpdate: true,
+        addedToCollection: false,
+        collectionUpdate: true,
+        adminSignUp: false,
+        adminReport: true,
+      );
+
+      expect(alerts.toJson(), _allAlertsJson);
+    });
+  });
+
   group('PushApi.create', () {
     test('nests alerts and policy in data', () async {
       final http = RecordingHttpClient([_subscriptionResponse]);
@@ -19,6 +45,9 @@ void main() {
           alerts: MastodonPushAlertSettings(
             mention: true,
             followRequest: false,
+            severedRelationships: true,
+            annualReport: false,
+            addedToCollection: true,
           ),
           policy: 'followed',
         ),
@@ -33,7 +62,13 @@ void main() {
           'standard': true,
         },
         'data': {
-          'alerts': {'mention': true, 'follow_request': false},
+          'alerts': {
+            'mention': true,
+            'follow_request': false,
+            'severed_relationships': true,
+            'annual_report': false,
+            'added_to_collection': true,
+          },
           'policy': 'followed',
         },
       });
@@ -60,7 +95,11 @@ void main() {
 
       await api.update(
         const MastodonPushSubscriptionUpdateRequest(
-          alerts: MastodonPushAlertSettings(mention: true, reblog: false),
+          alerts: MastodonPushAlertSettings(
+            mention: true,
+            moderationWarning: true,
+            collectionUpdate: false,
+          ),
           policy: 'follower',
         ),
       );
@@ -69,7 +108,11 @@ void main() {
       expect(http.requests.single.path, '/api/v1/push/subscription');
       expect(http.requests.single.data, {
         'data': {
-          'alerts': {'mention': true, 'reblog': false},
+          'alerts': {
+            'mention': true,
+            'moderation_warning': true,
+            'collection_update': false,
+          },
           'policy': 'follower',
         },
       });
@@ -104,4 +147,24 @@ const _subscriptionResponse = <String, dynamic>{
   'server_key': 'server-key',
   'alerts': <String, dynamic>{},
   'policy': 'all',
+};
+
+const _allAlertsJson = <String, dynamic>{
+  'mention': true,
+  'quote': false,
+  'status': true,
+  'reblog': false,
+  'follow': true,
+  'follow_request': false,
+  'favourite': true,
+  'poll': false,
+  'update': true,
+  'severed_relationships': false,
+  'moderation_warning': true,
+  'annual_report': false,
+  'quoted_update': true,
+  'added_to_collection': false,
+  'collection_update': true,
+  'admin.sign_up': false,
+  'admin.report': true,
 };

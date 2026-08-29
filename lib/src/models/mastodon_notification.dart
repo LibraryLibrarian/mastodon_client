@@ -59,7 +59,7 @@ enum MastodonNotificationType {
   /// A quoted status was updated (Mastodon 4.5+ / FEP-044f).
   quotedUpdate,
 
-  /// Your annual report is available (Mastodon 4.6+).
+  /// Your annual report is available (Mastodon 4.4+).
   annualReport,
 
   /// You were added to a collection (Mastodon 4.6+).

@@ -1,9 +1,9 @@
 /// Alert settings per Web Push notification type (for requests).
 ///
-/// Fields set to `null` are not included in the request. When creating a
-/// subscription, omitted fields use the server defaults. When updating a
-/// subscription, the server replaces the whole `data` object, so omitted alert
-/// types become disabled.
+/// Fields set to `null` are not included in the request. Mastodon treats
+/// omitted alert types as disabled when creating a subscription. When updating
+/// a subscription, the server replaces the whole `data` object, so omitted
+/// alert types are also disabled rather than left unchanged.
 class MastodonPushAlertSettings {
   const MastodonPushAlertSettings({
     this.mention,
@@ -15,7 +15,12 @@ class MastodonPushAlertSettings {
     this.favourite,
     this.poll,
     this.update,
+    this.severedRelationships,
+    this.moderationWarning,
+    this.annualReport,
     this.quotedUpdate,
+    this.addedToCollection,
+    this.collectionUpdate,
     this.adminSignUp,
     this.adminReport,
   });
@@ -47,8 +52,23 @@ class MastodonPushAlertSettings {
   /// Whether to receive status edit notifications.
   final bool? update;
 
+  /// Whether to receive relationship severance notifications.
+  final bool? severedRelationships;
+
+  /// Whether to receive moderation warning notifications.
+  final bool? moderationWarning;
+
+  /// Whether to receive annual report notifications.
+  final bool? annualReport;
+
   /// Whether to receive quoted status update notifications.
   final bool? quotedUpdate;
+
+  /// Whether to receive notifications when added to a collection.
+  final bool? addedToCollection;
+
+  /// Whether to receive collection update notifications.
+  final bool? collectionUpdate;
 
   /// Admin: whether to receive new sign-up notifications.
   final bool? adminSignUp;
@@ -68,7 +88,20 @@ class MastodonPushAlertSettings {
     if (favourite != null) json['favourite'] = favourite;
     if (poll != null) json['poll'] = poll;
     if (update != null) json['update'] = update;
+    if (severedRelationships != null) {
+      json['severed_relationships'] = severedRelationships;
+    }
+    if (moderationWarning != null) {
+      json['moderation_warning'] = moderationWarning;
+    }
+    if (annualReport != null) json['annual_report'] = annualReport;
     if (quotedUpdate != null) json['quoted_update'] = quotedUpdate;
+    if (addedToCollection != null) {
+      json['added_to_collection'] = addedToCollection;
+    }
+    if (collectionUpdate != null) {
+      json['collection_update'] = collectionUpdate;
+    }
     if (adminSignUp != null) json['admin.sign_up'] = adminSignUp;
     if (adminReport != null) json['admin.report'] = adminReport;
     return json;
