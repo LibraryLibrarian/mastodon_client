@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Web Push alert settings now support all 17 Mastodon notification types,
+  including relationship severances, moderation warnings, annual reports, and
+  collection notifications (issue #53)
 - `MastodonValidationException.details` now exposes Mastodon's field-level
   validation errors as typed `MastodonValidationErrorDetail` values, including
   the nested Collections response shape, while preserving unknown error codes
