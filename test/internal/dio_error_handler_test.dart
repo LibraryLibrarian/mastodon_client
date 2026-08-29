@@ -101,6 +101,163 @@ void main() {
               )
               as MastodonValidationException;
       expect(result.serverMessage, 'Validation failed: Text is too long');
+      expect(result.details, isNull);
+    });
+
+    test('422 parses field details from the standard response shape', () {
+      final result =
+          convertDioException(
+                _errorWithStatus(
+                  422,
+                  data: {
+                    'error': "Validation failed: Username can't be blank",
+                    'details': {
+                      'username': [
+                        {'error': 'ERR_BLANK', 'description': "can't be blank"},
+                      ],
+                    },
+                  },
+                ),
+              )
+              as MastodonValidationException;
+
+      expect(
+        result.serverMessage,
+        "Validation failed: Username can't be blank",
+      );
+      final usernameErrors = result.details?['username'];
+      expect(usernameErrors, hasLength(1));
+      expect(usernameErrors?.single.code, 'ERR_BLANK');
+      expect(usernameErrors?.single.description, "can't be blank");
+    });
+
+    test('422 parses the nested Collections validation response shape', () {
+      final result =
+          convertDioException(
+                _errorWithStatus(
+                  422,
+                  data: {
+                    'error': {
+                      'error': 'Validation failed: Name cannot be blank',
+                      'details': {
+                        'name': [
+                          {
+                            'error': 'ERR_BLANK',
+                            'description': "can't be blank",
+                          },
+                        ],
+                      },
+                    },
+                  },
+                ),
+              )
+              as MastodonValidationException;
+
+      expect(result.serverMessage, 'Validation failed: Name cannot be blank');
+      expect(result.details?['name']?.single.code, 'ERR_BLANK');
+    });
+
+    test('422 preserves multiple fields, errors, and unknown values', () {
+      final result =
+          convertDioException(
+                _errorWithStatus(
+                  422,
+                  data: {
+                    'error': 'Validation failed',
+                    'details': {
+                      'username': [
+                        {
+                          'error': 'ERR_TAKEN',
+                          'description': 'has already been taken',
+                        },
+                        {
+                          'error': 'ERR_FUTURE_CODE',
+                          'description': 'future validation',
+                        },
+                        {'description': 'missing code'},
+                      ],
+                      'future_field': [
+                        {'error': 'ERR_INVALID', 'description': 42},
+                      ],
+                      'invalid': 'not a list',
+                    },
+                  },
+                ),
+              )
+              as MastodonValidationException;
+
+      expect(result.details, hasLength(2));
+      expect(result.details?['username']?.map((detail) => detail.code), [
+        'ERR_TAKEN',
+        'ERR_FUTURE_CODE',
+      ]);
+      expect(result.details?['future_field']?.single.code, 'ERR_INVALID');
+      expect(result.details?['future_field']?.single.description, isNull);
+      expect(result.details, isNot(contains('invalid')));
+    });
+
+    test('422 returns null details for an unrecognized details shape', () {
+      final result =
+          convertDioException(
+                _errorWithStatus(
+                  422,
+                  data: {
+                    'error': 'Validation failed',
+                    'details': {
+                      'username': [
+                        {'description': 'missing code'},
+                        'not an object',
+                      ],
+                    },
+                  },
+                ),
+              )
+              as MastodonValidationException;
+
+      expect(result.serverMessage, 'Validation failed');
+      expect(result.details, isNull);
+    });
+
+    test('422 preserves an explicitly empty details object', () {
+      final result =
+          convertDioException(
+                _errorWithStatus(
+                  422,
+                  data: {
+                    'error': 'Validation failed',
+                    'details': <String, dynamic>{},
+                  },
+                ),
+              )
+              as MastodonValidationException;
+
+      expect(result.details, isEmpty);
+    });
+
+    test('422 preserves the original DioException in raw', () {
+      final original = _errorWithStatus(
+        422,
+        data: {
+          'error': 'Validation failed',
+          'details': {
+            'username': [
+              {'error': 'ERR_BLANK'},
+            ],
+          },
+        },
+      );
+
+      final result =
+          convertDioException(original) as MastodonValidationException;
+
+      expect(result.raw, same(original));
+    });
+
+    test('MastodonAlreadyVotedException remains detail-free', () {
+      const result = MastodonAlreadyVotedException();
+
+      expect(result.serverMessage, 'already voted');
+      expect(result.details, isNull);
     });
 
     test('falls back to the default message when error is not a string', () {

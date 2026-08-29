@@ -21,6 +21,7 @@ MastodonException (sealed)
 │   │   └── resetAt                   //   Time when the window resets
 │   ├── MastodonValidationException   // 422 - Validation error
 │   │   ├── serverMessage             //   Detailed server message
+│   │   ├── details                   //   Field errors by request field
 │   │   └── MastodonAlreadyVotedException // Already voted
 │   └── MastodonServerException       // 5xx - Server error
 ├── MastodonNetworkException          // Network connection error
@@ -64,11 +65,25 @@ try {
 
 ```dart
 try {
-  await client.statuses.create(request);
+  await client.accounts.create(request);
 } on MastodonValidationException catch (e) {
   print('Validation error: ${e.serverMessage}');
+  final details = e.details;
+  if (details != null) {
+    for (final entry in details.entries) {
+      for (final detail in entry.value) {
+        print('${entry.key}: ${detail.code} - ${detail.description ?? ''}');
+      }
+    }
+  }
 }
 ```
+
+`details` est indexé par champ de requête. Chaque
+`MastodonValidationErrorDetail` contient le code d'erreur du serveur et une
+description facultative. Les codes inconnus sont conservés sous forme de
+chaînes. `details` vaut `null` lorsqu'un endpoint ne renvoie pas le format de
+détails de validation reconnu de Mastodon.
 
 ## Exceptions spéciales
 

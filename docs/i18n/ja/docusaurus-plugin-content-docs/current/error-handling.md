@@ -21,6 +21,7 @@ MastodonException (sealed)
 │   │   └── resetAt                   //   制限がリセットされる時刻
 │   ├── MastodonValidationException   // 422 - バリデーションエラー
 │   │   ├── serverMessage             //   サーバーからの詳細メッセージ
+│   │   ├── details                   //   リクエスト項目ごとのエラー
 │   │   └── MastodonAlreadyVotedException // 投票済みエラー
 │   └── MastodonServerException       // 5xx - サーバーエラー
 ├── MastodonNetworkException          // ネットワーク接続エラー
@@ -64,11 +65,25 @@ try {
 
 ```dart
 try {
-  await client.statuses.create(request);
+  await client.accounts.create(request);
 } on MastodonValidationException catch (e) {
   print('バリデーションエラー: ${e.serverMessage}');
+  final details = e.details;
+  if (details != null) {
+    for (final entry in details.entries) {
+      for (final detail in entry.value) {
+        print('${entry.key}: ${detail.code} - ${detail.description ?? ''}');
+      }
+    }
+  }
 }
 ```
+
+`details` はリクエスト項目をキーとする Map です。各
+`MastodonValidationErrorDetail` からサーバーのエラーコードと任意の説明を
+取得できます。未知のコードも将来互換性のため文字列のまま保持されます。
+エンドポイントが Mastodon の既知のバリデーション詳細形式を返さない場合、
+`details` は `null` です。
 
 ## 特殊な例外
 

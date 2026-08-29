@@ -21,6 +21,7 @@ MastodonException (sealed)
 │   │   └── resetAt                   //   限制重置时间
 │   ├── MastodonValidationException   // 422 - 校验错误
 │   │   ├── serverMessage             //   服务器详细错误信息
+│   │   ├── details                   //   按请求字段分组的错误
 │   │   └── MastodonAlreadyVotedException // 已投过票
 │   └── MastodonServerException       // 5xx - 服务器错误
 ├── MastodonNetworkException          // 网络连接错误
@@ -64,11 +65,24 @@ try {
 
 ```dart
 try {
-  await client.statuses.create(request);
+  await client.accounts.create(request);
 } on MastodonValidationException catch (e) {
   print('校验错误: ${e.serverMessage}');
+  final details = e.details;
+  if (details != null) {
+    for (final entry in details.entries) {
+      for (final detail in entry.value) {
+        print('${entry.key}: ${detail.code} - ${detail.description ?? ''}');
+      }
+    }
+  }
 }
 ```
+
+`details` 是以请求字段为键的 Map。每个 `MastodonValidationErrorDetail`
+都包含服务器返回的错误代码和可选说明。未知代码也会以字符串形式保留，以便
+保持向前兼容。如果端点未返回 Mastodon 可识别的校验详情结构，`details` 为
+`null`。
 
 ## 特殊异常
 
