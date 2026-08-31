@@ -45,8 +45,12 @@ if (page.nextMaxId != null) {
 
 ```dart
 final page = await client.mutes.fetch(limit: 40);
-for (final account in page.items) {
-  print(account.acct);
+for (final mutedAccount in page.items) {
+  print(mutedAccount.account.acct);
+  final expiresAt = mutedAccount.muteExpiresAt;
+  if (expiresAt != null) {
+    print('ミュート解除予定: $expiresAt');
+  }
 }
 
 // 次のページ
@@ -54,6 +58,10 @@ if (page.nextMaxId != null) {
   final next = await client.mutes.fetch(maxId: page.nextMaxId);
 }
 ```
+
+各要素は `MastodonMutedAccount` です。`account` にミュート中のアカウント、
+`muteExpiresAt` に時限ミュートの有効期限が入ります。無期限のミュートでは
+有効期限は `null` です。
 
 パラメーター:
 

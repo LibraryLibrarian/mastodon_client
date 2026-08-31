@@ -45,8 +45,12 @@ To block or unblock an account, use `client.accounts.block()` and `client.accoun
 
 ```dart
 final page = await client.mutes.fetch(limit: 40);
-for (final account in page.items) {
-  print(account.acct);
+for (final mutedAccount in page.items) {
+  print(mutedAccount.account.acct);
+  final expiresAt = mutedAccount.muteExpiresAt;
+  if (expiresAt != null) {
+    print('Mute expires at $expiresAt');
+  }
 }
 
 // Next page
@@ -54,6 +58,10 @@ if (page.nextMaxId != null) {
   final next = await client.mutes.fetch(maxId: page.nextMaxId);
 }
 ```
+
+Each item is a `MastodonMutedAccount`. Its `account` contains the muted
+account, and `muteExpiresAt` contains the expiration of a timed mute. The
+expiration is `null` for an indefinite mute.
 
 Parameters:
 

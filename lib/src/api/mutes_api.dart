@@ -1,6 +1,6 @@
 import '../client/mastodon_http_client.dart';
 import '../internal/link_header_parser.dart';
-import '../models/mastodon_account.dart';
+import '../models/mastodon_muted_account.dart';
 import '../models/mastodon_page.dart';
 import 'accounts_api.dart' show AccountsApi;
 
@@ -21,9 +21,10 @@ class MutesApi {
   /// header and stored in [MastodonPage].
   ///
   /// Use [AccountsApi]'s `mute` / `unmute` to mute or unmute accounts.
+  /// Each item contains the muted account and the expiration of a timed mute.
   ///
   /// Throws a `MastodonException` on failure.
-  Future<MastodonPage<MastodonAccount>> fetch({
+  Future<MastodonPage<MastodonMutedAccount>> fetch({
     int? limit,
     String? maxId,
     String? sinceId,
@@ -39,7 +40,7 @@ class MutesApi {
     final linkHeader = response.headers.map['link']?.join(',');
     final items = (response.data ?? const <dynamic>[])
         .cast<Map<String, dynamic>>()
-        .map(MastodonAccount.fromJson)
+        .map(MastodonMutedAccount.fromJson)
         .toList();
     return MastodonPage(
       items: items,

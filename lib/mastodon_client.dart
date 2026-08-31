@@ -53,6 +53,7 @@ export 'src/models/mastodon_instance_v1.dart';
 export 'src/models/mastodon_list.dart';
 export 'src/models/mastodon_marker.dart';
 export 'src/models/mastodon_media_attachment.dart';
+export 'src/models/mastodon_muted_account.dart';
 export 'src/models/mastodon_notification.dart';
 export 'src/models/mastodon_notification_group.dart';
 export 'src/models/mastodon_notification_policy.dart';

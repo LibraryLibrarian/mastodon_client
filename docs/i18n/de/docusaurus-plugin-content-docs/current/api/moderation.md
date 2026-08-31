@@ -45,8 +45,12 @@ Zum Blockieren oder Entsperren eines Accounts `client.accounts.block()` und `cli
 
 ```dart
 final page = await client.mutes.fetch(limit: 40);
-for (final account in page.items) {
-  print(account.acct);
+for (final mutedAccount in page.items) {
+  print(mutedAccount.account.acct);
+  final expiresAt = mutedAccount.muteExpiresAt;
+  if (expiresAt != null) {
+    print('Stummschaltung endet um $expiresAt');
+  }
 }
 
 // Next page
@@ -54,6 +58,11 @@ if (page.nextMaxId != null) {
   final next = await client.mutes.fetch(maxId: page.nextMaxId);
 }
 ```
+
+Jeder Eintrag ist ein `MastodonMutedAccount`. `account` enthält den
+stummgeschalteten Account und `muteExpiresAt` den Ablaufzeitpunkt einer
+zeitlich begrenzten Stummschaltung. Bei einer unbegrenzten Stummschaltung ist
+der Ablaufzeitpunkt `null`.
 
 Parameter:
 
