@@ -76,6 +76,7 @@ export 'src/models/mastodon_report.dart';
 export 'src/models/mastodon_report_create_request.dart';
 export 'src/models/mastodon_scheduled_status.dart';
 export 'src/models/mastodon_search_result.dart';
+export 'src/models/mastodon_server_capabilities.dart';
 export 'src/models/mastodon_status.dart';
 export 'src/models/mastodon_status_context.dart';
 export 'src/models/mastodon_status_create_request.dart';

@@ -19,6 +19,61 @@ print(instance.version);
 
 Retourne un `MastodonInstance` avec les métadonnées v2 complètes incluant les langues configurées, les règles et les informations de contact.
 
+### Capacités dépendantes de la version
+
+Utilisez `detectCapabilities()` avant de proposer des fonctions ajoutées dans
+les versions récentes de Mastodon :
+
+```dart
+final capabilities = await client.instance.detectCapabilities();
+
+switch (capabilities.supportFor(MastodonCapability.collections)) {
+  case MastodonCapabilitySupport.supported:
+    // Proposer les fonctions de collections.
+  case MastodonCapabilitySupport.unsupported:
+    // Masquer ou désactiver les fonctions de collections.
+  case MastodonCapabilitySupport.unknown:
+    // Utiliser un repli prudent ou laisser l'utilisateur essayer.
+}
+```
+
+| Capability | Fonction serveur | Mastodon minimal | Niveau de surface API |
+|---|---|---:|---:|
+| `tagFeaturing` | Mettre en avant ou retirer un tag | 4.4.0 | 6 |
+| `annualReportDetails` | Récupérer un rapport annuel par année | 4.4.0 | 6 |
+| `oauthUserInfo` | Informations OpenID Connect | 4.4.0 | 6 |
+| `asyncRefreshes` | État expérimental d'actualisation asynchrone | 4.4.0 | 6 |
+| `quotePosts` | Opérations de citation de pouets | 4.5.0 | 7 |
+| `collections` | Endpoints de collections | 4.6.0 | 10 |
+| `donationCampaigns` | Endpoint de campagne de dons | 4.6.0 | 10 |
+| `editableProfile` | Lire ou modifier le profil éditable | 4.6.0 | 10 |
+| `annualReportGeneration` | Générer un rapport ou lire son état | 4.6.0 | 10 |
+
+La détection applique les règles suivantes :
+
+1. Récupérer `GET /api/v2/instance` et privilégier
+   `api_versions.mastodon`.
+2. Si ce champ manque, analyser le préfixe `major.minor.patch` de
+   `MastodonInstance.version` comme solution de repli indicative.
+3. Si l'endpoint v2 lui-même répond 404, récupérer l'ancien
+   `GET /api/v1/instance` et utiliser sa chaîne de version. Les autres erreurs
+   sont propagées sans repli.
+4. Retourner `unknown` si les métadonnées disponibles sont ininterprétables.
+
+Mettez le résultat en cache une fois par serveur pendant la durée du processus
+de l'application, au lieu de redemander les métadonnées avant chaque appel API.
+
+`api_versions.mastodon` représente un niveau de surface API, pas une version de
+Mastodon. Il peut augmenter dans une version corrective ou lors d'une
+modification sans nouvelle route, être partagé par plusieurs versions et
+sauter des entiers. Utilisez uniquement les seuils minimaux du tableau ; ne le
+reconvertissez pas en version Mastodon.
+
+Les résultats sont indicatifs. Les forks et implémentations compatibles peuvent
+différer des métadonnées annoncées : gérez toujours les erreurs de l'appel API
+réel. Une réponse 404 ne distingue notamment pas de manière fiable un endpoint
+absent d'une ressource absente.
+
 ### Domaines pairs
 
 ```dart

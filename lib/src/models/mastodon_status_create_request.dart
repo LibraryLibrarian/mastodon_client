@@ -63,12 +63,14 @@ class MastodonStatusCreateRequest {
 
   /// ID of the status being quoted (standard Mastodon FEP-044f).
   ///
-  /// Included as `quoted_status_id` in the request.
+  /// Included as `quoted_status_id` in the request. Available since Mastodon
+  /// 4.5.0.
   final String? quotedStatusId;
 
   /// Quote approval policy (standard Mastodon FEP-044f).
   ///
-  /// Included as `quote_approval_policy` in the request.
+  /// Included as `quote_approval_policy` in the request. Available since
+  /// Mastodon 4.5.0.
   final String? quoteApprovalPolicy;
 
   /// Posting language code (ISO 639-1 format).

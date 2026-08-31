@@ -2,6 +2,8 @@ import '../client/mastodon_http_client.dart';
 import '../models/mastodon_collection.dart';
 
 /// API client for Mastodon collections.
+///
+/// Available since Mastodon 4.6.0.
 class CollectionsApi {
   const CollectionsApi(this._http);
 

@@ -19,6 +19,60 @@ print(instance.version);
 
 Gibt eine `MastodonInstance` mit vollständigen v2-Metadaten zurück, einschließlich konfigurierter Sprachen, Regeln und Kontaktinformationen.
 
+### Versionsabhängige Funktionen
+
+Verwenden Sie `detectCapabilities()`, bevor Sie Funktionen anbieten, die erst
+in neueren Mastodon-Versionen hinzugefügt wurden:
+
+```dart
+final capabilities = await client.instance.detectCapabilities();
+
+switch (capabilities.supportFor(MastodonCapability.collections)) {
+  case MastodonCapabilitySupport.supported:
+    // Sammlungsfunktionen anbieten.
+  case MastodonCapabilitySupport.unsupported:
+    // Sammlungsfunktionen ausblenden oder deaktivieren.
+  case MastodonCapabilitySupport.unknown:
+    // Konservativen Fallback verwenden oder den Versuch zulassen.
+}
+```
+
+| Capability | Serverfunktion | Mindestversion | API-Oberflächenstand |
+|---|---|---:|---:|
+| `tagFeaturing` | Tag hervorheben oder nicht mehr hervorheben | 4.4.0 | 6 |
+| `annualReportDetails` | Jahresbericht nach Jahr abrufen | 4.4.0 | 6 |
+| `oauthUserInfo` | OpenID-Connect-Benutzerinfo | 4.4.0 | 6 |
+| `asyncRefreshes` | Experimenteller Status asynchroner Aktualisierungen | 4.4.0 | 6 |
+| `quotePosts` | Zitatbeitrags-Operationen | 4.5.0 | 7 |
+| `collections` | Sammlungs-Endpunkte | 4.6.0 | 10 |
+| `donationCampaigns` | Spendenkampagnen-Endpunkt | 4.6.0 | 10 |
+| `editableProfile` | Bearbeitbares Profil abrufen oder aktualisieren | 4.6.0 | 10 |
+| `annualReportGeneration` | Bericht erzeugen oder Status abrufen | 4.6.0 | 10 |
+
+Die Erkennung folgt diesen Regeln:
+
+1. `GET /api/v2/instance` abrufen und `api_versions.mastodon` bevorzugen.
+2. Fehlt das Feld, den führenden Wert `major.minor.patch` aus
+   `MastodonInstance.version` als Best-Effort-Fallback auswerten.
+3. Antwortet der v2-Endpunkt selbst mit 404, den veralteten Endpunkt
+   `GET /api/v1/instance` abrufen und dessen Versionszeichenfolge verwenden.
+   Andere Fehler werden ohne Fallback weitergegeben.
+4. `unknown` zurückgeben, wenn die Metadaten nicht ausgewertet werden können.
+
+Cachen Sie das Ergebnis einmal pro Server für die Laufzeit des App-Prozesses,
+anstatt die Instanz-Metadaten vor jedem API-Aufruf neu anzufordern.
+
+`api_versions.mastodon` bezeichnet einen API-Oberflächenstand und keine
+Releaseversion. Der Wert kann in Patch-Releases oder durch Änderungen ohne neue
+Route steigen, von mehreren Releases geteilt werden und Ganzzahlen
+überspringen. Verwenden Sie nur die Untergrenzen der Tabelle und leiten Sie
+daraus keine Mastodon-Releaseversion ab.
+
+Die Ergebnisse sind Hinweise. Forks und kompatible Implementierungen können von
+ihren gemeldeten Metadaten abweichen. Behandeln Sie deshalb weiterhin Fehler des
+tatsächlichen API-Aufrufs. Insbesondere unterscheidet eine 404-Antwort nicht
+zuverlässig zwischen einem fehlenden Endpunkt und einer fehlenden Ressource.
+
 ### Bekannte Domains (Peers)
 
 ```dart

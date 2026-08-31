@@ -129,6 +129,34 @@ renvoie la pièce jointe actuelle et HTTP 422 devient une
 | `adminDimensions` | Dimensions catégorielles (admin) |
 | `adminRetention` | Cohortes de rétention des utilisateurs (admin) |
 
+## Détection des capacités du serveur
+
+Les serveurs peuvent exposer des niveaux différents de l'API Mastodon. Vérifiez
+la prise en charge avant d'afficher une fonctionnalité dépendante de la version :
+
+```dart
+final capabilities = await client.instance.detectCapabilities();
+final support = capabilities.supportFor(MastodonCapability.collections);
+
+if (support == MastodonCapabilitySupport.supported) {
+  // Proposer les fonctions de collections.
+}
+```
+
+Le helper privilégie `api_versions.mastodon`, utilise sinon la chaîne de version
+annoncée et essaie l'ancien endpoint d'instance v1 lorsque le v2 répond 404.
+Mettez le résultat en cache une fois par serveur pendant la durée du processus
+de l'application. Traitez `unknown` avec prudence et gérez toujours les erreurs
+de l'appel API réel : les forks et implémentations compatibles peuvent différer
+de la version annoncée.
+
+La version d'API représente un niveau de surface API, pas un numéro de version
+Mastodon. Elle peut augmenter dans une version corrective ou pour une
+modification sans nouvelle route, être partagée entre plusieurs versions et
+sauter des entiers. Consultez le
+[guide des instances](https://librarylibrarian.github.io/mastodon_client/fr/api/instance)
+pour la table des capacités et les détails du fallback.
+
 ## Authentification
 
 Mastodon utilise OAuth 2.0. Enregistrez une application, redirigez l'utilisateur pour autorisation, puis échangez le code contre un jeton :

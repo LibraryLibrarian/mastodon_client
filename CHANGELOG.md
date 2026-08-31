@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added typed, three-state server capability detection through
+  `InstanceApi.detectCapabilities()`. It prefers `api_versions.mastodon`, falls
+  back to the reported Mastodon version, and uses the legacy v1 instance
+  endpoint when v2 is unavailable (issue #58)
 - `MastodonAccountSource` now exposes `hideCollections`, `discoverable`,
   `indexable`, and `attributionDomains` from the authenticated account's
   editable source settings (issue #50)
@@ -77,7 +81,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added automatic streaming endpoint discovery from instance metadata, with normalization of scheme, port, and path (issue #21)
 - Added three streaming authentication modes with fallback, close-code-aware reconnection with exponential backoff and jitter, and `suspend()` / `resume()` (issue #21)
 - Added `MastodonClient.dispose()` and `HealthApi.checkStreaming()` (issue #21)
-- Added Mastodon 4.6 APIs for Collections, Profile, Annual Reports, instance languages, domain block previews, peer search, donation campaigns, unread conversations, notification clearing and policies, and OAuth token inspection (issue #14)
+- Added Mastodon 4.6 APIs for Collections, editable Profile show/update, Annual
+  Report generation/state, and donation campaigns (issue #14)
+- Added client coverage for instance languages, peer search, unread
+  conversations, notification clearing, OAuth token info, and token
+  introspection, which were already available in Mastodon 4.2; for domain block
+  previews, notification policies, and Annual Report index/read added in 4.3;
+  and for Annual Report show and OAuth OpenID Connect user info added in 4.4
+  (issue #14)
 - Added Mastodon 4.5 and 4.6 response fields for media attachments, preview cards, instances, notifications, notification groups, and trend links (issue #17)
 - Added automated release branch and pull request creation, version tagging, and `main`-to-`develop` merge-back on top of the existing pub.dev publishing and GitHub Release workflows (issue #38)
 

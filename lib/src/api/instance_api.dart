@@ -1,10 +1,12 @@
 import '../client/mastodon_http_client.dart';
+import '../exception/mastodon_exception.dart';
 import '../models/mastodon_domain_block.dart';
 import '../models/mastodon_extended_description.dart';
 import '../models/mastodon_instance.dart';
 import '../models/mastodon_instance_language.dart';
 import '../models/mastodon_instance_v1.dart';
 import '../models/mastodon_privacy_policy.dart';
+import '../models/mastodon_server_capabilities.dart';
 import '../models/mastodon_terms_of_service.dart';
 import '../models/mastodon_weekly_activity.dart';
 
@@ -22,6 +24,26 @@ class InstanceApi {
   Future<MastodonInstance> fetch() async {
     final data = await _http.send<Map<String, dynamic>>('/api/v2/instance');
     return MastodonInstance.fromJson(data!);
+  }
+
+  /// Detects version-dependent capabilities advertised by the server.
+  ///
+  /// The v2 instance response and its `api_versions.mastodon` value are used
+  /// first. If the v2 endpoint returns HTTP 404, this method falls back to the
+  /// legacy v1 instance endpoint and its version string. Other failures are
+  /// propagated without falling back.
+  ///
+  /// The returned result is advisory. Forks and compatible implementations can
+  /// expose a different API surface, and callers must still handle failures
+  /// from the actual endpoint. This method does not cache the result.
+  Future<MastodonServerCapabilities> detectCapabilities() async {
+    try {
+      return MastodonServerCapabilities.fromInstance(await fetch());
+    } on MastodonNotFoundException {
+      // v2 instance API が存在しない Mastodon 3.x では v1 へフォールバックする。
+      // ignore: deprecated_member_use_from_same_package
+      return MastodonServerCapabilities.fromInstanceV1(await fetchV1());
+    }
   }
 
   /// Fetches the list of peer domains known to the instance.

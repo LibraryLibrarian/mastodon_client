@@ -127,6 +127,32 @@ HTTP 200은 현재 첨부 정보, HTTP 422는 `MastodonValidationException`으�
 | `adminDimensions` | 관리자 범주형 차원 |
 | `adminRetention` | 관리자 사용자 유지율 코호트 |
 
+## 서버 기능 감지
+
+서버마다 제공하는 Mastodon API 수준이 다를 수 있습니다. 버전에 따라 달라지는 기능을
+표시하기 전에 지원 여부를 확인하세요.
+
+```dart
+final capabilities = await client.instance.detectCapabilities();
+final support = capabilities.supportFor(MastodonCapability.collections);
+
+if (support == MastodonCapabilitySupport.supported) {
+  // 컬렉션 기능을 제공합니다.
+}
+```
+
+이 도우미는 `api_versions.mastodon`을 우선 사용하고, 값이 없으면 서버가 보고한 버전
+문자열을 사용합니다. v2 인스턴스 엔드포인트가 404를 반환하면 레거시 v1 엔드포인트를
+시도합니다. 결과는 서버별로 앱 프로세스가 실행되는 동안 한 번 캐시하세요. `unknown`은
+보수적으로 처리하고 실제 API 호출 오류도 계속 처리해야 합니다. 포크와 호환 구현은
+보고한 버전과 실제 기능이 다를 수 있습니다.
+
+API 버전은 Mastodon 릴리스 번호가 아니라 API 표면 수준입니다. 패치 릴리스나 라우트
+외 변경에서도 증가할 수 있고, 여러 릴리스가 같은 값을 사용하거나 정수를 건너뛸 수
+있습니다. 기능 표와 폴백 세부 정보는
+[인스턴스 가이드](https://librarylibrarian.github.io/mastodon_client/ko/api/instance)를
+참조하세요.
+
 ## 인증
 
 Mastodon은 OAuth 2.0을 사용합니다. 애플리케이션을 등록하고, 사용자를 인증 페이지로 리디렉션한 뒤 코드를 토큰으로 교환하세요:

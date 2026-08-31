@@ -128,6 +128,34 @@ bedeutet laufende Verarbeitung, HTTP 200 liefert den aktuellen Anhang und HTTP
 | `adminDimensions` | Administrative kategorische Dimensionen |
 | `adminRetention` | Administrative Benutzer-Bindungskohorten |
 
+## Erkennung von Serverfunktionen
+
+Server können unterschiedliche Mastodon-API-Stände bereitstellen. Prüfen Sie
+die Unterstützung, bevor Sie versionsabhängige Funktionen anbieten:
+
+```dart
+final capabilities = await client.instance.detectCapabilities();
+final support = capabilities.supportFor(MastodonCapability.collections);
+
+if (support == MastodonCapabilitySupport.supported) {
+  // Sammlungsfunktionen anbieten.
+}
+```
+
+Der Helfer bevorzugt `api_versions.mastodon`, greift andernfalls auf die
+gemeldete Versionszeichenfolge zurück und versucht bei einer 404-Antwort des
+v2-Instanz-Endpunkts den veralteten v1-Endpunkt. Cachen Sie das Ergebnis einmal
+pro Server für die Laufzeit des App-Prozesses. Behandeln Sie `unknown`
+vorsichtig und fangen Sie weiterhin Fehler des tatsächlichen API-Aufrufs ab,
+da Forks und kompatible Implementierungen von der gemeldeten Version abweichen
+können.
+
+Die API-Version bezeichnet einen API-Oberflächenstand und keine
+Mastodon-Releaseversion. Sie kann in Patch-Releases oder durch Änderungen ohne
+neue Route steigen, für mehrere Releases gleich sein und Werte überspringen.
+Die Funktionstabelle und Details zum Fallback stehen im
+[Instanzleitfaden](https://librarylibrarian.github.io/mastodon_client/de/api/instance).
+
 ## Authentifizierung
 
 Mastodon verwendet OAuth 2.0. Registrieren Sie eine Anwendung, leiten Sie den Benutzer zur Autorisierung weiter und tauschen Sie den Code gegen ein Token aus:
