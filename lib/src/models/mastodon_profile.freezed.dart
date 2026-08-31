@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MastodonProfile {
 
- String get id; String get displayName; String get note; String get formattedNote; List<MastodonField> get fields; List<MastodonField> get formattedFields; String? get avatar; String? get avatarStatic; String? get avatarDescription; String? get header; String? get headerStatic; String? get headerDescription; bool get locked; bool get bot; bool get hideCollections; bool get discoverable; bool get indexable; bool get showMedia; bool get showMediaReplies; bool get showFeatured; List<String> get attributionDomains; List<MastodonFeaturedTag> get featuredTags;
+ String get id; String get displayName; String get note; String get formattedNote; List<MastodonField> get fields; List<MastodonField> get formattedFields; String? get avatar; String? get avatarStatic; String? get avatarDescription; String? get header; String? get headerStatic; String? get headerDescription; bool get locked; bool get bot; bool? get hideCollections; bool? get discoverable; bool get indexable; bool get showMedia; bool get showMediaReplies; bool get showFeatured; List<String> get attributionDomains; List<MastodonFeaturedTag> get featuredTags;
 /// Create a copy of MastodonProfile
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -42,7 +42,7 @@ abstract mixin class $MastodonProfileCopyWith<$Res>  {
   factory $MastodonProfileCopyWith(MastodonProfile value, $Res Function(MastodonProfile) _then) = _$MastodonProfileCopyWithImpl;
 @useResult
 $Res call({
- String id, String displayName, String note, String formattedNote, List<MastodonField> fields, List<MastodonField> formattedFields, bool locked, bool bot, bool hideCollections, bool discoverable, bool indexable, bool showMedia, bool showMediaReplies, bool showFeatured, String? avatar, String? avatarStatic, String? avatarDescription, String? header, String? headerStatic, String? headerDescription, List<String> attributionDomains, List<MastodonFeaturedTag> featuredTags
+ String id, String displayName, String note, String formattedNote, List<MastodonField> fields, List<MastodonField> formattedFields, bool locked, bool bot, bool indexable, bool showMedia, bool showMediaReplies, bool showFeatured, bool? hideCollections, bool? discoverable, String? avatar, String? avatarStatic, String? avatarDescription, String? header, String? headerStatic, String? headerDescription, List<String> attributionDomains, List<MastodonFeaturedTag> featuredTags
 });
 
 
@@ -59,7 +59,7 @@ class _$MastodonProfileCopyWithImpl<$Res>
 
 /// Create a copy of MastodonProfile
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? displayName = null,Object? note = null,Object? formattedNote = null,Object? fields = null,Object? formattedFields = null,Object? locked = null,Object? bot = null,Object? hideCollections = null,Object? discoverable = null,Object? indexable = null,Object? showMedia = null,Object? showMediaReplies = null,Object? showFeatured = null,Object? avatar = freezed,Object? avatarStatic = freezed,Object? avatarDescription = freezed,Object? header = freezed,Object? headerStatic = freezed,Object? headerDescription = freezed,Object? attributionDomains = null,Object? featuredTags = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? displayName = null,Object? note = null,Object? formattedNote = null,Object? fields = null,Object? formattedFields = null,Object? locked = null,Object? bot = null,Object? indexable = null,Object? showMedia = null,Object? showMediaReplies = null,Object? showFeatured = null,Object? hideCollections = freezed,Object? discoverable = freezed,Object? avatar = freezed,Object? avatarStatic = freezed,Object? avatarDescription = freezed,Object? header = freezed,Object? headerStatic = freezed,Object? headerDescription = freezed,Object? attributionDomains = null,Object? featuredTags = null,}) {
   return _then(MastodonProfile(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -69,13 +69,13 @@ as String,fields: null == fields ? _self.fields : fields // ignore: cast_nullabl
 as List<MastodonField>,formattedFields: null == formattedFields ? _self.formattedFields : formattedFields // ignore: cast_nullable_to_non_nullable
 as List<MastodonField>,locked: null == locked ? _self.locked : locked // ignore: cast_nullable_to_non_nullable
 as bool,bot: null == bot ? _self.bot : bot // ignore: cast_nullable_to_non_nullable
-as bool,hideCollections: null == hideCollections ? _self.hideCollections : hideCollections // ignore: cast_nullable_to_non_nullable
-as bool,discoverable: null == discoverable ? _self.discoverable : discoverable // ignore: cast_nullable_to_non_nullable
 as bool,indexable: null == indexable ? _self.indexable : indexable // ignore: cast_nullable_to_non_nullable
 as bool,showMedia: null == showMedia ? _self.showMedia : showMedia // ignore: cast_nullable_to_non_nullable
 as bool,showMediaReplies: null == showMediaReplies ? _self.showMediaReplies : showMediaReplies // ignore: cast_nullable_to_non_nullable
 as bool,showFeatured: null == showFeatured ? _self.showFeatured : showFeatured // ignore: cast_nullable_to_non_nullable
-as bool,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
+as bool,hideCollections: freezed == hideCollections ? _self.hideCollections : hideCollections // ignore: cast_nullable_to_non_nullable
+as bool?,discoverable: freezed == discoverable ? _self.discoverable : discoverable // ignore: cast_nullable_to_non_nullable
+as bool?,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
 as String?,avatarStatic: freezed == avatarStatic ? _self.avatarStatic : avatarStatic // ignore: cast_nullable_to_non_nullable
 as String?,avatarDescription: freezed == avatarDescription ? _self.avatarDescription : avatarDescription // ignore: cast_nullable_to_non_nullable
 as String?,header: freezed == header ? _self.header : header // ignore: cast_nullable_to_non_nullable
