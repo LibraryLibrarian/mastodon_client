@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Breaking:** `MutesApi.fetch()` now returns
+  `MastodonPage<MastodonMutedAccount>` instead of
+  `MastodonPage<MastodonAccount>`. Access the account through `item.account`;
+  `item.muteExpiresAt` exposes the expiration of a timed mute (issue #49)
 - **Breaking:** `MastodonProfile.hideCollections` and `discoverable` are now
   nullable, preserving Mastodon's distinction between an unset value and
   explicit `false` instead of coercing both to `false` (issue #50)

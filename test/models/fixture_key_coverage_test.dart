@@ -41,6 +41,7 @@ void main() {
     'poll.json': (json) => MastodonPoll.fromJson(json).toJson(),
     'media_attachment.json': (json) =>
         MastodonMediaAttachment.fromJson(json).toJson(),
+    'mutes.json': (json) => MastodonMutedAccount.fromJson(json).toJson(),
     'collection.json': (json) => MastodonCollection.fromJson(json).toJson(),
     'collection_tagged.json': (json) =>
         MastodonCollection.fromJson(json).toJson(),
