@@ -43,7 +43,7 @@ switch (capabilities.supportFor(MastodonCapability.collections)) {
 | `annualReportDetails` | Jahresbericht nach Jahr abrufen | 4.4.0 | 6 |
 | `oauthUserInfo` | OpenID-Connect-Benutzerinfo | 4.4.0 | 6 |
 | `asyncRefreshes` | Experimenteller Status asynchroner Aktualisierungen | 4.4.0 | 6 |
-| `quotePosts` | Zitatbeitrags-Operationen | 4.5.0 | 7 |
+| `quotePosts` | Operationen für Zitatbeiträge | 4.5.0 | 7 |
 | `collections` | Sammlungs-Endpunkte | 4.6.0 | 10 |
 | `donationCampaigns` | Spendenkampagnen-Endpunkt | 4.6.0 | 10 |
 | `editableProfile` | Bearbeitbares Profil abrufen oder aktualisieren | 4.6.0 | 10 |
@@ -68,10 +68,11 @@ Route steigen, von mehreren Releases geteilt werden und Ganzzahlen
 überspringen. Verwenden Sie nur die Untergrenzen der Tabelle und leiten Sie
 daraus keine Mastodon-Releaseversion ab.
 
-Die Ergebnisse sind Hinweise. Forks und kompatible Implementierungen können von
-ihren gemeldeten Metadaten abweichen. Behandeln Sie deshalb weiterhin Fehler des
-tatsächlichen API-Aufrufs. Insbesondere unterscheidet eine 404-Antwort nicht
-zuverlässig zwischen einem fehlenden Endpunkt und einer fehlenden Ressource.
+Die Ergebnisse dienen nur als Orientierung. Forks und kompatible
+Implementierungen können von ihren gemeldeten Metadaten abweichen. Behandeln Sie
+deshalb weiterhin Fehler des tatsächlichen API-Aufrufs. Insbesondere
+unterscheidet eine 404-Antwort nicht zuverlässig zwischen einem fehlenden
+Endpunkt und einer fehlenden Ressource.
 
 ### Bekannte Domains (Peers)
 

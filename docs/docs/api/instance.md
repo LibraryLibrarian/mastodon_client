@@ -41,8 +41,8 @@ switch (capabilities.supportFor(MastodonCapability.collections)) {
 |---|---|---:|---:|
 | `tagFeaturing` | Feature or unfeature a tag | 4.4.0 | 6 |
 | `annualReportDetails` | Fetch an annual report by year | 4.4.0 | 6 |
-| `oauthUserInfo` | OpenID Connect user info | 4.4.0 | 6 |
-| `asyncRefreshes` | Experimental async refresh status | 4.4.0 | 6 |
+| `oauthUserInfo` | OpenID Connect UserInfo endpoint | 4.4.0 | 6 |
+| `asyncRefreshes` | Check the status of an experimental async refresh operation | 4.4.0 | 6 |
 | `quotePosts` | Quote-post operations | 4.5.0 | 7 |
 | `collections` | Collections endpoints | 4.6.0 | 10 |
 | `donationCampaigns` | Donation campaign endpoint | 4.6.0 | 10 |
@@ -57,14 +57,15 @@ Detection follows these rules:
 3. If the v2 endpoint itself returns 404, fetch the legacy
    `GET /api/v1/instance` endpoint and use its version string. Other errors are
    propagated without falling back.
-4. Return `unknown` when the available metadata cannot be interpreted.
+4. Report `unknown` for a capability when the available metadata cannot be
+   interpreted.
 
 Cache the result once per server for the lifetime of the app process rather
 than requesting instance metadata before every API call.
 
-`api_versions.mastodon` is an API surface level, not a release number. It can
-increase in a patch release or for a change that does not add a route, the same
-value can be shared by multiple releases, and integers can be skipped. Use only
+`api_versions.mastodon` describes the API surface, not the Mastodon release.
+Its value can increase in a patch release or for a change that does not add a
+route, remain unchanged across multiple releases, and skip integers. Use only
 the lower-bound checks in the table; do not convert the value back into a
 Mastodon release.
 

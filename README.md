@@ -148,9 +148,9 @@ result once per server for the lifetime of your app process. Treat `unknown`
 conservatively and still handle errors from the actual API call: forks and
 compatible implementations may not match their advertised version.
 
-The API version is a surface level, not a Mastodon release number. It can
-increase in patch releases or for non-route changes, be shared by multiple
-releases, and skip integers. See the
+`api_versions.mastodon` describes the API surface, not the Mastodon release.
+Its value can increase in a patch release or for a change that does not add a
+route, remain unchanged across multiple releases, and skip integers. See the
 [instance guide](https://librarylibrarian.github.io/mastodon_client/api/instance)
 for the supported capability table and fallback details.
 

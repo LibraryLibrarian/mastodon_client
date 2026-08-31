@@ -21,10 +21,11 @@ enum MastodonCapability {
   /// Fetching a single annual report, added in Mastodon 4.4.0.
   annualReportDetails,
 
-  /// OAuth OpenID Connect user info, added in Mastodon 4.4.0.
+  /// OpenID Connect UserInfo endpoint, added in Mastodon 4.4.0.
   oauthUserInfo,
 
-  /// Experimental asynchronous refresh status, added in Mastodon 4.4.0.
+  /// Checking the status of experimental asynchronous refresh operations,
+  /// added in Mastodon 4.4.0.
   asyncRefreshes,
 
   /// Quote-post operations, added in Mastodon 4.5.0.
@@ -83,8 +84,8 @@ final class MastodonServerCapabilities {
   ///
   /// A positive `api_versions.mastodon` value takes precedence over the
   /// version string. When it is absent, a leading `major.minor.patch` version
-  /// is used as a best-effort fallback. Unrecognized metadata returns
-  /// [MastodonCapabilitySupport.unknown].
+  /// is used as a best-effort fallback. If the metadata cannot be interpreted,
+  /// this method returns [MastodonCapabilitySupport.unknown].
   MastodonCapabilitySupport supportFor(MastodonCapability capability) {
     final requirement = capability._requirement;
     final apiVersion = apiVersionMastodon;

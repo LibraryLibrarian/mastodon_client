@@ -21,7 +21,7 @@ print(instance.version);
 
 ### 버전에 따라 달라지는 기능
 
-최신 Mastodon 릴리스에서 추가된 기능을 제공하기 전에 `detectCapabilities()`로 지원
+새 Mastodon 릴리스에 추가된 기능을 제공하기 전에 `detectCapabilities()`로 지원
 여부를 확인하세요.
 
 ```dart
@@ -37,10 +37,10 @@ switch (capabilities.supportFor(MastodonCapability.collections)) {
 }
 ```
 
-| Capability | 서버 기능 | 최소 Mastodon | API 표면 수준 |
+| Capability | 서버 기능 | 최소 Mastodon 버전 | API 기능 수준 |
 |---|---|---:|---:|
-| `tagFeaturing` | 태그 feature / unfeature | 4.4.0 | 6 |
-| `annualReportDetails` | 연도별 연간 보고서 조회 | 4.4.0 | 6 |
+| `tagFeaturing` | 태그를 프로필에 추천하거나 추천하지 않기 | 4.4.0 | 6 |
+| `annualReportDetails` | 특정 연도의 연간 보고서 조회 | 4.4.0 | 6 |
 | `oauthUserInfo` | OpenID Connect 사용자 정보 | 4.4.0 | 6 |
 | `asyncRefreshes` | 실험적 비동기 새로 고침 상태 | 4.4.0 | 6 |
 | `quotePosts` | 인용 게시물 작업 | 4.5.0 | 7 |
@@ -62,13 +62,13 @@ switch (capabilities.supportFor(MastodonCapability.collections)) {
 API를 호출할 때마다 인스턴스 메타데이터를 요청하지 말고 서버별로 앱 프로세스가 실행되는
 동안 한 번 결과를 캐시하세요.
 
-`api_versions.mastodon`은 릴리스 번호가 아닌 API 표면 수준입니다. 패치 릴리스나 새
+`api_versions.mastodon`은 릴리스 번호가 아닌 API 기능 수준을 나타냅니다. 패치 릴리스나 새
 라우트가 없는 변경에서도 증가할 수 있고, 여러 릴리스가 같은 값을 공유하거나 정수를
 건너뛸 수 있습니다. 표의 최소 임곗값으로만 사용하고 Mastodon 릴리스로 역변환하지 마세요.
 
-기능 판정은 참고 정보입니다. 포크와 호환 구현은 보고한 메타데이터와 다를 수 있으므로 실제
-API 호출 오류도 계속 처리해야 합니다. 특히 404 응답만으로는 엔드포인트가 없는 경우와
-리소스가 없는 경우를 확실히 구분할 수 없습니다.
+기능 판정은 참고 정보입니다. 포크 및 호환 구현의 실제 기능은 보고된 메타데이터와 다를 수
+있으므로 실제 API 호출 오류도 계속 처리해야 합니다. 특히 404 응답만으로는 엔드포인트가
+없는 경우와 리소스가 없는 경우를 확실히 구분할 수 없습니다.
 
 ### 피어 도메인
 

@@ -81,14 +81,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added automatic streaming endpoint discovery from instance metadata, with normalization of scheme, port, and path (issue #21)
 - Added three streaming authentication modes with fallback, close-code-aware reconnection with exponential backoff and jitter, and `suspend()` / `resume()` (issue #21)
 - Added `MastodonClient.dispose()` and `HealthApi.checkStreaming()` (issue #21)
-- Added Mastodon 4.6 APIs for Collections, editable Profile show/update, Annual
-  Report generation/state, and donation campaigns (issue #14)
+- Added client support for Mastodon 4.6 Collections and donation campaign APIs,
+  editable profile retrieval and updates, and Annual Report generation and
+  generation-state retrieval (issue #14)
 - Added client coverage for instance languages, peer search, unread
   conversations, notification clearing, OAuth token info, and token
-  introspection, which were already available in Mastodon 4.2; for domain block
-  previews, notification policies, and Annual Report index/read added in 4.3;
-  and for Annual Report show and OAuth OpenID Connect user info added in 4.4
-  (issue #14)
+  introspection (Mastodon 4.2); domain block previews, notification policies,
+  Annual Report listing, and marking reports as read (4.3); and Annual Report
+  retrieval and OpenID Connect UserInfo (4.4) (issue #14)
 - Added Mastodon 4.5 and 4.6 response fields for media attachments, preview cards, instances, notifications, notification groups, and trend links (issue #17)
 - Added automated release branch and pull request creation, version tagging, and `main`-to-`develop` merge-back on top of the existing pub.dev publishing and GitHub Release workflows (issue #38)
 

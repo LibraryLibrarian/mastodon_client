@@ -142,10 +142,10 @@ if (support == MastodonCapabilitySupport.supported) {
 }
 ```
 
-Der Helfer bevorzugt `api_versions.mastodon`, greift andernfalls auf die
+Die Hilfsfunktion bevorzugt `api_versions.mastodon`, greift andernfalls auf die
 gemeldete Versionszeichenfolge zurück und versucht bei einer 404-Antwort des
-v2-Instanz-Endpunkts den veralteten v1-Endpunkt. Cachen Sie das Ergebnis einmal
-pro Server für die Laufzeit des App-Prozesses. Behandeln Sie `unknown`
+v2-Instanz-Endpunkts, den veralteten v1-Endpunkt aufzurufen. Cachen Sie das
+Ergebnis einmal pro Server für die Laufzeit des App-Prozesses. Behandeln Sie `unknown`
 vorsichtig und fangen Sie weiterhin Fehler des tatsächlichen API-Aufrufs ab,
 da Forks und kompatible Implementierungen von der gemeldeten Version abweichen
 können.

@@ -26,7 +26,8 @@ class InstanceApi {
     return MastodonInstance.fromJson(data!);
   }
 
-  /// Detects version-dependent capabilities advertised by the server.
+  /// Estimates version-dependent capabilities from metadata advertised by the
+  /// server.
   ///
   /// The v2 instance response and its `api_versions.mastodon` value are used
   /// first. If the v2 endpoint returns HTTP 404, this method falls back to the
