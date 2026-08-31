@@ -20,12 +20,12 @@ class MastodonProfile with _$MastodonProfile {
     required this.formattedFields,
     required this.locked,
     required this.bot,
-    required this.hideCollections,
-    required this.discoverable,
     required this.indexable,
     required this.showMedia,
     required this.showMediaReplies,
     required this.showFeatured,
+    this.hideCollections,
+    this.discoverable,
     this.avatar,
     this.avatarStatic,
     this.avatarDescription,
@@ -91,13 +91,11 @@ class MastodonProfile with _$MastodonProfile {
   @override
   final bool bot;
 
-  @JsonKey(defaultValue: false)
   @override
-  final bool hideCollections;
+  final bool? hideCollections;
 
-  @JsonKey(defaultValue: false)
   @override
-  final bool discoverable;
+  final bool? discoverable;
 
   @JsonKey(defaultValue: false)
   @override

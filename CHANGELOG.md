@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `MastodonAccountSource` now exposes `hideCollections`, `discoverable`,
+  `indexable`, and `attributionDomains` from the authenticated account's
+  editable source settings (issue #50)
 - Web Push alert settings now support all 17 Mastodon notification types,
   including relationship severances, moderation warnings, annual reports, and
   collection notifications (issue #53)
@@ -22,6 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Breaking:** `MastodonProfile.hideCollections` and `discoverable` are now
+  nullable, preserving Mastodon's distinction between an unset value and
+  explicit `false` instead of coercing both to `false` (issue #50)
 - **Breaking:** HTTP requests no longer use library-defined 10-second connect,
   receive, or send timeouts. Async media uploads now return the server's HTTP
   202 attachment immediately with a null `url` instead of polling implicitly;

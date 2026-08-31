@@ -235,7 +235,7 @@ case _:
 /// @nodoc
 mixin _$MastodonAccountSource {
 
- String? get privacy; bool? get sensitive; String? get language; String? get note; List<MastodonField>? get fields; int? get followRequestsCount; String? get quotePolicy;
+ String? get privacy; bool? get sensitive; String? get language; String? get note; List<MastodonField>? get fields; int? get followRequestsCount; bool? get hideCollections; bool? get discoverable; bool? get indexable; List<String> get attributionDomains; String? get quotePolicy;
 /// Create a copy of MastodonAccountSource
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -246,12 +246,12 @@ $MastodonAccountSourceCopyWith<MastodonAccountSource> get copyWith => _$Mastodon
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonAccountSource&&(identical(other.privacy, privacy) || other.privacy == privacy)&&(identical(other.sensitive, sensitive) || other.sensitive == sensitive)&&(identical(other.language, language) || other.language == language)&&(identical(other.note, note) || other.note == note)&&const DeepCollectionEquality().equals(other.fields, fields)&&(identical(other.followRequestsCount, followRequestsCount) || other.followRequestsCount == followRequestsCount)&&(identical(other.quotePolicy, quotePolicy) || other.quotePolicy == quotePolicy));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonAccountSource&&(identical(other.privacy, privacy) || other.privacy == privacy)&&(identical(other.sensitive, sensitive) || other.sensitive == sensitive)&&(identical(other.language, language) || other.language == language)&&(identical(other.note, note) || other.note == note)&&const DeepCollectionEquality().equals(other.fields, fields)&&(identical(other.followRequestsCount, followRequestsCount) || other.followRequestsCount == followRequestsCount)&&(identical(other.hideCollections, hideCollections) || other.hideCollections == hideCollections)&&(identical(other.discoverable, discoverable) || other.discoverable == discoverable)&&(identical(other.indexable, indexable) || other.indexable == indexable)&&const DeepCollectionEquality().equals(other.attributionDomains, attributionDomains)&&(identical(other.quotePolicy, quotePolicy) || other.quotePolicy == quotePolicy));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,privacy,sensitive,language,note,const DeepCollectionEquality().hash(fields),followRequestsCount,quotePolicy);
+int get hashCode => Object.hash(runtimeType,privacy,sensitive,language,note,const DeepCollectionEquality().hash(fields),followRequestsCount,hideCollections,discoverable,indexable,const DeepCollectionEquality().hash(attributionDomains),quotePolicy);
 
 
 
@@ -262,7 +262,7 @@ abstract mixin class $MastodonAccountSourceCopyWith<$Res>  {
   factory $MastodonAccountSourceCopyWith(MastodonAccountSource value, $Res Function(MastodonAccountSource) _then) = _$MastodonAccountSourceCopyWithImpl;
 @useResult
 $Res call({
- String? privacy, bool? sensitive, String? language, String? note, List<MastodonField>? fields, int? followRequestsCount, String? quotePolicy
+ String? privacy, bool? sensitive, String? language, String? note, List<MastodonField>? fields, int? followRequestsCount, bool? hideCollections, bool? discoverable, bool? indexable, List<String> attributionDomains, String? quotePolicy
 });
 
 
@@ -279,7 +279,7 @@ class _$MastodonAccountSourceCopyWithImpl<$Res>
 
 /// Create a copy of MastodonAccountSource
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? privacy = freezed,Object? sensitive = freezed,Object? language = freezed,Object? note = freezed,Object? fields = freezed,Object? followRequestsCount = freezed,Object? quotePolicy = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? privacy = freezed,Object? sensitive = freezed,Object? language = freezed,Object? note = freezed,Object? fields = freezed,Object? followRequestsCount = freezed,Object? hideCollections = freezed,Object? discoverable = freezed,Object? indexable = freezed,Object? attributionDomains = null,Object? quotePolicy = freezed,}) {
   return _then(MastodonAccountSource(
 privacy: freezed == privacy ? _self.privacy : privacy // ignore: cast_nullable_to_non_nullable
 as String?,sensitive: freezed == sensitive ? _self.sensitive : sensitive // ignore: cast_nullable_to_non_nullable
@@ -287,7 +287,11 @@ as bool?,language: freezed == language ? _self.language : language // ignore: ca
 as String?,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
 as String?,fields: freezed == fields ? _self.fields : fields // ignore: cast_nullable_to_non_nullable
 as List<MastodonField>?,followRequestsCount: freezed == followRequestsCount ? _self.followRequestsCount : followRequestsCount // ignore: cast_nullable_to_non_nullable
-as int?,quotePolicy: freezed == quotePolicy ? _self.quotePolicy : quotePolicy // ignore: cast_nullable_to_non_nullable
+as int?,hideCollections: freezed == hideCollections ? _self.hideCollections : hideCollections // ignore: cast_nullable_to_non_nullable
+as bool?,discoverable: freezed == discoverable ? _self.discoverable : discoverable // ignore: cast_nullable_to_non_nullable
+as bool?,indexable: freezed == indexable ? _self.indexable : indexable // ignore: cast_nullable_to_non_nullable
+as bool?,attributionDomains: null == attributionDomains ? _self.attributionDomains : attributionDomains // ignore: cast_nullable_to_non_nullable
+as List<String>,quotePolicy: freezed == quotePolicy ? _self.quotePolicy : quotePolicy // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
