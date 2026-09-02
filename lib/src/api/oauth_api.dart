@@ -117,6 +117,8 @@ class OAuthApi {
   ///
   /// Requires a user token with the `profile` scope.
   ///
+  /// Available since Mastodon 4.4.0.
+  ///
   /// Throws a `MastodonException` on failure.
   Future<MastodonOAuthUserInfo> fetchUserInfo() async {
     final data = await _http.send<Map<String, dynamic>>('/oauth/userinfo');

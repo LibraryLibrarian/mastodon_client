@@ -128,6 +128,32 @@ attachment, and HTTP 422 is surfaced as `MastodonValidationException`.
 | `adminDimensions` | Admin categorical dimensions |
 | `adminRetention` | Admin user retention cohorts |
 
+## Server Capability Detection
+
+Servers may expose different Mastodon API versions. Detect support before
+showing version-dependent features:
+
+```dart
+final capabilities = await client.instance.detectCapabilities();
+final support = capabilities.supportFor(MastodonCapability.collections);
+
+if (support == MastodonCapabilitySupport.supported) {
+  // Offer collection features.
+}
+```
+
+The helper prefers `api_versions.mastodon`, falls back to the reported version
+string, and tries the legacy v1 instance endpoint when v2 returns 404. Cache the
+result once per server for the lifetime of your app process. Treat `unknown`
+conservatively and still handle errors from the actual API call: forks and
+compatible implementations may not match their advertised version.
+
+`api_versions.mastodon` describes the API surface, not the Mastodon release.
+Its value can increase in a patch release or for a change that does not add a
+route, remain unchanged across multiple releases, and skip integers. See the
+[instance guide](https://librarylibrarian.github.io/mastodon_client/api/instance)
+for the supported capability table and fallback details.
+
 ## Authentication
 
 Mastodon uses OAuth 2.0. Register an application, redirect the user for authorization, and exchange the code for a token:

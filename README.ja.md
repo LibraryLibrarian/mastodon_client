@@ -128,6 +128,32 @@ REST クライアントはライブラリ独自の HTTP タイムアウトを設
 | `adminDimensions` | 管理者用カテゴリ別ディメンション |
 | `adminRetention` | 管理者用ユーザー継続率コホート |
 
+## サーバー機能の判定
+
+接続先によって利用できる Mastodon API の水準が異なります。バージョン依存機能を
+表示する前に対応状況を判定できます。
+
+```dart
+final capabilities = await client.instance.detectCapabilities();
+final support = capabilities.supportFor(MastodonCapability.collections);
+
+if (support == MastodonCapabilitySupport.supported) {
+  // Collections 機能を表示する
+}
+```
+
+このヘルパーは `api_versions.mastodon` を優先し、無い場合は報告されたバージョン
+文字列を使います。v2 instance endpoint が 404 の場合はレガシー v1 へ
+フォールバックします。結果はサーバーごと・アプリ起動中に一度キャッシュしてください。
+`unknown` は保守的に扱い、実際の API 呼び出しのエラーも必ず処理してください。
+フォークや互換実装では、宣言されたバージョンと実装が一致しない場合があります。
+
+API バージョンはリリース番号ではなく API サーフェスの水準です。パッチリリースや
+ルート以外の変更でも増加し、複数リリースで同じ値になったり、番号が飛んだりします。
+対応機能一覧とフォールバックの詳細は
+[インスタンスガイド](https://librarylibrarian.github.io/mastodon_client/ja/api/instance)
+を参照してください。
+
 ## 認証
 
 Mastodon は OAuth 2.0 を使用しています。アプリケーションを登録し、ユーザーを認証ページにリダイレクトして、コードをトークンに交換してください:

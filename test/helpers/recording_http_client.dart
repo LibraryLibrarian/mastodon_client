@@ -44,7 +44,9 @@ class RecordingHttpClient extends MastodonHttpClient {
       ),
     );
     if (_responses.isEmpty) return null;
-    return _responses.removeAt(0) as T?;
+    final response = _responses.removeAt(0);
+    if (response is Exception) throw response;
+    return response as T?;
   }
 
   @override
@@ -66,6 +68,7 @@ class RecordingHttpClient extends MastodonHttpClient {
       ),
     );
     final responseData = _responses.isEmpty ? null : _responses.removeAt(0);
+    if (responseData is Exception) throw responseData;
     return Response<T>(
       data: responseData as T?,
       requestOptions: RequestOptions(path: path),

@@ -19,6 +19,61 @@ print(instance.version);
 
 Returns a `MastodonInstance` with full v2 metadata including configured languages, rules, and contact information.
 
+### Version-dependent capabilities
+
+Use `detectCapabilities()` before offering features that were added in newer
+Mastodon releases:
+
+```dart
+final capabilities = await client.instance.detectCapabilities();
+
+switch (capabilities.supportFor(MastodonCapability.collections)) {
+  case MastodonCapabilitySupport.supported:
+    // Offer collection features.
+  case MastodonCapabilitySupport.unsupported:
+    // Hide or disable collection features.
+  case MastodonCapabilitySupport.unknown:
+    // Use a conservative fallback or let the user try the operation.
+}
+```
+
+| Capability | Server feature | Minimum Mastodon | API surface level |
+|---|---|---:|---:|
+| `tagFeaturing` | Feature or unfeature a tag | 4.4.0 | 6 |
+| `annualReportDetails` | Fetch an annual report by year | 4.4.0 | 6 |
+| `oauthUserInfo` | OpenID Connect UserInfo endpoint | 4.4.0 | 6 |
+| `asyncRefreshes` | Check the status of an experimental async refresh operation | 4.4.0 | 6 |
+| `quotePosts` | Quote-post operations | 4.5.0 | 7 |
+| `collections` | Collections endpoints | 4.6.0 | 10 |
+| `donationCampaigns` | Donation campaign endpoint | 4.6.0 | 10 |
+| `editableProfile` | Fetch or update the editable profile | 4.6.0 | 10 |
+| `annualReportGeneration` | Generate a report or fetch its state | 4.6.0 | 10 |
+
+Detection follows these rules:
+
+1. Fetch `GET /api/v2/instance` and prefer `api_versions.mastodon`.
+2. If that field is absent, parse the leading `major.minor.patch` from
+   `MastodonInstance.version` as a best-effort fallback.
+3. If the v2 endpoint itself returns 404, fetch the legacy
+   `GET /api/v1/instance` endpoint and use its version string. Other errors are
+   propagated without falling back.
+4. Report `unknown` for a capability when the available metadata cannot be
+   interpreted.
+
+Cache the result once per server for the lifetime of the app process rather
+than requesting instance metadata before every API call.
+
+`api_versions.mastodon` describes the API surface, not the Mastodon release.
+Its value can increase in a patch release or for a change that does not add a
+route, remain unchanged across multiple releases, and skip integers. Use only
+the lower-bound checks in the table; do not convert the value back into a
+Mastodon release.
+
+Capability results are advisory. Forks and compatible implementations may not
+match their advertised metadata, so still handle errors from the actual API
+call. In particular, a 404 response is not guaranteed to distinguish a missing
+endpoint from a missing resource.
+
 ### Peer domains
 
 ```dart

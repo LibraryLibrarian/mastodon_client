@@ -15,6 +15,18 @@ void main() {
     expect(client, isNotNull);
   });
 
+  test('capability detection is reachable through the public client', () {
+    final client = MastodonClient(
+      baseUrl: 'https://mastodon.social',
+      enableLog: false,
+    );
+
+    final Future<MastodonServerCapabilities> Function() detect =
+        client.instance.detectCapabilities;
+
+    expect(detect, isNotNull);
+  });
+
   test('MastodonClient.streaming is lazy and cached', () async {
     final client = MastodonClient(
       baseUrl: 'https://mastodon.social',

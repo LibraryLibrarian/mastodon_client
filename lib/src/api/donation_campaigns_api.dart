@@ -1,6 +1,8 @@
 import '../client/mastodon_http_client.dart';
 
 /// API client for optional instance donation campaigns.
+///
+/// Available since Mastodon 4.6.0.
 class DonationCampaignsApi {
   const DonationCampaignsApi(this._http);
 
