@@ -65,6 +65,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed WebAssembly compatibility by using the web-safe `logger` entry point,
+  without changing the logging API or output behavior
 - Fixed Web Push subscription updates so `policy` is nested inside `data`,
   documented the server's whole-data replacement behavior, and rejected empty
   updates before they can silently clear existing settings (issue #45)
