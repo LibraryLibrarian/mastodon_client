@@ -23,7 +23,7 @@
 
 ```yaml
 dependencies:
-  mastodon_client: ^1.0.0-beta.3
+  mastodon_client: ^1.0.0-beta.4
 ```
 
 然后运行：

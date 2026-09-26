@@ -22,7 +22,7 @@ Flutter・Dart サーバーサイド・CLI ツールなど、Dart が動作す�
 
 ```yaml
 dependencies:
-  mastodon_client: ^1.0.0-beta.3
+  mastodon_client: ^1.0.0-beta.4
 ```
 
 その後、依存関係を取得します。
