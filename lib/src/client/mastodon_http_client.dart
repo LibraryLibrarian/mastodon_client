@@ -15,9 +15,6 @@ class MastodonHttpClient {
   MastodonHttpClient({
     required this.baseUrl,
     this.accessToken,
-    Duration connectTimeout = const Duration(seconds: 10),
-    Duration receiveTimeout = const Duration(seconds: 10),
-    Duration sendTimeout = const Duration(seconds: 10),
     this.enableLog = true,
     Logger? logger,
     HttpClientAdapter? httpClientAdapter,
@@ -25,9 +22,6 @@ class MastodonHttpClient {
        dio = Dio(
          BaseOptions(
            baseUrl: baseUrl,
-           connectTimeout: connectTimeout,
-           receiveTimeout: receiveTimeout,
-           sendTimeout: sendTimeout,
            headers: {
              'Accept': 'application/json',
              if (accessToken != null) 'Authorization': 'Bearer $accessToken',

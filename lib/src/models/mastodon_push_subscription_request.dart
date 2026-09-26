@@ -1,6 +1,9 @@
 /// Alert settings per Web Push notification type (for requests).
 ///
-/// Fields set to `null` are not included in the request.
+/// Fields set to `null` are not included in the request. Mastodon treats
+/// omitted alert types as disabled when creating a subscription. When updating
+/// a subscription, the server replaces the whole `data` object, so omitted
+/// alert types are also disabled rather than left unchanged.
 class MastodonPushAlertSettings {
   const MastodonPushAlertSettings({
     this.mention,
@@ -12,7 +15,12 @@ class MastodonPushAlertSettings {
     this.favourite,
     this.poll,
     this.update,
+    this.severedRelationships,
+    this.moderationWarning,
+    this.annualReport,
     this.quotedUpdate,
+    this.addedToCollection,
+    this.collectionUpdate,
     this.adminSignUp,
     this.adminReport,
   });
@@ -44,8 +52,23 @@ class MastodonPushAlertSettings {
   /// Whether to receive status edit notifications.
   final bool? update;
 
+  /// Whether to receive relationship severance notifications.
+  final bool? severedRelationships;
+
+  /// Whether to receive moderation warning notifications.
+  final bool? moderationWarning;
+
+  /// Whether to receive annual report notifications.
+  final bool? annualReport;
+
   /// Whether to receive quoted status update notifications.
   final bool? quotedUpdate;
+
+  /// Whether to receive notifications when added to a collection.
+  final bool? addedToCollection;
+
+  /// Whether to receive collection update notifications.
+  final bool? collectionUpdate;
 
   /// Admin: whether to receive new sign-up notifications.
   final bool? adminSignUp;
@@ -65,7 +88,20 @@ class MastodonPushAlertSettings {
     if (favourite != null) json['favourite'] = favourite;
     if (poll != null) json['poll'] = poll;
     if (update != null) json['update'] = update;
+    if (severedRelationships != null) {
+      json['severed_relationships'] = severedRelationships;
+    }
+    if (moderationWarning != null) {
+      json['moderation_warning'] = moderationWarning;
+    }
+    if (annualReport != null) json['annual_report'] = annualReport;
     if (quotedUpdate != null) json['quoted_update'] = quotedUpdate;
+    if (addedToCollection != null) {
+      json['added_to_collection'] = addedToCollection;
+    }
+    if (collectionUpdate != null) {
+      json['collection_update'] = collectionUpdate;
+    }
     if (adminSignUp != null) json['admin.sign_up'] = adminSignUp;
     if (adminReport != null) json['admin.report'] = adminReport;
     return json;
@@ -129,8 +165,10 @@ class MastodonPushSubscriptionRequest {
 /// Web Push subscription update request.
 ///
 /// Used with `PUT /api/v1/push/subscription`.
-/// Updates only the `data` portion (alert settings and policy) of the
-/// subscription.
+///
+/// The server replaces the whole `data` portion (alert settings and policy) of
+/// the subscription. Omitted alert types become disabled, and omitting [policy]
+/// resets it to `all`.
 class MastodonPushSubscriptionUpdateRequest {
   const MastodonPushSubscriptionUpdateRequest({this.alerts, this.policy});
 
@@ -142,17 +180,23 @@ class MastodonPushSubscriptionUpdateRequest {
 
   /// Converts to a JSON map for the request.
   ///
-  /// For PUT requests, `policy` is placed at the top level (unlike
-  /// `data[policy]` in POST).
+  /// Throws an [ArgumentError] when both [alerts] and [policy] are `null`,
+  /// because an empty update would clear the subscription's existing data.
+  ///
+  /// To explicitly disable every alert and reset the policy to `all`, pass an
+  /// empty [MastodonPushAlertSettings] as [alerts].
   Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    if (alerts != null) {
-      data['alerts'] = alerts!.toJson();
+    if (alerts == null && policy == null) {
+      throw ArgumentError(
+        'At least one of alerts or policy must be provided for an update.',
+      );
     }
-    final json = <String, dynamic>{'data': data};
-    if (policy != null) {
-      json['policy'] = policy;
-    }
-    return json;
+
+    return <String, dynamic>{
+      'data': <String, dynamic>{
+        if (alerts != null) 'alerts': alerts!.toJson(),
+        if (policy != null) 'policy': policy,
+      },
+    };
   }
 }

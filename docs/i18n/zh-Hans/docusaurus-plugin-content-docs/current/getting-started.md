@@ -22,7 +22,7 @@ mastodon_client 是一个纯 Dart 编写的 Mastodon API 客户端库。
 
 ```yaml
 dependencies:
-  mastodon_client: ^1.0.0-beta.3
+  mastodon_client: ^1.0.0-beta.4
 ```
 
 然后拉取依赖：

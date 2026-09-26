@@ -75,7 +75,7 @@ MastodonStatus _$MastodonStatusFromJson(
       : MastodonPoll.fromJson(json['poll'] as Map<String, dynamic>),
   quote: json['quote'] == null
       ? null
-      : MastodonStatus.fromJson(json['quote'] as Map<String, dynamic>),
+      : MastodonQuote.fromJson(json['quote'] as Map<String, dynamic>),
   card: json['card'] == null
       ? null
       : MastodonPreviewCard.fromJson(json['card'] as Map<String, dynamic>),
@@ -150,6 +150,41 @@ const _$MastodonVisibilityEnumMap = {
   MastodonVisibility.unlisted: 'unlisted',
   MastodonVisibility.private: 'private',
   MastodonVisibility.direct: 'direct',
+};
+
+MastodonQuote _$MastodonQuoteFromJson(Map<String, dynamic> json) =>
+    MastodonQuote(
+      state: $enumDecode(
+        _$MastodonQuoteStateEnumMap,
+        json['state'],
+        unknownValue: MastodonQuoteState.unknown,
+      ),
+      quotedStatus: json['quoted_status'] == null
+          ? null
+          : MastodonStatus.fromJson(
+              json['quoted_status'] as Map<String, dynamic>,
+            ),
+      quotedStatusId: json['quoted_status_id'] as String?,
+    );
+
+Map<String, dynamic> _$MastodonQuoteToJson(MastodonQuote instance) =>
+    <String, dynamic>{
+      'state': _$MastodonQuoteStateEnumMap[instance.state]!,
+      'quoted_status': instance.quotedStatus?.toJson(),
+      'quoted_status_id': instance.quotedStatusId,
+    };
+
+const _$MastodonQuoteStateEnumMap = {
+  MastodonQuoteState.pending: 'pending',
+  MastodonQuoteState.accepted: 'accepted',
+  MastodonQuoteState.rejected: 'rejected',
+  MastodonQuoteState.revoked: 'revoked',
+  MastodonQuoteState.deleted: 'deleted',
+  MastodonQuoteState.unauthorized: 'unauthorized',
+  MastodonQuoteState.blockedDomain: 'blocked_domain',
+  MastodonQuoteState.blockedAccount: 'blocked_account',
+  MastodonQuoteState.mutedAccount: 'muted_account',
+  MastodonQuoteState.unknown: 'unknown',
 };
 
 MastodonStatusApplication _$MastodonStatusApplicationFromJson(

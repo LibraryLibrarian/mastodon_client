@@ -200,6 +200,63 @@ void main() {
       expect(status.quoteApproval, isNull);
       expect(status.quotesCount, 0);
     });
+
+    test('deserializes a full quote with an embedded status', () {
+      final statusJson =
+          jsonDecode(File('test/fixtures/status.json').readAsStringSync())
+              as Map<String, dynamic>;
+      final quoteJson =
+          jsonDecode(File('test/fixtures/quote_full.json').readAsStringSync())
+              as Map<String, dynamic>;
+
+      final status = MastodonStatus.fromJson({
+        ...statusJson,
+        'quote': quoteJson,
+      });
+
+      expect(status.quote?.state, MastodonQuoteState.accepted);
+      expect(status.quote?.quotedStatus?.id, '117100000000000001');
+      expect(status.quote?.quotedStatus?.content, '<p>Quoted status</p>');
+      expect(status.quote?.quotedStatusId, isNull);
+    });
+
+    test('deserializes a shallow quote with only the quoted status ID', () {
+      final json =
+          jsonDecode(
+                File('test/fixtures/quote_shallow.json').readAsStringSync(),
+              )
+              as Map<String, dynamic>;
+
+      final quote = MastodonQuote.fromJson(json);
+
+      expect(quote.state, MastodonQuoteState.accepted);
+      expect(quote.quotedStatus, isNull);
+      expect(quote.quotedStatusId, '117100000000000001');
+    });
+
+    test('deserializes a pending quote without a visible status', () {
+      final json =
+          jsonDecode(
+                File('test/fixtures/quote_pending.json').readAsStringSync(),
+              )
+              as Map<String, dynamic>;
+
+      final quote = MastodonQuote.fromJson(json);
+
+      expect(quote.state, MastodonQuoteState.pending);
+      expect(quote.quotedStatus, isNull);
+      expect(quote.quotedStatusId, isNull);
+    });
+
+    test('maps a future quote state to unknown', () {
+      final json =
+          jsonDecode(
+                File('test/fixtures/quote_unknown.json').readAsStringSync(),
+              )
+              as Map<String, dynamic>;
+
+      expect(MastodonQuote.fromJson(json).state, MastodonQuoteState.unknown);
+    });
   });
 
   group('MastodonStatus.fromJson - status_with_poll.json', () {

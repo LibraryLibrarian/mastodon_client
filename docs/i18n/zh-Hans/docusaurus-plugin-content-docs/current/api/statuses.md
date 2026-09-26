@@ -23,6 +23,21 @@ final statuses = await client.statuses.fetchMultiple(['1', '2', '3']);
 
 不存在或无法访问的 ID 会从结果中静默排除。
 
+### 引用帖子
+
+Mastodon 4.5 及更高版本将引用关系公开为 `MastodonQuote`：
+
+```dart
+final quote = status.quote;
+final quotedStatus = quote?.quotedStatus;     // 嵌入的可见帖子
+final quotedStatusId = quote?.quotedStatusId; // 浅层嵌套响应中的 ID
+final state = quote?.state;
+```
+
+当引用等待批准、不可用，或在浅层嵌套响应中由 `quotedStatusId` 表示时，
+`quotedStatus` 可能为 null。编辑历史也通过 `MastodonStatusEdit.quote`
+公开相同的引用关系。
+
 ### 线程上下文
 
 ```dart

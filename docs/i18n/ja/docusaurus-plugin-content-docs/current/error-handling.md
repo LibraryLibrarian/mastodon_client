@@ -15,17 +15,20 @@ MastodonException (sealed)
 │   ├── MastodonForbiddenException    // 403 - 権限エラー
 │   ├── MastodonNotFoundException     // 404 - リソース不在
 │   ├── MastodonRateLimitException    // 429 - レート制限
-│   │   └── retryAfter                //   リトライ推奨待機時間
+│   │   ├── retryAfter                //   リトライ推奨待機時間
+│   │   ├── limit                     //   制限期間内のリクエスト上限
+│   │   ├── remaining                 //   残りリクエスト数
+│   │   └── resetAt                   //   制限がリセットされる時刻
 │   ├── MastodonValidationException   // 422 - バリデーションエラー
 │   │   ├── serverMessage             //   サーバーからの詳細メッセージ
+│   │   ├── details                   //   リクエスト項目ごとのエラー
 │   │   └── MastodonAlreadyVotedException // 投票済みエラー
 │   └── MastodonServerException       // 5xx - サーバーエラー
 ├── MastodonNetworkException          // ネットワーク接続エラー
-├── MastodonAuthException (sealed)    // OAuth 認証フローエラー
-│   ├── MastodonAuthCancelledException    // ユーザーによるキャンセル
-│   ├── MastodonAuthStateMismatchException // CSRF 検出
-│   └── MastodonAuthTokenException        // トークン取得失敗
-└── MastodonMediaProcessingTimeoutException // メディア処理タイムアウト
+└── MastodonAuthException (sealed)    // OAuth 認証フローエラー
+    ├── MastodonAuthCancelledException    // ユーザーによるキャンセル
+    ├── MastodonAuthStateMismatchException // CSRF 検出
+    └── MastodonAuthTokenException        // トークン取得失敗
 ```
 
 ## 基本的な catch パターン
@@ -62,11 +65,25 @@ try {
 
 ```dart
 try {
-  await client.statuses.create(request);
+  await client.accounts.create(request);
 } on MastodonValidationException catch (e) {
   print('バリデーションエラー: ${e.serverMessage}');
+  final details = e.details;
+  if (details != null) {
+    for (final entry in details.entries) {
+      for (final detail in entry.value) {
+        print('${entry.key}: ${detail.code} - ${detail.description ?? ''}');
+      }
+    }
+  }
 }
 ```
+
+`details` はリクエスト項目をキーとする Map です。各
+`MastodonValidationErrorDetail` からサーバーのエラーコードと任意の説明を
+取得できます。未知のコードも将来互換性のため文字列のまま保持されます。
+エンドポイントが Mastodon の既知のバリデーション詳細形式を返さない場合、
+`details` は `null` です。
 
 ## 特殊な例外
 
@@ -82,26 +99,18 @@ try {
 }
 ```
 
-### MastodonMediaProcessingTimeoutException
-
-メディアアップロード後の非同期処理がタイムアウトした場合にスローされます。
-
-```dart
-try {
-  final attachment = await client.media.upload(bytes, 'photo.jpg');
-} on MastodonMediaProcessingTimeoutException catch (e) {
-  print('メディア ${e.mediaId} の処理がタイムアウトしました');
-  // 後で client.media.fetchById(e.mediaId) で状態を確認可能
-}
-```
-
 ## レート制限への対応
+
+`MastodonRateLimitException` は Mastodon の `X-RateLimit-*` ヘッダーを公開します。
+推奨待機時間には、サーバーまたはプロキシが `Retry-After` を返した場合はその値を使い、
+返さない場合は `X-RateLimit-Reset` のタイムスタンプを使います。
 
 ```dart
 Future<T> withRetry<T>(Future<T> Function() action) async {
   try {
     return await action();
   } on MastodonRateLimitException catch (e) {
+    print('残り ${e.remaining}/${e.limit} 件。${e.resetAt} にリセット');
     final wait = e.retryAfter ?? const Duration(seconds: 60);
     await Future<void>.delayed(wait);
     return action();

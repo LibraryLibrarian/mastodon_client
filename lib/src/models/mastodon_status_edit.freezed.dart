@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MastodonStatusEdit {
 
- String get content; String get spoilerText; bool get sensitive; DateTime get createdAt; MastodonAccount get account; List<MastodonMediaAttachment> get mediaAttachments; List<MastodonCustomEmoji> get emojis; MastodonStatusEditPoll? get poll;
+ String get content; String get spoilerText; bool get sensitive; DateTime get createdAt; MastodonAccount get account; List<MastodonMediaAttachment> get mediaAttachments; List<MastodonCustomEmoji> get emojis; MastodonStatusEditPoll? get poll; MastodonQuote? get quote;
 /// Create a copy of MastodonStatusEdit
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,12 +26,12 @@ $MastodonStatusEditCopyWith<MastodonStatusEdit> get copyWith => _$MastodonStatus
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonStatusEdit&&(identical(other.content, content) || other.content == content)&&(identical(other.spoilerText, spoilerText) || other.spoilerText == spoilerText)&&(identical(other.sensitive, sensitive) || other.sensitive == sensitive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.account, account) || other.account == account)&&const DeepCollectionEquality().equals(other.mediaAttachments, mediaAttachments)&&const DeepCollectionEquality().equals(other.emojis, emojis)&&(identical(other.poll, poll) || other.poll == poll));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonStatusEdit&&(identical(other.content, content) || other.content == content)&&(identical(other.spoilerText, spoilerText) || other.spoilerText == spoilerText)&&(identical(other.sensitive, sensitive) || other.sensitive == sensitive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.account, account) || other.account == account)&&const DeepCollectionEquality().equals(other.mediaAttachments, mediaAttachments)&&const DeepCollectionEquality().equals(other.emojis, emojis)&&(identical(other.poll, poll) || other.poll == poll)&&(identical(other.quote, quote) || other.quote == quote));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,content,spoilerText,sensitive,createdAt,account,const DeepCollectionEquality().hash(mediaAttachments),const DeepCollectionEquality().hash(emojis),poll);
+int get hashCode => Object.hash(runtimeType,content,spoilerText,sensitive,createdAt,account,const DeepCollectionEquality().hash(mediaAttachments),const DeepCollectionEquality().hash(emojis),poll,quote);
 
 
 
@@ -42,7 +42,7 @@ abstract mixin class $MastodonStatusEditCopyWith<$Res>  {
   factory $MastodonStatusEditCopyWith(MastodonStatusEdit value, $Res Function(MastodonStatusEdit) _then) = _$MastodonStatusEditCopyWithImpl;
 @useResult
 $Res call({
- String content, String spoilerText, bool sensitive, DateTime createdAt, MastodonAccount account, List<MastodonMediaAttachment> mediaAttachments, List<MastodonCustomEmoji> emojis, MastodonStatusEditPoll? poll
+ String content, String spoilerText, bool sensitive, DateTime createdAt, MastodonAccount account, List<MastodonMediaAttachment> mediaAttachments, List<MastodonCustomEmoji> emojis, MastodonStatusEditPoll? poll, MastodonQuote? quote
 });
 
 
@@ -59,7 +59,7 @@ class _$MastodonStatusEditCopyWithImpl<$Res>
 
 /// Create a copy of MastodonStatusEdit
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? content = null,Object? spoilerText = null,Object? sensitive = null,Object? createdAt = null,Object? account = null,Object? mediaAttachments = null,Object? emojis = null,Object? poll = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? content = null,Object? spoilerText = null,Object? sensitive = null,Object? createdAt = null,Object? account = null,Object? mediaAttachments = null,Object? emojis = null,Object? poll = freezed,Object? quote = freezed,}) {
   return _then(MastodonStatusEdit(
 content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,spoilerText: null == spoilerText ? _self.spoilerText : spoilerText // ignore: cast_nullable_to_non_nullable
@@ -69,7 +69,8 @@ as DateTime,account: null == account ? _self.account : account // ignore: cast_n
 as MastodonAccount,mediaAttachments: null == mediaAttachments ? _self.mediaAttachments : mediaAttachments // ignore: cast_nullable_to_non_nullable
 as List<MastodonMediaAttachment>,emojis: null == emojis ? _self.emojis : emojis // ignore: cast_nullable_to_non_nullable
 as List<MastodonCustomEmoji>,poll: freezed == poll ? _self.poll : poll // ignore: cast_nullable_to_non_nullable
-as MastodonStatusEditPoll?,
+as MastodonStatusEditPoll?,quote: freezed == quote ? _self.quote : quote // ignore: cast_nullable_to_non_nullable
+as MastodonQuote?,
   ));
 }
 

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -14,19 +13,15 @@ class MediaApi {
   final MastodonHttpClient _http;
 
   static const Set<int> _v2FallbackStatusCodes = <int>{404, 405, 501};
-  static const int _maxPollAttempts = 8;
-  static const Duration _pollInterval = Duration(milliseconds: 500);
 
   /// Uploads media and returns a [MastodonMediaAttachment].
   ///
   /// Prefers `POST /api/v2/media` and falls back to `POST /api/v1/media`
   /// for unsupported servers (404 / 405 / 501).
   ///
-  /// When the server returns async processing (HTTP 202), polls
-  /// `GET /api/v1/media/{id}` up to [_maxPollAttempts] times until
-  /// the `url` field becomes non-null.
-  ///
-  /// Throws [MastodonMediaProcessingTimeoutException] on timeout.
+  /// When the server accepts asynchronous processing (HTTP 202), returns the
+  /// attachment immediately. Its `url` remains `null` while processing is in
+  /// progress; use [fetchById] to check its status when needed.
   ///
   /// [bytes] is the raw file data and [filename] is the multipart filename.
   /// [description] provides optional alt text. Supply [thumbnail] with
@@ -60,14 +55,7 @@ class MediaApi {
       );
     }
 
-    final attachment = MastodonMediaAttachment.fromJson(data);
-
-    final shouldPoll = response.statusCode == 202 && attachment.url == null;
-    if (!shouldPoll) {
-      return attachment;
-    }
-
-    return _pollUntilReady(attachment.id);
+    return MastodonMediaAttachment.fromJson(data);
   }
 
   /// Tries v2 first, falls back to v1 for unsupported servers.
@@ -111,8 +99,8 @@ class MediaApi {
   ///
   /// `GET /api/v1/media/:id`
   ///
-  /// Used to check the processing status of async uploads.
-  /// The `url` field is `null` while processing is in progress.
+  /// Used to check the processing status of async uploads. Mastodon returns
+  /// HTTP 206 with a `null` `url` while processing, and HTTP 200 when complete.
   ///
   /// Throws a `MastodonException` on failure.
   Future<MastodonMediaAttachment> fetchById(String id) async {
@@ -183,25 +171,5 @@ class MediaApi {
   /// Throws a `MastodonException` on failure.
   Future<void> delete(String id) async {
     await _http.send<void>('/api/v1/media/$id', method: 'DELETE');
-  }
-
-  /// Polls until the `url` field becomes non-null and returns the completed
-  /// [MastodonMediaAttachment].
-  Future<MastodonMediaAttachment> _pollUntilReady(String mediaId) async {
-    for (var i = 0; i < _maxPollAttempts; i++) {
-      if (i > 0) {
-        await Future<void>.delayed(_pollInterval);
-      }
-      final data = await _http.send<Map<String, dynamic>>(
-        '/api/v1/media/$mediaId',
-      );
-      if (data != null) {
-        final attachment = MastodonMediaAttachment.fromJson(data);
-        if (attachment.url != null) {
-          return attachment;
-        }
-      }
-    }
-    throw MastodonMediaProcessingTimeoutException(mediaId: mediaId);
   }
 }

@@ -9,10 +9,10 @@
 ## 기능
 
 - Mastodon의 모든 주요 API 카테고리 지원 (계정, 포스트, 타임라인, 알림, 미디어 등)
-- OAuth 2.0 토큰 관리 (획득, 취소, PKCE 지원)
+- OAuth 2.0 토큰 관리 (획득, 취소, 토큰 교환 시 PKCE `code_verifier` 전달)
 - `MastodonPage<T>`를 통한 커서 기반 페이지네이션
 - 완전한 오류 처리를 위한 sealed 예외 계층
-- 자동 v2/v1 폴백 및 처리 폴링을 지원하는 비동기 미디어 업로드
+- 자동 v2/v1 폴백 및 명시적 처리 상태 확인을 지원하는 비동기 미디어 업로드
 - 다중화된 구독과 자동 재연결을 지원하는 WebSocket 기반 스트리밍 API
 - 교체 가능한 `Logger` 인터페이스를 통한 설정 가능한 로깅
 - 순수 Dart — Flutter 의존성 불필요
@@ -23,7 +23,7 @@
 
 ```yaml
 dependencies:
-  mastodon_client: ^1.0.0-beta.3
+  mastodon_client: ^1.0.0-beta.4
 ```
 
 그런 다음 실행하세요:
@@ -62,6 +62,14 @@ void main() async {
   }
 }
 ```
+
+REST 클라이언트는 라이브러리 자체 HTTP 타임아웃을 설정하지 않습니다. 라이브러리
+기본값으로 요청을 중단하지 않고 전송 계층과 Mastodon 서버의 동작을 따릅니다.
+
+비동기 미디어 업로드에서 `upload()`는 HTTP 202의 `url`이 `null`인 첨부 정보를 즉시
+반환합니다. `client.media.fetchById(id)`로 명시적으로 확인하세요. HTTP 206은 처리 중,
+HTTP 200은 현재 첨부 정보, HTTP 422는 `MastodonValidationException`으로 전달되는
+처리 실패를 뜻합니다.
 
 ## API 개요
 
@@ -118,6 +126,32 @@ void main() async {
 | `adminMeasures` | 관리자 정량적 측정값 |
 | `adminDimensions` | 관리자 범주형 차원 |
 | `adminRetention` | 관리자 사용자 유지율 코호트 |
+
+## 서버 기능 감지
+
+서버마다 제공하는 Mastodon API 수준이 다를 수 있습니다. 버전에 따라 달라지는 기능을
+표시하기 전에 지원 여부를 확인하세요.
+
+```dart
+final capabilities = await client.instance.detectCapabilities();
+final support = capabilities.supportFor(MastodonCapability.collections);
+
+if (support == MastodonCapabilitySupport.supported) {
+  // 컬렉션 기능을 제공합니다.
+}
+```
+
+이 도우미는 `api_versions.mastodon`을 우선 사용하고, 값이 없으면 서버가 보고한 버전
+문자열을 사용합니다. v2 인스턴스 엔드포인트가 404를 반환하면 레거시 v1 엔드포인트를
+시도합니다. 결과는 서버별로 앱 프로세스가 실행되는 동안 한 번 캐시하세요. `unknown`은
+보수적으로 처리하고 실제 API 호출 오류도 계속 처리해야 합니다. 포크 및 호환 구현에서는
+보고된 버전과 실제 기능이 다를 수 있습니다.
+
+API 버전은 Mastodon 릴리스 번호가 아니라 API 기능 수준을 나타냅니다. 패치 릴리스나 라우트를
+추가하지 않는 변경에서도 증가할 수 있고, 여러 릴리스가 같은 값을 사용하거나 정수를 건너뛸 수
+있습니다. 기능 표와 폴백 세부 정보는
+[인스턴스 가이드](https://librarylibrarian.github.io/mastodon_client/ko/api/instance)를
+참조하세요.
 
 ## 인증
 

@@ -23,6 +23,21 @@ final statuses = await client.statuses.fetchMultiple(['1', '2', '3']);
 
 存在しない、またはアクセスできない ID は結果から除外されます。
 
+### 引用投稿
+
+Mastodon 4.5 以降の引用関係は `MastodonQuote` として取得できます。
+
+```dart
+final quote = status.quote;
+final quotedStatus = quote?.quotedStatus;     // 埋め込まれた閲覧可能な投稿
+final quotedStatusId = quote?.quotedStatusId; // 浅いネストで返される投稿 ID
+final state = quote?.state;
+```
+
+引用が承認待ち、閲覧不可、または浅いネストの応答で `quotedStatusId` として
+表現される場合、`quotedStatus` は null になります。編集履歴でも
+`MastodonStatusEdit.quote` から同じ引用関係を取得できます。
+
 ### スレッドコンテキスト
 
 ```dart

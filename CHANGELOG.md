@@ -7,6 +7,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.4] - 2026-09-26
+
+### Added
+
+- Added typed, three-state server capability detection through
+  `InstanceApi.detectCapabilities()`. It prefers `api_versions.mastodon`, falls
+  back to the reported Mastodon version, and uses the legacy v1 instance
+  endpoint when v2 is unavailable (issue #58)
+- `MastodonAccountSource` now exposes `hideCollections`, `discoverable`,
+  `indexable`, and `attributionDomains` from the authenticated account's
+  editable source settings (issue #50)
+- Web Push alert settings now support all 17 Mastodon notification types,
+  including relationship severances, moderation warnings, annual reports, and
+  collection notifications (issue #53)
+- `MastodonValidationException.details` now exposes Mastodon's field-level
+  validation errors as typed `MastodonValidationErrorDetail` values, including
+  the nested Collections response shape, while preserving unknown error codes
+  (issue #54)
+- `MastodonScheduledStatusParams` now exposes quoted status, quote policy,
+  application, rate-limit, allowed-mention, and nested scheduling fields from
+  Mastodon's scheduled status response (issue #51)
+
+### Changed
+
+- **Breaking:** `MutesApi.fetch()` now returns
+  `MastodonPage<MastodonMutedAccount>` instead of
+  `MastodonPage<MastodonAccount>`. Access the account through `item.account`;
+  `item.muteExpiresAt` exposes the expiration of a timed mute (issue #49)
+- **Breaking:** `MastodonProfile.hideCollections` and `discoverable` are now
+  nullable, preserving Mastodon's distinction between an unset value and
+  explicit `false` instead of coercing both to `false` (issue #50)
+- **Breaking:** HTTP requests no longer use library-defined 10-second connect,
+  receive, or send timeouts. Async media uploads now return the server's HTTP
+  202 attachment immediately with a null `url` instead of polling implicitly;
+  callers can check progress explicitly with `MediaApi.fetchById()`. Removed
+  the now-unused `MastodonMediaProcessingTimeoutException` (issue #46)
+- **Breaking:** Account follower, following, and endorsement listings now
+  propagate HTTP 403 as `MastodonForbiddenException` instead of silently
+  returning an empty page, allowing authorization and scope failures to be
+  detected (issue #60)
+- **Breaking:** `MastodonStatus.quote` is now a `MastodonQuote?` relationship
+  instead of a `MastodonStatus?`, matching Mastodon 4.5 responses. Access the
+  embedded status through `status.quote?.quotedStatus`; shallow nested quotes
+  expose `quotedStatusId` instead. Edit history now exposes the same entity via
+  `MastodonStatusEdit.quote` (issue #43)
+- `MastodonNotification` now reads relationship severance details from the
+  server's `event` key and exposes admin reports through `report` and the v1
+  notification filter flag through `filtered`. Its `toJson()` output now uses
+  `event` instead of the incorrect `relationship_severance_event` key (issue #44)
+- Removed the unused direct `crypto` dependency and clarified that PKCE support
+  is limited to forwarding a caller-provided `code_verifier` during token
+  exchange (issue #59)
+- **Breaking:** `FiltersApi.update()`, `FiltersApi.updateV1()`, and
+  `MastodonAdminIpBlockUpdateRequest.expiresIn` now accept `Optional<int>`
+  instead of `int`. Pass `Optional(seconds)` to set an expiration,
+  `Optional.null_()` to clear it, or omit the parameter to leave it unchanged
+  (issue #61)
+
+### Fixed
+
+- Fixed WebAssembly compatibility by using the web-safe `logger` entry point,
+  without changing the logging API or output behavior
+- Fixed Web Push subscription updates so `policy` is nested inside `data`,
+  documented the server's whole-data replacement behavior, and rejected empty
+  updates before they can silently clear existing settings (issue #45)
+- `MastodonRateLimitException` now derives `retryAfter` from Mastodon's
+  `X-RateLimit-Reset` header when `Retry-After` is unavailable, supports
+  HTTP-date values, and exposes `limit`, `remaining`, and `resetAt` (issue #47)
+
 ## [1.0.0-beta.3] - 2026-08-25
 
 ### Added
@@ -16,7 +85,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added automatic streaming endpoint discovery from instance metadata, with normalization of scheme, port, and path (issue #21)
 - Added three streaming authentication modes with fallback, close-code-aware reconnection with exponential backoff and jitter, and `suspend()` / `resume()` (issue #21)
 - Added `MastodonClient.dispose()` and `HealthApi.checkStreaming()` (issue #21)
-- Added Mastodon 4.6 APIs for Collections, Profile, Annual Reports, instance languages, domain block previews, peer search, donation campaigns, unread conversations, notification clearing and policies, and OAuth token inspection (issue #14)
+- Added client support for Mastodon 4.6 Collections and donation campaign APIs,
+  editable profile retrieval and updates, and Annual Report generation and
+  generation-state retrieval (issue #14)
+- Added client coverage for instance languages, peer search, unread
+  conversations, notification clearing, OAuth token info, and token
+  introspection (Mastodon 4.2); domain block previews, notification policies,
+  Annual Report listing, and marking reports as read (4.3); and Annual Report
+  retrieval and OpenID Connect UserInfo (4.4) (issue #14)
 - Added Mastodon 4.5 and 4.6 response fields for media attachments, preview cards, instances, notifications, notification groups, and trend links (issue #17)
 - Added automated release branch and pull request creation, version tagging, and `main`-to-`develop` merge-back on top of the existing pub.dev publishing and GitHub Release workflows (issue #38)
 

@@ -19,6 +19,57 @@ print(instance.version);
 
 設定言語・ルール・連絡先情報を含む v2 メタデータを持つ `MastodonInstance` を返します。
 
+### バージョン依存機能の判定
+
+新しい Mastodon リリースで追加された機能を表示する前に
+`detectCapabilities()` で対応状況を判定できます。
+
+```dart
+final capabilities = await client.instance.detectCapabilities();
+
+switch (capabilities.supportFor(MastodonCapability.collections)) {
+  case MastodonCapabilitySupport.supported:
+    // Collections 機能を表示する
+  case MastodonCapabilitySupport.unsupported:
+    // Collections 機能を非表示または無効にする
+  case MastodonCapabilitySupport.unknown:
+    // 保守的な代替動作にするか、利用者が実行できるようにする
+}
+```
+
+| Capability | サーバー機能 | 必要 Mastodon | API サーフェス水準 |
+|---|---|---:|---:|
+| `tagFeaturing` | タグの feature / unfeature | 4.4.0 | 6 |
+| `annualReportDetails` | 年指定の Annual Report 取得 | 4.4.0 | 6 |
+| `oauthUserInfo` | OpenID Connect user info | 4.4.0 | 6 |
+| `asyncRefreshes` | 実験的な非同期更新状態 | 4.4.0 | 6 |
+| `quotePosts` | 引用投稿関連の操作 | 4.5.0 | 7 |
+| `collections` | Collections endpoint | 4.6.0 | 10 |
+| `donationCampaigns` | Donation campaign endpoint | 4.6.0 | 10 |
+| `editableProfile` | 編集可能プロフィールの取得・更新 | 4.6.0 | 10 |
+| `annualReportGeneration` | Annual Report の生成・状態取得 | 4.6.0 | 10 |
+
+判定手順は次のとおりです。
+
+1. `GET /api/v2/instance` を取得し、`api_versions.mastodon` を優先します。
+2. このフィールドが無い場合、`MastodonInstance.version` の先頭にある
+   `major.minor.patch` をベストエフォートで利用します。
+3. v2 endpoint 自体が 404 の場合はレガシーの `GET /api/v1/instance` を取得し、
+   そのバージョン文字列を使います。404 以外のエラーではフォールバックせず、
+   そのまま例外を送出します。
+4. 利用できるメタデータを解釈できなければ `unknown` を返します。
+
+API 呼び出しごとに instance 情報を取得せず、結果はサーバーごと・アプリプロセスの
+生存期間中に一度キャッシュしてください。
+
+`api_versions.mastodon` はリリース番号ではなく API サーフェスの水準です。パッチ
+リリースやルートを追加しない変更でも増加し、複数リリースで同じ値になったり、整数が
+飛んだりします。表にある下限判定だけに使い、Mastodon リリースへ逆変換しないでください。
+
+判定結果は参考情報です。フォークや互換実装は宣言したメタデータと一致しない場合が
+あるため、実際の API 呼び出しのエラーも必ず処理してください。特に 404 応答だけでは、
+endpoint が無い場合とリソースが無い場合を確実に区別できません。
+
 ### ピアドメイン一覧
 
 ```dart

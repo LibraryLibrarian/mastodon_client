@@ -1,3 +1,6 @@
+import '../../internal/optional.dart';
+import '../../internal/request_body.dart';
+
 /// Request for creating an admin IP block.
 ///
 /// Request body for `POST /api/v1/admin/ip_blocks`.
@@ -54,14 +57,20 @@ class MastodonAdminIpBlockUpdateRequest {
   /// Reason for the block.
   final String? comment;
 
-  /// Expiration time in seconds. Omit for permanent.
-  final int? expiresIn;
+  /// Expiration update.
+  ///
+  /// Omit to preserve the current expiration, pass `Optional(seconds)` to set
+  /// it, or pass `Optional.null_()` to make the block permanent.
+  final Optional<int>? expiresIn;
 
   /// Converts to a JSON map for the request body.
-  Map<String, dynamic> toJson() => {
-    'ip': ?ip,
-    'severity': ?severity,
-    'comment': ?comment,
-    'expires_in': ?expiresIn,
-  };
+  Map<String, dynamic> toJson() {
+    final body = <String, dynamic>{
+      'ip': ?ip,
+      'severity': ?severity,
+      'comment': ?comment,
+    };
+    putOptional(body, 'expires_in', expiresIn);
+    return body;
+  }
 }

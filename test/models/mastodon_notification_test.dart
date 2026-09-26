@@ -77,4 +77,71 @@ void main() {
       expect(notification.fallback?.description, isNull);
     });
   });
+
+  group('MastodonNotification specialized fields (Mastodon 4.3.0+)', () {
+    late List<MastodonNotification> notifications;
+
+    setUpAll(() {
+      final list =
+          jsonDecode(
+                File(
+                  'test/fixtures/notifications_specialized.json',
+                ).readAsStringSync(),
+              )
+              as List<dynamic>;
+      notifications = list
+          .map(
+            (json) =>
+                MastodonNotification.fromJson(json as Map<String, dynamic>),
+          )
+          .toList();
+    });
+
+    test('reads a relationship severance event from the event key', () {
+      final notification = notifications[0];
+
+      expect(notification.type, MastodonNotificationType.severedRelationships);
+      expect(notification.relationshipSeveranceEvent?.id, '42');
+      expect(
+        notification.relationshipSeveranceEvent?.targetName,
+        'remote.example',
+      );
+      expect(notification.relationshipSeveranceEvent?.followersCount, 3);
+      expect(notification.relationshipSeveranceEvent?.followingCount, 5);
+      expect(notification.toJson(), contains('event'));
+      expect(
+        notification.toJson(),
+        isNot(contains('relationship_severance_event')),
+      );
+    });
+
+    test('deserializes the report on an admin report notification', () {
+      final notification = notifications[1];
+
+      expect(notification.type, MastodonNotificationType.adminReport);
+      expect(notification.report?.id, '73');
+      expect(notification.report?.category, 'spam');
+      expect(notification.report?.statusIds, ['117100000000000012']);
+      expect(notification.report?.targetAccount?.username, 'reported_user');
+    });
+
+    test('deserializes an explicitly filtered v1 notification', () {
+      expect(notifications[2].filtered, isTrue);
+    });
+
+    test('defaults filtered to false when the server omits the key', () {
+      final list =
+          jsonDecode(
+                File('test/fixtures/notifications.json').readAsStringSync(),
+              )
+              as List<dynamic>;
+
+      expect(
+        MastodonNotification.fromJson(
+          list.first as Map<String, dynamic>,
+        ).filtered,
+        isFalse,
+      );
+    });
+  });
 }

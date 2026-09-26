@@ -187,12 +187,18 @@ final block = await client.adminIpBlocks.create(
 // 更新
 await client.adminIpBlocks.update(
   block.id,
-  MastodonAdminIpBlockUpdateRequest(severity: 'sign_up_block'),
+  const MastodonAdminIpBlockUpdateRequest(
+    severity: 'sign_up_block',
+    expiresIn: Optional.null_(), // 無期限に変更
+  ),
 );
 
 // 削除
 await client.adminIpBlocks.delete(block.id);
 ```
+
+更新時の `expiresIn` は、省略すると現在の期限を維持し、`Optional(seconds)` で
+期限を設定し、`Optional.null_()` で無期限にできます。
 
 ## メールブロック
 

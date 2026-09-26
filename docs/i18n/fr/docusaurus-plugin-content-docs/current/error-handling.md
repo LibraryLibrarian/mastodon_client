@@ -15,17 +15,20 @@ MastodonException (sealed)
 │   ├── MastodonForbiddenException    // 403 - Permission error
 │   ├── MastodonNotFoundException     // 404 - Resource not found
 │   ├── MastodonRateLimitException    // 429 - Rate limited
-│   │   └── retryAfter                //   Recommended wait duration
+│   │   ├── retryAfter                //   Recommended wait duration
+│   │   ├── limit                     //   Request limit for the window
+│   │   ├── remaining                 //   Remaining requests
+│   │   └── resetAt                   //   Time when the window resets
 │   ├── MastodonValidationException   // 422 - Validation error
 │   │   ├── serverMessage             //   Detailed server message
+│   │   ├── details                   //   Field errors by request field
 │   │   └── MastodonAlreadyVotedException // Already voted
 │   └── MastodonServerException       // 5xx - Server error
 ├── MastodonNetworkException          // Network connection error
-├── MastodonAuthException (sealed)    // OAuth authentication flow errors
-│   ├── MastodonAuthCancelledException    // User cancelled
-│   ├── MastodonAuthStateMismatchException // CSRF detected
-│   └── MastodonAuthTokenException        // Token acquisition failed
-└── MastodonMediaProcessingTimeoutException // Media processing timeout
+└── MastodonAuthException (sealed)    // OAuth authentication flow errors
+    ├── MastodonAuthCancelledException    // User cancelled
+    ├── MastodonAuthStateMismatchException // CSRF detected
+    └── MastodonAuthTokenException        // Token acquisition failed
 ```
 
 ## Modèles de capture de base
@@ -62,11 +65,25 @@ try {
 
 ```dart
 try {
-  await client.statuses.create(request);
+  await client.accounts.create(request);
 } on MastodonValidationException catch (e) {
   print('Validation error: ${e.serverMessage}');
+  final details = e.details;
+  if (details != null) {
+    for (final entry in details.entries) {
+      for (final detail in entry.value) {
+        print('${entry.key}: ${detail.code} - ${detail.description ?? ''}');
+      }
+    }
+  }
 }
 ```
+
+`details` est indexé par champ de requête. Chaque
+`MastodonValidationErrorDetail` contient le code d'erreur du serveur et une
+description facultative. Les codes inconnus sont conservés sous forme de
+chaînes. `details` vaut `null` lorsqu'un endpoint ne renvoie pas le format de
+détails de validation reconnu de Mastodon.
 
 ## Exceptions spéciales
 
@@ -82,26 +99,18 @@ try {
 }
 ```
 
-### MastodonMediaProcessingTimeoutException
-
-Levée lorsque le traitement asynchrone d'un média dépasse le délai après le téléversement.
-
-```dart
-try {
-  final attachment = await client.media.upload(bytes, 'photo.jpg');
-} on MastodonMediaProcessingTimeoutException catch (e) {
-  print('Media ${e.mediaId} processing timed out');
-  // Check status later with client.media.fetchById(e.mediaId)
-}
-```
-
 ## Gérer les limites de débit
+
+`MastodonRateLimitException` expose les en-têtes `X-RateLimit-*` de Mastodon.
+L'attente recommandée utilise `Retry-After` lorsqu'il est fourni par le serveur
+ou le proxy, puis se rabat sur l'horodatage `X-RateLimit-Reset`.
 
 ```dart
 Future<T> withRetry<T>(Future<T> Function() action) async {
   try {
     return await action();
   } on MastodonRateLimitException catch (e) {
+    print('${e.remaining}/${e.limit} requêtes restantes ; réinitialisation à ${e.resetAt}');
     final wait = e.retryAfter ?? const Duration(seconds: 60);
     await Future<void>.delayed(wait);
     return action();

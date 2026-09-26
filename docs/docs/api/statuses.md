@@ -23,6 +23,21 @@ final statuses = await client.statuses.fetchMultiple(['1', '2', '3']);
 
 Non-existent or inaccessible IDs are silently excluded from the results.
 
+### Quoted statuses
+
+Mastodon 4.5 and later expose a quote relationship as `MastodonQuote`:
+
+```dart
+final quote = status.quote;
+final quotedStatus = quote?.quotedStatus;     // Embedded visible status
+final quotedStatusId = quote?.quotedStatusId; // ID in shallow nested contexts
+final state = quote?.state;
+```
+
+`quotedStatus` can be null when a quote is pending, unavailable, or represented
+by `quotedStatusId` in a shallow nested response. Edit history exposes the quote
+relationship through `MastodonStatusEdit.quote` as well.
+
 ### Thread context
 
 ```dart

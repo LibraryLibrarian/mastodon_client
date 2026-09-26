@@ -112,6 +112,8 @@ class StatusesApi {
   ///
   /// `GET /api/v1/statuses/{id}/quotes`
   ///
+  /// Available since Mastodon 4.5.0.
+  ///
   /// [limit] controls the maximum number of results (uses server default
   /// when omitted). Use [sinceId] to return only statuses newer than that
   /// ID, and [maxId] to return only statuses older than it.
@@ -384,6 +386,7 @@ class StatusesApi {
   /// server returns the same result for repeated requests with the same key.
   /// Returns [MastodonStatusScheduled] when `scheduled_at` is set in
   /// [request], or [MastodonStatusCreated] otherwise.
+  /// Quote-related request fields require Mastodon 4.5.0 or later.
   ///
   /// Throws a `MastodonException` on failure.
   Future<MastodonStatusCreateResult> create(
@@ -409,6 +412,7 @@ class StatusesApi {
   /// `PUT /api/v1/statuses/{id}`
   ///
   /// Can modify the body, content warning, media attachments, and poll.
+  /// Quote-related request fields require Mastodon 4.5.0 or later.
   ///
   /// Throws a `MastodonException` on failure.
   Future<MastodonStatus> edit(
@@ -466,6 +470,8 @@ class StatusesApi {
   /// Currently used to change the quote approval policy. [quoteApprovalPolicy]
   /// must be one of `public`, `followers`, or `nobody`.
   ///
+  /// Available since Mastodon 4.5.0.
+  ///
   /// Throws a `MastodonException` on failure.
   Future<MastodonStatus> updateInteractionPolicy(
     String id, {
@@ -486,6 +492,8 @@ class StatusesApi {
   /// Detaches the quoting relationship from a status that quotes the user's
   /// post. [id] is the user's status being quoted and [quotingStatusId] is
   /// the status that performs the quote.
+  ///
+  /// Available since Mastodon 4.5.0.
   ///
   /// Throws a `MastodonException` on failure.
   Future<MastodonStatus> revokeQuote(String id, String quotingStatusId) async {

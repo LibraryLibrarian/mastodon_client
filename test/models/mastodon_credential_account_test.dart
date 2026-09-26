@@ -34,6 +34,10 @@ void main() {
       expect(source.sensitive, false);
       expect(source.language, isNull);
       expect(source.followRequestsCount, 0);
+      expect(source.hideCollections, isNull);
+      expect(source.discoverable, isNull);
+      expect(source.indexable, isFalse);
+      expect(source.attributionDomains, isEmpty);
       expect(source.quotePolicy, 'public');
 
       // role
@@ -59,6 +63,16 @@ void main() {
 
       expect(role.id, isNull);
       expect(role.name, 'Owner');
+    });
+
+    test('source reads attribution domains and defaults an omitted key', () {
+      final source = MastodonAccountSource.fromJson(const {
+        'attribution_domains': ['blog.example', 'news.example'],
+      });
+      final sourceWithoutKey = MastodonAccountSource.fromJson(const {});
+
+      expect(source.attributionDomains, ['blog.example', 'news.example']);
+      expect(sourceWithoutKey.attributionDomains, isEmpty);
     });
   });
 

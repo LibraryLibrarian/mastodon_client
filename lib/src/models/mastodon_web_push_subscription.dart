@@ -13,18 +13,23 @@ part 'mastodon_web_push_subscription.g.dart';
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MastodonPushAlerts with _$MastodonPushAlerts {
   const MastodonPushAlerts({
-    required this.mention,
-    required this.quote,
-    required this.status,
-    required this.reblog,
-    required this.follow,
-    required this.followRequest,
-    required this.favourite,
-    required this.poll,
-    required this.update,
-    required this.quotedUpdate,
-    required this.adminSignUp,
-    required this.adminReport,
+    this.mention = false,
+    this.quote = false,
+    this.status = false,
+    this.reblog = false,
+    this.follow = false,
+    this.followRequest = false,
+    this.favourite = false,
+    this.poll = false,
+    this.update = false,
+    this.severedRelationships = false,
+    this.moderationWarning = false,
+    this.annualReport = false,
+    this.quotedUpdate = false,
+    this.addedToCollection = false,
+    this.collectionUpdate = false,
+    this.adminSignUp = false,
+    this.adminReport = false,
   });
 
   factory MastodonPushAlerts.fromJson(Map<String, dynamic> json) =>
@@ -78,10 +83,45 @@ class MastodonPushAlerts with _$MastodonPushAlerts {
   @override
   final bool update;
 
+  /// Whether to receive relationship severance notifications.
+  ///
+  /// Added in Mastodon 4.3+.
+  @JsonKey(defaultValue: false)
+  @override
+  final bool severedRelationships;
+
+  /// Whether to receive moderation warning notifications.
+  ///
+  /// Added in Mastodon 4.3+.
+  @JsonKey(defaultValue: false)
+  @override
+  final bool moderationWarning;
+
+  /// Whether to receive annual report notifications.
+  ///
+  /// Added in Mastodon 4.4+.
+  @JsonKey(defaultValue: false)
+  @override
+  final bool annualReport;
+
   /// Whether to receive quoted status update notifications.
   @JsonKey(defaultValue: false)
   @override
   final bool quotedUpdate;
+
+  /// Whether to receive notifications when added to a collection.
+  ///
+  /// Added in Mastodon 4.6+.
+  @JsonKey(defaultValue: false)
+  @override
+  final bool addedToCollection;
+
+  /// Whether to receive collection update notifications.
+  ///
+  /// Added in Mastodon 4.6+.
+  @JsonKey(defaultValue: false)
+  @override
+  final bool collectionUpdate;
 
   /// Admin: whether to receive new sign-up notifications.
   @JsonKey(name: 'admin.sign_up', defaultValue: false)

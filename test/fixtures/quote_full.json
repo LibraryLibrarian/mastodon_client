@@ -1,0 +1,23 @@
+{
+  "state": "accepted",
+  "quoted_status": {
+    "id": "117100000000000001",
+    "created_at": "2026-08-25T12:00:00.000Z",
+    "sensitive": false,
+    "spoiler_text": "",
+    "visibility": "public",
+    "content": "<p>Quoted status</p>",
+    "reblogs_count": 0,
+    "favourites_count": 0,
+    "replies_count": 0,
+    "account": {
+      "id": "117100000000000002",
+      "username": "quote_author",
+      "acct": "quote_author"
+    },
+    "media_attachments": [],
+    "mentions": [],
+    "tags": [],
+    "emojis": []
+  }
+}

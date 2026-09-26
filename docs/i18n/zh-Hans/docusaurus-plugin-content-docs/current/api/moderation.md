@@ -45,8 +45,12 @@ if (page.nextMaxId != null) {
 
 ```dart
 final page = await client.mutes.fetch(limit: 40);
-for (final account in page.items) {
-  print(account.acct);
+for (final mutedAccount in page.items) {
+  print(mutedAccount.account.acct);
+  final expiresAt = mutedAccount.muteExpiresAt;
+  if (expiresAt != null) {
+    print('静音到期时间：$expiresAt');
+  }
 }
 
 // 下一页
@@ -54,6 +58,9 @@ if (page.nextMaxId != null) {
   final next = await client.mutes.fetch(maxId: page.nextMaxId);
 }
 ```
+
+每个条目都是 `MastodonMutedAccount`。`account` 包含已静音账号，
+`muteExpiresAt` 包含限时静音的到期时间。永久静音时，到期时间为 `null`。
 
 参数：
 

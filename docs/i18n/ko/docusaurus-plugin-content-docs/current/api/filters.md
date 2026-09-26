@@ -66,15 +66,24 @@ final filter = await client.filters.create(
 
 ## 필터 업데이트
 
-모든 파라미터는 선택 사항이며 제공한 필드만 업데이트됩니다.
+모든 파라미터는 선택 사항이며 제공한 필드만 업데이트됩니다. `expiresIn`에는
+세 가지 상태가 있습니다. 생략하면 현재 만료 시간을 유지하고,
+`Optional(seconds)`로 설정하거나 `Optional.null_()`로 무기한으로 변경합니다.
 
 ```dart
 final updated = await client.filters.update(
   '1',
   title: 'Updated title',
   filterAction: 'hide',
+  expiresIn: const Optional(86400),
 );
+
+// 다른 필드를 변경하지 않고 만료 시간을 제거합니다.
+await client.filters.update('1', expiresIn: const Optional.null_());
 ```
+
+지원 중단된 `updateV1()` 메서드도 같은 세 가지 상태를 사용합니다. 여러 키워드를
+포함하는 v1 필터에서는 Mastodon이 만료 시간 변경을 거부합니다.
 
 ## 필터 삭제
 

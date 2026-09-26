@@ -135,6 +135,14 @@ MastodonAccountSource _$MastodonAccountSourceFromJson(
           .toList() ??
       [],
   followRequestsCount: (json['follow_requests_count'] as num?)?.toInt() ?? 0,
+  hideCollections: json['hide_collections'] as bool?,
+  discoverable: json['discoverable'] as bool?,
+  indexable: json['indexable'] as bool?,
+  attributionDomains:
+      (json['attribution_domains'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      [],
   quotePolicy: json['quote_policy'] as String?,
 );
 
@@ -147,5 +155,9 @@ Map<String, dynamic> _$MastodonAccountSourceToJson(
   'note': instance.note,
   'fields': instance.fields?.map((e) => e.toJson()).toList(),
   'follow_requests_count': instance.followRequestsCount,
+  'hide_collections': instance.hideCollections,
+  'discoverable': instance.discoverable,
+  'indexable': instance.indexable,
+  'attribution_domains': instance.attributionDomains,
   'quote_policy': instance.quotePolicy,
 };

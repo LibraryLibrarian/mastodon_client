@@ -31,6 +31,8 @@ void main() {
     'instance_v2.json': (json) => MastodonInstance.fromJson(json).toJson(),
     'notifications.json': (json) =>
         MastodonNotification.fromJson(json).toJson(),
+    'notifications_specialized.json': (json) =>
+        MastodonNotification.fromJson(json).toJson(),
     'relationships.json': (json) =>
         MastodonRelationship.fromJson(json).toJson(),
     'suggestions.json': (json) => MastodonSuggestion.fromJson(json).toJson(),
@@ -39,11 +41,14 @@ void main() {
     'poll.json': (json) => MastodonPoll.fromJson(json).toJson(),
     'media_attachment.json': (json) =>
         MastodonMediaAttachment.fromJson(json).toJson(),
+    'mutes.json': (json) => MastodonMutedAccount.fromJson(json).toJson(),
     'collection.json': (json) => MastodonCollection.fromJson(json).toJson(),
     'collection_tagged.json': (json) =>
         MastodonCollection.fromJson(json).toJson(),
     'streaming_announcement_reaction.json': (json) =>
         MastodonStreamingAnnouncementReaction.fromJson(json).toJson(),
+    'scheduled_statuses.json': (json) =>
+        MastodonScheduledStatus.fromJson(json).toJson(),
   };
 
   group('fixture key coverage', () {
@@ -52,22 +57,24 @@ void main() {
         final decoded = jsonDecode(
           File('test/fixtures/$fixture').readAsStringSync(),
         );
-        final json =
-            (decoded is List ? decoded.first : decoded) as Map<String, dynamic>;
+        final entries = decoded is List<dynamic> ? decoded : [decoded];
 
-        final missing = json.keys.toSet()
-          ..removeAll(roundTrip(json).keys)
-          ..removeAll(knownDivergences[fixture] ?? const <String>{});
+        for (var index = 0; index < entries.length; index++) {
+          final json = entries[index] as Map<String, dynamic>;
+          final missing = json.keys.toSet()
+            ..removeAll(roundTrip(json).keys)
+            ..removeAll(knownDivergences[fixture] ?? const <String>{});
 
-        expect(
-          missing,
-          isEmpty,
-          reason:
-              'サーバーが返しているが $fixture のモデルが読んでいないキー: '
-              '${missing.toList()..sort()}\n'
-              'モデルにフィールドを追加するか、意図的な差異なら '
-              'knownDivergences に登録すること',
-        );
+          expect(
+            missing,
+            isEmpty,
+            reason:
+                'サーバーが返しているが $fixture のモデルが読んでいないキー '
+                '(要素 $index): ${missing.toList()..sort()}\n'
+                'モデルにフィールドを追加するか、意図的な差異なら '
+                'knownDivergences に登録すること',
+          );
+        }
       });
     });
   });

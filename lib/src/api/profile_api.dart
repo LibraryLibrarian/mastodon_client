@@ -2,7 +2,7 @@ import '../client/mastodon_http_client.dart';
 import '../models/mastodon_credential_account.dart';
 import '../models/mastodon_profile.dart';
 
-/// API client for profile image management.
+/// API client for editable profile and profile image management.
 class ProfileApi {
   /// Creates a [ProfileApi] instance with the given [MastodonHttpClient].
   const ProfileApi(this._http);
@@ -12,6 +12,8 @@ class ProfileApi {
   /// Fetches the authenticated account's editable profile.
   ///
   /// `GET /api/v1/profile`
+  ///
+  /// Available since Mastodon 4.6.0.
   Future<MastodonProfile> fetch() async {
     final data = await _http.send<Map<String, dynamic>>('/api/v1/profile');
     return MastodonProfile.fromJson(data!);
@@ -20,6 +22,8 @@ class ProfileApi {
   /// Updates the authenticated account's editable profile.
   ///
   /// `PATCH /api/v1/profile`
+  ///
+  /// Available since Mastodon 4.6.0.
   Future<MastodonProfile> update(MastodonProfileUpdateRequest request) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/profile',

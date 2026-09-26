@@ -66,15 +66,25 @@ final filter = await client.filters.create(
 
 ## Updating a filter
 
-All parameters are optional; only the fields you provide are updated.
+All parameters are optional; only the fields you provide are updated. The
+`expiresIn` parameter has three states: omit it to keep the current expiration,
+pass `Optional(seconds)` to set one, or pass `Optional.null_()` to make the
+filter permanent.
 
 ```dart
 final updated = await client.filters.update(
   '1',
   title: 'Updated title',
   filterAction: 'hide',
+  expiresIn: const Optional(86400),
 );
+
+// Remove the expiration without changing the other fields.
+await client.filters.update('1', expiresIn: const Optional.null_());
 ```
+
+The deprecated `updateV1()` method uses the same three states. Mastodon rejects
+expiration changes on a v1 filter that contains multiple keywords.
 
 ## Deleting a filter
 

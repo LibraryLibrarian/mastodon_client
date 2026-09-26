@@ -47,5 +47,22 @@ void main() {
 
       expect(edits.length, 1);
     });
+
+    test('deserializes the quote relationship from edit history', () {
+      final history =
+          jsonDecode(
+                File('test/fixtures/status_history.json').readAsStringSync(),
+              )
+              as List<dynamic>;
+      final quote =
+          jsonDecode(File('test/fixtures/quote_full.json').readAsStringSync())
+              as Map<String, dynamic>;
+      final json = {...(history.first as Map<String, dynamic>), 'quote': quote};
+
+      final edit = MastodonStatusEdit.fromJson(json);
+
+      expect(edit.quote?.state, MastodonQuoteState.accepted);
+      expect(edit.quote?.quotedStatus?.id, '117100000000000001');
+    });
   });
 }

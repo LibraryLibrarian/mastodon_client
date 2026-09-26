@@ -34,7 +34,7 @@ print(subscription.serverKey); // プッシュメッセージの検証に使用
 
 ### 通知タイプ
 
-`MastodonPushAlertSettings` には以下のフィールドを任意の組み合わせで指定できます。`null` のフィールドはリクエストから除外され、変更されません。
+`MastodonPushAlertSettings` には以下のフィールドを任意の組み合わせで指定できます。`null` のフィールドはリクエストから除外されます。作成時は除外したフィールドにサーバーの既定値が使われます。更新時は後述のとおり設定全体が置き換えられます。
 
 | フィールド | 説明 |
 |-----------|------|
@@ -71,7 +71,7 @@ print(subscription.policy);
 
 ## 通知設定の更新
 
-サブスクリプションを再作成せずに通知設定やポリシーを変更するには `update` を使います。変更できるのは `data` 部分（alerts と policy）のみです。
+サブスクリプションを再作成せずに `data` 部分（alerts と policy）を置き換えるには `update` を使います。これは部分更新ではありません。指定しなかった通知タイプはすべて無効になり、`policy` を省略すると `all` に戻ります。有効なままにする通知タイプはすべて指定してください。`alerts` と `policy` の両方を省略すると、HTTP リクエストを送る前に `ArgumentError` がスローされます。
 
 ```dart
 final updated = await client.push.update(
@@ -79,8 +79,21 @@ final updated = await client.push.update(
     alerts: MastodonPushAlertSettings(
       mention: true,
       follow: false,
+      reblog: true,
+      favourite: true,
+      poll: true,
     ),
     policy: 'all',
+  ),
+);
+```
+
+すべての通知を明示的に無効化し、ポリシーを `all` に戻すには、空の通知設定を送信します。
+
+```dart
+await client.push.update(
+  const MastodonPushSubscriptionUpdateRequest(
+    alerts: MastodonPushAlertSettings(),
   ),
 );
 ```

@@ -9,10 +9,10 @@
 ## 功能特性
 
 - 覆盖所有主要 Mastodon API 类别（账户、嘟文、时间线、通知、媒体等）
-- OAuth 2.0 令牌管理（获取、吊销、PKCE 支持）
+- OAuth 2.0 令牌管理（获取、吊销、令牌交换时传递 PKCE `code_verifier`）
 - 通过 `MastodonPage<T>` 实现基于游标的分页
 - 用于穷举式错误处理的 sealed 异常层级
-- 支持自动 v2/v1 降级和处理轮询的异步媒体上传
+- 支持自动 v2/v1 降级和显式处理状态检查的异步媒体上传
 - 基于 WebSocket 的流式 API，支持多路复用订阅与自动重连
 - 通过可替换的 `Logger` 接口实现可配置的日志记录
 - 纯 Dart 实现 — 不依赖 Flutter
@@ -23,7 +23,7 @@
 
 ```yaml
 dependencies:
-  mastodon_client: ^1.0.0-beta.3
+  mastodon_client: ^1.0.0-beta.4
 ```
 
 然后运行：
@@ -62,6 +62,13 @@ void main() async {
   }
 }
 ```
+
+REST 客户端不会设置本库自有的 HTTP 超时。请求遵循传输层和 Mastodon 服务器的行为，
+不会因本库的默认值而被中断。
+
+对于异步媒体上传，`upload()` 会立即返回 HTTP 202 且 `url` 为 `null` 的附件。
+请使用 `client.media.fetchById(id)` 显式检查：HTTP 206 表示仍在处理中，HTTP 200
+返回当前附件，HTTP 422 表示处理失败并转换为 `MastodonValidationException`。
 
 ## API 概览
 
@@ -118,6 +125,28 @@ void main() async {
 | `adminMeasures` | 管理员定量指标 |
 | `adminDimensions` | 管理员分类维度 |
 | `adminRetention` | 管理员用户留存队列 |
+
+## 检测服务器功能
+
+不同服务器可能提供不同级别的 Mastodon API。在展示与版本相关的功能前，请先检测支持情况：
+
+```dart
+final capabilities = await client.instance.detectCapabilities();
+final support = capabilities.supportFor(MastodonCapability.collections);
+
+if (support == MastodonCapabilitySupport.supported) {
+  // 提供收藏列表功能。
+}
+```
+
+该辅助方法优先使用 `api_versions.mastodon`；若缺失，则回退到服务器报告的版本字符串；
+若 v2 实例端点返回 404，则尝试旧版 v1 端点。请在每个应用进程生命周期内，按服务器缓存
+一次结果。对 `unknown` 应保守处理，并始终处理实际 API 调用的错误：派生版本和兼容实现的
+实际功能可能与其报告的版本不一致。
+
+API 版本表示 API 功能级别，而不是 Mastodon 发布版本号。它可能在补丁版本或非路由变更
+中增加，多个版本可能共享同一值，也可能跳过整数。有关功能表和回退细节，请参阅
+[实例指南](https://librarylibrarian.github.io/mastodon_client/zh-Hans/api/instance)。
 
 ## 认证
 

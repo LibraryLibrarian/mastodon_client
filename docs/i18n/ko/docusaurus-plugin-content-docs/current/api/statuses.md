@@ -23,6 +23,21 @@ final statuses = await client.statuses.fetchMultiple(['1', '2', '3']);
 
 존재하지 않거나 접근할 수 없는 ID는 결과에서 자동으로 제외됩니다.
 
+### 인용 포스트
+
+Mastodon 4.5 이상에서는 인용 관계를 `MastodonQuote`로 제공합니다.
+
+```dart
+final quote = status.quote;
+final quotedStatus = quote?.quotedStatus;     // 포함된 표시 가능한 포스트
+final quotedStatusId = quote?.quotedStatusId; // 얕게 중첩된 응답의 ID
+final state = quote?.state;
+```
+
+인용이 승인 대기 중이거나 사용할 수 없거나 얕게 중첩된 응답에서
+`quotedStatusId`로 표현되면 `quotedStatus`는 null일 수 있습니다. 편집 기록에서도
+`MastodonStatusEdit.quote`를 통해 같은 인용 관계를 제공합니다.
+
 ### 스레드 컨텍스트
 
 ```dart

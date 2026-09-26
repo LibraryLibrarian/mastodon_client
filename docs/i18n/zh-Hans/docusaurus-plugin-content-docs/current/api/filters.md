@@ -66,15 +66,24 @@ final filter = await client.filters.create(
 
 ## 更新过滤器
 
-所有参数均为可选，只有提供的字段才会被更新。
+所有参数均为可选，只有提供的字段才会被更新。`expiresIn` 有三种状态：
+省略时保留当前过期时间，传入 `Optional(seconds)` 可设置过期时间，传入
+`Optional.null_()` 可改为永不过期。
 
 ```dart
 final updated = await client.filters.update(
   '1',
   title: 'Updated title',
   filterAction: 'hide',
+  expiresIn: const Optional(86400),
 );
+
+// 在不更改其他字段的情况下清除过期时间。
+await client.filters.update('1', expiresIn: const Optional.null_());
 ```
+
+已弃用的 `updateV1()` 方法也使用相同的三种状态。对于包含多个关键词的 v1
+过滤器，Mastodon 会拒绝修改过期时间。
 
 ## 删除过滤器
 

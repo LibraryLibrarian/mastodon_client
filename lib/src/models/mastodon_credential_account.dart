@@ -277,6 +277,10 @@ class MastodonAccountSource with _$MastodonAccountSource {
     this.note,
     this.fields,
     this.followRequestsCount,
+    this.hideCollections,
+    this.discoverable,
+    this.indexable,
+    this.attributionDomains = const <String>[],
     this.quotePolicy,
   });
 
@@ -311,6 +315,23 @@ class MastodonAccountSource with _$MastodonAccountSource {
   @JsonKey(defaultValue: 0)
   @override
   final int? followRequestsCount;
+
+  /// Whether the authenticated user hides their follows and followers.
+  @override
+  final bool? hideCollections;
+
+  /// Whether the authenticated user opts in to discovery features.
+  @override
+  final bool? discoverable;
+
+  /// Whether the authenticated user's public posts may be indexed.
+  @override
+  final bool? indexable;
+
+  /// Domains allowed to attribute links to the authenticated user.
+  @JsonKey(defaultValue: <String>[])
+  @override
+  final List<String> attributionDomains;
 
   /// Default quote approval policy.
   @override

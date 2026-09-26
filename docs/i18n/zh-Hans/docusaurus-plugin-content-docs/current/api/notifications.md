@@ -38,6 +38,20 @@ final page = await client.notifications.fetch(
 final notification = await client.notifications.fetchById('12345');
 ```
 
+### 通知类型特有的详细信息
+
+部分 v1 通知包含附加详细信息：
+
+```dart
+final event = notification.relationshipSeveranceEvent; // severed_relationships
+final report = notification.report;                    // admin.report
+final wasFiltered = notification.filtered;             // Mastodon 4.3+
+```
+
+服务器仅在值为 true 时返回该键，因此 `filtered` 默认为 false。分组的 v2 通知
+通过 `group.event` 提供关系断开详情，通过 `group.report` 提供举报；它们没有
+每条通知的 `filtered` 字段。
+
 ### 未读数量（Mastodon 4.3+）
 
 ```dart

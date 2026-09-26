@@ -38,6 +38,21 @@ final page = await client.notifications.fetch(
 final notification = await client.notifications.fetchById('12345');
 ```
 
+### Benachrichtigungsspezifische Details
+
+Einige v1-Benachrichtigungen enthalten zusätzliche Details:
+
+```dart
+final event = notification.relationshipSeveranceEvent; // severed_relationships
+final report = notification.report;                    // admin.report
+final wasFiltered = notification.filtered;             // Mastodon 4.3+
+```
+
+`filtered` ist standardmäßig false, da der Server das Feld nur bei true sendet.
+Gruppierte v2-Benachrichtigungen stellen Trennungsdetails als `group.event` und
+Meldungen als `group.report` bereit; sie besitzen kein `filtered`-Feld pro
+Benachrichtigung.
+
 ### Anzahl ungelesener Benachrichtigungen (Mastodon 4.3+)
 
 ```dart

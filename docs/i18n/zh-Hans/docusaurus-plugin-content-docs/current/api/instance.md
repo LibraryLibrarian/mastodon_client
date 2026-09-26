@@ -19,6 +19,53 @@ print(instance.version);
 
 返回包含完整 v2 元数据的 `MastodonInstance`，包括配置的语言、规则和联系信息。
 
+### 与版本相关的功能
+
+在提供新版 Mastodon 才有的功能前，请使用 `detectCapabilities()` 检测支持情况：
+
+```dart
+final capabilities = await client.instance.detectCapabilities();
+
+switch (capabilities.supportFor(MastodonCapability.collections)) {
+  case MastodonCapabilitySupport.supported:
+    // 提供收藏列表功能。
+  case MastodonCapabilitySupport.unsupported:
+    // 隐藏或禁用收藏列表功能。
+  case MastodonCapabilitySupport.unknown:
+    // 使用保守的回退方案，或允许用户尝试该操作。
+}
+```
+
+| Capability | 服务器功能 | 最低 Mastodon 版本 | API 功能级别 |
+|---|---|---:|---:|
+| `tagFeaturing` | 将标签设为精选或取消精选 | 4.4.0 | 6 |
+| `annualReportDetails` | 按年份获取年度报告 | 4.4.0 | 6 |
+| `oauthUserInfo` | OpenID Connect 用户信息 | 4.4.0 | 6 |
+| `asyncRefreshes` | 实验性异步刷新状态 | 4.4.0 | 6 |
+| `quotePosts` | 引用嘟文操作 | 4.5.0 | 7 |
+| `collections` | 收藏列表端点 | 4.6.0 | 10 |
+| `donationCampaigns` | 捐赠活动端点 | 4.6.0 | 10 |
+| `editableProfile` | 获取或更新可编辑个人资料 | 4.6.0 | 10 |
+| `annualReportGeneration` | 生成报告或获取其状态 | 4.6.0 | 10 |
+
+检测遵循以下规则：
+
+1. 获取 `GET /api/v2/instance`，并优先使用 `api_versions.mastodon`。
+2. 若该字段缺失，则尽力解析 `MastodonInstance.version` 开头的
+   `major.minor.patch`。
+3. 若 v2 端点本身返回 404，则获取旧版 `GET /api/v1/instance`，并使用其版本字符串。
+   其他错误会直接向上传递，不会触发回退。
+4. 若无法解析现有元数据，则返回 `unknown`。
+
+请在每个应用进程生命周期内，按服务器缓存一次结果。不要在每次 API 调用前都请求实例元数据。
+
+`api_versions.mastodon` 表示 API 功能级别，而不是发布版本号。它可能在补丁版本或不新增路由
+的变更中增加，多个发布版本可能共享同一值，也可能跳过整数。请仅使用表中的最低阈值，
+不要将其反向转换为 Mastodon 发布版本。
+
+功能检测结果仅供参考。派生版本和兼容实现的实际功能可能与其报告的元数据不一致，因此
+仍须处理实际 API 调用的错误。尤其是，404 响应无法可靠地区分端点不存在和资源不存在。
+
 ### 已知对等域名
 
 ```dart

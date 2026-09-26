@@ -9,10 +9,10 @@ A pure Dart client library for the [Mastodon](https://joinmastodon.org/) API. Pr
 ## Features
 
 - Covers all major Mastodon API categories (Accounts, Statuses, Timelines, Notifications, Media, and more)
-- OAuth 2.0 token management (obtain, revoke, PKCE support)
+- OAuth 2.0 token management (obtain, revoke, PKCE `code_verifier` forwarding during token exchange)
 - Cursor-based pagination via `MastodonPage<T>`
 - Sealed exception hierarchy for exhaustive error handling
-- Async media upload with automatic v2/v1 fallback and processing polling
+- Async media upload with automatic v2/v1 fallback and explicit processing-status checks
 - Streaming API over WebSocket with multiplexed subscriptions and automatic reconnection
 - Configurable logging through a swappable `Logger` interface
 - Pure Dart — no Flutter dependency required
@@ -23,7 +23,7 @@ Add the package to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  mastodon_client: ^1.0.0-beta.3
+  mastodon_client: ^1.0.0-beta.4
 ```
 
 Then run:
@@ -62,6 +62,15 @@ void main() async {
   }
 }
 ```
+
+The REST client does not impose its own HTTP timeouts. Requests follow the
+transport and Mastodon server behavior instead of being cut off by library
+defaults.
+
+For async media uploads, `upload()` returns an HTTP 202 attachment immediately
+with a null `url`. Check it explicitly with `client.media.fetchById(id)`: HTTP
+206 means processing is still in progress, HTTP 200 returns the current
+attachment, and HTTP 422 is surfaced as `MastodonValidationException`.
 
 ## API Overview
 
@@ -118,6 +127,32 @@ void main() async {
 | `adminMeasures` | Admin quantitative measures |
 | `adminDimensions` | Admin categorical dimensions |
 | `adminRetention` | Admin user retention cohorts |
+
+## Server Capability Detection
+
+Servers may expose different Mastodon API versions. Detect support before
+showing version-dependent features:
+
+```dart
+final capabilities = await client.instance.detectCapabilities();
+final support = capabilities.supportFor(MastodonCapability.collections);
+
+if (support == MastodonCapabilitySupport.supported) {
+  // Offer collection features.
+}
+```
+
+The helper prefers `api_versions.mastodon`, falls back to the reported version
+string, and tries the legacy v1 instance endpoint when v2 returns 404. Cache the
+result once per server for the lifetime of your app process. Treat `unknown`
+conservatively and still handle errors from the actual API call: forks and
+compatible implementations may not match their advertised version.
+
+`api_versions.mastodon` describes the API surface, not the Mastodon release.
+Its value can increase in a patch release or for a change that does not add a
+route, remain unchanged across multiple releases, and skip integers. See the
+[instance guide](https://librarylibrarian.github.io/mastodon_client/api/instance)
+for the supported capability table and fallback details.
 
 ## Authentication
 

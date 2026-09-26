@@ -8,6 +8,8 @@ class AnnualReportsApi {
   final MastodonHttpClient _http;
 
   /// Fetches unread generated annual reports.
+  ///
+  /// Available since Mastodon 4.3.0.
   Future<MastodonAnnualReportsResult> fetch() async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/annual_reports',
@@ -16,6 +18,8 @@ class AnnualReportsApi {
   }
 
   /// Fetches the report for [year].
+  ///
+  /// Available since Mastodon 4.4.0.
   Future<MastodonAnnualReportsResult> fetchForYear(int year) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/annual_reports/$year',
@@ -24,6 +28,8 @@ class AnnualReportsApi {
   }
 
   /// Fetches the generation state for [year].
+  ///
+  /// Available since Mastodon 4.6.0.
   Future<MastodonAnnualReportState> fetchState(int year) async {
     final data = await _http.send<Map<String, dynamic>>(
       '/api/v1/annual_reports/$year/state',
@@ -32,10 +38,14 @@ class AnnualReportsApi {
   }
 
   /// Starts generating the report for [year] when eligible.
+  ///
+  /// Available since Mastodon 4.6.0.
   Future<void> generate(int year) =>
       _http.send<void>('/api/v1/annual_reports/$year/generate', method: 'POST');
 
   /// Marks the report for [year] as read.
+  ///
+  /// Available since Mastodon 4.3.0.
   Future<void> markRead(int year) =>
       _http.send<void>('/api/v1/annual_reports/$year/read', method: 'POST');
 }

@@ -15,17 +15,20 @@ MastodonException (sealed)
 │   ├── MastodonForbiddenException    // 403 - 权限错误
 │   ├── MastodonNotFoundException     // 404 - 资源不存在
 │   ├── MastodonRateLimitException    // 429 - 触发频率限制
-│   │   └── retryAfter                //   建议等待时长
+│   │   ├── retryAfter                //   建议等待时长
+│   │   ├── limit                     //   限制周期内的请求上限
+│   │   ├── remaining                 //   剩余请求数
+│   │   └── resetAt                   //   限制重置时间
 │   ├── MastodonValidationException   // 422 - 校验错误
 │   │   ├── serverMessage             //   服务器详细错误信息
+│   │   ├── details                   //   按请求字段分组的错误
 │   │   └── MastodonAlreadyVotedException // 已投过票
 │   └── MastodonServerException       // 5xx - 服务器错误
 ├── MastodonNetworkException          // 网络连接错误
-├── MastodonAuthException (sealed)    // OAuth 认证流程错误
-│   ├── MastodonAuthCancelledException    // 用户取消
-│   ├── MastodonAuthStateMismatchException // 检测到 CSRF
-│   └── MastodonAuthTokenException        // token 获取失败
-└── MastodonMediaProcessingTimeoutException // 媒体处理超时
+└── MastodonAuthException (sealed)    // OAuth 认证流程错误
+    ├── MastodonAuthCancelledException    // 用户取消
+    ├── MastodonAuthStateMismatchException // 检测到 CSRF
+    └── MastodonAuthTokenException        // token 获取失败
 ```
 
 ## 基本捕获模式
@@ -62,11 +65,24 @@ try {
 
 ```dart
 try {
-  await client.statuses.create(request);
+  await client.accounts.create(request);
 } on MastodonValidationException catch (e) {
   print('校验错误: ${e.serverMessage}');
+  final details = e.details;
+  if (details != null) {
+    for (final entry in details.entries) {
+      for (final detail in entry.value) {
+        print('${entry.key}: ${detail.code} - ${detail.description ?? ''}');
+      }
+    }
+  }
 }
 ```
+
+`details` 是以请求字段为键的 Map。每个 `MastodonValidationErrorDetail`
+都包含服务器返回的错误代码和可选说明。未知代码也会以字符串形式保留，以便
+保持向前兼容。如果端点未返回 Mastodon 可识别的校验详情结构，`details` 为
+`null`。
 
 ## 特殊异常
 
@@ -82,26 +98,18 @@ try {
 }
 ```
 
-### MastodonMediaProcessingTimeoutException
-
-当上传后异步媒体处理超时时抛出。
-
-```dart
-try {
-  final attachment = await client.media.upload(bytes, 'photo.jpg');
-} on MastodonMediaProcessingTimeoutException catch (e) {
-  print('媒体 ${e.mediaId} 处理超时');
-  // 稍后通过 client.media.fetchById(e.mediaId) 查询状态
-}
-```
-
 ## 处理频率限制
+
+`MastodonRateLimitException` 会公开 Mastodon 的 `X-RateLimit-*` 响应头。
+建议等待时长会优先使用服务器或代理提供的 `Retry-After`，否则使用
+`X-RateLimit-Reset` 时间戳。
 
 ```dart
 Future<T> withRetry<T>(Future<T> Function() action) async {
   try {
     return await action();
   } on MastodonRateLimitException catch (e) {
+    print('剩余 ${e.remaining}/${e.limit} 次请求；${e.resetAt} 重置');
     final wait = e.retryAfter ?? const Duration(seconds: 60);
     await Future<void>.delayed(wait);
     return action();

@@ -101,6 +101,163 @@ void main() {
               )
               as MastodonValidationException;
       expect(result.serverMessage, 'Validation failed: Text is too long');
+      expect(result.details, isNull);
+    });
+
+    test('422 parses field details from the standard response shape', () {
+      final result =
+          convertDioException(
+                _errorWithStatus(
+                  422,
+                  data: {
+                    'error': "Validation failed: Username can't be blank",
+                    'details': {
+                      'username': [
+                        {'error': 'ERR_BLANK', 'description': "can't be blank"},
+                      ],
+                    },
+                  },
+                ),
+              )
+              as MastodonValidationException;
+
+      expect(
+        result.serverMessage,
+        "Validation failed: Username can't be blank",
+      );
+      final usernameErrors = result.details?['username'];
+      expect(usernameErrors, hasLength(1));
+      expect(usernameErrors?.single.code, 'ERR_BLANK');
+      expect(usernameErrors?.single.description, "can't be blank");
+    });
+
+    test('422 parses the nested Collections validation response shape', () {
+      final result =
+          convertDioException(
+                _errorWithStatus(
+                  422,
+                  data: {
+                    'error': {
+                      'error': 'Validation failed: Name cannot be blank',
+                      'details': {
+                        'name': [
+                          {
+                            'error': 'ERR_BLANK',
+                            'description': "can't be blank",
+                          },
+                        ],
+                      },
+                    },
+                  },
+                ),
+              )
+              as MastodonValidationException;
+
+      expect(result.serverMessage, 'Validation failed: Name cannot be blank');
+      expect(result.details?['name']?.single.code, 'ERR_BLANK');
+    });
+
+    test('422 preserves multiple fields, errors, and unknown values', () {
+      final result =
+          convertDioException(
+                _errorWithStatus(
+                  422,
+                  data: {
+                    'error': 'Validation failed',
+                    'details': {
+                      'username': [
+                        {
+                          'error': 'ERR_TAKEN',
+                          'description': 'has already been taken',
+                        },
+                        {
+                          'error': 'ERR_FUTURE_CODE',
+                          'description': 'future validation',
+                        },
+                        {'description': 'missing code'},
+                      ],
+                      'future_field': [
+                        {'error': 'ERR_INVALID', 'description': 42},
+                      ],
+                      'invalid': 'not a list',
+                    },
+                  },
+                ),
+              )
+              as MastodonValidationException;
+
+      expect(result.details, hasLength(2));
+      expect(result.details?['username']?.map((detail) => detail.code), [
+        'ERR_TAKEN',
+        'ERR_FUTURE_CODE',
+      ]);
+      expect(result.details?['future_field']?.single.code, 'ERR_INVALID');
+      expect(result.details?['future_field']?.single.description, isNull);
+      expect(result.details, isNot(contains('invalid')));
+    });
+
+    test('422 returns null details for an unrecognized details shape', () {
+      final result =
+          convertDioException(
+                _errorWithStatus(
+                  422,
+                  data: {
+                    'error': 'Validation failed',
+                    'details': {
+                      'username': [
+                        {'description': 'missing code'},
+                        'not an object',
+                      ],
+                    },
+                  },
+                ),
+              )
+              as MastodonValidationException;
+
+      expect(result.serverMessage, 'Validation failed');
+      expect(result.details, isNull);
+    });
+
+    test('422 preserves an explicitly empty details object', () {
+      final result =
+          convertDioException(
+                _errorWithStatus(
+                  422,
+                  data: {
+                    'error': 'Validation failed',
+                    'details': <String, dynamic>{},
+                  },
+                ),
+              )
+              as MastodonValidationException;
+
+      expect(result.details, isEmpty);
+    });
+
+    test('422 preserves the original DioException in raw', () {
+      final original = _errorWithStatus(
+        422,
+        data: {
+          'error': 'Validation failed',
+          'details': {
+            'username': [
+              {'error': 'ERR_BLANK'},
+            ],
+          },
+        },
+      );
+
+      final result =
+          convertDioException(original) as MastodonValidationException;
+
+      expect(result.raw, same(original));
+    });
+
+    test('MastodonAlreadyVotedException remains detail-free', () {
+      const result = MastodonAlreadyVotedException();
+
+      expect(result.serverMessage, 'already voted');
+      expect(result.details, isNull);
     });
 
     test('falls back to the default message when error is not a string', () {
@@ -136,35 +293,271 @@ void main() {
     });
   });
 
-  group('convertDioException - retry-after header (429)', () {
+  group('convertDioException - rate-limit headers (429)', () {
+    final now = DateTime.utc(2026, 8, 26, 12);
+
     test('parses a numeric retry-after header into a Duration', () {
-      final result = convertDioException(
+      final result = convertDioExceptionAt(
         _errorWithStatus(
           429,
           headers: {
             'retry-after': ['60'],
           },
         ),
+        now,
       );
       final rateLimit = result as MastodonRateLimitException;
       expect(rateLimit.retryAfter, const Duration(seconds: 60));
     });
 
-    test('retryAfter is null when the header is absent', () {
-      final result = convertDioException(_errorWithStatus(429));
+    test('retryAfter is null when rate-limit headers are absent', () {
+      final result = convertDioExceptionAt(_errorWithStatus(429), now);
       expect((result as MastodonRateLimitException).retryAfter, isNull);
     });
 
-    test('retryAfter is null when the header is not a valid integer', () {
-      final result = convertDioException(
+    test('parses an IMF-fixdate retry-after header', () {
+      final result = convertDioExceptionAt(
         _errorWithStatus(
           429,
           headers: {
-            'retry-after': ['Wed, 21 Oct 2026 07:28:00 GMT'],
+            'retry-after': ['Wed, 26 Aug 2026 12:01:30 GMT'],
           },
         ),
+        now,
       );
-      expect((result as MastodonRateLimitException).retryAfter, isNull);
+      expect(
+        (result as MastodonRateLimitException).retryAfter,
+        const Duration(seconds: 90),
+      );
+    });
+
+    for (final retryAfter in [
+      'Wednesday, 26-Aug-26 12:01:30 GMT',
+      'Wed Aug 26 12:01:30 2026',
+    ]) {
+      test('parses the obsolete HTTP-date form: $retryAfter', () {
+        final result = convertDioExceptionAt(
+          _errorWithStatus(
+            429,
+            headers: {
+              'retry-after': [retryAfter],
+            },
+          ),
+          now,
+        );
+        expect(
+          (result as MastodonRateLimitException).retryAfter,
+          const Duration(seconds: 90),
+        );
+      });
+    }
+
+    test('keeps an RFC850 date exactly 50 years in the future', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'retry-after': ['Wednesday, 26-Aug-76 12:00:00 GMT'],
+          },
+        ),
+        now,
+      );
+      expect(
+        (result as MastodonRateLimitException).retryAfter,
+        DateTime.utc(2076, 8, 26, 12).difference(now),
+      );
+    });
+
+    test(
+      'moves an RFC850 instant over the 50-year boundary back a century',
+      () {
+        final result = convertDioExceptionAt(
+          _errorWithStatus(
+            429,
+            headers: {
+              'retry-after': ['Thursday, 26-Aug-76 12:00:01 GMT'],
+            },
+          ),
+          now,
+        );
+        expect(
+          (result as MastodonRateLimitException).retryAfter,
+          Duration.zero,
+        );
+      },
+    );
+
+    test('moves an RFC850 date over the 50-year boundary back a century', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'retry-after': ['Friday, 27-Aug-76 12:00:00 GMT'],
+          },
+        ),
+        now,
+      );
+      expect((result as MastodonRateLimitException).retryAfter, Duration.zero);
+    });
+
+    for (final retryAfter in [
+      'Foo, 26 Aug 2026 12:01:00 GMT',
+      'Thu, 26 Aug 2026 12:01:00 GMT',
+    ]) {
+      test(
+        'falls back when retry-after has an invalid weekday: $retryAfter',
+        () {
+          final result = convertDioExceptionAt(
+            _errorWithStatus(
+              429,
+              headers: {
+                'retry-after': [retryAfter],
+                'x-ratelimit-reset': ['2026-08-26T12:02:00Z'],
+              },
+            ),
+            now,
+          );
+          expect(
+            (result as MastodonRateLimitException).retryAfter,
+            const Duration(minutes: 2),
+          );
+        },
+      );
+    }
+
+    test('falls back to x-ratelimit-reset when retry-after is invalid', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'retry-after': ['invalid'],
+            'x-ratelimit-reset': ['2026-08-26T12:02:00.000000Z'],
+          },
+        ),
+        now,
+      );
+      expect(
+        (result as MastodonRateLimitException).retryAfter,
+        const Duration(minutes: 2),
+      );
+    });
+
+    test('parses Mastodon rate-limit metadata', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'x-ratelimit-limit': ['300'],
+            'x-ratelimit-remaining': ['0'],
+            'x-ratelimit-reset': ['2026-08-26T12:02:00.123456Z'],
+          },
+        ),
+        now,
+      );
+      final rateLimit = result as MastodonRateLimitException;
+      expect(
+        rateLimit.retryAfter,
+        const Duration(minutes: 2, microseconds: 123456),
+      );
+      expect(rateLimit.limit, 300);
+      expect(rateLimit.remaining, 0);
+      expect(rateLimit.resetAt, DateTime.utc(2026, 8, 26, 12, 2, 0, 123, 456));
+    });
+
+    test('accepts an explicit offset in x-ratelimit-reset', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'x-ratelimit-reset': ['2026-08-26T21:02:00+09:00'],
+          },
+        ),
+        now,
+      );
+      final rateLimit = result as MastodonRateLimitException;
+      expect(rateLimit.retryAfter, const Duration(minutes: 2));
+      expect(rateLimit.resetAt, DateTime.utc(2026, 8, 26, 12, 2));
+    });
+
+    for (final reset in ['2026-08-26T12:02:00', '2026-02-30T12:02:00Z']) {
+      test('rejects a non-strict x-ratelimit-reset value: $reset', () {
+        final result = convertDioExceptionAt(
+          _errorWithStatus(
+            429,
+            headers: {
+              'x-ratelimit-reset': [reset],
+            },
+          ),
+          now,
+        );
+        final rateLimit = result as MastodonRateLimitException;
+        expect(rateLimit.retryAfter, isNull);
+        expect(rateLimit.resetAt, isNull);
+      });
+    }
+
+    test('uses retry-after when x-ratelimit-reset is not strict ISO', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'retry-after': ['30'],
+            'x-ratelimit-reset': ['2026-08-26T12:02:00'],
+          },
+        ),
+        now,
+      );
+      final rateLimit = result as MastodonRateLimitException;
+      expect(rateLimit.retryAfter, const Duration(seconds: 30));
+      expect(rateLimit.resetAt, isNull);
+    });
+
+    test('clamps a past x-ratelimit-reset to zero', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'x-ratelimit-reset': ['2026-08-26T11:59:59.999999Z'],
+          },
+        ),
+        now,
+      );
+      expect((result as MastodonRateLimitException).retryAfter, Duration.zero);
+    });
+
+    test('prefers a valid retry-after over x-ratelimit-reset', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'retry-after': ['60'],
+            'x-ratelimit-reset': ['2026-08-26T12:02:00Z'],
+          },
+        ),
+        now,
+      );
+      final rateLimit = result as MastodonRateLimitException;
+      expect(rateLimit.retryAfter, const Duration(minutes: 1));
+      expect(rateLimit.resetAt, DateTime.utc(2026, 8, 26, 12, 2));
+    });
+
+    test('ignores malformed rate-limit metadata', () {
+      final result = convertDioExceptionAt(
+        _errorWithStatus(
+          429,
+          headers: {
+            'x-ratelimit-limit': ['many'],
+            'x-ratelimit-remaining': ['-1'],
+            'x-ratelimit-reset': ['later'],
+          },
+        ),
+        now,
+      );
+      final rateLimit = result as MastodonRateLimitException;
+      expect(rateLimit.retryAfter, isNull);
+      expect(rateLimit.limit, isNull);
+      expect(rateLimit.remaining, isNull);
+      expect(rateLimit.resetAt, isNull);
     });
   });
 

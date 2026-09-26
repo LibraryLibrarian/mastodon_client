@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MastodonPushAlerts {
 
- bool get mention; bool get quote; bool get status; bool get reblog; bool get follow; bool get followRequest; bool get favourite; bool get poll; bool get update; bool get quotedUpdate; bool get adminSignUp; bool get adminReport;
+ bool get mention; bool get quote; bool get status; bool get reblog; bool get follow; bool get followRequest; bool get favourite; bool get poll; bool get update; bool get severedRelationships; bool get moderationWarning; bool get annualReport; bool get quotedUpdate; bool get addedToCollection; bool get collectionUpdate; bool get adminSignUp; bool get adminReport;
 /// Create a copy of MastodonPushAlerts
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,12 +26,12 @@ $MastodonPushAlertsCopyWith<MastodonPushAlerts> get copyWith => _$MastodonPushAl
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonPushAlerts&&(identical(other.mention, mention) || other.mention == mention)&&(identical(other.quote, quote) || other.quote == quote)&&(identical(other.status, status) || other.status == status)&&(identical(other.reblog, reblog) || other.reblog == reblog)&&(identical(other.follow, follow) || other.follow == follow)&&(identical(other.followRequest, followRequest) || other.followRequest == followRequest)&&(identical(other.favourite, favourite) || other.favourite == favourite)&&(identical(other.poll, poll) || other.poll == poll)&&(identical(other.update, update) || other.update == update)&&(identical(other.quotedUpdate, quotedUpdate) || other.quotedUpdate == quotedUpdate)&&(identical(other.adminSignUp, adminSignUp) || other.adminSignUp == adminSignUp)&&(identical(other.adminReport, adminReport) || other.adminReport == adminReport));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonPushAlerts&&(identical(other.mention, mention) || other.mention == mention)&&(identical(other.quote, quote) || other.quote == quote)&&(identical(other.status, status) || other.status == status)&&(identical(other.reblog, reblog) || other.reblog == reblog)&&(identical(other.follow, follow) || other.follow == follow)&&(identical(other.followRequest, followRequest) || other.followRequest == followRequest)&&(identical(other.favourite, favourite) || other.favourite == favourite)&&(identical(other.poll, poll) || other.poll == poll)&&(identical(other.update, update) || other.update == update)&&(identical(other.severedRelationships, severedRelationships) || other.severedRelationships == severedRelationships)&&(identical(other.moderationWarning, moderationWarning) || other.moderationWarning == moderationWarning)&&(identical(other.annualReport, annualReport) || other.annualReport == annualReport)&&(identical(other.quotedUpdate, quotedUpdate) || other.quotedUpdate == quotedUpdate)&&(identical(other.addedToCollection, addedToCollection) || other.addedToCollection == addedToCollection)&&(identical(other.collectionUpdate, collectionUpdate) || other.collectionUpdate == collectionUpdate)&&(identical(other.adminSignUp, adminSignUp) || other.adminSignUp == adminSignUp)&&(identical(other.adminReport, adminReport) || other.adminReport == adminReport));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,mention,quote,status,reblog,follow,followRequest,favourite,poll,update,quotedUpdate,adminSignUp,adminReport);
+int get hashCode => Object.hash(runtimeType,mention,quote,status,reblog,follow,followRequest,favourite,poll,update,severedRelationships,moderationWarning,annualReport,quotedUpdate,addedToCollection,collectionUpdate,adminSignUp,adminReport);
 
 
 
@@ -42,7 +42,7 @@ abstract mixin class $MastodonPushAlertsCopyWith<$Res>  {
   factory $MastodonPushAlertsCopyWith(MastodonPushAlerts value, $Res Function(MastodonPushAlerts) _then) = _$MastodonPushAlertsCopyWithImpl;
 @useResult
 $Res call({
- bool mention, bool quote, bool status, bool reblog, bool follow, bool followRequest, bool favourite, bool poll, bool update, bool quotedUpdate, bool adminSignUp, bool adminReport
+ bool mention, bool quote, bool status, bool reblog, bool follow, bool followRequest, bool favourite, bool poll, bool update, bool severedRelationships, bool moderationWarning, bool annualReport, bool quotedUpdate, bool addedToCollection, bool collectionUpdate, bool adminSignUp, bool adminReport
 });
 
 
@@ -59,7 +59,7 @@ class _$MastodonPushAlertsCopyWithImpl<$Res>
 
 /// Create a copy of MastodonPushAlerts
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? mention = null,Object? quote = null,Object? status = null,Object? reblog = null,Object? follow = null,Object? followRequest = null,Object? favourite = null,Object? poll = null,Object? update = null,Object? quotedUpdate = null,Object? adminSignUp = null,Object? adminReport = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? mention = null,Object? quote = null,Object? status = null,Object? reblog = null,Object? follow = null,Object? followRequest = null,Object? favourite = null,Object? poll = null,Object? update = null,Object? severedRelationships = null,Object? moderationWarning = null,Object? annualReport = null,Object? quotedUpdate = null,Object? addedToCollection = null,Object? collectionUpdate = null,Object? adminSignUp = null,Object? adminReport = null,}) {
   return _then(MastodonPushAlerts(
 mention: null == mention ? _self.mention : mention // ignore: cast_nullable_to_non_nullable
 as bool,quote: null == quote ? _self.quote : quote // ignore: cast_nullable_to_non_nullable
@@ -70,7 +70,12 @@ as bool,followRequest: null == followRequest ? _self.followRequest : followReque
 as bool,favourite: null == favourite ? _self.favourite : favourite // ignore: cast_nullable_to_non_nullable
 as bool,poll: null == poll ? _self.poll : poll // ignore: cast_nullable_to_non_nullable
 as bool,update: null == update ? _self.update : update // ignore: cast_nullable_to_non_nullable
+as bool,severedRelationships: null == severedRelationships ? _self.severedRelationships : severedRelationships // ignore: cast_nullable_to_non_nullable
+as bool,moderationWarning: null == moderationWarning ? _self.moderationWarning : moderationWarning // ignore: cast_nullable_to_non_nullable
+as bool,annualReport: null == annualReport ? _self.annualReport : annualReport // ignore: cast_nullable_to_non_nullable
 as bool,quotedUpdate: null == quotedUpdate ? _self.quotedUpdate : quotedUpdate // ignore: cast_nullable_to_non_nullable
+as bool,addedToCollection: null == addedToCollection ? _self.addedToCollection : addedToCollection // ignore: cast_nullable_to_non_nullable
+as bool,collectionUpdate: null == collectionUpdate ? _self.collectionUpdate : collectionUpdate // ignore: cast_nullable_to_non_nullable
 as bool,adminSignUp: null == adminSignUp ? _self.adminSignUp : adminSignUp // ignore: cast_nullable_to_non_nullable
 as bool,adminReport: null == adminReport ? _self.adminReport : adminReport // ignore: cast_nullable_to_non_nullable
 as bool,

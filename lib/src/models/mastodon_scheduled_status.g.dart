@@ -58,6 +58,14 @@ MastodonScheduledStatusParams _$MastodonScheduledStatusParamsFromJson(
   inReplyToId: flexibleIdFromJson(json['in_reply_to_id']),
   language: json['language'] as String?,
   idempotency: json['idempotency'] as String?,
+  quotedStatusId: json['quoted_status_id'] as String?,
+  quoteApprovalPolicy: json['quote_approval_policy'] as String?,
+  applicationId: flexibleIdFromJson(json['application_id']),
+  withRateLimit: json['with_rate_limit'] as bool?,
+  allowedMentions: flexibleIdListFromJson(json['allowed_mentions']),
+  scheduledAt: const SafeDateTimeConverter().fromJson(
+    json['scheduled_at'] as String?,
+  ),
 );
 
 Map<String, dynamic> _$MastodonScheduledStatusParamsToJson(
@@ -72,6 +80,12 @@ Map<String, dynamic> _$MastodonScheduledStatusParamsToJson(
   'in_reply_to_id': instance.inReplyToId,
   'language': instance.language,
   'idempotency': instance.idempotency,
+  'quoted_status_id': instance.quotedStatusId,
+  'quote_approval_policy': instance.quoteApprovalPolicy,
+  'application_id': instance.applicationId,
+  'with_rate_limit': instance.withRateLimit,
+  'allowed_mentions': instance.allowedMentions,
+  'scheduled_at': const SafeDateTimeConverter().toJson(instance.scheduledAt),
 };
 
 MastodonScheduledStatusPoll _$MastodonScheduledStatusPollFromJson(

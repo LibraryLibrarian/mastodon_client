@@ -74,27 +74,61 @@ class MastodonRateLimitException extends MastodonApiException {
     super.endpoint,
     super.raw,
     this.retryAfter,
+    this.limit,
+    this.remaining,
+    this.resetAt,
   }) : super(statusCode: 429);
 
   /// Recommended wait duration indicated by the server.
   final Duration? retryAfter;
+
+  /// Maximum number of requests allowed in the current rate-limit window.
+  final int? limit;
+
+  /// Number of requests remaining in the current rate-limit window.
+  final int? remaining;
+
+  /// Time when the current rate-limit window resets.
+  final DateTime? resetAt;
+}
+
+/// Field-level detail returned in a Mastodon validation error.
+class MastodonValidationErrorDetail {
+  /// Creates a field-level validation error detail.
+  const MastodonValidationErrorDetail({required this.code, this.description});
+
+  /// Machine-readable identifier such as `ERR_TAKEN` or `ERR_BLANK`.
+  ///
+  /// Unknown values are preserved for forward compatibility.
+  final String code;
+
+  /// Human-readable description supplied by the server.
+  final String? description;
 }
 
 /// Validation error (HTTP 422).
 ///
 /// The request content is invalid.
 ///
-/// Holds the error details returned by the server in [serverMessage].
+/// Holds the message returned by the server in [serverMessage] and any
+/// field-level validation errors in [details].
 class MastodonValidationException extends MastodonApiException {
   const MastodonValidationException({
     super.message = 'Unprocessable entity',
     super.endpoint,
     super.raw,
     this.serverMessage,
+    this.details,
   }) : super(statusCode: 422);
 
-  /// Raw error message returned by the server.
+  /// Human-readable error message returned by the server.
   final String? serverMessage;
+
+  /// Field-level validation errors keyed by request field name.
+  ///
+  /// This is `null` when the response does not include a recognized
+  /// `details` object. Error codes not yet known to this client are preserved.
+  final Map<String, List<MastodonValidationErrorDetail>>? details;
 }
 
 /// Server error (HTTP 5xx).
@@ -150,19 +184,6 @@ class MastodonAuthTokenException extends MastodonAuthException {
 class MastodonAlreadyVotedException extends MastodonValidationException {
   const MastodonAlreadyVotedException()
     : super(message: 'Already voted', serverMessage: 'already voted');
-}
-
-/// Media async processing timeout.
-///
-/// Thrown when the media with [MastodonMediaProcessingTimeoutException.mediaId]
-/// did not finish processing within the polling limit after the server
-/// returned HTTP 202.
-class MastodonMediaProcessingTimeoutException extends MastodonException {
-  MastodonMediaProcessingTimeoutException({required this.mediaId})
-    : super('Media processing timed out (id: $mediaId)');
-
-  /// ID of the media that was awaiting processing.
-  final String mediaId;
 }
 
 /// Base class for errors from the Mastodon Streaming API.

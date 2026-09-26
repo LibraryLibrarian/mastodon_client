@@ -34,7 +34,7 @@ print(subscription.serverKey); // 用于验证收到的推送消息
 
 ### 通知类型
 
-`MastodonPushAlertSettings` 接受以下字段的任意组合。值为 `null` 的字段会从请求中省略，保持原有设置不变。
+`MastodonPushAlertSettings` 接受以下字段的任意组合。值为 `null` 的字段会从请求中省略。创建订阅时，省略的字段使用服务器默认值；更新订阅时，整个设置对象会按下文所述被替换。
 
 | 字段 | 说明 |
 |------|------|
@@ -71,7 +71,7 @@ print(subscription.policy);
 
 ## 更新通知设置
 
-使用 `update` 更改通知设置或策略，无需重新创建订阅。只能更改 `data` 部分（通知类型和策略）。
+使用 `update` 替换订阅的 `data` 部分（通知类型和策略），无需重新创建订阅。这不是局部更新：省略的每种通知类型都会被禁用，省略 `policy` 会将其重置为 `all`。请指定所有需要保持启用的通知类型。如果同时省略 `alerts` 和 `policy`，则会在发送 HTTP 请求前抛出 `ArgumentError`。
 
 ```dart
 final updated = await client.push.update(
@@ -79,8 +79,21 @@ final updated = await client.push.update(
     alerts: MastodonPushAlertSettings(
       mention: true,
       follow: false,
+      reblog: true,
+      favourite: true,
+      poll: true,
     ),
     policy: 'all',
+  ),
+);
+```
+
+如需明确禁用所有通知并将策略重置为 `all`，请发送一个空的通知设置对象：
+
+```dart
+await client.push.update(
+  const MastodonPushSubscriptionUpdateRequest(
+    alerts: MastodonPushAlertSettings(),
   ),
 );
 ```

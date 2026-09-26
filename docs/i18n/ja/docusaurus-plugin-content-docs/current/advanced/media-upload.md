@@ -4,7 +4,8 @@ sidebar_position: 2
 
 # メディアアップロード
 
-`client.media` API はファイルアップロードと非同期処理の自動ハンドリングを提供します。
+`client.media` API はファイルアップロードを扱い、クライアント側の待機期限を追加せずに
+サーバーの非同期処理状態を公開します。
 
 ## メディアのアップロード
 
@@ -50,19 +51,20 @@ final attachment = await client.media.upload(
 
 ## 非同期処理
 
-サーバーが HTTP 202（非同期処理）を返した場合、ライブラリは自動的に `GET /api/v1/media/{id}` をポーリングし、`url` フィールドが利用可能になるまで待機します。呼び出し側からは透過的です。
+サーバーが HTTP 202 を返した場合、`upload()` は `url` が `null` の添付情報を直ちに返します。
+アプリケーションで状態確認が必要になった時点で `fetchById()` を呼び出してください。HTTP 206 は
+処理中、HTTP 200 は最新の添付情報を取得できたことを示します。ライブラリはポーリングや処理期限の
+設定を行いません。
 
-ポーリング制限（8回、500ms 間隔）内に処理が完了しない場合、`MastodonMediaProcessingTimeoutException` がスローされます。
+Mastodon が HTTP 422 を返した場合、`fetchById()` は通常の例外変換経路を通じて処理失敗を
+`MastodonValidationException` として通知します。
 
 ```dart
-try {
-  final attachment = await client.media.upload(bytes, 'large-video.mp4');
-} on MastodonMediaProcessingTimeoutException catch (e) {
-  // 後で状態を確認
-  final attachment = await client.media.fetchById(e.mediaId);
-  if (attachment.url != null) {
-    print('処理完了: ${attachment.url}');
-  }
+final attachment = await client.media.upload(bytes, 'large-video.mp4');
+if (attachment.url == null) {
+  // アプリケーション側の方針に従って後で確認
+  final current = await client.media.fetchById(attachment.id);
+  print(current.url == null ? '処理中' : current.url);
 }
 ```
 

@@ -77,7 +77,8 @@ class MastodonStatusEditRequest {
   /// Poll parameters.
   final MastodonPollEditRequest? poll;
 
-  /// Quote approval policy (`public` / `followers` / `nobody`).
+  /// Quote approval policy (`public` / `followers` / `nobody`, Mastodon
+  /// 4.5.0+).
   final String? quoteApprovalPolicy;
 
   /// Returns a JSON map for the request body.

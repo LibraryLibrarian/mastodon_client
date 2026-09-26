@@ -67,14 +67,23 @@ final filter = await client.filters.create(
 ## フィルターの更新
 
 すべてのパラメータは任意です。指定したフィールドのみ更新されます。
+`expiresIn` には3つの状態があります。省略すると現在の期限を維持し、
+`Optional(seconds)` で期限を設定し、`Optional.null_()` で無期限にできます。
 
 ```dart
 final updated = await client.filters.update(
   '1',
   title: '新しいタイトル',
   filterAction: 'hide',
+  expiresIn: const Optional(86400),
 );
+
+// 他のフィールドを変更せずに期限を解除
+await client.filters.update('1', expiresIn: const Optional.null_());
 ```
+
+非推奨の `updateV1()` も同じ3状態を使用します。複数キーワードを含む v1 フィルターでは、
+Mastodon が期限の変更を拒否します。
 
 ## フィルターの削除
 

@@ -187,12 +187,19 @@ final block = await client.adminIpBlocks.create(
 // Update
 await client.adminIpBlocks.update(
   block.id,
-  MastodonAdminIpBlockUpdateRequest(severity: 'sign_up_block'),
+  const MastodonAdminIpBlockUpdateRequest(
+    severity: 'sign_up_block',
+    expiresIn: Optional.null_(), // Sperre dauerhaft gültig machen
+  ),
 );
 
 // Delete
 await client.adminIpBlocks.delete(block.id);
 ```
+
+Bei Aktualisierungen `expiresIn` weglassen, um den aktuellen Ablauf
+beizubehalten, `Optional(seconds)` zum Setzen oder `Optional.null_()`, um die
+Sperre dauerhaft gültig zu machen.
 
 ## E-Mail-Sperren
 

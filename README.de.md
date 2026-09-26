@@ -9,10 +9,10 @@ Eine reine Dart-Clientbibliothek für die [Mastodon](https://joinmastodon.org/) 
 ## Funktionen
 
 - Deckt alle wichtigen Mastodon-API-Kategorien ab (Konten, Status, Timelines, Benachrichtigungen, Medien und mehr)
-- OAuth 2.0 Token-Verwaltung (Abrufen, Widerrufen, PKCE-Unterstützung)
+- OAuth 2.0 Token-Verwaltung (Abrufen, Widerrufen, Weitergabe des PKCE-`code_verifier` beim Token-Austausch)
 - Cursorbasierte Paginierung über `MastodonPage<T>`
 - Sealed-Ausnahmehierarchie für erschöpfende Fehlerbehandlung
-- Asynchroner Medien-Upload mit automatischem v2/v1-Fallback und Verarbeitungs-Polling
+- Asynchroner Medien-Upload mit automatischem v2/v1-Fallback und expliziter Statusabfrage
 - Streaming-API über WebSocket mit gemultiplexten Abonnements und automatischer Wiederverbindung
 - Konfigurierbares Logging über eine austauschbare `Logger`-Schnittstelle
 - Reines Dart — keine Flutter-Abhängigkeit erforderlich
@@ -23,7 +23,7 @@ Fügen Sie das Paket zu Ihrer `pubspec.yaml` hinzu:
 
 ```yaml
 dependencies:
-  mastodon_client: ^1.0.0-beta.3
+  mastodon_client: ^1.0.0-beta.4
 ```
 
 Führen Sie dann aus:
@@ -62,6 +62,15 @@ void main() async {
   }
 }
 ```
+
+Der REST-Client setzt keine eigenen HTTP-Zeitüberschreitungen. Anfragen folgen
+dem Verhalten des Transports und des Mastodon-Servers, statt durch
+Bibliotheksvorgaben abgebrochen zu werden.
+
+Bei asynchronen Medien-Uploads gibt `upload()` einen HTTP-202-Anhang sofort mit
+`url: null` zurück. Prüfe ihn explizit mit `client.media.fetchById(id)`: HTTP 206
+bedeutet laufende Verarbeitung, HTTP 200 liefert den aktuellen Anhang und HTTP
+422 wird als `MastodonValidationException` gemeldet.
 
 ## API-Übersicht
 
@@ -118,6 +127,34 @@ void main() async {
 | `adminMeasures` | Administrative quantitative Kennzahlen |
 | `adminDimensions` | Administrative kategorische Dimensionen |
 | `adminRetention` | Administrative Benutzer-Bindungskohorten |
+
+## Erkennung von Serverfunktionen
+
+Server können unterschiedliche Mastodon-API-Stände bereitstellen. Prüfen Sie
+die Unterstützung, bevor Sie versionsabhängige Funktionen anbieten:
+
+```dart
+final capabilities = await client.instance.detectCapabilities();
+final support = capabilities.supportFor(MastodonCapability.collections);
+
+if (support == MastodonCapabilitySupport.supported) {
+  // Sammlungsfunktionen anbieten.
+}
+```
+
+Die Hilfsfunktion bevorzugt `api_versions.mastodon`, greift andernfalls auf die
+gemeldete Versionszeichenfolge zurück und versucht bei einer 404-Antwort des
+v2-Instanz-Endpunkts, den veralteten v1-Endpunkt aufzurufen. Cachen Sie das
+Ergebnis einmal pro Server für die Laufzeit des App-Prozesses. Behandeln Sie `unknown`
+vorsichtig und fangen Sie weiterhin Fehler des tatsächlichen API-Aufrufs ab,
+da Forks und kompatible Implementierungen von der gemeldeten Version abweichen
+können.
+
+Die API-Version bezeichnet einen API-Oberflächenstand und keine
+Mastodon-Releaseversion. Sie kann in Patch-Releases oder durch Änderungen ohne
+neue Route steigen, für mehrere Releases gleich sein und Werte überspringen.
+Die Funktionstabelle und Details zum Fallback stehen im
+[Instanzleitfaden](https://librarylibrarian.github.io/mastodon_client/de/api/instance).
 
 ## Authentifizierung
 

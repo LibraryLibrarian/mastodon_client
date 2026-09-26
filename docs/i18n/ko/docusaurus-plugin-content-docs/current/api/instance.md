@@ -19,6 +19,57 @@ print(instance.version);
 
 설정된 언어, 규칙, 연락처 정보를 포함한 전체 v2 메타데이터를 담은 `MastodonInstance`를 반환합니다.
 
+### 버전에 따라 달라지는 기능
+
+새 Mastodon 릴리스에 추가된 기능을 제공하기 전에 `detectCapabilities()`로 지원
+여부를 확인하세요.
+
+```dart
+final capabilities = await client.instance.detectCapabilities();
+
+switch (capabilities.supportFor(MastodonCapability.collections)) {
+  case MastodonCapabilitySupport.supported:
+    // 컬렉션 기능을 제공합니다.
+  case MastodonCapabilitySupport.unsupported:
+    // 컬렉션 기능을 숨기거나 비활성화합니다.
+  case MastodonCapabilitySupport.unknown:
+    // 보수적인 대안을 사용하거나 사용자가 직접 시도하게 합니다.
+}
+```
+
+| Capability | 서버 기능 | 최소 Mastodon 버전 | API 기능 수준 |
+|---|---|---:|---:|
+| `tagFeaturing` | 태그를 프로필에 추천하거나 추천하지 않기 | 4.4.0 | 6 |
+| `annualReportDetails` | 특정 연도의 연간 보고서 조회 | 4.4.0 | 6 |
+| `oauthUserInfo` | OpenID Connect 사용자 정보 | 4.4.0 | 6 |
+| `asyncRefreshes` | 실험적 비동기 새로 고침 상태 | 4.4.0 | 6 |
+| `quotePosts` | 인용 게시물 작업 | 4.5.0 | 7 |
+| `collections` | 컬렉션 엔드포인트 | 4.6.0 | 10 |
+| `donationCampaigns` | 기부 캠페인 엔드포인트 | 4.6.0 | 10 |
+| `editableProfile` | 편집 가능한 프로필 조회 또는 수정 | 4.6.0 | 10 |
+| `annualReportGeneration` | 보고서 생성 또는 상태 조회 | 4.6.0 | 10 |
+
+감지는 다음 규칙을 따릅니다.
+
+1. `GET /api/v2/instance`를 조회하고 `api_versions.mastodon`을 우선
+   사용합니다.
+2. 이 필드가 없으면 `MastodonInstance.version` 앞부분의
+   `major.minor.patch`를 최선의 폴백으로 해석합니다.
+3. v2 엔드포인트 자체가 404를 반환하면 레거시 `GET /api/v1/instance`를 조회하고 해당
+   버전 문자열을 사용합니다. 그 밖의 오류는 폴백하지 않고 그대로 전달합니다.
+4. 메타데이터를 해석할 수 없으면 `unknown`을 반환합니다.
+
+API를 호출할 때마다 인스턴스 메타데이터를 요청하지 말고 서버별로 앱 프로세스가 실행되는
+동안 한 번 결과를 캐시하세요.
+
+`api_versions.mastodon`은 릴리스 번호가 아닌 API 기능 수준을 나타냅니다. 패치 릴리스나 새
+라우트가 없는 변경에서도 증가할 수 있고, 여러 릴리스가 같은 값을 공유하거나 정수를
+건너뛸 수 있습니다. 표의 최소 임곗값으로만 사용하고 Mastodon 릴리스로 역변환하지 마세요.
+
+기능 판정은 참고 정보입니다. 포크 및 호환 구현의 실제 기능은 보고된 메타데이터와 다를 수
+있으므로 실제 API 호출 오류도 계속 처리해야 합니다. 특히 404 응답만으로는 엔드포인트가
+없는 경우와 리소스가 없는 경우를 확실히 구분할 수 없습니다.
+
 ### 피어 도메인
 
 ```dart

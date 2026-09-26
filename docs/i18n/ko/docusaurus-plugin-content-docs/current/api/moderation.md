@@ -45,8 +45,12 @@ if (page.nextMaxId != null) {
 
 ```dart
 final page = await client.mutes.fetch(limit: 40);
-for (final account in page.items) {
-  print(account.acct);
+for (final mutedAccount in page.items) {
+  print(mutedAccount.account.acct);
+  final expiresAt = mutedAccount.muteExpiresAt;
+  if (expiresAt != null) {
+    print('뮤트 만료 시각: $expiresAt');
+  }
 }
 
 // 다음 페이지
@@ -54,6 +58,10 @@ if (page.nextMaxId != null) {
   final next = await client.mutes.fetch(maxId: page.nextMaxId);
 }
 ```
+
+각 항목은 `MastodonMutedAccount`입니다. `account`에는 뮤트된 계정이,
+`muteExpiresAt`에는 기간이 지정된 뮤트의 만료 시각이 들어 있습니다. 무기한
+뮤트인 경우 만료 시각은 `null`입니다.
 
 파라미터:
 

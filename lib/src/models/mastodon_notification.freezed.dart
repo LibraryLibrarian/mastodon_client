@@ -755,7 +755,7 @@ case _:
 /// @nodoc
 mixin _$MastodonNotification {
 
- String get id; MastodonNotificationType get type; DateTime get createdAt; MastodonAccount get account; String? get groupKey; MastodonStatus? get status; MastodonRelationshipSeveranceEvent? get relationshipSeveranceEvent; MastodonAccountWarning? get moderationWarning; MastodonCollection? get collection; MastodonNotificationFallback? get fallback;
+ String get id; MastodonNotificationType get type; DateTime get createdAt; MastodonAccount get account; String? get groupKey; MastodonStatus? get status; MastodonReport? get report; MastodonRelationshipSeveranceEvent? get relationshipSeveranceEvent; MastodonAccountWarning? get moderationWarning; MastodonCollection? get collection; MastodonNotificationFallback? get fallback; bool get filtered;
 /// Create a copy of MastodonNotification
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -766,12 +766,12 @@ $MastodonNotificationCopyWith<MastodonNotification> get copyWith => _$MastodonNo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonNotification&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.account, account) || other.account == account)&&(identical(other.groupKey, groupKey) || other.groupKey == groupKey)&&(identical(other.status, status) || other.status == status)&&(identical(other.relationshipSeveranceEvent, relationshipSeveranceEvent) || other.relationshipSeveranceEvent == relationshipSeveranceEvent)&&(identical(other.moderationWarning, moderationWarning) || other.moderationWarning == moderationWarning)&&(identical(other.collection, collection) || other.collection == collection)&&(identical(other.fallback, fallback) || other.fallback == fallback));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MastodonNotification&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.account, account) || other.account == account)&&(identical(other.groupKey, groupKey) || other.groupKey == groupKey)&&(identical(other.status, status) || other.status == status)&&(identical(other.report, report) || other.report == report)&&(identical(other.relationshipSeveranceEvent, relationshipSeveranceEvent) || other.relationshipSeveranceEvent == relationshipSeveranceEvent)&&(identical(other.moderationWarning, moderationWarning) || other.moderationWarning == moderationWarning)&&(identical(other.collection, collection) || other.collection == collection)&&(identical(other.fallback, fallback) || other.fallback == fallback)&&(identical(other.filtered, filtered) || other.filtered == filtered));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type,createdAt,account,groupKey,status,relationshipSeveranceEvent,moderationWarning,collection,fallback);
+int get hashCode => Object.hash(runtimeType,id,type,createdAt,account,groupKey,status,report,relationshipSeveranceEvent,moderationWarning,collection,fallback,filtered);
 
 
 
@@ -782,7 +782,7 @@ abstract mixin class $MastodonNotificationCopyWith<$Res>  {
   factory $MastodonNotificationCopyWith(MastodonNotification value, $Res Function(MastodonNotification) _then) = _$MastodonNotificationCopyWithImpl;
 @useResult
 $Res call({
- String id, MastodonNotificationType type, DateTime createdAt, MastodonAccount account, String? groupKey, MastodonStatus? status, MastodonRelationshipSeveranceEvent? relationshipSeveranceEvent, MastodonAccountWarning? moderationWarning, MastodonCollection? collection, MastodonNotificationFallback? fallback
+ String id, MastodonNotificationType type, DateTime createdAt, MastodonAccount account, String? groupKey, MastodonStatus? status, MastodonReport? report, MastodonRelationshipSeveranceEvent? relationshipSeveranceEvent, MastodonAccountWarning? moderationWarning, MastodonCollection? collection, MastodonNotificationFallback? fallback, bool filtered
 });
 
 
@@ -799,7 +799,7 @@ class _$MastodonNotificationCopyWithImpl<$Res>
 
 /// Create a copy of MastodonNotification
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,Object? createdAt = null,Object? account = null,Object? groupKey = freezed,Object? status = freezed,Object? relationshipSeveranceEvent = freezed,Object? moderationWarning = freezed,Object? collection = freezed,Object? fallback = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,Object? createdAt = null,Object? account = null,Object? groupKey = freezed,Object? status = freezed,Object? report = freezed,Object? relationshipSeveranceEvent = freezed,Object? moderationWarning = freezed,Object? collection = freezed,Object? fallback = freezed,Object? filtered = null,}) {
   return _then(MastodonNotification(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -807,11 +807,13 @@ as MastodonNotificationType,createdAt: null == createdAt ? _self.createdAt : cre
 as DateTime,account: null == account ? _self.account : account // ignore: cast_nullable_to_non_nullable
 as MastodonAccount,groupKey: freezed == groupKey ? _self.groupKey : groupKey // ignore: cast_nullable_to_non_nullable
 as String?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as MastodonStatus?,relationshipSeveranceEvent: freezed == relationshipSeveranceEvent ? _self.relationshipSeveranceEvent : relationshipSeveranceEvent // ignore: cast_nullable_to_non_nullable
+as MastodonStatus?,report: freezed == report ? _self.report : report // ignore: cast_nullable_to_non_nullable
+as MastodonReport?,relationshipSeveranceEvent: freezed == relationshipSeveranceEvent ? _self.relationshipSeveranceEvent : relationshipSeveranceEvent // ignore: cast_nullable_to_non_nullable
 as MastodonRelationshipSeveranceEvent?,moderationWarning: freezed == moderationWarning ? _self.moderationWarning : moderationWarning // ignore: cast_nullable_to_non_nullable
 as MastodonAccountWarning?,collection: freezed == collection ? _self.collection : collection // ignore: cast_nullable_to_non_nullable
 as MastodonCollection?,fallback: freezed == fallback ? _self.fallback : fallback // ignore: cast_nullable_to_non_nullable
-as MastodonNotificationFallback?,
+as MastodonNotificationFallback?,filtered: null == filtered ? _self.filtered : filtered // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

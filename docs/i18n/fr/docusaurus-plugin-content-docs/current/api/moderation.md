@@ -45,8 +45,12 @@ Pour bloquer ou débloquer un compte, utilisez `client.accounts.block()` et `cli
 
 ```dart
 final page = await client.mutes.fetch(limit: 40);
-for (final account in page.items) {
-  print(account.acct);
+for (final mutedAccount in page.items) {
+  print(mutedAccount.account.acct);
+  final expiresAt = mutedAccount.muteExpiresAt;
+  if (expiresAt != null) {
+    print('Le masquage expire à $expiresAt');
+  }
 }
 
 // Next page
@@ -54,6 +58,10 @@ if (page.nextMaxId != null) {
   final next = await client.mutes.fetch(maxId: page.nextMaxId);
 }
 ```
+
+Chaque élément est un `MastodonMutedAccount`. Son champ `account` contient le
+compte masqué et `muteExpiresAt` la date d'expiration d'un masquage temporaire.
+La date d'expiration vaut `null` pour un masquage permanent.
 
 Paramètres :
 

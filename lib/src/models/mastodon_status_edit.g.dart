@@ -31,6 +31,9 @@ MastodonStatusEdit _$MastodonStatusEditFromJson(
   poll: json['poll'] == null
       ? null
       : MastodonStatusEditPoll.fromJson(json['poll'] as Map<String, dynamic>),
+  quote: json['quote'] == null
+      ? null
+      : MastodonQuote.fromJson(json['quote'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$MastodonStatusEditToJson(MastodonStatusEdit instance) =>
@@ -45,6 +48,7 @@ Map<String, dynamic> _$MastodonStatusEditToJson(MastodonStatusEdit instance) =>
           .toList(),
       'emojis': instance.emojis.map((e) => e.toJson()).toList(),
       'poll': instance.poll?.toJson(),
+      'quote': instance.quote?.toJson(),
     };
 
 MastodonStatusEditPoll _$MastodonStatusEditPollFromJson(

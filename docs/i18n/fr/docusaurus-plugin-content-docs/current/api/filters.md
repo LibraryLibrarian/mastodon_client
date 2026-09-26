@@ -67,14 +67,24 @@ final filter = await client.filters.create(
 ## Mettre à jour un filtre
 
 Tous les paramètres sont optionnels ; seuls les champs fournis sont mis à jour.
+`expiresIn` possède trois états : omettez-le pour conserver l'expiration
+actuelle, passez `Optional(seconds)` pour en définir une, ou
+`Optional.null_()` pour rendre le filtre permanent.
 
 ```dart
 final updated = await client.filters.update(
   '1',
   title: 'Updated title',
   filterAction: 'hide',
+  expiresIn: const Optional(86400),
 );
+
+// Supprimer l'expiration sans modifier les autres champs.
+await client.filters.update('1', expiresIn: const Optional.null_());
 ```
+
+La méthode obsolète `updateV1()` utilise les mêmes trois états. Mastodon refuse
+les modifications d'expiration d'un filtre v1 contenant plusieurs mots-clés.
 
 ## Supprimer un filtre
 
