@@ -24,7 +24,7 @@ void main() {
 
       // rules
       // (サーバールールはWeb管理画面のみで設定可能でREST APIが無いため、
-      // 閉域E2E環境では常に空になる)
+      // 閉域環境では常に空になる)
       expect(instance.rules, isEmpty);
 
       // thumbnail
