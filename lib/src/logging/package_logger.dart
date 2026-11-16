@@ -4,9 +4,10 @@ import '../client/constants.dart';
 
 /// Provides the shared logger for the mastodon_client library.
 ///
-/// In debug builds, detailed logs at the debug/trace level are output. In
-/// release builds, only warnings and above are emitted, suppressing
-/// verbose logs.
+/// The level is `debug` outside release builds and `warning` in release
+/// builds, but the package's default `DevelopmentFilter` only lets logs
+/// through while assertions are enabled (debug builds). With assertions
+/// disabled, as in release builds, nothing is output.
 final pkg.Logger clientLog = pkg.Logger(
   level: kReleaseMode ? pkg.Level.warning : pkg.Level.debug,
   printer: _CustomLogPrinter(),
