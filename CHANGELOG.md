@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Corrected the documentation comment of the default logger: with assertions disabled, as in release builds, it outputs nothing
+
 ## [1.0.0-beta.4] - 2026-09-26
 
 ### Added
